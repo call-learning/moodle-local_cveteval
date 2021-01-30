@@ -17,24 +17,24 @@
 /**
  * Question template entity
  *
- * @package   local_cveval
- * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning>
+ * @package   local_cveteval
+ * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_cveval\question_template;
+namespace local_cveteval\question_template;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
  * Class rotation
  *
- * @package   local_cveval
- * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning>
+ * @package   local_cveteval
+ * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class entity extends \core\persistent {
-    const TABLE = 'local_competveteval_qtpl';
+    const TABLE = 'local_cveteval_qtpl';
 
     const QUESTION_TYPE_FREE_TEXT = 0;
     const QUESTION_TYPE_LIKERT = 1;
@@ -69,8 +69,8 @@ class entity extends \core\persistent {
      */
     public static function get_question_types() {
         return  [
-            self::QUESTION_TYPE_FREE_TEXT => get_string('qtype:freetext', 'local_cveval'),
-            self::QUESTION_TYPE_LIKERT => get_string('qtype:likert', 'local_cveval')
+            self::QUESTION_TYPE_FREE_TEXT => get_string('qtype:freetext', 'local_cveteval'),
+            self::QUESTION_TYPE_LIKERT => get_string('qtype:likert', 'local_cveteval')
         ];
     }
 }

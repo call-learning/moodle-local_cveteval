@@ -17,14 +17,14 @@
 /**
  * Rotation entity edit or add form
  *
- * @package   local_cveval
- * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning>
+ * @package   local_cveteval
+ * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_cveval\rotation;
+namespace local_cveteval\rotation;
 
-use local_cveval\form\persistent_list_filter;
+use local_cveteval\form\persistent_list_filter;
 
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
@@ -33,14 +33,14 @@ require_once($CFG->libdir . '/formslib.php');
 /**
  * Persistent filters
  *
- * @package     local_cveval
+ * @package     local_cveteval
  * @copyright   2019 CALL Learning <laurent@call-learning.fr>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class list_filters extends persistent_list_filter {
 
     /** @var string The fully qualified classname. */
-    protected static $persistentclass = '\\local_cveval\\rotation\\entity';
+    protected static $persistentclass = '\\local_cveteval\\rotation\\entity';
 
     /**
      * Form property in order to display the right widget for the form.

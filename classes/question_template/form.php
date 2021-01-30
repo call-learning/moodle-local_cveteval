@@ -17,12 +17,12 @@
 /**
  * Question template form
  *
- * @package   local_cveval
- * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning>
+ * @package   local_cveteval
+ * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace local_cveval\question_template;
-use local_cveval\form\persistent_form;
+namespace local_cveteval\question_template;
+use local_cveteval\form\persistent_form;
 
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
@@ -31,14 +31,14 @@ require_once($CFG->libdir . '/formslib.php');
 /**
  * Add Form
  *
- * @package     local_cveval
+ * @package     local_cveteval
  * @copyright   2019 CALL Learning <laurent@call-learning.fr>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class form extends persistent_form {
 
     /** @var string The fully qualified classname. */
-    protected static $persistentclass = '\\local_cveval\\question_template\\entity';
+    protected static $persistentclass = '\\local_cveteval\\question_template\\entity';
 
 
     /**
@@ -50,13 +50,13 @@ class form extends persistent_form {
     protected static function define_properties() {
         return array(
             'type' => array(
-                'fullname' => get_string('question_template:type', 'local_cveval'),
+                'fullname' => get_string('question_template:type', 'local_cveteval'),
                 'type' => 'select_choice',
                 'choices' => entity::get_question_types(),
             ),
             'label' => array(
                 'type' => 'text',
-                'fullname' => get_string('name', 'local_cveval'),
+                'fullname' => get_string('name', 'local_cveteval'),
             ),
         );
     }

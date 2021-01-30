@@ -15,17 +15,17 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Capabilities for cveval Plugin
+ * Capabilities for cveteval Plugin
  *
- * @package   local_cveval
- * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning>
+ * @package   local_cveteval
+ * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = array(
-    'local/cveval:managerotation' => array(
+    'local/cveteval:managerotation' => array(
         'riskbitmask' => RISK_SPAM,
         'captype' => 'write',
         'contextlevel' => CONTEXT_SYSTEM,
@@ -33,7 +33,7 @@ $capabilities = array(
             'manager' => CAP_ALLOW
         )
     ),
-    'local/cveval:manageevaluationtemplate' => array(
+    'local/cveteval:manageevaluationtemplate' => array(
         'riskbitmask' => RISK_SPAM,
         'captype' => 'write',
         'contextlevel' => CONTEXT_SYSTEM,
@@ -41,7 +41,7 @@ $capabilities = array(
             'manager' => CAP_ALLOW
         )
     ),
-    'local/cveval:managequestiontemplate' => array(
+    'local/cveteval:managequestiontemplate' => array(
         'riskbitmask' => RISK_SPAM,
         'captype' => 'write',
         'contextlevel' => CONTEXT_SYSTEM,
@@ -49,7 +49,7 @@ $capabilities = array(
             'manager' => CAP_ALLOW
         )
     ),
-    'local/cveval:viewfiles' => array(
+    'local/cveteval:viewfiles' => array(
         'riskbitmask' => RISK_SPAM,
         'captype' => 'read',
         'contextlevel' => CONTEXT_SYSTEM,

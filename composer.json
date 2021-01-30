@@ -1,6 +1,6 @@
 {
-    "name": "calllearning/moodle-local_cveval",
-    "description": "Moodle cveval Plugin",
+    "name": "calllearning/moodle-local_cveteval",
+    "description": "Moodle cveteval Plugin",
     "license": "GPLv3",
     "authors": [
         {
@@ -13,6 +13,6 @@
       "composer/installers": "~1.0"
     },
     "extra": {
-      "installer-name": "cveval"
+      "installer-name": "cveteval"
     }
 }

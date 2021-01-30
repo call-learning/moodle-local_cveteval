@@ -1,3 +1,3 @@
-Moodle Local cveval
+Moodle Local cveteval
 ==
 

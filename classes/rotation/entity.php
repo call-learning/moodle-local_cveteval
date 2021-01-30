@@ -17,24 +17,24 @@
 /**
  * Rotation entity
  *
- * @package   local_cveval
- * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning>
+ * @package   local_cveteval
+ * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_cveval\rotation;
+namespace local_cveteval\rotation;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
  * Class rotation
  *
- * @package   local_cveval
- * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning>
+ * @package   local_cveteval
+ * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class entity extends \core\persistent {
-    const TABLE = 'local_competveteval_rotation';
+    const TABLE = 'local_cveteval_rotation';
 
     /**
      * Usual properties definition for a persistent
@@ -80,6 +80,6 @@ class entity extends \core\persistent {
 
     public function get_related_evaluation_template() {
         $evaluationtemplateid = $this->get('evaluationtemplateid');
-        return \local_cveval\evaluation_template\entity::get_record(array('id' => $evaluationtemplateid));
+        return \local_cveteval\evaluation_template\entity::get_record(array('id' => $evaluationtemplateid));
     }
 }

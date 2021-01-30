@@ -17,14 +17,14 @@
 /**
  * Question template entity edit or add form
  *
- * @package   local_cveval
- * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning>
+ * @package   local_cveteval
+ * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_cveval\question_template;
+namespace local_cveteval\question_template;
 
-use local_cveval\utils\persistent_list;
+use local_cveteval\utils\persistent_list;
 
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
@@ -33,12 +33,12 @@ require_once($CFG->libdir . '/formslib.php');
 /**
  * Add Form
  *
- * @package     local_cveval
+ * @package     local_cveteval
  * @copyright   2019 CALL Learning <laurent@call-learning.fr>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class entities_list extends persistent_list {
-    protected static $persistentclass = '\\local_cveval\\question_template\\entity';
+    protected static $persistentclass = '\\local_cveteval\\question_template\\entity';
 
     /**
      * List columns
@@ -49,7 +49,7 @@ class entities_list extends persistent_list {
     public static function define_properties() {
         $props = array(
             'label' => (object) array(
-                'fullname' => get_string('name', 'local_cveval'),
+                'fullname' => get_string('name', 'local_cveteval'),
             ),
         );
         self::add_all_definition_from_persistent($props);

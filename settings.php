@@ -17,8 +17,8 @@
 /**
  * You may have settings in your plugin
  *
- * @package   local_cveval
- * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning>
+ * @package   local_cveteval
+ * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -29,21 +29,21 @@ if ($hassiteconfig) {
 
     $enabled = !empty($CFG->enablecompetveteval) && $CFG->enablecompetveteval;
 
-    $settings = new admin_category('cveval', get_string('pluginname', 'local_cveval'));
+    $settings = new admin_category('cveteval', get_string('pluginname', 'local_cveteval'));
 
-    $settings->add('cveval',
+    $settings->add('cveteval',
         new admin_externalpage('competveteval_manage_rotations',
-            new lang_string('competveteval_manage_rotations', 'local_cveval'),
-            $CFG->wwwroot . '/local/cveval/pages/rotation/list.php',
-            array('local/cveval:managerotation'),
+            new lang_string('competveteval_manage_rotations', 'local_cveteval'),
+            $CFG->wwwroot . '/local/cveteval/pages/rotation/list.php',
+            array('local/cveteval:managerotation'),
             !$enabled
         )
     );
-    $settings->add('cveval',
+    $settings->add('cveteval',
         new admin_externalpage('competveteval_manage_evaluation_templates',
-            new lang_string('competveteval_manage_evaluation_templates', 'local_cveval'),
-            $CFG->wwwroot . '/local/cveval/pages/evaluation_template/list.php',
-            array('local/cveval:manageevaluationtemplate'),
+            new lang_string('competveteval_manage_evaluation_templates', 'local_cveteval'),
+            $CFG->wwwroot . '/local/cveteval/pages/evaluation_template/list.php',
+            array('local/cveteval:manageevaluationtemplate'),
             !$enabled
         )
     );
@@ -52,10 +52,10 @@ if ($hassiteconfig) {
     }
     // Create a global Advanced Feature Toggle.
     $enableoption = new admin_setting_configcheckbox('enablecompetveteval',
-        new lang_string('enablecompetveteval', 'local_cveval'),
-        new lang_string('enablecompetveteval', 'local_cveval'),
+        new lang_string('enablecompetveteval', 'local_cveteval'),
+        new lang_string('enablecompetveteval', 'local_cveteval'),
         1);
-    $enableoption->set_updatedcallback('local_competveteval_enable_disable_plugin_callback');
+    $enableoption->set_updatedcallback('local_cveteval_enable_disable_plugin_callback');
     $optionalsubsystems = $ADMIN->locate('optionalsubsystems');
     $optionalsubsystems->add($enableoption);
 }

@@ -17,18 +17,18 @@
 /**
  * Version details.
  *
- * @package   local_cveval
- * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning>
+ * @package   local_cveteval
+ * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2014061106;      // The current module version (Date: YYYYMMDDXX).
+$plugin->version   = 2021020402;      // The current module version (Date: YYYYMMDDXX).
 $plugin->requires  = 2014050800;      // Requires this Moodle version.
 $plugin->maturity  = MATURITY_RC;
 $plugin->release   = '1.0.0'; // No more specific course fields.
-$plugin->component = 'local_cveval';// Full name of the plugin (used for diagnostics).
+$plugin->component = 'local_cveteval';// Full name of the plugin (used for diagnostics).
 $plugin->cron      = 0;
 $plugin->dependencies = [
     'local_cltools' => ANY_VERSION

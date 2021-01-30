@@ -15,21 +15,21 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Renderer for cveval
+ * Renderer for cveteval
  *
- * @package   local_cveval
- * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning>
+ * @package   local_cveteval
+ * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_cveval\output;
+namespace local_cveteval\output;
 
 defined('MOODLE_INTERNAL') || die();
 
 use plugin_renderer_base;
 
 /**
- * Renderer for cveval
+ * Renderer for cveteval
  *
  * @package    local_resourcelibrary
  * @copyright  2020 CALL Learning 2²020 - Laurent David laurent@call-learning.fr

@@ -17,17 +17,17 @@
 /**
  * Rotation entity edit or add form
  *
- * @package   local_cveval
- * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning>
+ * @package   local_cveteval
+ * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_cveval\rotation;
+namespace local_cveteval\rotation;
 
-use local_cveval\form\persistent_list_filter;
-use local_cveval\utils\persistent_list;
-use local_cveval\utils\persistent_navigation;
-use local_cveval\utils\persistent_utils;
+use local_cveteval\form\persistent_list_filter;
+use local_cveteval\utils\persistent_list;
+use local_cveteval\utils\persistent_navigation;
+use local_cveteval\utils\persistent_utils;
 use moodle_url;
 use pix_icon;
 use popup_action;
@@ -39,13 +39,13 @@ require_once($CFG->libdir . '/formslib.php');
 /**
  * Persistent list
  *
- * @package     local_cveval
+ * @package     local_cveteval
  * @copyright   2019 CALL Learning <laurent@call-learning.fr>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class entities_list extends persistent_list {
     /** @var string The fully qualified classname. */
-    protected static $persistentclass = '\\local_cveval\\rotation\\entity';
+    protected static $persistentclass = '\\local_cveteval\\rotation\\entity';
 
     /**
      * List columns
@@ -56,7 +56,7 @@ class entities_list extends persistent_list {
     public static function define_properties() {
         $properties = parent::define_properties();
         $properties['files'] = (object) [
-            'fullname' => get_string('rotation:files', 'local_cveval')
+            'fullname' => get_string('rotation:files', 'local_cveteval')
         ];
         return $properties;
     }
@@ -100,7 +100,7 @@ class entities_list extends persistent_list {
         try {
             $fullname = '';
             $actionhtml = '';
-            $evaluationtemplate = new \local_cveval\evaluation_template\entity($rotation->evaluationtemplateid);
+            $evaluationtemplate = new \local_cveteval\evaluation_template\entity($rotation->evaluationtemplateid);
             if ($evaluationtemplate) {
                 $fullname = $evaluationtemplate->get('fullname');;
                 $url = persistent_navigation::get_view_url(get_class($evaluationtemplate));
@@ -109,7 +109,7 @@ class entities_list extends persistent_list {
                 $actionhtml = $OUTPUT->action_icon(
                     $url,
                     new pix_icon('e/search',
-                        get_string('view', 'local_cveval')),
+                        get_string('view', 'local_cveteval')),
                     $popupaction
                 );
             }
@@ -140,7 +140,7 @@ class entities_list extends persistent_list {
                 $actionhtml = $OUTPUT->action_icon(
                     $url,
                     new pix_icon('e/search',
-                        get_string('view', 'local_cveval')),
+                        get_string('view', 'local_cveteval')),
                     $popupaction
                 );
             }

@@ -17,12 +17,12 @@
 /**
  * Rotation entity
  *
- * @package   local_cveval
- * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning>
+ * @package   local_cveteval
+ * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_cveval\rotation;
+namespace local_cveteval\rotation;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -32,13 +32,13 @@ use external_api;
 use external_function_parameters;
 use external_multiple_structure;
 use external_single_structure;
-use local_cveval\utils\persistent_utils;
+use local_cveteval\utils\persistent_utils;
 
 /**
  * Class rotation
  *
- * @package   local_cveval
- * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning>
+ * @package   local_cveteval
+ * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class external extends external_api {

@@ -17,14 +17,14 @@
 /**
  * Rotation entity edit or add form
  *
- * @package   local_cveval
- * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning>
+ * @package   local_cveteval
+ * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_cveval\rotation;
+namespace local_cveteval\rotation;
 
-use local_cveval\form\persistent_form;
+use local_cveteval\form\persistent_form;
 
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
@@ -33,7 +33,7 @@ require_once($CFG->libdir . '/formslib.php');
 /**
  * Add Form
  *
- * @package     local_cveval
+ * @package     local_cveteval
  * @copyright   2019 CALL Learning <laurent@call-learning.fr>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -50,39 +50,39 @@ class form extends persistent_form {
         return array(
             'title' => (object) [
                 'type' => 'text',
-                'fullname' => get_string('title', 'local_cveval'),
+                'fullname' => get_string('title', 'local_cveteval'),
             ],
             'description' => (object) [
                 'type' => 'editor',
-                'fullname' => get_string('description', 'local_cveval'),
+                'fullname' => get_string('description', 'local_cveteval'),
             ],
             'starttime' => (object) [
                 'type' => 'date_selector',
-                'fullname' => get_string('rotation:starttime', 'local_cveval'),
+                'fullname' => get_string('rotation:starttime', 'local_cveteval'),
             ],
             'endtime' => (object) [
                 'type' => 'date_selector',
-                'fullname' => get_string('rotation:endtime', 'local_cveval'),
+                'fullname' => get_string('rotation:endtime', 'local_cveteval'),
             ],
             'mineval' => (object) [
                 'type' => 'text',
-                'fullname' => get_string('rotation:mineval', 'local_cveval'),
+                'fullname' => get_string('rotation:mineval', 'local_cveteval'),
             ],
             'evaluationtemplateid' => (object) [
-                'fullname' => get_string('rotation:evaluationtemplateid', 'local_cveval'),
+                'fullname' => get_string('rotation:evaluationtemplateid', 'local_cveteval'),
                 'type' => 'entity_selector',
                 'selector_info' => (object) [
-                    'entity_type' => '\\local_cveval\\evaluation_template\\entity',
+                    'entity_type' => '\\local_cveteval\\evaluation_template\\entity',
                     'display_field' => 'name'
                 ]
             ],
             'finalevalscaleid' => (object) [
-                'fullname' => get_string('rotation:finalevalscaleid', 'local_cveval'),
+                'fullname' => get_string('rotation:finalevalscaleid', 'local_cveteval'),
                 'type' => 'select_choice',
                 'choices' => $scales
             ],
             'files' => (object) [
-                'fullname' => get_string('rotation:files', 'local_cveval'),
+                'fullname' => get_string('rotation:files', 'local_cveteval'),
                 'type' => 'file_manager'
             ]
         );
@@ -90,7 +90,7 @@ class form extends persistent_form {
     }
 
     /** @var string The fully qualified classname. */
-    protected static $persistentclass = '\\local_cveval\\rotation\\entity';
+    protected static $persistentclass = '\\local_cveteval\\rotation\\entity';
 
     /** @var array Fields to remove when getting the final data. */
     protected static $fieldstoremove = array('submitbutton', 'files');

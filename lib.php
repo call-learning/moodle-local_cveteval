@@ -21,13 +21,13 @@
  * Provide the ability to manage site pages through blocks.
  *
  * @package   local_cltools
- * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning>
+ * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-function local_competveteval_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = array()) {
+function local_cveteval_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = array()) {
     // Check the contextlevel is as expected - if your plugin is a block, this becomes CONTEXT_BLOCK, etc.
     if ($context->contextlevel != CONTEXT_SYSTEM) {
         return false;
@@ -37,7 +37,7 @@ function local_competveteval_pluginfile($course, $cm, $context, $filearea, $args
     require_login($course, true, $cm);
 
     // Check the relevant capabilities - these may vary depending on the filearea being accessed.
-    if (!has_capability('local/cveval:viewfiles', $context)) {
+    if (!has_capability('local/cveteval:viewfiles', $context)) {
         return false;
     }
 
@@ -57,7 +57,7 @@ function local_competveteval_pluginfile($course, $cm, $context, $filearea, $args
 
     // Retrieve the file from the Files API.
     $fs = get_file_storage();
-    $file = $fs->get_file($context->id, 'local_cveval', $filearea, $itemid, $filepath, $filename);
+    $file = $fs->get_file($context->id, 'local_cveteval', $filearea, $itemid, $filepath, $filename);
     if (!$file) {
         return false; // The file does not exist.
     }
@@ -70,6 +70,6 @@ function local_competveteval_pluginfile($course, $cm, $context, $filearea, $args
 /**
  * Nothing for now
  */
-function local_competveteval_enable_disable_plugin_callback() {
+function local_cveteval_enable_disable_plugin_callback() {
     // Nothing for now.
 }
