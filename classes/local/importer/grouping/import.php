@@ -53,7 +53,7 @@ class import {
                 ),
         );
 
-        $transformer = new \tool_importer\transformer\standard($transformdef);
+        $transformer = new \tool_importer\local\transformer\standard($transformdef);
 
         try {
             $importer = new importer($csvimporter,

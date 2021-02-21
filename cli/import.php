@@ -54,7 +54,7 @@ Import the definitions from a CSV file
         * planning: import the planning (depends on previously imported clinical situation)
         * situation: clinical situation
         * grouping: groups (depends on previously imported planning)
-        * questions: question for evaluation
+        * criteria: criteria for evaluation
     -c : cleanup before importing (empty the related tables before importing again) 
 ";
 

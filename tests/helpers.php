@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+use local_cveteval\local\utils;
 
 /**
  * Test helpers
@@ -22,7 +23,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-function import_sample_fixture($cleanup = false) {
+function import_sample_planning($cleanup = false) {
     global $CFG;
     $basepath = $CFG->dirroot . '/local/cveteval/tests/fixtures/';
     foreach (array(
@@ -45,12 +46,12 @@ function import_sample_fixture($cleanup = false) {
 
 function inport_sample_users() {
     global $CFG;
-    require_once($CFG->libdir.'/csvlib.class.php');
-    require_once($CFG->dirroot.'/user/lib.php');
+    require_once($CFG->libdir . '/csvlib.class.php');
+    require_once($CFG->dirroot . '/user/lib.php');
     $iid = csv_import_reader::get_new_iid('uploaduser');
     $cir = new csv_import_reader($iid, 'uploaduser');
-    $content = file_get_contents( $CFG->dirroot . '/local/cveteval/tests/fixtures/users.csv');
-    $cir->load_csv_content($content,'utf-8', 'comma');
+    $content = file_get_contents($CFG->dirroot . '/local/cveteval/tests/fixtures/users.csv');
+    $cir->load_csv_content($content, 'utf-8', 'comma');
     $cir->init();
     $columns = $cir->get_columns();
     while ($csvrow = $cir->next()) {
@@ -58,15 +59,83 @@ function inport_sample_users() {
         $user->auth = 'manual';
         $user->lang = $CFG->lang;
         $user->mnethostid = $CFG->mnet_localhost_id;
-        foreach($csvrow as $key => $value) {
+        $user->confirmed = true;
+        foreach ($csvrow as $key => $value) {
             $columnname = $columns[$key];
             $user->$columnname = trim($value);
         }
-        if (! ($existinguser = core_user::get_user_by_username($user->username))) {
+        if (!($existinguser = core_user::get_user_by_username($user->username))) {
             user_create_user($user, true, false);
         } else {
-            $user = (object) array_merge((array)$existinguser, (array) $user);
+            $user = (object) array_merge((array) $existinguser, (array) $user);
             user_update_user($user, true, false);
+        }
+    }
+}
+
+/**
+ * Creates a set of test data
+ *
+ * TODO: Optimise queries (redondant loops)
+ *
+ * @throws \core\invalid_persistent_exception
+ * @throws coding_exception
+ * @throws dml_exception
+ */
+function create_random_appraisals($cleanup, $verbose=true) {
+    global $DB;
+
+    $studentsga = $DB->get_records('local_cveteval_group_assign');
+    if ($cleanup) {
+        $DB->delete_records('local_cveteval_appraisal');
+        $DB->delete_records('local_cveteval_appr_crit');
+    }
+    $allcriterias = $DB->get_records_sql("SELECT crit.id as id, crit.label, egrid.evalgridid
+            FROM {local_cveteval_criteria} crit
+            LEFT JOIN {local_cveteval_cevalgrid} egrid ON crit.id = egrid.criteriaid"
+    );
+    foreach (\local_cveteval\local\persistent\situation\entity::get_records() as $clsituation) {
+        $appraisersroles = $DB->get_records('local_cveteval_role', array('clsituationid' => $clsituation->get('id')));
+        foreach ($studentsga as $studentga) {
+            $evalplansid = $DB->get_fieldset_select('local_cveteval_evalplan', 'id',
+                'groupid = :groupid AND clsituationid = :clsituationid',
+                array('groupid' => $studentga->groupid, 'clsituationid' => $clsituation->get('id')));
+            foreach ($evalplansid as $evalplanid) {
+                $appraiserindex = rand(1, count($appraisersroles)) - 1;
+                $appid = array_values($appraisersroles)[$appraiserindex]->userid;
+                $appraisal = new stdClass();
+                $appraisal->studentid = $studentga->studentid;
+                $appraisal->appraiserid = $appid;
+                $appraisal->evalplanid = $evalplanid;
+                $appraisal->context = 'Context of ' . utils::fast_user_fullname($appid) . "{$appid}";
+                $appraisal->contextformat = FORMAT_PLAIN;
+                $appraisal->comment = 'Comment made by ' . utils::fast_user_fullname($appid) . "{$appid}";
+                $appraisal->commentformat = FORMAT_PLAIN;
+                $eap = new \local_cveteval\local\persistent\appraisal\entity(0, $appraisal);
+                $eap->create();
+                if ($verbose) {
+                    cli_writeln('Creating appraisal plan for ' . utils::fast_user_fullname($appid) . ' in situation ' .
+                        $clsituation->get('title'));
+                }
+                foreach ($allcriterias as $crit) {
+                    if ($crit->evalgridid != $clsituation->get('evalgridid')) {
+                        continue;
+                    }
+                    $critid = $crit->id;
+                    $appraisalcrit = new stdClass();
+                    $appraisalcrit->criteriaid = $critid;
+                    $appraisalcrit->appraisalid = $eap->get('id');
+                    $appraisalcrit->grade = rand(0, 5);
+                    $appraisalcrit->comment = rand(1,10)>5? '': 'Comment made by ' .  utils::fast_user_fullname($appid) . "{$appid}";
+                    $appraisalcrit->commentformat = FORMAT_PLAIN;
+                    $eappraisalcrit = new \local_cveteval\local\persistent\appraisal_criterion\entity(0, $appraisalcrit);
+                    if ($verbose) {
+                        cli_writeln('Creating criteria appraisal plan for ' . utils::fast_user_fullname($appid) . ' criteria ' .
+                            $crit->label);
+                    }
+                    $eappraisalcrit->create();
+                }
+            }
         }
     }
 }

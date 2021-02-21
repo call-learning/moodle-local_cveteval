@@ -15,26 +15,26 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Question template exporter
+ * Criteria template list
  *
  * @package   local_cveteval
- * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
+ * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_cveteval\question_template;
-
+namespace local_cveteval\local\persistent\criteria;
 defined('MOODLE_INTERNAL') || die();
-use local_cveteval\utils\persistent_exporter;
-use renderer_base;
 
-class exporter extends persistent_exporter {
-    /**
-     * Returns the specific class the persistent should be an instance of.
-     *
-     * @return string
-     */
-    protected static function define_class() {
-        return entity::class;
-    }
+use local_cltools\local\crud\entity_table;
+
+/**
+ * Criteria template list
+ *
+ * @package   local_cveteval
+ * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
+ * @license
+ */
+class table extends entity_table {
+    /** @var string The fully qualified classname. */
+    protected static $persistentclass = '\\local_cveteval\\local\\persistent\\criteria\\entity';
 }

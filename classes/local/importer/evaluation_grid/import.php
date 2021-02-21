@@ -24,7 +24,7 @@
 namespace local_cveteval\local\importer\evaluation_grid;
 defined('MOODLE_INTERNAL') || die();
 
-use local_cveteval\local\persistent\question_template\entity as question_template_entity;
+use local_cveteval\local\persistent\criteria\entity as criteria_entity;
 use tool_importer\importer;
 use \local_cveteval\local\persistent\evaluation_grid\entity as evaluation_grid_entity;
 
@@ -51,21 +51,21 @@ class import {
                 array(
                     array('to' => 'evalgridid', 'transformcallback' => __NAMESPACE__ . '\trimmed')
                 ),
-            'Question Id' =>
+            'Criteria Id' =>
                 array(
                     array('to' => 'idnumber', 'transformcallback' => __NAMESPACE__ . '\trimmed')
                 ),
-            'Question Parent Id' =>
+            'Criteria Parent Id' =>
                 array(
                     array('to' => 'parentidnumber', 'transformcallback' => __NAMESPACE__ . '\trimmed')
                 ),
-            'Question Label' =>
+            'Criteria Label' =>
                 array(
                     array('to' => 'label', 'transformcallback' => __NAMESPACE__ . '\trimmed')
                 )
         );
 
-        $transformer = new \tool_importer\transformer\standard($transformdef);
+        $transformer = new \tool_importer\local\transformer\standard($transformdef);
 
         try {
             $importer = new importer($csvimporter,
@@ -97,7 +97,7 @@ class import {
      * Cleanup previously imported evaluation grid
      */
     public static function cleanup() {
-        foreach(question_template_entity::get_records() as $qa) {
+        foreach(criteria_entity::get_records() as $qa) {
             $qa->delete();
         }
         foreach (evaluation_grid_entity::get_records() as $ga) {

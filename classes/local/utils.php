@@ -15,26 +15,32 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Question template list
+ * Various utilities
  *
  * @package   local_cveteval
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_cveteval\local\persistent\question_template;
+namespace local_cveteval\local;
+use core_user;
+
 defined('MOODLE_INTERNAL') || die();
 
-use local_cltools\local\crud\entity_table;
 
-/**
- * Question template list
- *
- * @package   local_cveteval
- * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
- * @license
- */
-class table extends entity_table {
-    /** @var string The fully qualified classname. */
-    protected static $persistentclass = '\\local_cveteval\\local\\persistent\\question_template\\entity';
+class utils {
+    /**
+     * To get usernames in a loop faster
+     *
+     * @param $userid
+     * @return \lang_string|string
+     * @throws \dml_exception
+     */
+    public static function fast_user_fullname($userid) {
+        static $usernames = [];
+        if (empty($usernames[$userid])) {
+            $usernames[$userid] = fullname(core_user::get_user($userid));
+        }
+        return $usernames[$userid];
+    }
 }

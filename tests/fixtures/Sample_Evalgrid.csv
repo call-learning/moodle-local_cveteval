@@ -1,4 +1,4 @@
-Evaluation Grid Id,Question Id,Question Parent Id,Question Label
+Evaluation Grid Id,Criteria Id,Criteria Parent Id,Criteria Label
 GRID01,Q001,,Savoir être
 GRID01,Q002,Q001,Respect des horaires de travail
 GRID01,Q003,Q001,"Respect des interlocuteurs (clients, personnels, encadrants, pairs, ...)"
@@ -7,13 +7,13 @@ GRID01,Q005,Q001,"Respect des consignes vestimentaires, d’hygiène et de de bi
 GRID01,Q006,Q001,Respect du matériel mis à disposition
 GRID01,Q007,,Motivation et implication personnelle
 GRID01,Q008,Q007,"Motivation à apprendre (cherche à approfondir et à discuter des cas, à améliorer ses compétences techniques)"
-GRID01,Q009,Q008,Capacité à prendre des initiatives et à être pro-actif
-GRID01,Q010,Q009,Capacité à s’impliquer dans le suivi des animaux pendant l’ensemble du parcours de soin
+GRID01,Q009,Q007,Capacité à prendre des initiatives et à être pro-actif
+GRID01,Q010,Q007,Capacité à s’impliquer dans le suivi des animaux pendant l’ensemble du parcours de soin
 GRID01,Q011,,Qualités d’organisation et de travail en équipe
 GRID01,Q012,Q011,Capacité à s’organiser et le cas échéant à organiser le travail collectif
 GRID01,Q013,Q011,Capacité à travailler en équipe et à s’impliquer dans un collectif
 GRID01,Q014,Q011,"Capacité à prendre des décisions, à les faire valider et à les assumer (sens des responsabilités)"
-GRID01,Q015,Q014,Capacité à demander de l’aide en cas de besoin
+GRID01,Q015,Q011,Capacité à demander de l’aide en cas de besoin
 GRID01,Q016,,Compétences liées à la mobilisation des acquis
 GRID01,Q017,Q016,Capacité à mobiliser les notions théoriques en situation clinique
 GRID01,Q018,Q016,Capacité à utiliser les ressources documentaires de façon raisonnée et rationnelle

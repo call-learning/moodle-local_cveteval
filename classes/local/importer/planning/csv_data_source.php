@@ -27,7 +27,7 @@ use tool_importer\importer_exception;
 defined('MOODLE_INTERNAL') || die();
 
 
-class csv_data_source extends \tool_importer\source\csv_data_source {
+class csv_data_source extends \tool_importer\local\source\csv_data_source {
 
     /**
      * A bit of a specific implementation for variable number of columns

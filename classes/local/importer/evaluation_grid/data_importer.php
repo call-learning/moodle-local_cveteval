@@ -26,7 +26,7 @@ namespace local_cveteval\local\importer\evaluation_grid;
 defined('MOODLE_INTERNAL') || die();
 
 use \local_cveteval\local\persistent\evaluation_grid\entity as evaluation_grid_entity;
-use \local_cveteval\local\persistent\question_template\entity as question_template_entity;
+use \local_cveteval\local\persistent\criteria\entity as criteria_entity;
 use tool_importer\field_types;
 use tool_importer\importer_exception;
 
@@ -70,24 +70,24 @@ class data_importer extends \tool_importer\data_importer {
             $evalgrid->create();
         }
 
-        $qtplrecord = new \stdClass();
-        $qtplrecord->label = $row['label'];
-        $qtplrecord->idnumber = $row['idnumber'];
-        $parentquestion =  question_template_entity::get_record(['idnumber' => $row['parentidnumber']]);
-        $parentid = $parentquestion ? $parentquestion->get('id') : 0;
-        $qtplrecord->parentid = $parentid;
-        $qtplrecord->sort = question_template_entity::count_records(['parentid' => $parentid ]) + 1;
-        $qtpl = new question_template_entity(0, $qtplrecord);
-        $qtpl->create();
+        $criteriarecord = new \stdClass();
+        $criteriarecord->label = $row['label'];
+        $criteriarecord->idnumber = $row['idnumber'];
+        $parentcriteria =  criteria_entity::get_record(['idnumber' => $row['parentidnumber']]);
+        $parentid = $parentcriteria ? $parentcriteria->get('id') : 0;
+        $criteriarecord->parentid = $parentid;
+        $criteriarecord->sort = criteria_entity::count_records(['parentid' => $parentid ]) + 1;
+        $criteria = new criteria_entity(0, $criteriarecord);
+        $criteria->create();
 
         // Here we do without persistent class as it is just a link table.
-        $qevalgridrecord = new \stdClass();
-        $qevalgridrecord->qtplid = $qtpl->get('id');
-        $qevalgridrecord->evalgridid = $evalgrid->get('id');
-        $qevalgridrecord->sort = $DB->count_records('local_cveteval_qevalgrid', array('evalgridid'=> $qevalgridrecord->evalgridid)) + 1;
-        $DB->insert_record('local_cveteval_qevalgrid', $qevalgridrecord);
+        $cevalgridrecord = new \stdClass();
+        $cevalgridrecord->criteriaid = $criteria->get('id');
+        $cevalgridrecord->evalgridid = $evalgrid->get('id');
+        $cevalgridrecord->sort = $DB->count_records('local_cveteval_cevalgrid', array('evalgridid'=> $cevalgridrecord->evalgridid)) + 1;
+        $DB->insert_record('local_cveteval_cevalgrid', $cevalgridrecord);
 
-        return $qtplrecord;
+        return $criteriarecord;
     }
 
     /**

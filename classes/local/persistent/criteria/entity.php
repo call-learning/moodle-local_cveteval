@@ -15,62 +15,47 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Question template entity
+ * Criteria template
  *
  * @package   local_cveteval
- * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
+ * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_cveteval\question_template;
-
+namespace local_cveteval\local\persistent\criteria;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Class rotation
+ * Criteria template entity
  *
  * @package   local_cveteval
- * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
+ * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class entity extends \core\persistent {
-    const TABLE = 'local_cveteval_qtpl';
-
-    const QUESTION_TYPE_FREE_TEXT = 0;
-    const QUESTION_TYPE_LIKERT = 1;
+    const TABLE = 'local_cveteval_criteria';
 
     /**
      * Usual properties definition for a persistent
      *
      * @return array|array[]
+     * @throws \coding_exception
      */
     protected static function define_properties() {
         return array(
-            'type' => array(
-                'type' => PARAM_INT,
-                'default' => '',
-            ),
             'label' => array(
-                'type' => PARAM_ALPHANUMEXT,
-                'default' => '',
+                'type' => PARAM_TEXT,
+                'default' => ''
             ),
-            'path' => array(
+            'idnumber' => array(
                 'type' => PARAM_ALPHANUMEXT,
-                'default' => '',
+            ),
+            'parentid' => array(
+                'type' => PARAM_INT,
+            ),
+            'sort' => array(
+                'type' => PARAM_INT,
             )
         );
-    }
-
-    /**
-     * Question type
-     *
-     * @return array
-     * @throws \coding_exception
-     */
-    public static function get_question_types() {
-        return  [
-            self::QUESTION_TYPE_FREE_TEXT => get_string('qtype:freetext', 'local_cveteval'),
-            self::QUESTION_TYPE_LIKERT => get_string('qtype:likert', 'local_cveteval')
-        ];
     }
 }

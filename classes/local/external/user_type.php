@@ -22,15 +22,21 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_cveteval;
+namespace local_cveteval\local\external;
 defined('MOODLE_INTERNAL') || die();
 
 use external_function_parameters;
+use external_multiple_structure;
 use external_single_structure;
 use external_value;
 
+use \local_cveteval\local\persistent\role\entity as role_entity;
+use \local_cveteval\local\persistent\appraisal\entity as appraisal_entity;
+use \local_cveteval\local\persistent\appraisal_criterion\entity as app_crit_entity;
+use local_cveteval\local\persistent\situation\entity as situation_entity;
+use stdClass;
 
-class external extends \external_api {
+class user_type extends \external_api {
     /**
      * Returns description of method parameters
      *
@@ -56,27 +62,26 @@ class external extends \external_api {
             )
         );
     }
+
     /**
      * Return the current role for the user
      */
     public static function get_user_type($userid) {
-        $params = self::validate_parameters(self::get_user_type_parameters(), array('userid'=>$userid));
+        $params = self::validate_parameters(self::get_user_type_parameters(), array('userid' => $userid));
 
-        $roleid =  \local_cveteval\local\role\entity::ROLE_STUDENT_ID;
+        $roleid = role_entity::ROLE_STUDENT_ID;
         // Check that user exists first, if not it will be a student role.
-        if ($user =\core_user::get_user($userid)) {
-            $isappraiser = local\role\entity::record_exists_select(
-                "userid = :userid AND type = :type", array('userid'=> $userid,
-                    'type' => \local_cveteval\local\role\entity::ROLE_APPRAISER_ID));
+        if ($user = \core_user::get_user($userid)) {
+            $isappraiser = role_entity::record_exists_select(
+                "userid = :userid AND type = :type", array('userid' => $userid,
+                'type' => role_entity::ROLE_APPRAISER_ID));
             if ($isappraiser) {
-                $roleid = \local_cveteval\local\role\entity::ROLE_APPRAISER_ID;
+                $roleid = role_entity::ROLE_APPRAISER_ID;
             }
         }
 
-        return (object)['type' =>
-            \local_cveteval\local\role\entity::ROLE_SHORTNAMES[
-                $roleid
-            ]
+        return (object) ['type' =>
+            role_entity::ROLE_SHORTNAMES[$roleid]
         ];
     }
 }

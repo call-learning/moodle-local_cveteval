@@ -22,23 +22,25 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace local_cveteval\local\importer\situation;
+use tool_importer\field_types;
+
 defined('MOODLE_INTERNAL') || die();
 
-class csv_data_source extends \tool_importer\source\csv_data_source {
+class csv_data_source extends \tool_importer\local\source\csv_data_source {
     /**
      *
      * @return array
      */
     public function get_fields_definition() {
         return array(
-            'Nom' => \tool_importer\field_types::TYPE_TEXT,
-            'Description' => \tool_importer\field_types::TYPE_TEXT,
-            'Nom court' => \tool_importer\field_types::TYPE_TEXT,
-            'Responsable' => \tool_importer\field_types::TYPE_TEXT,
-            'Evaluateurs' => \tool_importer\field_types::TYPE_TEXT,
-            'Observateurs' => \tool_importer\field_types::TYPE_TEXT,
-            'Appreciations' => \tool_importer\field_types::TYPE_INT,
-            'GrilleEval' => \tool_importer\field_types::TYPE_TEXT
+            'Nom' => field_types::TYPE_TEXT,
+            'Description' => field_types::TYPE_TEXT,
+            'Nom court' => field_types::TYPE_TEXT,
+            'Responsable' => field_types::TYPE_TEXT,
+            'Evaluateurs' => field_types::TYPE_TEXT,
+            'Observateurs' => field_types::TYPE_TEXT,
+            'Appreciations' => field_types::TYPE_INT,
+            'GrilleEval' => field_types::TYPE_TEXT
         );
     }
 }

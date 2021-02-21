@@ -36,6 +36,16 @@ class entity extends \core\persistent {
     const TABLE = 'local_cveteval_clsituation';
 
     /**
+     * Appraiser
+     */
+    const SITUATION_TYPE_APPRAISER='appraiser';
+
+    /**
+     * Student
+     */
+    const SITUATION_TYPE_STUDENT='student';
+
+    /**
      * Usual properties definition for a persistent
      *
      * @return array|array[]
@@ -69,3 +79,4 @@ class entity extends \core\persistent {
         );
     }
 }
+

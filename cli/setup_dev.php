@@ -34,10 +34,14 @@ require_once($CFG->libdir . '/clilib.php');
 list($options, $unrecognized) = cli_get_params([
     'help' => false,
     'cleanup' => false,
-    'users' => false
+    'users' => false,
+    'planning' => false,
+    'appraisals' => false
 ], [
     'c' => 'cleanup',
-    'u' => 'users'
+    'u' => 'users',
+    'a' => 'appraisals',
+    'p' => 'planning'
 ]);
 
 $help =
@@ -45,7 +49,9 @@ $help =
 
 Import the definitions from the fixtures CSV file
     -c : cleanup before importing (empty the related tables before importing again)
+    -p : import planning, evalgrid, situations
     -u : user importation (add users)  
+    -a : add appraisals
 ";
 
 if ($unrecognized) {
@@ -61,6 +67,18 @@ if ($options['help']) {
 $cleanup = !empty($options['cleanup']) && $options['cleanup'];
 require_once($CFG->dirroot . '/local/cveteval/tests/helpers.php');
 if (!empty($options['users']) && $options['users']) {
+    cli_writeln('Import users...');
     inport_sample_users();
+    cli_writeln('Users imported...');
 }
-import_sample_fixture($cleanup);
+if (!empty($options['planning']) && $options['planning']) {
+    cli_writeln('Import planning...');
+    import_sample_planning($cleanup);
+    cli_writeln('Planning imported...');
+}
+
+if (!empty($options['appraisals']) && $options['appraisals']) {
+    cli_writeln('Import appraisals...');
+    create_random_appraisals($cleanup);
+    cli_writeln('Appraisals created...');
+}

@@ -15,48 +15,27 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Question template entry form
+ * Criteria template exporter
  *
  * @package   local_cveteval
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_cveteval\local\persistent\question_template;
-
-use local_cltools\local\crud\form\entity_form;
-
+namespace local_cveteval\local\persistent\criteria;
 defined('MOODLE_INTERNAL') || die();
-global $CFG;
-require_once($CFG->libdir . '/formslib.php');
+
+use local_cltools\local\crud\entity_exporter;
 
 /**
- * Question template entry form
+ * Class exporter
+ *
+ * Criteria template exporter
  *
  * @package   local_cveteval
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class form extends entity_form {
-    /**
-     * Form property in order to display the right widget for the form.
-     *
-     * @return array|array[]
-     * @throws \coding_exception
-     */
-    protected static function define_properties() {
-        return array(
-            'name' => (object) [
-                'type' => 'text'
-            ],
-            'idnumber' => [
-                'type' => 'text'
-            ],
-            'parentid' => [
-            'type' => 'nimber'
-            ]
-        );
-    }
-    /** @var string The fully qualified classname. */
-    protected static $persistentclass = '\\local_cveteval\\local\\persistent\\question_template\\entity';
+class exporter extends entity_exporter {
+    protected static $persistentclass = '\\local_cveteval\\local\\persistent\\criteria\\entity';
 }

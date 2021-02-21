@@ -15,25 +15,26 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Question template
+ * Appraisal Criterion
  *
  * @package   local_cveteval
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+namespace local_cveteval\local\persistent\appraisal_criterion;
 
-namespace local_cveteval\local\persistent\question_template;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Question template entity
+ * Appraisal Criterion
  *
  * @package   local_cveteval
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class entity extends \core\persistent {
-    const TABLE = 'local_cveteval_qtpl';
+
+    const TABLE = 'local_cveteval_appr_crit';
 
     /**
      * Usual properties definition for a persistent
@@ -43,19 +44,26 @@ class entity extends \core\persistent {
      */
     protected static function define_properties() {
         return array(
-            'label' => array(
+            'criteriaid' => array(
+                'type' => PARAM_INT,
+                'default' => ''
+            ),
+            'appraisalid' => array(
+                'type' => PARAM_INT,
+                'default' => ''
+            ),
+            'grade' => array(
+                'type' => PARAM_INT,
+                'default' => ''
+            ),
+            'comment' => array(
                 'type' => PARAM_TEXT,
                 'default' => ''
             ),
-            'idnumber' => array(
-                'type' => PARAM_ALPHANUMEXT,
-            ),
-            'parentid' => array(
+            'commentformat' => array(
                 'type' => PARAM_INT,
+                'default' => FORMAT_PLAIN
             ),
-            'sort' => array(
-                'type' => PARAM_INT,
-            )
         );
     }
 }

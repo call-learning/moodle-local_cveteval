@@ -27,7 +27,7 @@ use tool_importer\importer_exception;
 defined('MOODLE_INTERNAL') || die();
 
 
-class csv_data_source extends \tool_importer\source\csv_data_source {
+class csv_data_source extends \tool_importer\local\source\csv_data_source {
 
     /**
      * A bit of a specific implementation for variable number of columns
@@ -38,9 +38,9 @@ class csv_data_source extends \tool_importer\source\csv_data_source {
     public function get_fields_definition() {
         return [
             'Evaluation Grid Id' => \tool_importer\field_types::TYPE_TEXT,
-            'Question Id' => \tool_importer\field_types::TYPE_TEXT,
-            'Question Parent Id' => \tool_importer\field_types::TYPE_TEXT,
-            'Question Label' => \tool_importer\field_types::TYPE_TEXT,
+            'Criteria Id' => \tool_importer\field_types::TYPE_TEXT,
+            'Criteria Parent Id' => \tool_importer\field_types::TYPE_TEXT,
+            'Criteria Label' => \tool_importer\field_types::TYPE_TEXT,
         ];
     }
 }

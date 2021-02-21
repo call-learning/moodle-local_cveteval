@@ -15,26 +15,27 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Rotation entity
+ * Appraisal
  *
  * @package   local_cveteval
- * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
+ * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_cveteval\rotation;
+namespace local_cveteval\local\persistent\appraisal;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Class rotation
+ * Appraisal entity
  *
  * @package   local_cveteval
- * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
+ * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class entity extends \core\persistent {
-    const TABLE = 'local_cveteval_rotation';
+
+    const TABLE = 'local_cveteval_appraisal';
 
     /**
      * Usual properties definition for a persistent
@@ -43,43 +44,35 @@ class entity extends \core\persistent {
      * @throws \coding_exception
      */
     protected static function define_properties() {
-        $now = time();
         return array(
-            'title' => array(
-                'type' => PARAM_ALPHANUMEXT,
-                'default' => '',
-            ),
-            'description' => array(
-                'type' => PARAM_RAW,
-                'default' => '',
-            ),
-            'descriptionformat' => array(
+            'studentid' => array(
                 'type' => PARAM_INT,
-                'default' => FORMAT_HTML,
+                'default' => ''
             ),
-            'starttime' => array(
+            'appraiserid' => array(
                 'type' => PARAM_INT,
-                'default' => $now,
+                'default' => ''
             ),
-            'endtime' => array(
+            'evalplanid' => array(
                 'type' => PARAM_INT,
-                'default' => $now,
+                'default' => ''
             ),
-            'mineval' => array(
+            'context' => array(
+                'type' => PARAM_TEXT,
+                'default' => ''
+            ),
+            'contextformat' => array(
                 'type' => PARAM_INT,
-                'default' => 1,
+                'default' => FORMAT_PLAIN
             ),
-            'evaluationtemplateid' => array(
+            'comment' => array(
+                'type' => PARAM_TEXT,
+                'default' => ''
+            ),
+            'commentformat' => array(
                 'type' => PARAM_INT,
+                'default' => FORMAT_PLAIN
             ),
-            'finalevalscaleid' => array(
-                'type' => PARAM_INT
-            )
         );
-    }
-
-    public function get_related_evaluation_template() {
-        $evaluationtemplateid = $this->get('evaluationtemplateid');
-        return \local_cveteval\evaluation_template\entity::get_record(array('id' => $evaluationtemplateid));
     }
 }

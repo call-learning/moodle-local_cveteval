@@ -15,44 +15,48 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Question template entity edit or add form
+ * Criteria template entry form
  *
  * @package   local_cveteval
- * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
+ * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_cveteval\question_template;
+namespace local_cveteval\local\persistent\criteria;
 
-use local_cveteval\utils\persistent_list;
+use local_cltools\local\crud\form\entity_form;
 
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->libdir . '/formslib.php');
 
 /**
- * Add Form
+ * Criteria template entry form
  *
- * @package     local_cveteval
- * @copyright   2019 CALL Learning <laurent@call-learning.fr>
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   local_cveteval
+ * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class entities_list extends persistent_list {
-    protected static $persistentclass = '\\local_cveteval\\question_template\\entity';
-
+class form extends entity_form {
     /**
-     * List columns
+     * Form property in order to display the right widget for the form.
      *
      * @return array|array[]
      * @throws \coding_exception
      */
-    public static function define_properties() {
-        $props = array(
-            'label' => (object) array(
-                'fullname' => get_string('name', 'local_cveteval'),
-            ),
+    protected static function define_properties() {
+        return array(
+            'name' => (object) [
+                'type' => 'text'
+            ],
+            'idnumber' => [
+                'type' => 'text'
+            ],
+            'parentid' => [
+            'type' => 'nimber'
+            ]
         );
-        self::add_all_definition_from_persistent($props);
-        return $props;
     }
+    /** @var string The fully qualified classname. */
+    protected static $persistentclass = '\\local_cveteval\\local\\persistent\\criteria\\entity';
 }
