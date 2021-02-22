@@ -48,6 +48,7 @@ class entity extends \core\persistent {
             'studentid' => array(
                 'type' => PARAM_INT,
                 'default' => ''
+
             ),
             'appraiserid' => array(
                 'type' => PARAM_INT,

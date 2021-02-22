@@ -180,48 +180,7 @@ class appraisals extends \external_api {
      */
     public static function get_user_appraisals_returns() {
         return new external_multiple_structure(
-            new external_single_structure(
-                array(
-                    'id' => new external_value(PARAM_INT, 'id of the appraisal if it already exists', VALUE_OPTIONAL, 0),
-                    'situationid' => new external_value(PARAM_INT, 'id of the situation'),
-                    'situationtitle' => new external_value(PARAM_TEXT, 'id of the situation'),
-                    'appraiserid' => new external_value(PARAM_INT, 'id of the appraiser'),
-                    'type' => new external_value(PARAM_INT, '1=appraiser, 2=evaluator'),
-                    'appraisername' => new external_value(PARAM_TEXT, 'fullname of the appraiser', VALUE_OPTIONAL, ""),
-                    'studentid' => new external_value(PARAM_INT, 'id of the student'),
-                    'studentname' => new external_value(PARAM_TEXT, 'fullname of the appraiser'),
-                    'timemodified' => new external_value(PARAM_INT, 'last modification time being creation or modification'),
-                    'context' => new external_value(PARAM_TEXT, 'context for appraisal', VALUE_OPTIONAL, ""),
-                    'comment' => new external_value(PARAM_TEXT, 'comment for appraisal', VALUE_OPTIONAL, ""),
-                    'criteria' => new external_multiple_structure(
-                        new external_single_structure(
-                            array(
-                                'id' => new external_value(PARAM_INT,
-                                    'id of the appraisal criteria (see local_cveteval_appr_crit)'),
-                                'criterionid' => new external_value(PARAM_INT, 'id of the criterion'),
-                                'label' => new external_value(PARAM_TEXT, 'label for the criterion'),
-                                'grade' => new external_value(PARAM_INT, 'grade for the criterion'),
-                                'comment' => new external_value(PARAM_TEXT, 'comment for criterion', VALUE_OPTIONAL, ""),
-                                'timemodified' => new external_value(PARAM_INT, 'last modification time being creation or modification'),
-                                'subcriteria' => new external_multiple_structure(
-                                    new external_single_structure(
-                                        array(
-                                            'id' => new external_value(PARAM_INT,
-                                                'id of the appraisal criteria (see local_cveteval_appr_crit)'),
-                                            'criterionid' => new external_value(PARAM_INT, 'id of the criterion'),
-                                            'label' => new external_value(PARAM_TEXT, 'label for the criterion'),
-                                            'grade' => new external_value(PARAM_INT, 'grade for the criterion'),
-                                            'timemodified' => new external_value(PARAM_INT, 'last modification time being creation or modification'),
-                                        )
-                                    ),
-                                    '',
-                                    VALUE_OPTIONAL
-                                )
-                            )
-                        )
-                    ),
-                )
-            )
+            static::get_appraisal_returns()
         );
     }
 
@@ -261,18 +220,126 @@ class appraisals extends \external_api {
                 unset($appraisals[$appr->id]);
                 continue; // Appraisal should always have a related situation id.
             }
-            $appr->studentname = fullname(\core_user::get_user($appr->studentid));
-            $appr->appraisername = fullname(\core_user::get_user($appr->appraiserid));
-            $appr->context = format_text($appr->context, $appr->contextformat);
-            unset($appr->contextformat);
-            $appr->comment = format_text($appr->comment, $appr->commentformat);
-            unset($appr->commentformat);
-            $type = $DB->get_field('local_cveteval_role', 'type',
-                array('clsituationid' => $appr->situationid, 'userid' => $appr->appraiserid)
-            );
-            $appr->type = $type ? (int) $type : role_entity::ROLE_APPRAISER_ID;
-            $allapprcriteria = $DB->get_records_sql(
-                "SELECT apc.id, apc.criteriaid, apc.grade, apc.comment, apc.commentformat,
+            static::set_appraisal_criteria($appr);
+        }
+        return $appraisals;
+    }
+
+    /**
+     * Returns description of method parameters
+     *
+     * @return external_function_parameters
+     */
+    public static function get_appraisal_parameters() {
+        return new external_function_parameters(
+            array(
+                'appraisalid' => new external_value(PARAM_INT, 'id of the appraisal'),
+            )
+        );
+    }
+
+    /**
+     * Returns description of method parameters
+     *
+     * @return external_single_structure
+     */
+    public static function get_appraisal_returns() {
+        return new external_single_structure(
+            array(
+                'id' => new external_value(PARAM_INT, 'id of the appraisal if it already exists', VALUE_OPTIONAL, 0),
+                'situationid' => new external_value(PARAM_INT, 'id of the situation'),
+                'situationtitle' => new external_value(PARAM_TEXT, 'id of the situation'),
+                'appraiserid' => new external_value(PARAM_INT, 'id of the appraiser'),
+                'type' => new external_value(PARAM_INT, '1=appraiser, 2=evaluator'),
+                'appraisername' => new external_value(PARAM_TEXT, 'fullname of the appraiser', VALUE_OPTIONAL, ""),
+                'studentid' => new external_value(PARAM_INT, 'id of the student'),
+                'studentname' => new external_value(PARAM_TEXT, 'fullname of the appraiser'),
+                'timemodified' => new external_value(PARAM_INT, 'last modification time being creation or modification'),
+                'context' => new external_value(PARAM_TEXT, 'context for appraisal', VALUE_OPTIONAL, ""),
+                'comment' => new external_value(PARAM_TEXT, 'comment for appraisal', VALUE_OPTIONAL, ""),
+                'criteria' => new external_multiple_structure(
+                    new external_single_structure(
+                        array(
+                            'id' => new external_value(PARAM_INT,
+                                'id of the appraisal criteria (see local_cveteval_appr_crit)'),
+                            'criterionid' => new external_value(PARAM_INT, 'id of the criterion'),
+                            'label' => new external_value(PARAM_TEXT, 'label for the criterion'),
+                            'grade' => new external_value(PARAM_INT, 'grade for the criterion'),
+                            'comment' => new external_value(PARAM_TEXT, 'comment for criterion', VALUE_OPTIONAL, ""),
+                            'timemodified' => new external_value(PARAM_INT,
+                                'last modification time being creation or modification'),
+                            'subcriteria' => new external_multiple_structure(
+                                new external_single_structure(
+                                    array(
+                                        'id' => new external_value(PARAM_INT,
+                                            'id of the appraisal criteria (see local_cveteval_appr_crit)'),
+                                        'criterionid' => new external_value(PARAM_INT, 'id of the criterion'),
+                                        'label' => new external_value(PARAM_TEXT, 'label for the criterion'),
+                                        'grade' => new external_value(PARAM_INT, 'grade for the criterion'),
+                                        'timemodified' => new external_value(PARAM_INT,
+                                            'last modification time being creation or modification'),
+                                    )
+                                ),
+                                '',
+                                VALUE_OPTIONAL
+                            )
+                        )
+                    )
+                ),
+            )
+        );
+    }
+
+    /**
+     * Return the current role for the user
+     */
+    public static function get_appraisal($appraisalid) {
+        global $DB;
+        $params = self::validate_parameters(self::get_appraisal_parameters(), array('appraisalid' => $appraisalid));
+
+        // Get appraisal done for this user either as a student or as an appraiser
+
+        // First all situation as student
+        $sql = "SELECT 
+            appraisal.id, 
+            appraisal.studentid,
+            appraisal.appraiserid,
+            appraisal.evalplanid,
+            appraisal.context,
+            appraisal.contextformat,
+            appraisal.comment,
+            appraisal.commentformat,
+            plan.clsituationid as situationid,
+            situation.title as situationtitle,
+            plan.starttime, 
+            plan.endtime,
+            COALESCE(appraisal.timemodified, appraisal.timecreated) as timemodified
+            FROM {local_cveteval_appraisal} appraisal 
+            LEFT JOIN {local_cveteval_evalplan} plan ON plan.id = appraisal.evalplanid
+            LEFT JOIN {local_cveteval_clsituation} situation ON situation.id = plan.clsituationid
+            WHERE appraisal.id = :appraisalid";
+
+        $appraisal = $DB->get_record_sql($sql, array('appraisalid' => $appraisalid));
+
+        static::set_appraisal_criteria($appraisal);
+
+        return $appraisal;
+    }
+
+    protected static function set_appraisal_criteria(&$appr) {
+        global $DB;
+        $appr->studentname = fullname(\core_user::get_user($appr->studentid));
+        $appr->appraisername = fullname(\core_user::get_user($appr->appraiserid));
+        $appr->context = format_text($appr->context, $appr->contextformat);
+        unset($appr->contextformat);
+        $appr->comment = format_text($appr->comment, $appr->commentformat);
+        unset($appr->commentformat);
+        $type = $DB->get_field('local_cveteval_role', 'type',
+            array('clsituationid' => $appr->situationid, 'userid' => $appr->appraiserid)
+        );
+        $appr->type = $type ? (int) $type : role_entity::ROLE_APPRAISER_ID;
+        $allapprcriteria = $DB->get_records_sql(
+            "SELECT apc.id, apc.criteriaid, apc.grade, apc.comment, apc.commentformat,
                     crit.id AS critid,
                     crit.parentid AS cparentid,
                     crit.sort AS csort,
@@ -283,36 +350,34 @@ class appraisals extends \external_api {
                     WHERE apc.appraisalid =:appraisalid
                     ORDER BY cparentid, csort ASC
                     ",
-                array('appraisalid' => $appr->id)
-            );
-            $rootcriteria = [];
-            foreach ($allapprcriteria as $cr) {
-                if (empty($cr->cparentid)) {
-                    $cr->subcriteria = [];
-                    $rootcriteria[$cr->critid] = (object) [
+            array('appraisalid' => $appr->id)
+        );
+        $rootcriteria = [];
+        foreach ($allapprcriteria as $cr) {
+            if (empty($cr->cparentid)) {
+                $cr->subcriteria = [];
+                $rootcriteria[$cr->critid] = (object) [
+                    'id' => (int) $cr->critid,
+                    'criterionid' => (int) $cr->crid,
+                    'grade' => (int) $cr->grade,
+                    'label' => $cr->label,
+                    'comment' => format_text($cr->comment, $cr->commentformat),
+                    'timemodified' => $cr->timemodified,
+                    'subcriteria' => []
+                ];
+            } else {
+                if (!empty($rootcriteria[$cr->cparentid])) {
+                    $rootcriteria[$cr->cparentid]->subcriteria[] = (object) [
                         'id' => (int) $cr->critid,
                         'criterionid' => (int) $cr->crid,
                         'grade' => (int) $cr->grade,
                         'label' => $cr->label,
-                        'comment' => format_text($cr->comment, $cr->commentformat),
-                        'timemodified' => $cr->timemodified,
-                        'subcriteria' => []
+                        'timemodified' => $cr->timemodified
                     ];
-                } else {
-                    if (!empty($rootcriteria[$cr->cparentid])) {
-                        $rootcriteria[$cr->cparentid]->subcriteria[] = (object) [
-                            'id' => (int) $cr->critid,
-                            'criterionid' => (int) $cr->crid,
-                            'grade' => (int) $cr->grade,
-                            'label' => $cr->label,
-                            'timemodified' => $cr->timemodified
-                        ];
-                    }
                 }
             }
-
-            $appr->criteria = array_values($rootcriteria);
         }
-        return $appraisals;
+
+        $appr->criteria = array_values($rootcriteria);
     }
 }

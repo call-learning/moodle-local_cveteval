@@ -59,6 +59,15 @@ $functions = array(
         'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
         'capabilities' => '',
     ),
+    'local_cveteval_get_appraisal' => array(
+        'classname'   => 'local_cveteval\\local\\external\\appraisals',
+        'methodname'  => 'local_cveteval_get_appraisal',
+        'description' => 'Get a specific appraisal.',
+        'type'        => 'read',
+        'ajax' => true,
+        'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
+        'capabilities' => '',
+    ),
     'local_cveteval_get_criteria' => array(
         'classname'   => 'local_cveteval\\local\\external\\criteria',
         'methodname'  => 'get_criteria',
