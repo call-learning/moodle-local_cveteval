@@ -34,6 +34,7 @@ use \local_cveteval\local\persistent\role\entity as role_entity;
 use \local_cveteval\local\persistent\appraisal\entity as appraisal_entity;
 use \local_cveteval\local\persistent\appraisal_criterion\entity as app_crit_entity;
 use local_cveteval\local\persistent\situation\entity as situation_entity;
+use Matrix\Exception;
 use stdClass;
 
 class appraisals extends \external_api {
@@ -46,37 +47,32 @@ class appraisals extends \external_api {
     public static function set_user_appraisal_parameters() {
         return new external_function_parameters(
             array(
-                'id' => new external_value(PARAM_INT, 'id of the appraisal if it already exists', VALUE_OPTIONAL,
-                    NULL_NOT_ALLOWED),
-                'situationId' => new external_value(PARAM_INT, 'id of the situation', null, NULL_NOT_ALLOWED),
-                'appraiserId' => new external_value(PARAM_INT, 'id of the appraiser', VALUE_REQUIRED,
-                    NULL_NOT_ALLOWED),
-                'studentId' => new external_value(PARAM_INT, 'id of the student', VALUE_REQUIRED,
-                    NULL_NOT_ALLOWED),
-                'context' => new external_value(PARAM_TEXT, 'context for appraisal', null, ""),
-                'comment' => new external_value(PARAM_TEXT, 'comment for appraisal', null, ""),
+                'situationid' => new external_value(PARAM_INT, 'id of the situation', VALUE_REQUIRED),
+                'appraiserid' => new external_value(PARAM_INT, 'id of the appraiser', VALUE_REQUIRED),
+                'studentid' => new external_value(PARAM_INT, 'id of the student', VALUE_REQUIRED),
+                'context' => new external_value(PARAM_TEXT, 'context for appraisal', VALUE_OPTIONAL, ""),
+                'comment' => new external_value(PARAM_TEXT, 'comment for appraisal', VALUE_OPTIONAL, ""),
                 'criteria' => new external_multiple_structure(
                     new external_single_structure(
                         array(
-                            'id' => new external_value(PARAM_INT, 'id of the criteria', VALUE_REQUIRED,
-                                NULL_NOT_ALLOWED),
-                            'grade' => new external_value(PARAM_INT, 'grade for the criteria', VALUE_REQUIRED,
-                                NULL_NOT_ALLOWED),
-                            'comment' => new external_value(PARAM_TEXT, 'comment for criteria', null, ""),
+                            'id' => new external_value(PARAM_INT, 'id of the appraised criteria', VALUE_OPTIONAL, 0),
+                            'criterionid' => new external_value(PARAM_INT, 'id of the criterion in the list'),
+                            'grade' => new external_value(PARAM_INT, 'grade for the criteria', VALUE_REQUIRED, 0),
+                            'comment' => new external_value(PARAM_TEXT, 'comment for criteria', VALUE_OPTIONAL, ""),
                             'subcriteria' => new external_multiple_structure(
                                 new external_single_structure(
                                     array(
-                                        'id' => new external_value(PARAM_INT, 'id of the criteria', VALUE_REQUIRED,
-                                            NULL_NOT_ALLOWED),
-                                        'grade' => new external_value(PARAM_INT, 'grade for the criteria', VALUE_REQUIRED,
-                                            NULL_NOT_ALLOWED),
+                                        'id' => new external_value(PARAM_INT, 'id of the appraised criteria', VALUE_OPTIONAL, 0),
+                                        'criterionid' => new external_value(PARAM_INT, 'id of the criterion in the list'),
+                                        'grade' => new external_value(PARAM_INT, 'grade for the criteria', VALUE_REQUIRED, 0),
+                                        'comment' => new external_value(PARAM_TEXT, 'comment for criteria', VALUE_OPTIONAL, ""),
                                     )
                                 ), '', VALUE_OPTIONAL
                             )
                         )
                     )
                 ),
-
+                'id' => new external_value(PARAM_INT, 'id of the appraisal if it already exists', VALUE_OPTIONAL, 0),
             )
         );
     }
@@ -84,69 +80,52 @@ class appraisals extends \external_api {
     /**
      * Returns description of method parameters
      *
-     * @return external_multiple_structure
+     * @return external_single_structure
      */
     public static function set_user_appraisal_returns() {
-        return new external_multiple_structure(
-            new external_single_structure(
-                array(
-                    'id' => new external_value(PARAM_INT, 'appraisal if (for new appraisals)')
-                )
-            )
-        );
+        return static::get_appraisal_returns();
     }
 
     /**
      * Return the current role for the user
      */
-    public static function set_user_appraisal($id, $situationId, $appraiserId, $studentId, $context, $comment, $criteria) {
+    public static function set_user_appraisal($situationid, $appraiserid, $studentid, $context, $comment, $criteria, $id = 0) {
         global $DB;
-        $params = self::validate_parameters(self::set_user_appraisal_parameters(), compact($id, $situationId,
-            $appraiserId, $studentId, $context, $comment, $criteria));
+        $params = self::validate_parameters(self::set_user_appraisal_parameters(), compact("situationid",
+            "appraiserid", "studentid", "context", "comment", "criteria", "id"));
         // Normally we should have only one matching situation per appraiserId and student
         $sql = "SELECT pl.id FROM {local_cveteval_evalplan} pl 
-                LEFT JOIN {local_cveteval_group_assign} ga ON ga.id = pl.groupid
+                LEFT JOIN {local_cveteval_group_assign} ga ON ga.groupid = pl.groupid
                 WHERE pl.clsituationid =:situationid AND ga.studentid = :studentid";
-        $evalplanid = $DB->get_field_sql($sql, array('situationid' => $situationId, 'studentid' => $studentId));
-        $appraisalrecord = (object) [
-            'id' => $id,
-            'studentid' => $studentId,
-            'appraiserid' => $appraiserId,
-            'evalplanid' => $evalplanid,
-            'context' => $context,
-            'contextformat' => FORMAT_PLAIN,
-            'comment' => $context,
-            'commentformat' => FORMAT_PLAIN,
-        ];
-        $appraisal = new appraisal_entity($id, $appraisalrecord);
-        if (!$id) {
-            $appraisal->create();
-        }
-        $appraisal->save();
-        $id = $appraisal->get('id');
-        foreach ($criteria as $crit) {
-            $critrecord = (object) [
-                'criteriaid' => $crit['id'],
-                'appraisalid' => $id,
-                'grade' => $crit['grade'],
-                'comment' => $crit['comment']
-            ];
-            $criterion = app_crit_entity::get_record(array('appraisalid' => $id, 'criteriaid' => $crit['id']));
-            if (!$criterion) {
-                $criterion = new app_crit_entity(0, $critrecord);
-                $criterion->create();
-            } else {
-                $criterion->from_record($critrecord);
-            }
-            $criterion->save();
-            if ($crit['subcriteria']) {
-                foreach ($crit['subcriteria'] as $scrit) {
+        $evalplanid = $DB->get_field_sql($sql, array('situationid' => $situationid, 'studentid' => $studentid));
+        if ($evalplanid) {
+            try {
+                $transaction = $DB->start_delegated_transaction();
+                $appraisalrecord = (object) [
+                    'id' => $id,
+                    'studentid' => $studentid,
+                    'appraiserid' => $appraiserid,
+                    'evalplanid' => $evalplanid,
+                    'context' => $context,
+                    'contextformat' => FORMAT_PLAIN,
+                    'comment' => $context,
+                    'commentformat' => FORMAT_PLAIN,
+                ];
+                $appraisal = new appraisal_entity($id, $appraisalrecord);
+                if (!$id) {
+                    $appraisal->create();
+                }
+                $appraisal->save();
+                $id = $appraisal->get('id');
+                foreach ($criteria as $crit) {
                     $critrecord = (object) [
-                        'criteriaid' => $scrit['id'],
+                        'id' => empty($crit['id']) ? 0: $crit['id'],
+                        'criteriaid' => $crit['criterionid'], // TODO : this should criterionid.
                         'appraisalid' => $id,
-                        'grade' => $scrit['grade']
+                        'grade' => $crit['grade'],
+                        'comment' => $crit['comment']
                     ];
-                    $criterion = app_crit_entity::get_record(array('appraisalid' => $id, 'criteriaid' => $scrit['id']));
+                    $criterion = app_crit_entity::get_record(array('appraisalid' => $id, 'criteriaid' => $crit['id']));
                     if (!$criterion) {
                         $criterion = new app_crit_entity(0, $critrecord);
                         $criterion->create();
@@ -154,10 +133,34 @@ class appraisals extends \external_api {
                         $criterion->from_record($critrecord);
                     }
                     $criterion->save();
+                    if ($crit['subcriteria']) {
+                        foreach ($crit['subcriteria'] as $scrit) {
+                            $critrecord = (object) [
+                                'id' => empty($scrit['id']) ? 0: $scrit['id'],
+                                'criteriaid' => $scrit['criterionid'], // TODO : this should criterionid.
+                                'appraisalid' => $id,
+                                'grade' => $scrit['grade']
+                            ];
+                            $criterion = app_crit_entity::get_record(array('appraisalid' => $id, 'criteriaid' => $scrit['id']));
+                            if (!$criterion) {
+                                $criterion = new app_crit_entity(0, $critrecord);
+                                $criterion->create();
+                            } else {
+                                $criterion->from_record($critrecord);
+                            }
+                            $criterion->save();
+                        }
+                    }
                 }
+                $transaction->allow_commit();
+                return static::get_appraisal($id);
+            } catch(Exception $e) {
+                $transaction->dispose();
+                return null;
             }
+        } else {
+            return null;
         }
-        return $id;
     }
 
     /**
@@ -228,7 +231,7 @@ class appraisals extends \external_api {
     /**
      * Returns description of method parameters
      *
-     * @return external_function_parameters
+     * @return external_single_structure
      */
     public static function get_appraisal_parameters() {
         return new external_function_parameters(
