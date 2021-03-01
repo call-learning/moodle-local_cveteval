@@ -92,7 +92,7 @@ class situations extends \external_api {
             FROM {local_cveteval_group_assign} uga 
             LEFT JOIN {local_cveteval_evalplan} pl ON uga.groupid = pl.groupid
             LEFT JOIN {local_cveteval_clsituation} cls ON cls.id  = pl.clsituationid
-            WHERE uga.studentid = :userid";
+            WHERE uga.studentid = :userid AND cls.id IS NOT NULL";
 
         $studentsituationsdb = $DB->get_records_sql($sql, array('userid' => $userid));
 
@@ -118,7 +118,7 @@ class situations extends \external_api {
             LEFT JOIN {local_cveteval_clsituation} cls ON sr.clsituationid = cls.id
             LEFT JOIN {local_cveteval_evalplan} pl ON cls.id = pl.clsituationid
             LEFT JOIN {local_cveteval_group_assign} uga ON uga.groupid = pl.groupid 
-            WHERE sr.userid = :userid";
+            WHERE sr.userid = :userid AND cls.id IS NOT NULL";
 
         // Check for appraiser : all students that are on this appraiser's rotation.
         $appraisersituationsdb = $DB->get_records_sql($sql, array('userid' => $userid));

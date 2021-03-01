@@ -50,21 +50,19 @@ class appraisals extends \external_api {
                 'situationid' => new external_value(PARAM_INT, 'id of the situation', VALUE_REQUIRED),
                 'appraiserid' => new external_value(PARAM_INT, 'id of the appraiser', VALUE_REQUIRED),
                 'studentid' => new external_value(PARAM_INT, 'id of the student', VALUE_REQUIRED),
-                'context' => new external_value(PARAM_TEXT, 'context for appraisal', VALUE_OPTIONAL, ""),
-                'comment' => new external_value(PARAM_TEXT, 'comment for appraisal', VALUE_OPTIONAL, ""),
                 'criteria' => new external_multiple_structure(
                     new external_single_structure(
                         array(
                             'id' => new external_value(PARAM_INT, 'id of the appraised criteria', VALUE_OPTIONAL, 0),
                             'criterionid' => new external_value(PARAM_INT, 'id of the criterion in the list'),
-                            'grade' => new external_value(PARAM_INT, 'grade for the criteria', VALUE_REQUIRED, 0),
+                            'grade' => new external_value(PARAM_INT, 'grade for the criteria', VALUE_OPTIONAL, 0),
                             'comment' => new external_value(PARAM_TEXT, 'comment for criteria', VALUE_OPTIONAL, ""),
                             'subcriteria' => new external_multiple_structure(
                                 new external_single_structure(
                                     array(
                                         'id' => new external_value(PARAM_INT, 'id of the appraised criteria', VALUE_OPTIONAL, 0),
                                         'criterionid' => new external_value(PARAM_INT, 'id of the criterion in the list'),
-                                        'grade' => new external_value(PARAM_INT, 'grade for the criteria', VALUE_REQUIRED, 0),
+                                        'grade' => new external_value(PARAM_INT, 'grade for the criteria', VALUE_OPTIONAL, 0),
                                         'comment' => new external_value(PARAM_TEXT, 'comment for criteria', VALUE_OPTIONAL, ""),
                                     )
                                 ), '', VALUE_OPTIONAL
@@ -72,6 +70,8 @@ class appraisals extends \external_api {
                         )
                     )
                 ),
+                'context' => new external_value(PARAM_TEXT, 'context for appraisal', VALUE_OPTIONAL, ""),
+                'comment' => new external_value(PARAM_TEXT, 'comment for appraisal', VALUE_OPTIONAL, ""),
                 'id' => new external_value(PARAM_INT, 'id of the appraisal if it already exists', VALUE_OPTIONAL, 0),
             )
         );
@@ -89,7 +89,8 @@ class appraisals extends \external_api {
     /**
      * Return the current role for the user
      */
-    public static function set_user_appraisal($situationid, $appraiserid, $studentid, $context, $comment, $criteria, $id = 0) {
+    public static function set_user_appraisal($situationid, $appraiserid, $studentid, $criteria, $context = "", $comment = "",
+        $id = 0) {
         global $DB;
         $params = self::validate_parameters(self::set_user_appraisal_parameters(), compact("situationid",
             "appraiserid", "studentid", "context", "comment", "criteria", "id"));
@@ -119,13 +120,13 @@ class appraisals extends \external_api {
                 $id = $appraisal->get('id');
                 foreach ($criteria as $crit) {
                     $critrecord = (object) [
-                        'id' => empty($crit['id']) ? 0: $crit['id'],
+                        'id' => empty($crit['id']) ? 0 : $crit['id'],
                         'criteriaid' => $crit['criterionid'], // TODO : this should criterionid.
                         'appraisalid' => $id,
-                        'grade' => $crit['grade'],
-                        'comment' => $crit['comment']
+                        'grade' => empty($crit['grade']) ? 0: $crit['grade'],
+                        'comment' => empty($crit['comment']) ? "":$crit['comment']
                     ];
-                    $criterion = app_crit_entity::get_record(array('appraisalid' => $id, 'criteriaid' => $crit['id']));
+                    $criterion = app_crit_entity::get_record(array('appraisalid' => $id, 'criteriaid' => $crit['criterionid']));
                     if (!$criterion) {
                         $criterion = new app_crit_entity(0, $critrecord);
                         $criterion->create();
@@ -136,10 +137,10 @@ class appraisals extends \external_api {
                     if ($crit['subcriteria']) {
                         foreach ($crit['subcriteria'] as $scrit) {
                             $critrecord = (object) [
-                                'id' => empty($scrit['id']) ? 0: $scrit['id'],
+                                'id' => empty($scrit['id']) ? 0 : $scrit['id'],
                                 'criteriaid' => $scrit['criterionid'], // TODO : this should criterionid.
                                 'appraisalid' => $id,
-                                'grade' => $scrit['grade']
+                                'grade' => empty($scrit['grade']) ? 0: $scrit['grade']
                             ];
                             $criterion = app_crit_entity::get_record(array('appraisalid' => $id, 'criteriaid' => $scrit['id']));
                             if (!$criterion) {
@@ -154,7 +155,7 @@ class appraisals extends \external_api {
                 }
                 $transaction->allow_commit();
                 return static::get_appraisal($id);
-            } catch(Exception $e) {
+            } catch (Exception $e) {
                 $transaction->dispose();
                 return null;
             }
