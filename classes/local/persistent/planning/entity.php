@@ -45,18 +45,38 @@ class entity extends \core\persistent {
         return array(
             'groupid' => array(
                 'type' => PARAM_INT,
-                'default' => ''
+                'default' => '',
+                'format' => [
+                    'type' => 'entity_selector',
+                    'selector_info' => (object) [
+                        'entity_type' => '\\local_cveteval\\local\\persistent\\group\\entity',
+                        'display_field' => 'name'
+                    ]
+                ]
             ),
             'clsituationid' => array(
                 'type' => PARAM_INT,
+                'format' => [
+                    'type' => 'entity_selector',
+                    'selector_info' => (object) [
+                        'entity_type' => '\\local_cveteval\\local\\persistent\\situation\\entity',
+                        'display_field' => 'title'
+                    ]
+                ]
             ),
             'starttime' => array(
                 'type' => PARAM_INT,
-                'default' => ''
+                'default' => '',
+                'format' => [
+                    'type' => 'date_selector'
+                ]
             ),
             'endtime' => array(
                 'type' => PARAM_INT,
-                'default' => ''
+                'default' => '',
+                'format' => [
+                    'type' => 'date_selector'
+                ]
             )
         );
     }

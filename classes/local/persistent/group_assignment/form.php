@@ -34,29 +34,6 @@ use local_cltools\local\crud\form\entity_form;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class form extends entity_form {
-    /**
-     * Form property in order to display the right widget for the form.
-     *
-     * @return array|array[]
-     * @throws \coding_exception
-     */
-    protected static function define_properties() {
-        return array(
-            'studentid' => (object) [
-                'type' => 'user_selector',
-                'selector_info' => (object) [
-                    'rolesn' => 'student'
-                ]
-            ],
-            'groupid' => [
-                'type' => 'entity_selector',
-                'selector_info' => (object) [
-                    'entity_type' => '\\local_cveteval\\local\\persistent\\group\\entity',
-                    'display_field' => 'name'
-                ]
-            ],
-        );
-    }
 
     /** @var string The fully qualified classname. */
     protected static $persistentclass = '\\local_cveteval\\local\\persistent\\group_assignment\\entity';

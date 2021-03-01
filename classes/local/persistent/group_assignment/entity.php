@@ -46,11 +46,24 @@ class entity extends \core\persistent {
         return array(
             'studentid' => array(
                 'type' => PARAM_INT,
-                'default' => ''
+                'default' => '',
+                'format' => [
+                    'type' => 'user_selector',
+                    'selector_info' => (object) [
+                        'rolesn' => 'student'
+                    ]
+                ]
             ),
             'groupid' => array(
                 'type' => PARAM_INT,
-                'default' => ''
+                'default' => '',
+                'format' => [
+                    'type' => 'entity_selector',
+                    'selector_info' => (object) [
+                        'entity_type' => '\\local_cveteval\\local\\persistent\\group\\entity',
+                        'display_field' => 'name'
+                    ]
+                ]
             ),
         );
     }

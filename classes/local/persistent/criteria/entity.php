@@ -52,9 +52,19 @@ class entity extends \core\persistent {
             ),
             'parentid' => array(
                 'type' => PARAM_INT,
+                'format' => [
+                    'type' => 'entity_selector',
+                    'selector_info' => (object) [
+                        'entity_type' => '\\local_cveteval\\local\\persistent\\criteria\\entity',
+                        'display_field' => 'idnumber'
+                    ]
+                ]
             ),
             'sort' => array(
                 'type' => PARAM_INT,
+                'format' => [
+                    'type' => 'number'
+                ]
             )
         );
     }
