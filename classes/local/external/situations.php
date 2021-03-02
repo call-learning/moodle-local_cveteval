@@ -35,6 +35,7 @@ use \local_cveteval\local\persistent\appraisal\entity as appraisal_entity;
 use \local_cveteval\local\persistent\appraisal_criterion\entity as app_crit_entity;
 use local_cveteval\local\persistent\situation\entity as situation_entity;
 use stdClass;
+use user_picture;
 
 class situations extends \external_api {
 
@@ -66,6 +67,8 @@ class situations extends \external_api {
                     'endtime' => new external_value(PARAM_INT, 'the clinical situation end time'),
                     'type' => new external_value(PARAM_TEXT, 'the clinical situation type (appraiser or student)'),
                     'studentname' => new external_value(PARAM_TEXT, 'student name if this is an appraisal (see type)',
+                        VALUE_OPTIONAL),
+                    'studentpictureurl' => new external_value(PARAM_URL, 'user picture (avatar)',
                         VALUE_OPTIONAL),
                     'studentid' => new external_value(PARAM_TEXT, 'student id if this is an appraisal (see type)', VALUE_OPTIONAL),
                     'appraisalsrequired' => new external_value(PARAM_INT, 'the number of evaluation needed')
@@ -125,7 +128,14 @@ class situations extends \external_api {
 
         $appraisersituations = array_map(
             function($situationdb) {
-                $situationdb->studentname = fullname(\core_user::get_user($situationdb->studentid));
+                global $PAGE;
+                $user = \core_user::get_user($situationdb->studentid);
+                $userpicture = new user_picture($user);
+                $userpicture->includetoken = true;
+                $userpicture->size = 1; // Size f1.
+                $situationdb->studentname = fullname($user);
+
+                $situationdb->studentpictureurl = $userpicture->get_url($PAGE)->out(false);
                 $situationdb->title = format_text($situationdb->description, $situationdb->descriptionformat);
                 $situationdb->type = situation_entity::SITUATION_TYPE_APPRAISER;
                 $situationdb->appraisalsrequired = $situationdb->expectedevalsnb;

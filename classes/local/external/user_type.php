@@ -26,15 +26,11 @@ namespace local_cveteval\local\external;
 defined('MOODLE_INTERNAL') || die();
 
 use external_function_parameters;
-use external_multiple_structure;
 use external_single_structure;
 use external_value;
 
 use \local_cveteval\local\persistent\role\entity as role_entity;
-use \local_cveteval\local\persistent\appraisal\entity as appraisal_entity;
-use \local_cveteval\local\persistent\appraisal_criterion\entity as app_crit_entity;
-use local_cveteval\local\persistent\situation\entity as situation_entity;
-use stdClass;
+use local_cveteval\local\utils;
 
 class user_type extends \external_api {
     /**
@@ -68,18 +64,7 @@ class user_type extends \external_api {
      */
     public static function get_user_type($userid) {
         $params = self::validate_parameters(self::get_user_type_parameters(), array('userid' => $userid));
-
-        $roleid = role_entity::ROLE_STUDENT_ID;
-        // Check that user exists first, if not it will be a student role.
-        if ($user = \core_user::get_user($userid)) {
-            $isappraiser = role_entity::record_exists_select(
-                "userid = :userid AND type = :type", array('userid' => $userid,
-                'type' => role_entity::ROLE_APPRAISER_ID));
-            if ($isappraiser) {
-                $roleid = role_entity::ROLE_APPRAISER_ID;
-            }
-        }
-
+        $roleid =  utils::get_user_role_id($userid);
         return (object) ['type' =>
             role_entity::ROLE_SHORTNAMES[$roleid]
         ];

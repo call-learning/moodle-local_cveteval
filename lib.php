@@ -25,6 +25,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use local_cveteval\local\persistent\role\entity as role_entity;
+
 defined('MOODLE_INTERNAL') || die();
 
 function local_cveteval_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = array()) {
@@ -72,4 +74,18 @@ function local_cveteval_pluginfile($course, $cm, $context, $filearea, $args, $fo
  */
 function local_cveteval_enable_disable_plugin_callback() {
     // Nothing for now.
+}
+
+function local_cveteval_extend_navigation(global_navigation $nav) {
+    global $CFG, $USER;
+    $enabled = !empty($CFG->enablecompetveteval) && $CFG->enablecompetveteval;
+    if ($enabled) {
+        if (\local_cveteval\local\utils::get_user_role_id($USER->id) == role_entity::ROLE_ASSESSOR_ID) {
+            $nav->add(
+                get_string('assessment', 'local_cveteval'),
+                new moodle_url('/local/cveteval/assess.php'),
+                navigation_node::TYPE_USER
+            );
+        }
+    }
 }

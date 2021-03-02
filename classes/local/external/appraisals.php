@@ -36,6 +36,7 @@ use \local_cveteval\local\persistent\appraisal_criterion\entity as app_crit_enti
 use local_cveteval\local\persistent\situation\entity as situation_entity;
 use Matrix\Exception;
 use stdClass;
+use user_picture;
 
 class appraisals extends \external_api {
 
@@ -256,8 +257,12 @@ class appraisals extends \external_api {
                 'appraiserid' => new external_value(PARAM_INT, 'id of the appraiser'),
                 'type' => new external_value(PARAM_INT, '1=appraiser, 2=evaluator'),
                 'appraisername' => new external_value(PARAM_TEXT, 'fullname of the appraiser', VALUE_OPTIONAL, ""),
+                'appraiserpictureurl' => new external_value(PARAM_URL, 'user picture (avatar)',
+                    VALUE_OPTIONAL),
                 'studentid' => new external_value(PARAM_INT, 'id of the student'),
                 'studentname' => new external_value(PARAM_TEXT, 'fullname of the appraiser'),
+                'studentpictureurl' => new external_value(PARAM_URL, 'user picture (avatar)',
+                    VALUE_OPTIONAL),
                 'timemodified' => new external_value(PARAM_INT, 'last modification time being creation or modification'),
                 'context' => new external_value(PARAM_TEXT, 'context for appraisal', VALUE_OPTIONAL, ""),
                 'comment' => new external_value(PARAM_TEXT, 'comment for appraisal', VALUE_OPTIONAL, ""),
@@ -331,9 +336,23 @@ class appraisals extends \external_api {
     }
 
     protected static function set_appraisal_criteria(&$appr) {
-        global $DB;
-        $appr->studentname = fullname(\core_user::get_user($appr->studentid));
+        global $DB, $PAGE;
+        $studentuser = \core_user::get_user($appr->studentid);
+        $appraiseruser = \core_user::get_user($appr->appraiserid);
+        $appr->studentname = fullname($studentuser);
+
+        $studentpicture = new user_picture($studentuser);
+        $studentpicture->includetoken = true;
+        $studentpicture->size = 1; // Size f1
+        $appr->studentpictureurl = $studentpicture->get_url($PAGE)->out();
+
         $appr->appraisername = fullname(\core_user::get_user($appr->appraiserid));
+
+        $appraiserpicture = new user_picture($appraiseruser);
+        $appraiserpicture->includetoken = true;
+        $appraiserpicture->size = 1; // Size f1
+        $appr->appraiserpictureurl = $appraiserpicture->get_url($PAGE)->out();
+
         $appr->context = format_text($appr->context, $appr->contextformat);
         unset($appr->contextformat);
         $appr->comment = format_text($appr->comment, $appr->commentformat);

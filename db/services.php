@@ -61,7 +61,7 @@ $functions = array(
     ),
     'local_cveteval_get_appraisal' => array(
         'classname'   => 'local_cveteval\\local\\external\\appraisals',
-        'methodname'  => 'local_cveteval_get_appraisal',
+        'methodname'  => 'get_appraisal',
         'description' => 'Get a specific appraisal.',
         'type'        => 'read',
         'ajax' => true,

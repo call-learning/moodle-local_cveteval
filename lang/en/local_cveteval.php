@@ -38,6 +38,7 @@ $string['import:dateformat'] = 'd/m/Y';
 $string['planning:entity'] = 'Evaluation Planning';
 $string['planning:plural'] = 'Evaluations Planning';
 $string['planning:title'] = 'Title';
+$string['planning:groupid'] = 'Group ID';
 $string['planning:starttime'] = 'Start time';
 $string['planning:endtime'] = 'End time';
 $string['planning:studentid'] = 'Student';
@@ -53,6 +54,8 @@ $string['evaluation_grid:plural'] = 'Evaluation Grids';
 $string['evaluation_grid:name'] = 'Evaluation Name';
 $string['evaluation_grid:idnumber'] = 'Evaluation Identifier';
 $string['evaluation_template:version'] = 'Evaluation Version';
+
+$string['assessment'] = 'Assessment';
 
 $string['name'] = 'Full Name';
 $string['fullname'] = 'Full Name';
