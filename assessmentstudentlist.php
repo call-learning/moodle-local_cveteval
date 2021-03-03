@@ -23,30 +23,43 @@
  */
 
 use local_cltools\local\crud\entity_utils;
+use local_cltools\local\filter\filterset;
 use local_cltools\output\table\entity_table_renderable;
-use local_cveteval\local\assessment\assessment_planning;
+use local_cveteval\local\assessment\assessment_situation;
 
 require_once(__DIR__ . '/../../config.php');
 global $CFG, $OUTPUT, $PAGE;
 $situationid = optional_param('situationid', 0, PARAM_INT);
 require_login();;
 $PAGE->set_context(\context_system::instance());
-$PAGE->set_title( get_string('assessment', 'local_cveteval'));
-$PAGE->set_heading( get_string('assessment', 'local_cveteval'));
+$PAGE->set_title(get_string('assessment', 'local_cveteval'));
+$PAGE->set_heading(get_string('assessment', 'local_cveteval'));
 $PAGE->set_url(new moodle_url('/local/cveteval/assess.php'));
 echo $OUTPUT->header();
-if (empty($situationid)) {
-    // Show planning list
-    // Here the form is just the filter form.
-    $uniqueid = \html_writer::random_id('assessmenttable');
-    $entitylist = new assessment_planning($uniqueid);
-    $renderable = new entity_table_renderable($entitylist);
 
-    $renderer = $PAGE->get_renderer('local_cltools');
-    /** @var entity_table_renderable entity table */
-    echo $renderer->render($renderable);
+$uniqueid = \html_writer::random_id('situationtable');
+$entitylist = new \local_cveteval\local\assessment\situation_students($uniqueid);
+$filterset = new \local_cltools\local\filter\basic_filterset(
+    [
+        'situationid' => (object)
+        [
+            'filterclass' => 'local_cltools\\local\filter\\numeric_comparison_filter',
+            'required' => true,
+        ]
+    ]
+);
+$filterset->set_join_type(filterset::JOINTYPE_ALL);
+$filterset->add_filter_from_params(
+    'situationid', // Field name.
+    filterset::JOINTYPE_ALL,
+    [json_encode((object)['direction' => '=', 'value'=>$situationid])]
+);
+$entitylist->set_filterset($filterset);
 
-} else {
-    // Show situation and student list
-}
+$renderable = new entity_table_renderable($entitylist);
+
+$renderer = $PAGE->get_renderer('local_cltools');
+/** @var entity_table_renderable entity table */
+echo $renderer->render($renderable);
+
 echo $OUTPUT->footer();

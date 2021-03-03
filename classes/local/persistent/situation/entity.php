@@ -38,12 +38,12 @@ class entity extends \core\persistent {
     /**
      * Appraiser
      */
-    const SITUATION_TYPE_APPRAISER='appraiser';
+    const SITUATION_TYPE_APPRAISER = 'appraiser';
 
     /**
      * Student
      */
-    const SITUATION_TYPE_STUDENT='student';
+    const SITUATION_TYPE_STUDENT = 'student';
 
     /**
      * Usual properties definition for a persistent
@@ -74,7 +74,12 @@ class entity extends \core\persistent {
             ),
             'evalgridid' => array(
                 'type' => PARAM_INT,
-                'default' => ''
+                'default' => '',
+                'format' => [
+                    'type' => 'entity_selector',
+                    'entityclass' => '\\local_cveteval\\local\\persistent\\evaluation_grid\\entity',
+                    'displayfield' => 'name'
+                ]
             )
         );
     }

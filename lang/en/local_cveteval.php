@@ -47,6 +47,7 @@ $string['planning:clsituationid'] = 'Clinical situation';
 $string['situation:entity'] = 'Clinical situation';
 $string['situation:plural'] = 'Clinical situations';
 $string['situation:title'] = 'Title';
+$string['situation:expectedevalsnb'] = '#Eval';
 $string['situation:evalgridid'] = 'Linked Evaluation Grid';
 
 $string['evaluation_grid:entity'] = 'Evaluation Grid';
@@ -56,7 +57,6 @@ $string['evaluation_grid:idnumber'] = 'Evaluation Identifier';
 $string['evaluation_template:version'] = 'Evaluation Version';
 
 $string['assessment'] = 'Assessment';
-
 $string['name'] = 'Full Name';
 $string['fullname'] = 'Full Name';
 $string['idnumber'] = 'ID Number';

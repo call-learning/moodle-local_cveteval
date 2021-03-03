@@ -81,11 +81,17 @@ function local_cveteval_extend_navigation(global_navigation $nav) {
     $enabled = !empty($CFG->enablecompetveteval) && $CFG->enablecompetveteval;
     if ($enabled) {
         if (\local_cveteval\local\utils::get_user_role_id($USER->id) == role_entity::ROLE_ASSESSOR_ID) {
-            $nav->add(
+            $node = navigation_node::create(
                 get_string('assessment', 'local_cveteval'),
-                new moodle_url('/local/cveteval/assess.php'),
-                navigation_node::TYPE_USER
+                new moodle_url('/local/cveteval/assessment.php'),
+                navigation_node::TYPE_CUSTOM,
+                'assessment',
+                'key',
+                new pix_icon('t/edit', get_string('edit'))
             );
+            $node->showinflatnavigation = true;
+            $nav->add_node($node);
+
         }
     }
 }

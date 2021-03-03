@@ -39,17 +39,17 @@ use popup_action;
  * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class assessment_planning extends entity_table {
+class assessment_situation extends entity_table {
 
-    protected static $persistentclass = '\\local_cveteval\\local\\persistent\\planning\\entity';
+    protected static $persistentclass = '\\local_cveteval\\local\\persistent\\situation\\entity';
 
     public function __construct($uniqueid, $actionsdefs = null) {
-        $actionsdefs = [
-            'view' => (object) [
-                'icon' => 't/edit',
-                'url' => new moodle_url('/local/cveteval/assess.php')
-            ]
-        ];
+        global $PAGE;
+        $PAGE->requires->js_call_amd('local_cveteval/row-click-jumpurl','init', [
+            $uniqueid,
+            (new moodle_url('/local/cveteval/assessmentstudentlist.php'))->out(),
+            'situationid'
+        ]);
         parent::__construct($uniqueid, $actionsdefs);
     }
 
@@ -65,30 +65,24 @@ class assessment_planning extends entity_table {
         parent::set_entity_sql();
     }
 
+    protected function col_description($row) {
+        return $this->format_text($row->description, $row->descriptionformat);
+    }
+
     /**
      * Get persistent columns definition
      *
      * @return array
      */
-    protected function get_persistent_columns_definition() {
-        list($cols, $headers) = parent::get_persistent_columns_definition();
+    protected function get_table_columns_definitions() {
+        list($cols, $headers) = parent::get_table_columns_definitions();
         foreach($cols as $index => $col) {
-            if ($col === 'starttime' || $col === 'endtime') {
+            if ($col === 'descriptionformat') {
                 unset($headers[$index]);
                 unset($cols[$index]);
                 unset($this->fields[$col]);
             }
         }
         return [array_values($cols), array_values($headers)];
-    }
-
-    /**
-     * Get context
-     *
-     * @return \context|\context_system|null
-     * @throws \dml_exception
-     */
-    public function get_context() {
-        return \context_system::instance();
     }
 }
