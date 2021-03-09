@@ -15,35 +15,27 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Clinical situation
+ * Final evaluation
  *
  * @package   local_cveteval
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_cveteval\local\persistent\situation;
+namespace local_cveteval\local\persistent\final_evaluation;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Clinical situation entity
+ * Final evaluation entity
  *
  * @package   local_cveteval
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class entity extends \core\persistent {
-    const TABLE = 'local_cveteval_clsituation';
 
-    /**
-     * Appraiser
-     */
-    const SITUATION_TYPE_APPRAISER = 'appraiser';
-
-    /**
-     * Student
-     */
-    const SITUATION_TYPE_STUDENT = 'student';
+    const TABLE = 'local_cveteval_finalevl';
 
     /**
      * Usual properties definition for a persistent
@@ -53,35 +45,41 @@ class entity extends \core\persistent {
      */
     protected static function define_properties() {
         return array(
-            'title' => array(
-                'type' => PARAM_TEXT,
-                'default' => '',
+            'studentid' => array(
+                'type' => PARAM_INT,
+                'default' => 0
             ),
-            'description' => array(
-                'type' => PARAM_RAW,
+            'appraiserid' => array(
+                'type' => PARAM_INT,
+                'default' => 0
             ),
-            'descriptionformat' => array(
+            'evalplanid' => array(
                 'type' => PARAM_INT,
                 'default' => ''
             ),
-            'idnumber' => array(
-                'type' => PARAM_ALPHANUMEXT,
-                'null' => NULL_NOT_ALLOWED
-            ),
-            'expectedevalsnb' => array(
+            'grade' => array(
                 'type' => PARAM_INT,
-                'default' => 1
-            ),
-            'evalgridid' => array(
-                'type' => PARAM_INT,
-                'default' => '',
+                'default' => 0,
                 'format' => [
-                    'type' => 'entity_selector',
-                    'entityclass' => \local_cveteval\local\persistent\evaluation_grid\entity::class,
-                    'displayfield' => 'name'
+                    'fullname' => get_string('finalevl:grade', 'local_cveteval')
                 ]
-            )
+            ),
+            'context' => array(
+                'type' => PARAM_TEXT,
+                'default' => ''
+            ),
+            'contextformat' => array(
+                'type' => PARAM_INT,
+                'default' => FORMAT_PLAIN
+            ),
+            'comment' => array(
+                'type' => PARAM_TEXT,
+                'default' => ''
+            ),
+            'commentformat' => array(
+                'type' => PARAM_INT,
+                'default' => FORMAT_PLAIN
+            ),
         );
     }
 }
-

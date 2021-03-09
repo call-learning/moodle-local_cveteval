@@ -37,5 +37,12 @@ use local_cltools\local\crud\entity_exporter;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class exporter extends entity_exporter {
-    protected static $persistentclass = '\\local_cveteval\\local\\persistent\\situation\\entity';
+    /**
+     * Returns the specific class the persistent should be an instance of.
+     *
+     * @return string
+     */
+    protected static function define_class() {
+        return entity::class;
+    }
 }

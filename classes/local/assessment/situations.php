@@ -39,7 +39,7 @@ use popup_action;
  * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class assessment_situation extends entity_table {
+class situations extends entity_table {
 
     protected static $persistentclass = '\\local_cveteval\\local\\persistent\\situation\\entity';
 
@@ -47,10 +47,14 @@ class assessment_situation extends entity_table {
         global $PAGE;
         $PAGE->requires->js_call_amd('local_cveteval/row-click-jumpurl','init', [
             $uniqueid,
-            (new moodle_url('/local/cveteval/assessmentstudentlist.php'))->out(),
-            'situationid'
+            (new moodle_url('/local/cveteval/pages/assessment/mystudents.php'))->out(),
+            (object)array('situationid' => 'id')
         ]);
         parent::__construct($uniqueid, $actionsdefs);
+        $this->filteraliases = [
+            'roletype' => 'role.type',
+            'appraiserid' => 'role.userid'
+        ];
     }
 
     /**
@@ -61,8 +65,8 @@ class assessment_situation extends entity_table {
     protected function set_entity_sql() {
         $sqlfields = forward_static_call([static::$persistentclass, 'get_sql_fields'], 'entity', '');
         $from = static::$persistentclass::TABLE;
-        $this->set_sql($sqlfields,'{'.$from.'} entity e','1=1', []);
-        parent::set_entity_sql();
+        $sql = '{'.$from.'} entity  LEFT JOIN {local_cveteval_role} role ON entity.id = role.clsituationid';
+        $this->set_sql($sqlfields,$sql,'', []);
     }
 
     protected function col_description($row) {

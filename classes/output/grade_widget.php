@@ -15,32 +15,48 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Assessment Page
+ * Renderable for grade widget
  *
  * @package   local_cveteval
  * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use local_cltools\local\crud\entity_utils;
-use local_cltools\output\table\entity_table_renderable;
-use local_cveteval\local\assessment\assessment_situation;
+namespace local_cveteval\output;
 
-require_once(__DIR__ . '/../../config.php');
-global $CFG, $OUTPUT, $PAGE;
-require_login();;
-$PAGE->set_context(\context_system::instance());
-$PAGE->set_title( get_string('assessment', 'local_cveteval'));
-$PAGE->set_heading( get_string('assessment', 'local_cveteval'));
-$PAGE->set_url(new moodle_url('/local/cveteval/assess.php'));
-echo $OUTPUT->header();
+use renderable;
+use renderer_base;
+use templatable;
 
-$uniqueid = \html_writer::random_id('situationtable');
-$entitylist = new assessment_situation($uniqueid);
-$renderable = new entity_table_renderable($entitylist);
+defined('MOODLE_INTERNAL') || die();
 
-$renderer = $PAGE->get_renderer('local_cltools');
-/** @var entity_table_renderable entity table */
-echo $renderer->render($renderable);
+/**
+ * Renderable for dynamic table
+ *
+ * @package    local_resourcelibrary
+ * @copyright  2020 CALL Learning - Laurent David laurent@call-learning.fr
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class grade_widget implements renderable, templatable  {
 
-echo $OUTPUT->footer();
+    protected $grade;
+
+    /**
+     * Constructor
+     *
+     * @param int $grade
+     */
+    public function __construct($grade) {
+        $this->grade = $grade;
+    }
+
+    public function export_for_template(renderer_base $output) {
+        return (object)[
+            'grade' => $this->grade,
+            'gradetext' => get_string('grade:'. $this->grade, 'local_cveteval')
+        ];
+    }
+}
+
+
+

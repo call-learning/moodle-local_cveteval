@@ -34,35 +34,6 @@ use local_cltools\local\crud\form\entity_form;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class form extends entity_form {
-    /**
-     * Form property in order to display the right widget for the form.
-     *
-     * @return array|array[]
-     * @throws \coding_exception
-     */
-    protected static function define_properties() {
-        return array(
-            'title' => (object) [
-                'type' => 'text'
-            ],
-            'description' => [
-                'type' => 'editor'
-            ],
-            'idnumber' => [
-                'type' => 'text'
-            ],
-            'expectedevalsnb' => array(
-                'type' => 'int',
-            ),
-            'evalgridid' => [
-                'type' => 'entity_selector',
-                'selector_info' => (object) [
-                    'entity_type' => '\\local_cveteval\\local\\persistent\\evaluation_grid\\entity',
-                    'display_field' => 'name'
-                ]
-            ]
-        );
-    }
 
     /** @var string The fully qualified classname. */
     protected static $persistentclass = '\\local_cveteval\\local\\persistent\\situation\\entity';

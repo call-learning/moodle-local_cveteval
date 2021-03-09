@@ -83,7 +83,7 @@ function local_cveteval_extend_navigation(global_navigation $nav) {
         if (\local_cveteval\local\utils::get_user_role_id($USER->id) == role_entity::ROLE_ASSESSOR_ID) {
             $node = navigation_node::create(
                 get_string('assessment', 'local_cveteval'),
-                new moodle_url('/local/cveteval/assessment.php'),
+                new moodle_url('/local/cveteval/pages/assessment/mysituations.php'),
                 navigation_node::TYPE_CUSTOM,
                 'assessment',
                 'key',

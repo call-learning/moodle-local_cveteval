@@ -40,7 +40,7 @@ class form extends entity_form {
      * @return array|array[]
      * @throws \coding_exception
      */
-    protected static function define_properties() {
+    protected static function get_fields_definition() {
         return array(
             'userid' => (object) [
                 'type' => 'user_selector',
