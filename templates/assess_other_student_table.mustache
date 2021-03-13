@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template local_cveteval/assess_student_table
+    @template local_cveteval/assess_other_student_table
 
 
     Example context (json):
@@ -32,11 +32,12 @@
      data-table-sort-data='{{sortdatajson}}'
      data-table-handler='{{handler}}'
      data-table-iscrud='{{tableuniqueid}}'
+     data-table-otheroptions='{{otheroptions}}'
     >
 </div>
 
 {{#js}}
-    require(['local_cveteval/assess-student-table'], function(assesstable) {
+    require(['local_cveteval/assess-other-student-table'], function(assesstable) {
         assesstable.init('table-{{uniqid}}');
     });
 {{/js}}

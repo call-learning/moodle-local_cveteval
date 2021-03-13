@@ -27,8 +27,13 @@ defined('MOODLE_INTERNAL') || die();
 
 use local_cltools\local\dmlutils;
 use local_cltools\local\field\base;
+use local_cltools\local\filter\filterset;
 use local_cltools\local\table\dynamic_table_sql;
 use local_cveteval\local\persistent\role\entity as role_entity;
+use local_cveteval\local\persistent\role\form;
+use local_cveteval\output\grade_widget;
+use stdClass;
+use table_sql;
 
 /**
  * A list of student matching this situation
@@ -39,14 +44,45 @@ use local_cveteval\local\persistent\role\entity as role_entity;
  */
 class appraisals_student extends dynamic_table_sql {
 
+    /**
+     * @var null
+     */
+    protected $appraiserlist = null;
+
+    /**
+     * appraisals_student constructor.
+     *
+     * @param $uniqueid
+     * @throws \coding_exception
+     */
     public function __construct($uniqueid) {
         parent::__construct($uniqueid);
+        // A  bit of a hack here. We use this on subqueries only...
         $this->filteraliases = [
-            'roletype' => 'role.type',
             'situationid' => 'plan.clsituationid',
             'studentid' => 'appraisal.studentid',
-            'appraiserfullname' => 'appraiser.fullname',
+            'roletype' => 'role.type',
+            'criterionname' => 'criterion.label'
         ];
+    }
+
+    /**
+     * Set the filterset in the table class.
+     * As columns are dependent on filters, then we need to update column definition also.
+     *
+     * The use of filtersets is a requirement for dynamic tables, but can be used by other tables too if desired.
+     * This also sets the filter aliases if not set for each filters, depending on what is set in the
+     * local $filteralias array.
+     *
+     * @param filterset $filterset The filterset object to get filters and table parameters from
+     */
+    public function set_extended_filterset(filterset $filterset): void {
+        parent::set_extended_filterset($filterset);
+        list($cols, $headers) = $this->get_table_columns_definitions();
+        $this->define_columns($cols);
+        $this->define_headers($headers);
+        $this->set_entity_sql();
+
     }
 
     /**
@@ -58,80 +94,184 @@ class appraisals_student extends dynamic_table_sql {
      * @throws \ReflectionException
      */
     protected function setup_fields() {
-        $fields = [
+        $colfields = [
             'id' => [
-                "fullname" => 'appraisalid',
+                "fullname" => 'criterionid',
                 "rawtype" => PARAM_INT,
                 "type" => "hidden"
             ],
-            'studentid' => [
-                "fullname" => 'studentid',
+            'criterionparentid' => [
+                "fullname" => "criterionparentid",
                 "rawtype" => PARAM_INT,
                 "type" => "hidden"
             ],
-            'appraiserid' => [
-                "fullname" => 'appraiserid',
+            'criterionsort' => [
+                "fullname" => "criterionsort",
                 "rawtype" => PARAM_INT,
                 "type" => "hidden"
             ],
-            'situationid' => [
-                "fullname" => 'situationid',
-                "rawtype" => PARAM_INT,
-                "type" => "hidden"
-            ],
-            'appraiserfullname' => [
-                "fullname" => get_string("appraisal:appraiser", 'local_cveteval'),
+            'criterionname' => [
+                "fullname" => get_string('criterion:label', 'local_cveteval'),
                 "rawtype" => PARAM_TEXT,
                 "type" => "text"
-            ],
-            'context' => [
-                "fullname" => get_string("appraisal:context", 'local_cveteval'),
-                "rawtype" => PARAM_RAW,
-                "type" => "text"
-            ],
-            'comment' => [
-                "fullname" => get_string("appraisal:comment", 'local_cveteval'),
-                "rawtype" => PARAM_INT,
-                "type" => "text"
-            ],
-            'datetime' => [
-                "fullname" => get_string("appraisal:modificationdate", 'local_cveteval'),
-                "rawtype" => PARAM_INT,
-                "type" => "datetime"
             ]
         ];
+        // Add columns only when filters are defined.
+        if (!empty($this->filterset)) {
+            global $DB;
+            list($additionalwhere, $params) = $this->filterset->get_sql_for_filter('',
+                array('criterionname')
+            );
+            $from = '
+                {local_cveteval_appraisal} appraisal 
+                LEFT JOIN {local_cveteval_evalplan} plan ON appraisal.evalplanid = plan.id
+                LEFT JOIN {local_cveteval_group_assign} groupa ON groupa.groupid = plan.groupid 
+                LEFT JOIN {local_cveteval_role} role ON plan.clsituationid = role.clsituationid
+                LEFT JOIN (SELECT ' . $DB->sql_concat_join("' '", array('u.firstname', 'u.lastname')) . ' AS fullname, u.id FROM mdl_user u ) appraiser
+                    ON appraiser.id = appraisal.appraiserid
+            ';
+            $fields = [];
+            $fields[] = 'appraisal.id AS id';
+            $fields[] = 'appraisal.appraiserid AS appraiserid';
+            $fields[] = 'appraisal.studentid AS studentid';
+            $fields[] = 'appraiser.fullname AS appraiserfullname';
+            $appraisalsraws = $DB->get_records_sql('SELECT DISTINCT '
+                . join(', ', $fields)
+                . ' FROM ' . $from
+                . ' WHERE 1=1 AND (' . $additionalwhere . ') '
+                . ' GROUP BY appraisal.id, appraisal.appraiserid, appraisal.studentid',
+                $params);
+            $this->appraiserlist = [];
+            foreach ($appraisalsraws as $appraisal) {
+                if (empty($appraisers[$appraisal->appraiserid])) {
+                    $this->appraiserlist[$appraisal->appraiserid] = $appraisal->appraiserfullname;
+                }
+            }
+            foreach ($this->appraiserlist as $appraiserid => $fullname) {
+                $colfields['appraisergrade' . $appraiserid] = [
+                    "fullname" => $fullname,
+                    "rawtype" => PARAM_RAW,
+                    "type" => "html" // List of grades separated by comma (grades and subcriteria grades)
+                ];
+            }
+        }
         $this->fields = [];
-        foreach ($fields as $name => $prop) {
+        foreach ($colfields as $name => $prop) {
             $this->fields[$name] = base::get_instance_from_def($name, $prop);
         }
         $this->setup_other_fields();
     }
 
+    protected const FIELDS = [
+        'criterion.id AS id',
+        'criterion.parentid AS criterionparentid',
+        'criterion.label AS criterionname',
+        'criterion.sort AS criterionsort'
+    ];
     /**
      * Set SQL parameters (where, from,....) from the entity
      *
+     * We just retrieve the criteria here and we will gather the rest after.
      * This can be overridden when we are looking at linked entities.
      */
     protected function set_entity_sql() {
         global $DB;
-        $from = '
-         {local_cveteval_appraisal} appraisal 
-         LEFT JOIN {local_cveteval_evalplan} plan ON appraisal.evalplanid = plan.id
-         LEFT JOIN {local_cveteval_group_assign} groupa ON groupa.groupid = plan.groupid 
-         LEFT JOIN {local_cveteval_role} role ON plan.clsituationid = role.clsituationid
-         LEFT JOIN (SELECT '.$DB->sql_concat('u.firstname', 'u.lastname') .' AS fullname, u.id FROM mdl_user u ) appraiser
-            ON appraiser.id = appraisal.appraiserid
-        ';
-        $fields[] = 'appraisal.id AS id';
-        $fields[] = 'appraisal.appraiserid AS appraiserid';
-        $fields[] = 'appraisal.studentid AS studentid';
-        $fields[] = 'plan.clsituationid AS situationid';
-        $fields[] = 'appraiser.fullname AS appraiserfullname';
-        $fields[] = 'appraisal.comment AS comment';
-        $fields[] = 'appraisal.commentformat AS commentformat';
-        $fields[] = 'appraisal.context AS context';
-        $fields[] = 'appraisal.contextformat AS contextformat';
-        $fields[] = 'appraisal.timemodified AS datetime';
-        $this->set_sql(join(', ', $fields), $from,'1=1', []);
+        $from = '{local_cveteval_criteria} criterion';
+        $fields = static::FIELDS;
+        if ($this->appraiserlist) {
+            foreach($this->appraiserlist as $appraiserid => $appraiserfullname) {
+                $fields['appraisergrade'.$appraiserid] = " '' AS appraisergrade'.$appraiserid";
+            }
+        }
+        $this->set_sql(join(', ', static::FIELDS), $from, '1=1', []);
+    }
+
+    /**
+     * Here we go back to the original setup for a table query
+     * We just return the row and we will enrich the information with the
+     * relevant data. That is to say, this is really hack.
+     * The filters will be ignored.
+     *
+     * @param int $pagesize
+     * @param bool $useinitialsbar
+     */
+    public function query_db($pagesize, $useinitialsbar = true) {
+        table_sql::query_db($pagesize, $useinitialsbar);
+    }
+
+    /**
+     * Retrieve data from the database and return a row set
+     * This is a complete hack here as we have had to transpose the table from the original
+     * design.
+     *
+     * @return array
+     */
+    public function retrieve_raw_data($pagesize) {
+        $rows = parent::retrieve_raw_data($pagesize);
+        $rootcriteria = [];
+        foreach($rows  as $rcriteria) {
+            if (empty($rcriteria->criterionparentid)) {
+                $this->get_appraisal_criteria_grade($rcriteria);
+                $rcriteria->_children = [];
+                $rootcriteria[$rcriteria->id] = $rcriteria;
+            }
+        }
+        foreach($rows as $rcriteria) {
+            if (!empty($rcriteria->criterionparentid)) {
+                $this->get_appraisal_criteria_grade($rcriteria);
+                $rootcriteria[$rcriteria->criterionparentid]->_children[] = $rcriteria;
+            }
+        }
+        return array_values($rootcriteria);
+    }
+
+    public function get_appraisal_criteria_grade(&$row) {
+        global $DB;
+        global $PAGE;
+        $renderer = $PAGE->get_renderer('local_cveteval');
+        if ($this->appraiserlist) {
+            list($additionalwhere, $params) = $this->filterset->get_sql_for_filter('',
+                array('criterionname')
+            );
+            foreach ($this->appraiserlist as $appraiserid => $fullname) {
+                $grades = $DB->get_records_sql(
+                    "SELECT c.criteriaid, c.grade as grade, 
+                        c.comment as comment, c.commentformat,
+                        appraisal.comment as appraisalcomment, appraisal.commentformat as appraisalcommentformat,
+                        appraisal.context as appraisalcontext, appraisal.contextformat as appraisalcontextformat
+                    FROM {local_cveteval_appr_crit} c
+                    LEFT JOIN {local_cveteval_criteria} criterion ON criterion.id = c.criteriaid
+                    LEFT JOIN {local_cveteval_appraisal} appraisal ON appraisal.id = c.appraisalid
+                    LEFT JOIN {local_cveteval_evalplan} plan ON plan.id = appraisal.evalplanid
+                    LEFT JOIN {local_cveteval_role} role ON plan.clsituationid = role.clsituationid
+                    WHERE appraisal.appraiserid = :appraiserid AND (c.criteriaid = :criteriaid 
+                    OR criterion.parentid = :parentcritid ) AND $additionalwhere
+                    ",
+                    $params + [
+                        'appraiserid' => $appraiserid,
+                        'criteriaid' => $row->id,
+                        'parentcritid' => $row->id,
+                    ]
+
+                );
+                $hassubgrades = false;
+                $maingrade = 0;
+                $comments = null;
+                foreach($grades as $grade) {
+                    if ($grade->criteriaid == $row->id) {
+                        $maingrade = $grade->grade;
+                        $comments = new stdClass();
+                        $comments->gradecomments = $this->format_text($grade->comment, $grade->commentformat);
+                        $comments->appraisalcontext = $this->format_text($grade->appraisalcontext, $grade->appraisalcontextformat);
+                        $comments->appraisalcomment = $this->format_text($grade->commentformat, $grade->appraisalcommentformat);
+                    } else {
+                        $hassubgrades = true;
+                    }
+                }
+                $row->{'appraisergrade' . $appraiserid} =
+                    $renderer->render(new grade_widget($maingrade, $hassubgrades, $comments));
+            }
+        }
     }
 }
+

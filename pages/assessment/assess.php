@@ -165,10 +165,15 @@ switch ($currenttab) {
         );
         $entitylist->set_extended_filterset($filterset);
 
-        $renderable = new entity_table_renderable($entitylist);
-        $template = 'local_cveteval/assess_student_table';
-        $renderable = new entity_table_renderable($entitylist);
-        echo $OUTPUT->render_from_template($template, $renderable->export_for_template($OUTPUT));
+        $renderer = $PAGE->get_renderer('local_cltools');
+        /** @var entity_table_renderable entity table */
+        $renderable = new entity_table_renderable($entitylist,['dataTree'=> true]);
+        echo $renderer->render($renderable);
+
+        //$renderable = new entity_table_renderable($entitylist);
+        //$template = 'local_cveteval/assess_student_table';
+        //$renderable = new entity_table_renderable($entitylist);
+        //echo $OUTPUT->render_from_template($template, $renderable->export_for_template($OUTPUT));
         break;
     case "othersituations":
         $uniqueid = \html_writer::random_id('othersituation');

@@ -39,22 +39,45 @@ defined('MOODLE_INTERNAL') || die();
  */
 class grade_widget implements renderable, templatable  {
 
+    /**
+     * @var int
+     */
     protected $grade;
 
+    /**
+     * @var false|mixed
+     */
+    protected $hassubgrades;
+
+    protected $comments = null;
     /**
      * Constructor
      *
      * @param int $grade
      */
-    public function __construct($grade) {
+    public function __construct($grade, $hassubgrades = false, $comments) {
         $this->grade = $grade;
+        $this->hassubgrades = $hassubgrades;
+        $this->comments = $comments;
     }
 
+    /**
+     * Export for template
+     *
+     * @param renderer_base $output
+     * @return object
+     * @throws \coding_exception
+     */
     public function export_for_template(renderer_base $output) {
-        return (object)[
+        $context = (object)[
             'gradeiconurl' => $output->image_url('grade/'.$this->grade, 'local_cveteval')->out(false),
-            'gradetext' => get_string('grade:'. $this->grade, 'local_cveteval')
+            'gradetext' => get_string('grade:'. $this->grade, 'local_cveteval'),
+            'hassubgrades' => $this->hassubgrades,
         ];
+        if ($this->comments) {
+            $context->comments = $this->comments;
+        }
+        return $context;
     }
 }
 

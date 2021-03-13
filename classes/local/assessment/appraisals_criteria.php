@@ -98,13 +98,13 @@ class appraisals_criteria extends dynamic_table_sql {
     protected const FIELDS = [
         'critapp.id AS id',
         'critapp.appraisalid AS appraisalid',
-        'COALESCE(critapp.grade) AS grade',
+        'COALESCE(critapp.grade, 0) AS grade',
         'critapp.comment AS comment',
         'criterion.sort AS sort',
         'criterion.label AS label',
         'criterion.parentid AS criterionparentid',
         'criterion.id AS criterionid',
-        'critapp.timemodified AS datetime'
+        'COALESCE(critapp.timemodified,0) AS datetime'
     ];
 
     /**
