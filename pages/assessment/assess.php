@@ -34,6 +34,7 @@ require_once(__DIR__ . '/../../../../config.php');
 global $CFG, $OUTPUT, $PAGE, $USER;
 
 use local_cveteval\local\assessment\mystudents;
+use local_cveteval\local\assessment\situations_student;
 use local_cveteval\local\persistent\role\entity as role_entity;
 use local_cveteval\local\utils;
 
@@ -46,13 +47,13 @@ if (utils::get_user_role_id($USER->id) != role_entity::ROLE_ASSESSOR_ID) {
 }
 $student = core_user::get_user($studentid);
 
-$evalplan =  new local_cveteval\local\persistent\planning\entity($evalplanid);
+$evalplan = new local_cveteval\local\persistent\planning\entity($evalplanid);
 $situation = new local_cveteval\local\persistent\situation\entity($evalplan->get('clsituationid'));
 
 $PAGE->set_context(\context_system::instance());
 $PAGE->set_title(get_string('assess', 'local_cveteval', fullname($student))
-    .':'
-    .get_string('assess', 'local_cveteval'));
+    . ':'
+    . get_string('assess', 'local_cveteval'));
 $PAGE->set_heading(get_string('assess', 'local_cveteval'));
 $currenturl = new moodle_url('/local/cveteval/pages/assessment/assess.php', array(
     'evalplanid' => $evalplanid,
@@ -65,7 +66,7 @@ $situationnode = $PAGE->navigation->add(
     navigation_node::TYPE_CONTAINER);
 $studentnode = $situationnode->add(
     get_string('mystudents', 'local_cveteval'),
-    new moodle_url('/local/cveteval/pages/assessment/mystudents.php',  array(
+    new moodle_url('/local/cveteval/pages/assessment/mystudents.php', array(
         'situationid' => $situation->get('id'),
     )));
 $currentnode = $studentnode->add(
@@ -75,34 +76,30 @@ $currentnode->make_active();
 
 $currentfinaleval = null;
 $currentfinaleval = local_cveteval\local\persistent\final_evaluation\entity::get_record(
-    array('studentid'=> $studentid, 'evalplanid'=>$evalplanid));
-if (!$currentfinaleval)  {
-    $currentfinaleval = null;
-}
-$evaluationform =  new local_cveteval\local\persistent\final_evaluation\form(null,
-    [
-        'studentid'=> $studentid,
+    array('studentid' => $studentid, 'evalplanid' => $evalplanid));
+if (!$currentfinaleval) {
+    $currentfinaleval = new local_cveteval\local\persistent\final_evaluation\entity(0, (object) [
+        'studentid' => $studentid,
         'evalplanid' => $evalplanid,
+        'assessorid' => $USER->id
+    ]
+    );
+}
+$evaluationform = new local_cveteval\local\persistent\final_evaluation\form(null,
+    [
+        'tabname' => $currenttab,
         'persistent' => $currentfinaleval
-    ], 'post', '', ['class'=>'d-flex flex-row']);
+    ], 'post', '', ['class' => 'd-flex flex-row ceveteval-eval-form']);
 
 echo $OUTPUT->header();
 
 $evaluationform->prepare_for_files();
 if ($data = $evaluationform->get_data()) {
     try {
-        $evaluationform->save_submitted_files($data);
-        $currentfinaleval->from_record($data);
-        $currentfinaleval->update();
-
-        echo $this->renderer->notification(get_string('saved'), 'notifysuccess');
-        redirect(
-            new moodle_url($this->persistentnavigation->get_view_url(), ['id' => $entity->get('id')]),
-            $this->get_action_event_description(),
-            null,
-            $messagetype = \core\output\notification::NOTIFY_SUCCESS);
+        $evaluationform->save_data();
+        echo $OUTPUT->notification(get_string('saved', 'local_cveteval'), 'notifysuccess');
     } catch (\moodle_exception $e) {
-        echo $this->renderer->notification($e->getMessage(), 'notifyfailure');
+        echo $OUTPUT->notification($e->getMessage(), 'notifyfailure');
     }
 }
 
@@ -118,55 +115,85 @@ $tabs[] = new tabobject('otherstudents',
     $currenturl->out(),
     get_string('otherstudents', 'local_cveteval'));;
 
-$currenturl->param('tabname', 'otherrotations');
-$tabs[] = new tabobject('otherrotations',
+$currenturl->param('tabname', 'othersituations');
+$tabs[] = new tabobject('othersituations',
     $currenturl->out(),
     get_string('othersituations', 'local_cveteval'));
 
 echo $OUTPUT->tabtree($tabs, $currenttab);
 
-$uniqueid = \html_writer::random_id('situationtable');
-$entitylist = new appraisals_student($uniqueid);
-$filterset = new basic_filterset(
-    [
-        'roletype' => (object)
-        [
-            'filterclass' => 'local_cltools\\local\filter\\numeric_comparison_filter',
-            'required' => true
-        ],
-        'situationid' => (object)
-        [
-            'filterclass' => 'local_cltools\\local\filter\\numeric_comparison_filter',
-            'required' => true,
-        ],
-        'studentid' => (object)
-        [
-            'filterclass' => 'local_cltools\\local\filter\\numeric_comparison_filter',
-            'required' => true,
-        ]
-    ]
-);
-$filterset->set_join_type(filter::JOINTYPE_ALL);
-$filterset->add_filter_from_params(
-    'roletype', // Field name.
-    filter::JOINTYPE_ALL,
-    [json_encode((object) ['direction' => '=', 'value' =>  role_entity::ROLE_ASSESSOR_ID])]
-);
-$filterset->add_filter_from_params(
-    'situationid', // Field name.
-    filter::JOINTYPE_ALL,
-    [json_encode((object)['direction' => '=', 'value'=>$situation->get('id')])]
-);
-$filterset->add_filter_from_params(
-    'studentid', // Field name.
-    filter::JOINTYPE_ALL,
-    [json_encode((object)['direction' => '=', 'value'=>$studentid])]
-);
-$entitylist->set_extended_filterset($filterset);
+$entitylist = null;
 
-$renderable = new entity_table_renderable($entitylist);
+switch ($currenttab) {
+    case "thissituation":
+        $uniqueid = \html_writer::random_id('thisituationtable');
+        $entitylist = new appraisals_student($uniqueid);
+        $filterset = new basic_filterset(
+            [
+                'roletype' => (object)
+                [
+                    'filterclass' => 'local_cltools\\local\filter\\numeric_comparison_filter',
+                    'required' => true
+                ],
+                'situationid' => (object)
+                [
+                    'filterclass' => 'local_cltools\\local\filter\\numeric_comparison_filter',
+                    'required' => true,
+                ],
+                'studentid' => (object)
+                [
+                    'filterclass' => 'local_cltools\\local\filter\\numeric_comparison_filter',
+                    'required' => true,
+                ]
+            ]
+        );
+        $filterset->set_join_type(filter::JOINTYPE_ALL);
+        $filterset->add_filter_from_params(
+            'roletype', // Field name.
+            filter::JOINTYPE_ALL,
+            [json_encode((object) ['direction' => '=', 'value' => role_entity::ROLE_ASSESSOR_ID])]
+        );
+        $filterset->add_filter_from_params(
+            'situationid', // Field name.
+            filter::JOINTYPE_ALL,
+            [json_encode((object) ['direction' => '=', 'value' => $situation->get('id')])]
+        );
+        $filterset->add_filter_from_params(
+            'studentid', // Field name.
+            filter::JOINTYPE_ALL,
+            [json_encode((object) ['direction' => '=', 'value' => $studentid])]
+        );
+        $entitylist->set_extended_filterset($filterset);
 
-echo $OUTPUT->render_from_template('local_cveteval/assess_student_table',
-    $renderable->export_for_template($OUTPUT));
+        $renderable = new entity_table_renderable($entitylist);
+        $template = 'local_cveteval/assess_student_table';
+        $renderable = new entity_table_renderable($entitylist);
+        echo $OUTPUT->render_from_template($template, $renderable->export_for_template($OUTPUT));
+        break;
+    case "othersituations":
+        $uniqueid = \html_writer::random_id('othersituation');
+        $entitylist = new situations_student($uniqueid);
+        $filterset = new basic_filterset(
+            [
+                'studentid' => (object)
+                [
+                    'filterclass' => 'local_cltools\\local\filter\\numeric_comparison_filter',
+                    'required' => true,
+                ]
+            ]
+        );
+        $filterset->set_join_type(filter::JOINTYPE_ALL);
+        $filterset->add_filter_from_params(
+            'studentid', // Field name.
+            filter::JOINTYPE_ALL,
+            [json_encode((object) ['direction' => '=', 'value' => $studentid])]
+        );
+        $entitylist->set_extended_filterset($filterset);
+        $renderer = $PAGE->get_renderer('local_cltools');
+        /** @var entity_table_renderable entity table */
+        $renderable = new entity_table_renderable($entitylist);
+        echo $renderer->render($renderable);
+        break;
+}
 
 echo $OUTPUT->footer();

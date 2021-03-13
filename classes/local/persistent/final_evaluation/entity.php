@@ -47,38 +47,39 @@ class entity extends \core\persistent {
         return array(
             'studentid' => array(
                 'type' => PARAM_INT,
-                'default' => 0
+                'default' => 0,
+                'format' => [
+                    'type' => 'hidden',
+                ]
             ),
-            'appraiserid' => array(
+            'assessorid' => array(
                 'type' => PARAM_INT,
-                'default' => 0
+                'default' => 0,
+                'format' => [
+                    'type' => 'hidden',
+                ]
             ),
             'evalplanid' => array(
                 'type' => PARAM_INT,
-                'default' => ''
+                'default' => '',
+                'format' => [
+                    'type' => 'hidden',
+                ]
             ),
             'grade' => array(
                 'type' => PARAM_INT,
                 'default' => 0,
                 'format' => [
-                    'fullname' => get_string('finalevl:grade', 'local_cveteval')
+                    'fullname' => get_string('evaluation:grade', 'local_cveteval')
                 ]
             ),
-            'context' => array(
-                'type' => PARAM_TEXT,
-                'default' => ''
-            ),
-            'contextformat' => array(
-                'type' => PARAM_INT,
-                'default' => FORMAT_PLAIN
-            ),
             'comment' => array(
-                'type' => PARAM_TEXT,
+                'type' => PARAM_RAW,
                 'default' => ''
             ),
             'commentformat' => array(
                 'type' => PARAM_INT,
-                'default' => FORMAT_PLAIN
+                'default' => FORMAT_HTML
             ),
         );
     }

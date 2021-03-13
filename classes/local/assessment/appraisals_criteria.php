@@ -95,6 +95,18 @@ class appraisals_criteria extends dynamic_table_sql {
         $this->setup_other_fields();
     }
 
+    protected const FIELDS = [
+        'critapp.id AS id',
+        'critapp.appraisalid AS appraisalid',
+        'COALESCE(critapp.grade) AS grade',
+        'critapp.comment AS comment',
+        'criterion.sort AS sort',
+        'criterion.label AS label',
+        'criterion.parentid AS criterionparentid',
+        'criterion.id AS criterionid',
+        'critapp.timemodified AS datetime'
+    ];
+
     /**
      * Set SQL parameters (where, from,....) from the entity
      *
@@ -106,15 +118,8 @@ class appraisals_criteria extends dynamic_table_sql {
         {local_cveteval_criteria} criterion
         LEFT JOIN {local_cveteval_appr_crit} critapp ON  criterion.id = critapp.criteriaid
         ';
-        $fields[] = 'critapp.id AS id';
-        $fields[] = 'critapp.appraisalid AS appraisalid';
-        $fields[] = 'COALESCE(critapp.grade) AS grade';
-        $fields[] = 'critapp.comment AS comment';
-        $fields[] = 'criterion.sort AS sort';
-        $fields[] = 'criterion.label AS label';
-        $fields[] = 'criterion.parentid AS criterionparentid';
-        $fields[] = 'critapp.timemodified AS datetime';
-        $this->set_sql(join(', ', $fields), $from,'criterion.parentid = 0', []);
+
+        $this->set_sql(join(', ', static::FIELDS), $from,'criterion.parentid = 0', []);
         // Just the first set, we will fold the other row in the result.
     }
 
@@ -127,10 +132,53 @@ class appraisals_criteria extends dynamic_table_sql {
         return parent::get_sql_sort();
     }
 
+    /**
+     * Grade column
+     *
+     * @param $row
+     * @return bool|string
+     * @throws \coding_exception
+     */
     protected function col_grade($row) {
         global $PAGE;
         $renderer = $PAGE->get_renderer('local_cveteval');
         return $renderer->render(new grade_widget($row->grade));
+    }
+
+    /**
+     * Retrieve data from the database and return a row set
+     *
+     * @return array
+     */
+    public function retrieve_raw_data($pagesize) {
+        global $DB;
+        list($additionalwhere, $params) = $this->filterset->get_sql_for_filter();
+        $where = '';
+        if ($additionalwhere) {
+            $where = " AND ($additionalwhere)";
+        }
+        $sql = 'SELECT DISTINCT ' . join(', ', static::FIELDS)
+            . ' FROM {local_cveteval_criteria} criterion
+               LEFT JOIN {local_cveteval_appr_crit} critapp ON  criterion.id = critapp.criteriaid
+               WHERE criterion.parentid = :parentcriterion '. $where . ' ORDER BY sort' ;
+        $rows = [];
+        $this->setup();
+        $this->query_db($pagesize, false);
+        $rows = [];
+        foreach ($this->rawdata as $row) {
+            $params['parentcriterion'] =  $row->criterionid;
+            $subcriteria = $DB->get_records_sql($sql, $params);
+            $formattedrow = $this->format_row($row);
+            if ($subcriteria) {
+                foreach($subcriteria as &$sub) {
+                    $sub->grade = $this->col_grade($sub);
+                }
+                $formattedrow['_children'] = array_values($subcriteria);
+            }
+            $rows[] = (object) $formattedrow;
+        }
+        $this->close_recordset();
+        return $rows;
     }
 }
 

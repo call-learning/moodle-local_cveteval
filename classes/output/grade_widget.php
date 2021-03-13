@@ -52,7 +52,7 @@ class grade_widget implements renderable, templatable  {
 
     public function export_for_template(renderer_base $output) {
         return (object)[
-            'grade' => $this->grade,
+            'gradeiconurl' => $output->image_url('grade/'.$this->grade, 'local_cveteval')->out(false),
             'gradetext' => get_string('grade:'. $this->grade, 'local_cveteval')
         ];
     }

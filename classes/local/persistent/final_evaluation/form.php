@@ -24,6 +24,7 @@
 
 namespace local_cveteval\local\persistent\final_evaluation;
 
+use coding_exception;
 use local_cltools\local\crud\form\entity_form;
 
 defined('MOODLE_INTERNAL') || die();
@@ -38,50 +39,20 @@ defined('MOODLE_INTERNAL') || die();
 class form extends entity_form {
 
     /**
-     * Usual properties definition for a persistent form
-     *
-     * @return array|array[]
-     */
-    protected static function get_fields_definition() {
-        return array(
-            'studentid' => array(
-                'type' => PARAM_INT,
-                'default' => 0,
-                'format' => [
-                    'type' => 'hidden',
-                ]
-            ),
-            'evalplanid' => array(
-                'type' => PARAM_INT,
-                'default' => 0,
-                'format' => [
-                    'type' => 'hidden',
-                ]
-            ),
-            'appraiserid' => array(
-                'type' => PARAM_INT,
-                'default' => 0,
-                'format' => [
-                    'type' => 'hidden',
-                    'fullname' => get_string('appraiser', 'local_cveteval')
-                ]
-            )
-        );
-    }
-
-    /**
      * @param \MoodleQuickForm $mform
      * Additional definitions for the form
      */
     protected function pre_field_definitions(&$mform) {
         global $OUTPUT;
-        if ($this->_customdata['studentid']) {
+        if ( $studentid = $this->get_persistent()->get('studentid')) {
             /* @var \core_renderer $OUTPUT */
-            $studentuser = \core_user::get_user($this->_customdata['studentid']);
+            $studentuser = \core_user::get_user($studentid);
             $fullname = fullname($studentuser);
             $userpicture = $OUTPUT->user_picture($studentuser);
-            $mform->addElement('html', \html_writer::div($userpicture, 'align-self-center')
-                . \html_writer::div($fullname, 'align-self-center') );
+            $mform->addElement('html',
+                \html_writer::div(
+                    \html_writer::div($userpicture)
+                . \html_writer::div($fullname), 'f-item' ));
         }
 
     }
@@ -92,11 +63,13 @@ class form extends entity_form {
      */
     protected function post_field_definitions(&$mform) {
         global $OUTPUT;
-        if ($this->_customdata['evalplanid']) {
-            $mform->setDefault('evalplanid', $this->_customdata['evalplanid']);
-        }
-        if ($this->_customdata['studentid']) {
-            $mform->setDefault('studentid', $this->_customdata['studentid']);
+        foreach(['tabname'] as $fieldtocheck) {
+            if (empty($this->_customdata[$fieldtocheck])) {
+                throw new coding_exception($fieldtocheck . ' must be defined');
+            }
+            $value = $this->_customdata[$fieldtocheck];
+            $mform->setDefault('evalplanid', $value);
+            $this->set_data([$fieldtocheck => $value]);
         }
     }
 

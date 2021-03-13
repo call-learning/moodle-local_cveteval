@@ -1,0 +1,23 @@
+.cveteval-grade-widget-image {
+    width: 2.2em;
+}
+
+.ceveteval-subtable {
+    box-sizing: border-box;
+    margin-left: 2em;
+    border: 1px solid #333;
+}
+
+
+.ceveteval-eval-form #fitem_id_comment_editor {
+    flex-grow : 1;
+}
+
+.ceveteval-eval-form .form-group.row.fitem {
+    flex-direction: column;
+}
+
+ceveteval-eval-form .form-group.row.fitem label {
+    font-size: large;
+    font-weight: bold;
+}

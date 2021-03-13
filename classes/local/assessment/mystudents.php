@@ -56,6 +56,8 @@ class mystudents extends dynamic_table_sql {
             'situationid' => 'situation.id',
             'appraisalcount' => 'apc.count',
             'appraisalrequired' => 'situation.expectedevalsnb',
+            'studentfullname' => 'student.fullname',
+            'groupname' => 'grp.name'
         ];
     }
 
@@ -116,6 +118,10 @@ class mystudents extends dynamic_table_sql {
                 "fullname" => get_string("planning:requiredappraisals", 'local_cveteval'),
                 "rawtype" => PARAM_INT,
             ],
+            'hasgrade' => [
+                "fullname" => get_string("evaluation:hasgrade", 'local_cveteval'),
+                "rawtype" => PARAM_BOOL,
+            ],
         ];
         $this->fields = [];
         foreach ($fields as $name => $prop) {
@@ -140,9 +146,10 @@ class mystudents extends dynamic_table_sql {
         LEFT JOIN {local_cveteval_clsituation} situation ON situation.id =  plan.clsituationid
         LEFT JOIN (SELECT '.$DB->sql_fullname('s.firstname','s.lastname').' AS fullname, s.id FROM {user} s ) student
         ON student.id = groupa.studentid 
-        LEFT JOIN (SELECT a.studentid AS studentid, a.appraiserid AS appraiserid, COUNT(*) AS count
-            FROM {local_cveteval_appraisal} a GROUP BY a.studentid, a.appraiserid) apc 
-            ON apc.appraiserid = role.userid AND apc.studentid = student.id 
+        LEFT JOIN (SELECT a.studentid AS studentid, a.evalplanid AS planid, COUNT(*) AS count
+            FROM {local_cveteval_appraisal} a GROUP BY a.studentid, a.evalplanid) apc 
+            ON apc.studentid = student.id AND apc.planid = plan.id
+        LEFT JOIN {local_cveteval_finalevl} eval ON eval.studentid = student.id AND eval.evalplanid = plan.id
         ';
         $fields[] = $DB->sql_concat('plan.id','student.id') . ' AS id';
         $fields[] = 'plan.id AS planid';
@@ -154,6 +161,7 @@ class mystudents extends dynamic_table_sql {
         $fields[] = 'student.fullname AS studentfullname';
         $fields[] = 'COALESCE(apc.count,0) AS appraisalcount';
         $fields[] = 'situation.expectedevalsnb as appraisalrequired';
+        $fields[] = '(eval.id IS NOT NULL) as hasgrade';
         $this->set_sql(join(', ', $fields), $from, '');
     }
 }

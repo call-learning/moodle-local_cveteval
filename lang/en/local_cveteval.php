@@ -75,7 +75,13 @@ $string['evaluation_grid:name'] = 'Evaluation Name';
 $string['evaluation_grid:idnumber'] = 'Evaluation Identifier';
 $string['evaluation_template:version'] = 'Evaluation Version';
 
-$string['finalevl:grade'] = 'Grade';
+$string['evaluation:date'] = "Date";
+$string['evaluation:comment'] = "Comment";
+$string['evaluation:assessor'] = "Assessor";
+$string['evaluation:hasgrade'] = 'Has grade?';
+$string['evaluation:hasgrade'] = 'Has grade?';
+$string['evaluation:grade'] = 'Grade';
+
 $string['assessment'] = 'Assessment';
 $string['assess'] = 'Assess';
 $string['name'] = 'Full Name';
@@ -83,6 +89,7 @@ $string['mystudents'] = "My students";
 $string['mysituations'] = "My situations";
 $string['mysituations:intro'] = "This is the list of situations you should be able to evaluate. Please
 click on a row to see a list of appraisals / students to assess/evaluate.";
+
 $string['fullname'] = 'Full Name';
 $string['idnumber'] = 'ID Number';
 $string['id'] = 'Id';
@@ -90,3 +97,5 @@ $string['view'] = 'View';
 $string['thissituation'] = "This situation";
 $string['otherstudents'] = "Other students";
 $string['othersituations'] = "Other situations";
+
+$string['saved'] = 'Saved';

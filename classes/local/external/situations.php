@@ -63,6 +63,7 @@ class situations extends \external_api {
                 array(
                     'id' => new external_value(PARAM_INT, 'the clinical situation id'),
                     'title' => new external_value(PARAM_TEXT, 'the clinical situation title'),
+                    'description' => new external_value(PARAM_RAW, 'the clinical situation description'),
                     'starttime' => new external_value(PARAM_INT, 'the clinical situation start time'),
                     'endtime' => new external_value(PARAM_INT, 'the clinical situation end time'),
                     'type' => new external_value(PARAM_TEXT, 'the clinical situation type (appraiser or student)'),
@@ -87,6 +88,7 @@ class situations extends \external_api {
         // First all situation as student
         $sql = "SELECT 
             cls.id, 
+            cls.title,
             cls.description, 
             cls.descriptionformat,
             pl.starttime, 
@@ -101,7 +103,7 @@ class situations extends \external_api {
 
         $studentsituations = array_map(
             function($situationdb) {
-                $situationdb->title = format_text($situationdb->description, $situationdb->descriptionformat);
+                $situationdb->description = format_text($situationdb->description, $situationdb->descriptionformat);
                 $situationdb->type = situation_entity::SITUATION_TYPE_STUDENT;
                 $situationdb->appraisalsrequired = $situationdb->expectedevalsnb;
                 return $situationdb;
@@ -111,6 +113,7 @@ class situations extends \external_api {
         // Then all situation for the same user but as appraiser
         $sql = "SELECT 
             cls.id, 
+            cls.title,
             cls.description, 
             cls.descriptionformat,
             pl.starttime, 
@@ -136,7 +139,7 @@ class situations extends \external_api {
                 $situationdb->studentname = fullname($user);
 
                 $situationdb->studentpictureurl = $userpicture->get_url($PAGE)->out(false);
-                $situationdb->title = format_text($situationdb->description, $situationdb->descriptionformat);
+                $situationdb->description = format_text($situationdb->description, $situationdb->descriptionformat);
                 $situationdb->type = situation_entity::SITUATION_TYPE_APPRAISER;
                 $situationdb->appraisalsrequired = $situationdb->expectedevalsnb;
                 return $situationdb;

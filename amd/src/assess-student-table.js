@@ -39,15 +39,7 @@ export const init = async (tabulatorelementid) => {
         holderEl.appendChild(tableEl);
         const id = row.getData().id;
         row.getElement().appendChild(holderEl);
-        holderEl.style.boxSizing = "border-box";
-        holderEl.style.padding = "10px 10px 10px 10px";
-        holderEl.style.borderTop = "1px solid #333";
-        holderEl.style.borderBotom = "1px solid #333";
-        holderEl.style.background = "#ddd";
-        holderEl.setAttribute('class', "appraisalSubtable" + id + "");
-
-        tableEl.style.border = "1px solid #333";
-        tableEl.setAttribute('class', "appraisalSubtable" + id + "");
+        holderEl.setAttribute('class', " ceveteval-subtable appraisalSubtable" + id + "");
 
         const filters = {
             jointype: 2,
@@ -68,6 +60,7 @@ export const init = async (tabulatorelementid) => {
             () => null,
             {
                 pagination: false,
+                dataTree: true,
                 ajaxFiltering: false,
                 ajaxSorting: false,
                 paginationDataReceived: false,
