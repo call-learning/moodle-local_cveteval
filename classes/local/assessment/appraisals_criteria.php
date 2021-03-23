@@ -42,7 +42,7 @@ class appraisals_criteria extends dynamic_table_sql {
 
     public function __construct($uniqueid) {
         parent::__construct($uniqueid);
-        $this->filteraliases = [
+        $this->fieldaliases = [
             'appraisalid' => 'critapp.appraisalid'
         ];
     }
@@ -112,7 +112,7 @@ class appraisals_criteria extends dynamic_table_sql {
      *
      * This can be overridden when we are looking at linked entities.
      */
-    protected function set_entity_sql() {
+    protected function set_initial_sql() {
         global $DB;
         $from = '
         {local_cveteval_criteria} criterion

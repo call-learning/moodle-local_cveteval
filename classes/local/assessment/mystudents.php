@@ -44,13 +44,13 @@ class mystudents extends dynamic_table_sql {
 
     public function __construct($uniqueid) {
         global $PAGE;
-        $PAGE->requires->js_call_amd('local_cveteval/row-click-jumpurl', 'init', [
+        $PAGE->requires->js_call_amd('local_cltools/tabulator-row-action-url','init', [
             $uniqueid,
             (new moodle_url('/local/cveteval/pages/assessment/assess.php'))->out(),
             (object) array('evalplanid' => 'planid', 'studentid' => 'studentid')
         ]);
         parent::__construct($uniqueid);
-        $this->filteraliases = [
+        $this->fieldaliases = [
             'roletype' => 'role.type',
             'appraiserid' => 'role.userid',
             'situationid' => 'situation.id',
@@ -135,7 +135,7 @@ class mystudents extends dynamic_table_sql {
      *
      * This can be overridden when we are looking at linked entities.
      */
-    protected function set_entity_sql() {
+    protected function set_initial_sql() {
         global $USER, $DB;
 
         $from = ' 

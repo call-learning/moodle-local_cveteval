@@ -41,7 +41,7 @@ class situations_student extends dynamic_table_sql {
 
     public function __construct($uniqueid) {
         parent::__construct($uniqueid);
-        $this->filteraliases = [
+        $this->fieldaliases = [
             'studentid' => 'groupa.studentid',
             'studentfullname' => 'student.fullname',
             'assessorfullname' => 'assessor.fullname',
@@ -131,7 +131,7 @@ class situations_student extends dynamic_table_sql {
      *
      * This can be overridden when we are looking at linked entities.
      */
-    protected function set_entity_sql() {
+    protected function set_initial_sql() {
         global $DB;
         $from = ' 
          {local_cveteval_group_assign} groupa 

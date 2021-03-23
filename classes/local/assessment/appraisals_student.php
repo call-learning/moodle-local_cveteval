@@ -58,7 +58,7 @@ class appraisals_student extends dynamic_table_sql {
     public function __construct($uniqueid) {
         parent::__construct($uniqueid);
         // A  bit of a hack here. We use this on subqueries only...
-        $this->filteraliases = [
+        $this->fieldaliases = [
             'situationid' => 'plan.clsituationid',
             'studentid' => 'appraisal.studentid',
             'roletype' => 'role.type',
@@ -81,7 +81,7 @@ class appraisals_student extends dynamic_table_sql {
         list($cols, $headers) = $this->get_table_columns_definitions();
         $this->define_columns($cols);
         $this->define_headers($headers);
-        $this->set_entity_sql();
+        $this->set_initial_sql();
 
     }
 
@@ -174,7 +174,7 @@ class appraisals_student extends dynamic_table_sql {
      * We just retrieve the criteria here and we will gather the rest after.
      * This can be overridden when we are looking at linked entities.
      */
-    protected function set_entity_sql() {
+    protected function set_initial_sql() {
         global $DB;
         $from = '{local_cveteval_criteria} criterion';
         $fields = static::FIELDS;

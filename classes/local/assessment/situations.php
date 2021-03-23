@@ -45,13 +45,13 @@ class situations extends entity_table {
 
     public function __construct($uniqueid, $actionsdefs = null) {
         global $PAGE;
-        $PAGE->requires->js_call_amd('local_cveteval/row-click-jumpurl','init', [
+        $PAGE->requires->js_call_amd('local_cltools/tabulator-row-action-url','init', [
             $uniqueid,
             (new moodle_url('/local/cveteval/pages/assessment/mystudents.php'))->out(),
             (object)array('situationid' => 'id')
         ]);
         parent::__construct($uniqueid, $actionsdefs);
-        $this->filteraliases = [
+        $this->fieldaliases = [
             'roletype' => 'role.type',
             'appraiserid' => 'role.userid'
         ];
@@ -62,7 +62,7 @@ class situations extends entity_table {
      *
      * This can be overridden when we are looking at linked entities.
      */
-    protected function set_entity_sql() {
+    protected function set_initial_sql() {
         $sqlfields = forward_static_call([static::$persistentclass, 'get_sql_fields'], 'entity', '');
         $from = static::$persistentclass::TABLE;
         $sql = '{'.$from.'} entity  LEFT JOIN {local_cveteval_role} role ON entity.id = role.clsituationid';
