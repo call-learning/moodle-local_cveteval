@@ -33,7 +33,6 @@ use local_cveteval\local\assessment\situations;
 require_once(__DIR__ . '/../../../../config.php');
 global $CFG, $OUTPUT, $PAGE, $USER;
 
-use local_cveteval\local\assessment\mystudents;
 use local_cveteval\local\assessment\situations_student;
 use local_cveteval\local\persistent\role\entity as role_entity;
 use local_cveteval\local\utils;
@@ -110,10 +109,10 @@ $tabs[] = new tabobject('thissituation',
     $currenturl->out(),
     get_string('thissituation', 'local_cveteval'));
 
-$currenturl->param('tabname', 'otherstudents');
-$tabs[] = new tabobject('otherstudents',
-    $currenturl->out(),
-    get_string('otherstudents', 'local_cveteval'));;
+//$currenturl->param('tabname', 'otherstudents');
+//$tabs[] = new tabobject('otherstudents',
+//    $currenturl->out(),
+//    get_string('otherstudents', 'local_cveteval'));;
 
 $currenturl->param('tabname', 'othersituations');
 $tabs[] = new tabobject('othersituations',

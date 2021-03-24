@@ -261,7 +261,7 @@ class appraisals_student extends dynamic_table_sql {
                     if ($grade->criteriaid == $row->id) {
                         $maingrade = $grade->grade;
                         $comments = new stdClass();
-                        $comments->gradecomments = $this->format_text($grade->comment, $grade->commentformat);
+                        $comments->criteriacomment = $this->format_text($grade->comment, $grade->commentformat);
                         $comments->appraisalcontext = $this->format_text($grade->appraisalcontext, $grade->appraisalcontextformat);
                         $comments->appraisalcomment = $this->format_text($grade->commentformat, $grade->appraisalcommentformat);
                     } else {

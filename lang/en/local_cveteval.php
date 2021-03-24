@@ -68,6 +68,7 @@ $string['appraisal:modificationdate'] = 'Modified';
 $string['appraisalcriteria:grade'] = 'Final Grade';
 
 $string['criterion:label'] = 'Label';
+$string['criterion:comment'] = 'Criterion comment';
 
 $string['evaluation_grid:entity'] = 'Evaluation Grid';
 $string['evaluation_grid:plural'] = 'Evaluation Grids';
