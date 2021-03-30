@@ -23,11 +23,13 @@
  */
 
 namespace local_cveteval\local;
+
 use core_user;
+use grade_scale;
 use \local_cveteval\local\persistent\role\entity as role_entity;
+use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
-
 
 class utils {
     /**
@@ -49,6 +51,7 @@ class utils {
      * Get role identifier
      *
      * If both appraiser and assessor, assessor role will be returned
+     *
      * @param $userid
      * @return int
      * @throws \dml_exception
@@ -66,7 +69,7 @@ class utils {
                 ));
             $isappraiser = false;
             $isassessor = false;
-            foreach($roles as $role) {
+            foreach ($roles as $role) {
                 if ($role->get('type') == role_entity::ROLE_APPRAISER_ID) {
                     $isappraiser = true;
                 }
@@ -83,5 +86,35 @@ class utils {
         }
 
         return $roleid;
+    }
+
+    const DEFAULT_SCALE_ITEM = [
+        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
+    ];
+
+    public static function create_scale_if_not_present() {
+        $scales = grade_scale::fetch_all_global();
+        $defaultscale = null;
+        foreach ($scales as $scale) {
+            if ($scale->get_name() == get_string('grade:defaultscale', 'local_cveteval')) {
+                $defaultscale = $scale;
+            }
+        }
+        if (empty($defaultscale)) {
+            global $USER;
+            $scalerecord = new stdClass();
+            $scalerecord->standard = 1;
+            $scalerecord->courseid = 0;
+            $scalerecord->scale = join(',', self::DEFAULT_SCALE_ITEM);
+            $scalerecord->userid = $USER->id;
+            $scalerecord->name = get_string('grade:defaultscale', 'local_cveteval');
+            $scalerecord->description = get_string('grade:defaultscale:description', 'local_cveteval');
+            $scalerecord->descriptionformat = FORMAT_PLAIN;
+            $defaultscale = new grade_scale($scalerecord);
+            $defaultscale->insert();
+        } else {
+            $defaultscale->load_items(self::DEFAULT_SCALE_ITEM);
+            $defaultscale->update();
+        }
     }
 }

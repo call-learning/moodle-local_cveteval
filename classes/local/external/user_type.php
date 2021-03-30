@@ -64,7 +64,7 @@ class user_type extends \external_api {
      */
     public static function get_user_type($userid) {
         $params = self::validate_parameters(self::get_user_type_parameters(), array('userid' => $userid));
-        $roleid =  utils::get_user_role_id($userid);
+        $roleid = utils::get_user_role_id($userid);
         return (object) ['type' =>
             role_entity::ROLE_SHORTNAMES[$roleid]
         ];

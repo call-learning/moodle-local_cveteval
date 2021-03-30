@@ -18,22 +18,24 @@
  * Main page for all planning editions
  *
  * Routing is made through the action parameter.
+ *
  * @package   local_cveteval
  * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 require_once(__DIR__ . '/../../../../config.php');
 global $CFG;
+
 use local_cltools\local\crud\helper\base as crud_helper;
 use local_cltools\local\crud\helper\crud_list;
 
 global $CFG, $OUTPUT, $PAGE;
 require_login();;
 
-$action  = optional_param('action',crud_list::ACTION, PARAM_TEXT);
+$action = optional_param('action', crud_list::ACTION, PARAM_TEXT);
 $entityclassname = '\\local_cveteval\\local\\persistent\\planning\\entity';
 
-$navigation =  new \local_cltools\local\crud\navigation\routed_navigation($entityclassname);
+$navigation = new \local_cltools\local\crud\navigation\routed_navigation($entityclassname);
 $crudmgmt = crud_helper::create(
     $entityclassname,
     $action,

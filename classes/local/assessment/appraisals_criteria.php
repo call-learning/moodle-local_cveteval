@@ -34,7 +34,7 @@ use local_cveteval\output\grade_widget;
 /**
  * A list of student matching this situation
  *
- * @package   local_cltools
+ * @package   local_cveteval
  * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -119,17 +119,8 @@ class appraisals_criteria extends dynamic_table_sql {
         LEFT JOIN {local_cveteval_appr_crit} critapp ON  criterion.id = critapp.criteriaid
         ';
 
-        $this->set_sql(join(', ', static::FIELDS), $from,'criterion.parentid = 0', []);
+        $this->set_sql(join(', ', static::FIELDS), $from, 'criterion.parentid = 0', []);
         // Just the first set, we will fold the other row in the result.
-    }
-
-
-    /**
-     * Force SQL sort by criterionparentid, sort
-     * @return string SQL fragment that can be used in an ORDER BY clause.
-     */
-    public function get_sql_sort() {
-        return parent::get_sql_sort();
     }
 
     /**
@@ -160,17 +151,17 @@ class appraisals_criteria extends dynamic_table_sql {
         $sql = 'SELECT DISTINCT ' . join(', ', static::FIELDS)
             . ' FROM {local_cveteval_criteria} criterion
                LEFT JOIN {local_cveteval_appr_crit} critapp ON  criterion.id = critapp.criteriaid
-               WHERE criterion.parentid = :parentcriterion '. $where . ' ORDER BY sort' ;
+               WHERE criterion.parentid = :parentcriterion ' . $where . ' ORDER BY sort';
         $rows = [];
         $this->setup();
         $this->query_db($pagesize, false);
         $rows = [];
         foreach ($this->rawdata as $row) {
-            $params['parentcriterion'] =  $row->criterionid;
+            $params['parentcriterion'] = $row->criterionid;
             $subcriteria = $DB->get_records_sql($sql, $params);
             $formattedrow = $this->format_row($row);
             if ($subcriteria) {
-                foreach($subcriteria as &$sub) {
+                foreach ($subcriteria as &$sub) {
                     $sub->grade = $this->col_grade($sub);
                 }
                 $formattedrow['_children'] = array_values($subcriteria);

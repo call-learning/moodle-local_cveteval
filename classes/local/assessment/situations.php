@@ -35,7 +35,7 @@ use popup_action;
 /**
  * Persistent list base class
  *
- * @package   local_cltools
+ * @package   local_cveteval
  * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -45,10 +45,10 @@ class situations extends entity_table {
 
     public function __construct($uniqueid, $actionsdefs = null) {
         global $PAGE;
-        $PAGE->requires->js_call_amd('local_cltools/tabulator-row-action-url','init', [
+        $PAGE->requires->js_call_amd('local_cltools/tabulator-row-action-url', 'init', [
             $uniqueid,
             (new moodle_url('/local/cveteval/pages/assessment/mystudents.php'))->out(),
-            (object)array('situationid' => 'id')
+            (object) array('situationid' => 'id')
         ]);
         parent::__construct($uniqueid, $actionsdefs);
         $this->fieldaliases = [
@@ -65,8 +65,8 @@ class situations extends entity_table {
     protected function set_initial_sql() {
         $sqlfields = forward_static_call([static::$persistentclass, 'get_sql_fields'], 'entity', '');
         $from = static::$persistentclass::TABLE;
-        $sql = '{'.$from.'} entity  LEFT JOIN {local_cveteval_role} role ON entity.id = role.clsituationid';
-        $this->set_sql($sqlfields,$sql,'', []);
+        $sql = '{' . $from . '} entity  LEFT JOIN {local_cveteval_role} role ON entity.id = role.clsituationid';
+        $this->set_sql($sqlfields, $sql, '', []);
     }
 
     protected function col_description($row) {
@@ -80,7 +80,7 @@ class situations extends entity_table {
      */
     protected function get_table_columns_definitions() {
         list($cols, $headers) = parent::get_table_columns_definitions();
-        foreach($cols as $index => $col) {
+        foreach ($cols as $index => $col) {
             if ($col === 'descriptionformat') {
                 unset($headers[$index]);
                 unset($cols[$index]);

@@ -54,17 +54,23 @@ class appraisals extends \external_api {
                 'criteria' => new external_multiple_structure(
                     new external_single_structure(
                         array(
-                            'id' => new external_value(PARAM_INT, 'id of the appraised criteria', VALUE_OPTIONAL, 0),
+                            'id' => new external_value(PARAM_INT, 'id of the appraised criteria',
+                                VALUE_OPTIONAL, 0),
                             'criterionid' => new external_value(PARAM_INT, 'id of the criterion in the list'),
-                            'grade' => new external_value(PARAM_INT, 'grade for the criteria', VALUE_OPTIONAL, 0),
-                            'comment' => new external_value(PARAM_TEXT, 'comment for criteria', VALUE_OPTIONAL, ""),
+                            'grade' => new external_value(PARAM_INT, 'grade for the criteria',
+                                VALUE_OPTIONAL, 0),
+                            'comment' => new external_value(PARAM_TEXT, 'comment for criteria',
+                                VALUE_OPTIONAL, ""),
                             'subcriteria' => new external_multiple_structure(
                                 new external_single_structure(
                                     array(
-                                        'id' => new external_value(PARAM_INT, 'id of the appraised criteria', VALUE_OPTIONAL, 0),
+                                        'id' => new external_value(PARAM_INT, 'id of the appraised criteria',
+                                            VALUE_OPTIONAL, 0),
                                         'criterionid' => new external_value(PARAM_INT, 'id of the criterion in the list'),
-                                        'grade' => new external_value(PARAM_INT, 'grade for the criteria', VALUE_OPTIONAL, 0),
-                                        'comment' => new external_value(PARAM_TEXT, 'comment for criteria', VALUE_OPTIONAL, ""),
+                                        'grade' => new external_value(PARAM_INT, 'grade for the criteria',
+                                            VALUE_OPTIONAL, 0),
+                                        'comment' => new external_value(PARAM_TEXT, 'comment for criteria',
+                                            VALUE_OPTIONAL, ""),
                                     )
                                 ), '', VALUE_OPTIONAL
                             )
@@ -73,7 +79,8 @@ class appraisals extends \external_api {
                 ),
                 'context' => new external_value(PARAM_TEXT, 'context for appraisal', VALUE_OPTIONAL, ""),
                 'comment' => new external_value(PARAM_TEXT, 'comment for appraisal', VALUE_OPTIONAL, ""),
-                'id' => new external_value(PARAM_INT, 'id of the appraisal if it already exists', VALUE_OPTIONAL, 0),
+                'id' => new external_value(PARAM_INT, 'id of the appraisal if it already exists',
+                    VALUE_OPTIONAL, 0),
             )
         );
     }
@@ -95,8 +102,8 @@ class appraisals extends \external_api {
         global $DB;
         $params = self::validate_parameters(self::set_user_appraisal_parameters(), compact("situationid",
             "appraiserid", "studentid", "context", "comment", "criteria", "id"));
-        // Normally we should have only one matching situation per appraiserId and student
-        $sql = "SELECT pl.id FROM {local_cveteval_evalplan} pl 
+        // Normally we should have only one matching situation per appraiserId and student.
+        $sql = "SELECT pl.id FROM {local_cveteval_evalplan} pl
                 LEFT JOIN {local_cveteval_group_assign} ga ON ga.groupid = pl.groupid
                 WHERE pl.clsituationid =:situationid AND ga.studentid = :studentid";
         $evalplanid = $DB->get_field_sql($sql, array('situationid' => $situationid, 'studentid' => $studentid));
@@ -124,8 +131,8 @@ class appraisals extends \external_api {
                         'id' => empty($crit['id']) ? 0 : $crit['id'],
                         'criteriaid' => $crit['criterionid'], // TODO : this should criterionid.
                         'appraisalid' => $id,
-                        'grade' => empty($crit['grade']) ? 0: $crit['grade'],
-                        'comment' => empty($crit['comment']) ? "":$crit['comment']
+                        'grade' => empty($crit['grade']) ? 0 : $crit['grade'],
+                        'comment' => empty($crit['comment']) ? "" : $crit['comment']
                     ];
                     $criterion = app_crit_entity::get_record(array('appraisalid' => $id, 'criteriaid' => $crit['criterionid']));
                     if (!$criterion) {
@@ -141,7 +148,7 @@ class appraisals extends \external_api {
                                 'id' => empty($scrit['id']) ? 0 : $scrit['id'],
                                 'criteriaid' => $scrit['criterionid'], // TODO : this should criterionid.
                                 'appraisalid' => $id,
-                                'grade' => empty($scrit['grade']) ? 0: $scrit['grade']
+                                'grade' => empty($scrit['grade']) ? 0 : $scrit['grade']
                             ];
                             $criterion = app_crit_entity::get_record(array('appraisalid' => $id, 'criteriaid' => $scrit['id']));
                             if (!$criterion) {
@@ -196,11 +203,11 @@ class appraisals extends \external_api {
         global $DB;
         $params = self::validate_parameters(self::get_user_appraisals_parameters(), array('userid' => $userid));
 
-        // Get appraisal done for this user either as a student or as an appraiser
+        // Get appraisal done for this user either as a student or as an appraiser.
 
-        // First all situation as student
-        $sql = "SELECT 
-            appraisal.id, 
+        // First all situation as student.
+        $sql = "SELECT
+            appraisal.id,
             appraisal.studentid,
             appraisal.appraiserid,
             appraisal.evalplanid,
@@ -210,10 +217,10 @@ class appraisals extends \external_api {
             appraisal.commentformat,
             plan.clsituationid as situationid,
             situation.title as situationtitle,
-            plan.starttime, 
+            plan.starttime,
             plan.endtime,
             COALESCE(appraisal.timemodified, appraisal.timecreated) as timemodified
-            FROM {local_cveteval_appraisal} appraisal 
+            FROM {local_cveteval_appraisal} appraisal
             LEFT JOIN {local_cveteval_evalplan} plan ON plan.id = appraisal.evalplanid
             LEFT JOIN {local_cveteval_clsituation} situation ON situation.id = plan.clsituationid
             WHERE appraisal.studentid = :studentid OR appraisal.appraiserid = :appraiserid";
@@ -251,12 +258,14 @@ class appraisals extends \external_api {
     public static function get_appraisal_returns() {
         return new external_single_structure(
             array(
-                'id' => new external_value(PARAM_INT, 'id of the appraisal if it already exists', VALUE_OPTIONAL, 0),
+                'id' => new external_value(PARAM_INT, 'id of the appraisal if it already exists',
+                    VALUE_OPTIONAL, 0),
                 'situationid' => new external_value(PARAM_INT, 'id of the situation'),
                 'situationtitle' => new external_value(PARAM_TEXT, 'id of the situation'),
                 'appraiserid' => new external_value(PARAM_INT, 'id of the appraiser'),
                 'type' => new external_value(PARAM_INT, '1=appraiser, 2=evaluator'),
-                'appraisername' => new external_value(PARAM_TEXT, 'fullname of the appraiser', VALUE_OPTIONAL, ""),
+                'appraisername' => new external_value(PARAM_TEXT, 'fullname of the appraiser',
+                    VALUE_OPTIONAL, ""),
                 'appraiserpictureurl' => new external_value(PARAM_URL, 'user picture (avatar)',
                     VALUE_OPTIONAL),
                 'studentid' => new external_value(PARAM_INT, 'id of the student'),
@@ -274,7 +283,8 @@ class appraisals extends \external_api {
                             'criterionid' => new external_value(PARAM_INT, 'id of the criterion'),
                             'label' => new external_value(PARAM_TEXT, 'label for the criterion'),
                             'grade' => new external_value(PARAM_INT, 'grade for the criterion'),
-                            'comment' => new external_value(PARAM_TEXT, 'comment for criterion', VALUE_OPTIONAL, ""),
+                            'comment' => new external_value(PARAM_TEXT, 'comment for criterion',
+                                VALUE_OPTIONAL, ""),
                             'timemodified' => new external_value(PARAM_INT,
                                 'last modification time being creation or modification'),
                             'subcriteria' => new external_multiple_structure(
@@ -306,11 +316,11 @@ class appraisals extends \external_api {
         global $DB;
         $params = self::validate_parameters(self::get_appraisal_parameters(), array('appraisalid' => $appraisalid));
 
-        // Get appraisal done for this user either as a student or as an appraiser
+        // Get appraisal done for this user either as a student or as an appraiser.
 
-        // First all situation as student
-        $sql = "SELECT 
-            appraisal.id, 
+        // First all situation as student.
+        $sql = "SELECT
+            appraisal.id,
             appraisal.studentid,
             appraisal.appraiserid,
             appraisal.evalplanid,
@@ -320,10 +330,10 @@ class appraisals extends \external_api {
             appraisal.commentformat,
             plan.clsituationid as situationid,
             situation.title as situationtitle,
-            plan.starttime, 
+            plan.starttime,
             plan.endtime,
             COALESCE(appraisal.timemodified, appraisal.timecreated) as timemodified
-            FROM {local_cveteval_appraisal} appraisal 
+            FROM {local_cveteval_appraisal} appraisal
             LEFT JOIN {local_cveteval_evalplan} plan ON plan.id = appraisal.evalplanid
             LEFT JOIN {local_cveteval_clsituation} situation ON situation.id = plan.clsituationid
             WHERE appraisal.id = :appraisalid";
@@ -343,14 +353,14 @@ class appraisals extends \external_api {
 
         $studentpicture = new user_picture($studentuser);
         $studentpicture->includetoken = true;
-        $studentpicture->size = 1; // Size f1
+        $studentpicture->size = 1; // Size f1.
         $appr->studentpictureurl = $studentpicture->get_url($PAGE)->out();
 
         $appr->appraisername = fullname(\core_user::get_user($appr->appraiserid));
 
         $appraiserpicture = new user_picture($appraiseruser);
         $appraiserpicture->includetoken = true;
-        $appraiserpicture->size = 1; // Size f1
+        $appraiserpicture->size = 1; // Size f1.
         $appr->appraiserpictureurl = $appraiserpicture->get_url($PAGE)->out();
 
         $appr->context = format_text($appr->context, $appr->contextformat);
@@ -368,7 +378,7 @@ class appraisals extends \external_api {
                     crit.sort AS csort,
                     COALESCE(crit.timemodified, crit.timecreated) as timemodified,
                     crit.label
-                    FROM {local_cveteval_appr_crit} apc 
+                    FROM {local_cveteval_appr_crit} apc
                     LEFT JOIN {local_cveteval_criteria} crit ON crit.id = apc.criteriaid
                     WHERE apc.appraisalid =:appraisalid
                     ORDER BY cparentid, csort ASC

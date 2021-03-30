@@ -55,25 +55,25 @@ class criteria extends \external_api {
      */
     public static function get_criteria_returns() {
         return new external_multiple_structure(
-                new external_single_structure(
-                    array(
-                        'id' => new external_value(PARAM_INT, 'id of the criteria'),
-                        'label' => new external_value(PARAM_TEXT, 'label of the eval grid'),
-                        'sort' => new external_value(PARAM_TEXT, 'label of the eval grid'),
-                        'gridid' => new external_value(PARAM_INT, 'id of the eval grid'),
-                        'subcriteria' => new external_multiple_structure(
-                            new external_single_structure(
-                                array(
-                                    'id' => new external_value(PARAM_INT, 'id of the criteria'),
-                                    'label' => new external_value(PARAM_TEXT, 'label of the eval grid'),
-                                    'gridid' => new external_value(PARAM_INT, 'id of the eval grid'),
-                                    'sort' => new external_value(PARAM_TEXT, 'label of the eval grid')
-                                )
+            new external_single_structure(
+                array(
+                    'id' => new external_value(PARAM_INT, 'id of the criteria'),
+                    'label' => new external_value(PARAM_TEXT, 'label of the eval grid'),
+                    'sort' => new external_value(PARAM_TEXT, 'label of the eval grid'),
+                    'gridid' => new external_value(PARAM_INT, 'id of the eval grid'),
+                    'subcriteria' => new external_multiple_structure(
+                        new external_single_structure(
+                            array(
+                                'id' => new external_value(PARAM_INT, 'id of the criteria'),
+                                'label' => new external_value(PARAM_TEXT, 'label of the eval grid'),
+                                'gridid' => new external_value(PARAM_INT, 'id of the eval grid'),
+                                'sort' => new external_value(PARAM_TEXT, 'label of the eval grid')
                             )
                         )
                     )
                 )
-            );
+            )
+        );
     }
 
     /**
@@ -112,6 +112,5 @@ class criteria extends \external_api {
         }
         return array_values($criteria);
     }
-
 
 }

@@ -33,7 +33,7 @@ use local_cltools\local\crud\entity_utils;
 /**
  * Evaluation group external API
  *
- * @package   local_cltools
+ * @package   local_cveteval
  * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

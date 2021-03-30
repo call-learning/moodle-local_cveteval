@@ -31,7 +31,7 @@ use plugin_renderer_base;
 /**
  * Renderer for cveteval
  *
- * @package    local_resourcelibrary
+ * @package    local_cveteval
  * @copyright  2020 CALL Learning 2²020 - Laurent David laurent@call-learning.fr
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

@@ -30,9 +30,17 @@ use tool_importer\importer_exception;
 use \local_cveteval\local\persistent\group_assignment\entity as group_assignment_entity;
 use \local_cveteval\local\persistent\group\entity as group_entity;
 
+/**
+ * Class data_importer
+ *
+ * @package   local_cveteval
+ * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class data_importer extends \tool_importer\data_importer {
 
     private $grouping = [];
+
     /**
      * data_importer constructor.
      *
@@ -70,15 +78,14 @@ class data_importer extends \tool_importer\data_importer {
         if (empty($groups)) {
             $groupsrecords = group_entity::get_records();
             $groups = [];
-            foreach($groupsrecords as $record) {
+            foreach ($groupsrecords as $record) {
                 $groups[$record->get('name')] = $record;
             }
         }
 
         $row = array_merge($this->defaultvalues, $row);
 
-        $gassigments =  [];
-
+        $gassigments = [];
 
         $email = clean_param(trim($row['email']), PARAM_EMAIL);
         $user = \core_user::get_user_by_email($email);

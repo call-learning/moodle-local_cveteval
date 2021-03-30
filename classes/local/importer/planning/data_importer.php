@@ -31,6 +31,13 @@ use local_cveteval\local\persistent\situation\entity as situation_entity;
 use tool_importer\field_types;
 use tool_importer\importer_exception;
 
+/**
+ * Class data_importer
+ *
+ * @package   local_cveteval
+ * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class data_importer extends \tool_importer\data_importer {
 
     protected $groups = [];
@@ -81,20 +88,20 @@ class data_importer extends \tool_importer\data_importer {
         if (!$clsituations) {
             $clsituationsrecords = situation_entity::get_records();
             $clsituations = [];
-            foreach($clsituationsrecords as $record) {
+            foreach ($clsituationsrecords as $record) {
                 $clsituations[$record->get('idnumber')] = $record;
             }
         }
         // Now the row and add a planning instance for each group and clinical situation.
         $plannings = [];
-        foreach($groups as $groupname => $group) {
+        foreach ($groups as $groupname => $group) {
             $record = new \stdClass();
             $record->starttime = $row['starttime'];
             $record->endtime = $row['endtime'];
             if (!empty($row[$groupname]) && !empty($clsituations[$row[$groupname]])) {
                 $record->groupid = $group->get('id');
                 $record->clsituationid = $clsituations[$row[$groupname]]->get('id');
-                $planning  = new planning_entity(0, $record);
+                $planning = new planning_entity(0, $record);
                 $planning->create();
                 $plannings[] = $planning;
             }

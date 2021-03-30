@@ -25,12 +25,9 @@
 namespace local_cveteval\local\assessment;
 defined('MOODLE_INTERNAL') || die();
 
-use local_cltools\local\dmlutils;
 use local_cltools\local\field\base;
 use local_cltools\local\filter\filterset;
 use local_cltools\local\table\dynamic_table_sql;
-use local_cveteval\local\persistent\role\entity as role_entity;
-use local_cveteval\local\persistent\role\form;
 use local_cveteval\output\grade_widget;
 use stdClass;
 use table_sql;
@@ -38,7 +35,7 @@ use table_sql;
 /**
  * A list of student matching this situation
  *
- * @package   local_cltools
+ * @package   local_cveteval
  * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -123,13 +120,12 @@ class appraisals_student extends dynamic_table_sql {
                 array('criterionname')
             );
             $from = '
-                {local_cveteval_appraisal} appraisal 
+                {local_cveteval_appraisal} appraisal
                 LEFT JOIN {local_cveteval_evalplan} plan ON appraisal.evalplanid = plan.id
-                LEFT JOIN {local_cveteval_group_assign} groupa ON groupa.groupid = plan.groupid 
+                LEFT JOIN {local_cveteval_group_assign} groupa ON groupa.groupid = plan.groupid
                 LEFT JOIN {local_cveteval_role} role ON plan.clsituationid = role.clsituationid
-                LEFT JOIN (SELECT ' . $DB->sql_concat_join("' '", array('u.firstname', 'u.lastname')) . ' AS fullname, u.id FROM mdl_user u ) appraiser
-                    ON appraiser.id = appraisal.appraiserid
-            ';
+                LEFT JOIN (SELECT ' . $DB->sql_concat_join("' '", array('u.firstname', 'u.lastname'))
+                . ' AS fullname, u.id FROM mdl_user u ) appraiser ON appraiser.id = appraisal.appraiserid';
             $fields = [];
             $fields[] = 'appraisal.id AS id';
             $fields[] = 'appraisal.appraiserid AS appraiserid';
@@ -151,7 +147,7 @@ class appraisals_student extends dynamic_table_sql {
                 $colfields['appraisergrade' . $appraiserid] = [
                     "fullname" => $fullname,
                     "rawtype" => PARAM_RAW,
-                    "type" => "html" // List of grades separated by comma (grades and subcriteria grades)
+                    "type" => "html" // List of grades separated by comma (grades and subcriteria grades).
                 ];
             }
         }
@@ -168,6 +164,7 @@ class appraisals_student extends dynamic_table_sql {
         'criterion.label AS criterionname',
         'criterion.sort AS criterionsort'
     ];
+
     /**
      * Set SQL parameters (where, from,....) from the entity
      *
@@ -179,8 +176,8 @@ class appraisals_student extends dynamic_table_sql {
         $from = '{local_cveteval_criteria} criterion';
         $fields = static::FIELDS;
         if ($this->appraiserlist) {
-            foreach($this->appraiserlist as $appraiserid => $appraiserfullname) {
-                $fields['appraisergrade'.$appraiserid] = " '' AS appraisergrade'.$appraiserid";
+            foreach ($this->appraiserlist as $appraiserid => $appraiserfullname) {
+                $fields['appraisergrade' . $appraiserid] = " '' AS appraisergrade'.$appraiserid";
             }
         }
         $this->set_sql(join(', ', static::FIELDS), $from, '1=1', []);
@@ -209,14 +206,14 @@ class appraisals_student extends dynamic_table_sql {
     public function retrieve_raw_data($pagesize) {
         $rows = parent::retrieve_raw_data($pagesize);
         $rootcriteria = [];
-        foreach($rows  as $rcriteria) {
+        foreach ($rows as $rcriteria) {
             if (empty($rcriteria->criterionparentid)) {
                 $this->get_appraisal_criteria_grade($rcriteria);
                 $rcriteria->_children = [];
                 $rootcriteria[$rcriteria->id] = $rcriteria;
             }
         }
-        foreach($rows as $rcriteria) {
+        foreach ($rows as $rcriteria) {
             if (!empty($rcriteria->criterionparentid)) {
                 $this->get_appraisal_criteria_grade($rcriteria);
                 $rootcriteria[$rcriteria->criterionparentid]->_children[] = $rcriteria;
@@ -235,7 +232,7 @@ class appraisals_student extends dynamic_table_sql {
             );
             foreach ($this->appraiserlist as $appraiserid => $fullname) {
                 $grades = $DB->get_records_sql(
-                    "SELECT c.criteriaid, c.grade as grade, 
+                    "SELECT c.criteriaid, c.grade as grade,
                         c.comment as comment, c.commentformat,
                         appraisal.comment as appraisalcomment, appraisal.commentformat as appraisalcommentformat,
                         appraisal.context as appraisalcontext, appraisal.contextformat as appraisalcontextformat
@@ -244,7 +241,7 @@ class appraisals_student extends dynamic_table_sql {
                     LEFT JOIN {local_cveteval_appraisal} appraisal ON appraisal.id = c.appraisalid
                     LEFT JOIN {local_cveteval_evalplan} plan ON plan.id = appraisal.evalplanid
                     LEFT JOIN {local_cveteval_role} role ON plan.clsituationid = role.clsituationid
-                    WHERE appraisal.appraiserid = :appraiserid AND (c.criteriaid = :criteriaid 
+                    WHERE appraisal.appraiserid = :appraiserid AND (c.criteriaid = :criteriaid
                     OR criterion.parentid = :parentcritid ) AND $additionalwhere
                     ",
                     $params + [
@@ -257,7 +254,7 @@ class appraisals_student extends dynamic_table_sql {
                 $hassubgrades = false;
                 $maingrade = 0;
                 $comments = null;
-                foreach($grades as $grade) {
+                foreach ($grades as $grade) {
                     if ($grade->criteriaid == $row->id) {
                         $maingrade = $grade->grade;
                         $comments = new stdClass();

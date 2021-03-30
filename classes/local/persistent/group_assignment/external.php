@@ -33,7 +33,7 @@ use local_cltools\local\crud\entity_utils;
 /**
  * Evaluation group_assignment external API
  *
- * @package   local_cltools
+ * @package   local_cveteval
  * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -61,15 +61,15 @@ class external extends external_api {
         );
     }
 
-    public static function create_group_assignment($group_assignment) {
+    public static function create_group_assignment($groupassignment) {
         global $PAGE;
-        $inputparams = compact($group_assignment);
+        $inputparams = compact($groupassignment);
         $params = self::validate_parameters(self::create_group_assignment_parameters(), $inputparams);
-        $group_assignment = $params['group_assignment'];
-        $group_assignment = new entity(0, $group_assignment);
-        $group_assignment->save();
+        $groupassignment = $params['group_assignment'];
+        $groupassignment = new entity(0, $groupassignment);
+        $groupassignment->save();
         $output = $PAGE->get_renderer('local_cveteval');
-        return (new exporter($group_assignment))->export($output);
+        return (new exporter($groupassignment))->export($output);
     }
 
     public static function create_group_assignment_returns() {

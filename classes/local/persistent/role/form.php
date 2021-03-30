@@ -24,6 +24,7 @@
 
 namespace local_cveteval\local\persistent\role;
 defined('MOODLE_INTERNAL') || die();
+
 use local_cltools\local\crud\form\entity_form;
 
 /**
@@ -57,7 +58,7 @@ class form extends entity_form {
             ],
             'type' => [
                 'type' => 'select_choice',
-                'choices' =>   [
+                'choices' => [
                     entity::ROLE_APPRAISER_ID => get_string('role:appraiser', 'local_cveteval'),
                     entity::ROLE_ASSESSOR_ID => get_string('role:assessor', 'local_cveteval'),
                 ],

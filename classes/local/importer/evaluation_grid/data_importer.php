@@ -30,6 +30,13 @@ use \local_cveteval\local\persistent\criteria\entity as criteria_entity;
 use tool_importer\field_types;
 use tool_importer\importer_exception;
 
+/**
+ * Class data_importer
+ *
+ * @package   local_cveteval
+ * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class data_importer extends \tool_importer\data_importer {
     /**
      * data_importer constructor.
@@ -64,7 +71,7 @@ class data_importer extends \tool_importer\data_importer {
         // Create one if it does not exist.
         if (!$evalgrid) {
             $evalgrid = new evaluation_grid_entity(0, (object) [
-                'name' => get_string('defaultevalgridname', 'local_cveteval'),
+                'name' => get_string('evaluationgrid:default', 'local_cveteval'),
                 'idnumber' => $row['evalgridid']
             ]);
             $evalgrid->create();
@@ -73,10 +80,10 @@ class data_importer extends \tool_importer\data_importer {
         $criteriarecord = new \stdClass();
         $criteriarecord->label = $row['label'];
         $criteriarecord->idnumber = $row['idnumber'];
-        $parentcriteria =  criteria_entity::get_record(['idnumber' => $row['parentidnumber']]);
+        $parentcriteria = criteria_entity::get_record(['idnumber' => $row['parentidnumber']]);
         $parentid = $parentcriteria ? $parentcriteria->get('id') : 0;
         $criteriarecord->parentid = $parentid;
-        $criteriarecord->sort = criteria_entity::count_records(['parentid' => $parentid ]) + 1;
+        $criteriarecord->sort = criteria_entity::count_records(['parentid' => $parentid]) + 1;
         $criteria = new criteria_entity(0, $criteriarecord);
         $criteria->create();
 
@@ -84,7 +91,8 @@ class data_importer extends \tool_importer\data_importer {
         $cevalgridrecord = new \stdClass();
         $cevalgridrecord->criteriaid = $criteria->get('id');
         $cevalgridrecord->evalgridid = $evalgrid->get('id');
-        $cevalgridrecord->sort = $DB->count_records('local_cveteval_cevalgrid', array('evalgridid'=> $cevalgridrecord->evalgridid)) + 1;
+        $cevalgridrecord->sort =
+            $DB->count_records('local_cveteval_cevalgrid', array('evalgridid' => $cevalgridrecord->evalgridid)) + 1;
         $DB->insert_record('local_cveteval_cevalgrid', $cevalgridrecord);
 
         return $criteriarecord;

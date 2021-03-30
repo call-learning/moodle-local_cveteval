@@ -21,12 +21,20 @@
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 namespace local_cveteval\local\importer\grouping;
+
 use tool_importer\importer_exception;
 
 defined('MOODLE_INTERNAL') || die();
 
-
+/**
+ * Class csv_data_source
+ *
+ * @package   local_cveteval
+ * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class csv_data_source extends \tool_importer\local\source\csv_data_source {
 
     /**
@@ -42,13 +50,13 @@ class csv_data_source extends \tool_importer\local\source\csv_data_source {
             $additionalcolumns = [
                 'Identifiant' => \tool_importer\field_types::TYPE_TEXT
             ];
-            if (!$this->csvimporter)  {
+            if (!$this->csvimporter) {
                 throw new importer_exception('nocolumnsdefined', 'tool_importer', null, '');
             }
             if ($allcolumns = $this->csvimporter) {
                 $allcolumns = $this->csvimporter->get_columns();
-                foreach($allcolumns as $colname) {
-                    if (preg_match('/groupement.*/',strtolower($colname))) {
+                foreach ($allcolumns as $colname) {
+                    if (preg_match('/groupement.*/', strtolower($colname))) {
                         $additionalcolumns[$colname] = \tool_importer\field_types::TYPE_TEXT;
                     }
                 }

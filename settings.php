@@ -31,22 +31,52 @@ if ($hassiteconfig) {
 
     $settings = new admin_category('cveteval', get_string('pluginname', 'local_cveteval'));
 
+    $generalsettings = new admin_settingpage(
+        'competveteval_general', get_string('settings:general', 'local_cveteval'),
+        'local/cveteval:manageevaluationtemplate',
+        !$enabled);
+    $settings->add('cveteval', $generalsettings);
+
+    $scales = grade_scale::fetch_all_global();
+    $scalelist = array_map(function($sc) {
+        return $sc->get_name();
+    }, $scales);
+
+    if (empty($scalelist)) {
+        $generalsettings->add(
+            new admin_setting_configempty('local_cveteval/grade_scale',
+                new lang_string('settings:grade_scale', 'local_cveteval'),
+                new lang_string('settings:grade_scale', 'local_cveteval')
+            )
+        );
+    } else {
+        $generalsettings->add(
+            new admin_setting_configselect('local_cveteval/grade_scale',
+                new lang_string('settings:grade_scale', 'local_cveteval'),
+                new lang_string('settings:grade_scale', 'local_cveteval'),
+                array_keys($scalelist)[0],
+                $scalelist
+            )
+        );
+    }
+
     $settings->add('cveteval',
-        new admin_externalpage('competveteval_manage_rotations',
-            new lang_string('competveteval_manage_rotations', 'local_cveteval'),
-            $CFG->wwwroot . '/local/cveteval/pages/rotation/list.php',
-            array('local/cveteval:managerotation'),
+        new admin_externalpage('competveteval_manage_situations',
+            new lang_string('settings:manage_situations', 'local_cveteval'),
+            $CFG->wwwroot . '/local/cveteval/pages/situations/index.php',
+            array('local/cveteval:managesituations'),
             !$enabled
         )
     );
     $settings->add('cveteval',
         new admin_externalpage('competveteval_manage_evaluation_templates',
-            new lang_string('competveteval_manage_evaluation_templates', 'local_cveteval'),
-            $CFG->wwwroot . '/local/cveteval/pages/evaluation_template/list.php',
+            new lang_string('settings:manage_evaluation_templates', 'local_cveteval'),
+            $CFG->wwwroot . '/local/cveteval/pages/evaluation_template/index.php',
             array('local/cveteval:manageevaluationtemplate'),
             !$enabled
         )
     );
+
     if ($enabled) {
         $ADMIN->add('root', $settings); // Add it to the main admin men.
     }
@@ -59,3 +89,4 @@ if ($hassiteconfig) {
     $optionalsubsystems = $ADMIN->locate('optionalsubsystems');
     $optionalsubsystems->add($enableoption);
 }
+

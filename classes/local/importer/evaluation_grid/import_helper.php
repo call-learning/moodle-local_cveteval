@@ -15,20 +15,21 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Grouping Importer process
+ * Evaluation Grid Importer
  *
  * @package   local_cveteval
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace local_cveteval\local\importer\grouping;
+
+namespace local_cveteval\local\importer\evaluation_grid;
 defined('MOODLE_INTERNAL') || die();
 
-use DateTime;
-use local_cveteval\local\persistent\group_assignment\entity as group_assignment_entity;
+use local_cveteval\local\persistent\criteria\entity as criteria_entity;
 use tool_importer\importer;
+use \local_cveteval\local\persistent\evaluation_grid\entity as evaluation_grid_entity;
 
-class import {
+class import_helper {
     /**
      * Import the csv file in the given path
      *
@@ -42,15 +43,28 @@ class import {
         function trimmed($value, $columnname) {
             return trim($value);
         }
+
         function toint($value, $columnname) {
             return intval($value);
         }
 
         $transformdef = array(
-            'Identifiant' =>
+            'Evaluation Grid Id' =>
                 array(
-                    array('to' => 'email', 'transformcallback' => __NAMESPACE__ . '\trimmed')
+                    array('to' => 'evalgridid', 'transformcallback' => __NAMESPACE__ . '\trimmed')
                 ),
+            'Criteria Id' =>
+                array(
+                    array('to' => 'idnumber', 'transformcallback' => __NAMESPACE__ . '\trimmed')
+                ),
+            'Criteria Parent Id' =>
+                array(
+                    array('to' => 'parentidnumber', 'transformcallback' => __NAMESPACE__ . '\trimmed')
+                ),
+            'Criteria Label' =>
+                array(
+                    array('to' => 'label', 'transformcallback' => __NAMESPACE__ . '\trimmed')
+                )
         );
 
         $transformer = new \tool_importer\local\transformer\standard($transformdef);
@@ -58,20 +72,20 @@ class import {
         try {
             $importer = new importer($csvimporter,
                 $transformer,
-                new data_importer(null,  $csvimporter->get_fields_definition()),
+                new data_importer(),
                 $progressbar
             );
             $importer->import();
             // Send an event after importation.
             $eventparams = array('context' => \context_system::instance(),
                 'other' => array('filename' => $csvpath));
-            $event = \local_cveteval\event\grouping_imported::create($eventparams);
+            $event = \local_cveteval\event\evaluation_grid_imported::create($eventparams);
             $event->trigger();
             return true;
         } catch (\moodle_exception $e) {
             $eventparams = array('context' => \context_system::instance(),
                 'other' => array('filename' => $csvpath, 'error' => $e->getMessage()));
-            $event = \local_cveteval\event\grouping_imported::create($eventparams);
+            $event = \local_cveteval\event\evaluation_grid_imported::create($eventparams);
             $event->trigger();
             if (defined('CLI_SCRIPT')) {
                 cli_writeln($e->getMessage());
@@ -82,10 +96,13 @@ class import {
     }
 
     /**
-     * Cleanup previously imported grouping
+     * Cleanup previously imported evaluation grid
      */
     public static function cleanup() {
-        foreach (group_assignment_entity::get_records() as $ga) {
+        foreach (criteria_entity::get_records() as $qa) {
+            $qa->delete();
+        }
+        foreach (evaluation_grid_entity::get_records() as $ga) {
             $ga->delete();
         }
     }

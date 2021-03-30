@@ -37,7 +37,7 @@ global $CFG;
 /**
  * Evaluation grid external API
  *
- * @package   local_cltools
+ * @package   local_cveteval
  * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -65,15 +65,15 @@ class external extends external_api {
         );
     }
 
-    public static function create_evaluation_grid($evaluation_grid) {
+    public static function create_evaluation_grid($evaluationgrid) {
         global $PAGE;
-        $inputparams = compact($evaluation_grid);
+        $inputparams = compact($evaluationgrid);
         $params = self::validate_parameters(self::create_evaluation_grid_parameters(), $inputparams);
-        $evaluation_grid = $params['evaluation_grid'];
-        $evaluation_grid = new entity(0, $evaluation_grid);
-        $evaluation_grid->save();
+        $evaluationgrid = $params['evaluation_grid'];
+        $evaluationgrid = new entity(0, $evaluationgrid);
+        $evaluationgrid->save();
         $output = $PAGE->get_renderer('local_cltools');
-        return (new exporter($evaluation_grid))->export($output);
+        return (new exporter($evaluationgrid))->export($output);
     }
 
     public static function create_evaluation_grid_returns() {

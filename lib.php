@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -20,7 +19,7 @@
  *
  * Provide the ability to manage site pages through blocks.
  *
- * @package   local_cltools
+ * @package   local_cveteval
  * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -67,7 +66,6 @@ function local_cveteval_pluginfile($course, $cm, $context, $filearea, $args, $fo
     // We can now send the file back to the browser - in this case with a cache lifetime of 1 day and no filtering.
     send_stored_file($file, 86400, 0, $forcedownload, $options);
 }
-
 
 /**
  * Nothing for now

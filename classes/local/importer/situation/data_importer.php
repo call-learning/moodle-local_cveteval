@@ -32,6 +32,13 @@ use local_cveteval\local\persistent\situation\entity as situation_entity;
 use tool_importer\field_types;
 use tool_importer\importer_exception;
 
+/**
+ * Class data_importer
+ *
+ * @package   local_cveteval
+ * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class data_importer extends \tool_importer\data_importer {
     /**
      * data_importer constructor.
@@ -40,7 +47,7 @@ class data_importer extends \tool_importer\data_importer {
      * @throws \dml_exception
      */
     public function __construct($defaultvals = null) {
-        $this->defaultvalues = ['descriptionformat'=> FORMAT_HTML, 'evalgridid'=> 0];
+        $this->defaultvalues = ['descriptionformat' => FORMAT_HTML, 'evalgridid' => 0];
         if ($defaultvals) {
             $this->defaultvalues = array_merge($this->defaultvalues, $defaultvals);
         }
@@ -71,7 +78,7 @@ class data_importer extends \tool_importer\data_importer {
             $situation = new situation_entity(0, $record);
         }
         $situation->save();
-        // Now sync the users
+        // Now sync the users.
         $assessorsemails = explode(',', $row['assessors']);
         $appraisersemails = explode(',', $row['appraisers']);
 
@@ -114,7 +121,7 @@ class data_importer extends \tool_importer\data_importer {
         return $fielddef;
     }
 
-    public function add_roles($emails, $clinicalsituationid,$roletype) {
+    public function add_roles($emails, $clinicalsituationid, $roletype) {
         foreach ($emails as $email) {
             $email = clean_param(trim($email), PARAM_EMAIL);
             $user = \core_user::get_user_by_email($email);
@@ -130,7 +137,7 @@ class data_importer extends \tool_importer\data_importer {
                     array('userid' => $user->id, 'clsituationid' => $clinicalsituationid, 'type' => $roletype)
                 );
                 if (!$existingrecord) {
-                    $existingrecord =  new role_entity(0,
+                    $existingrecord = new role_entity(0,
                         (object) [
                             'userid' => $user->id,
                             'clsituationid' => $clinicalsituationid,

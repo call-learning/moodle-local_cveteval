@@ -97,7 +97,7 @@ $filterset->add_filter_from_params(
 $filterset->add_filter_from_params(
     'roletype', // Field name.
     filter::JOINTYPE_ALL,
-    [json_encode((object) ['direction' => '=', 'value' =>  role_entity::ROLE_ASSESSOR_ID])]
+    [json_encode((object) ['direction' => '=', 'value' => role_entity::ROLE_ASSESSOR_ID])]
 );
 $filterset->add_filter_from_params(
     'appraiserid', // Field name.
@@ -109,7 +109,7 @@ $entitylist->set_extended_filterset($filterset);
 $renderable = new entity_table_renderable($entitylist);
 
 $renderer = $PAGE->get_renderer('local_cltools');
-/** @var entity_table_renderable entity table */
+/* @var entity_table_renderable entity table */
 echo $renderer->render($renderable);
 
 echo $OUTPUT->footer();

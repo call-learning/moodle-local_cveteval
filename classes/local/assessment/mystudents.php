@@ -35,16 +35,15 @@ use local_cveteval\local\persistent\role\entity as role_entity;
 /**
  * A list of student matching this situation
  *
- * @package   local_cltools
+ * @package   local_cveteval
  * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mystudents extends dynamic_table_sql {
 
-
     public function __construct($uniqueid) {
         global $PAGE;
-        $PAGE->requires->js_call_amd('local_cltools/tabulator-row-action-url','init', [
+        $PAGE->requires->js_call_amd('local_cltools/tabulator-row-action-url', 'init', [
             $uniqueid,
             (new moodle_url('/local/cveteval/pages/assessment/assess.php'))->out(),
             (object) array('evalplanid' => 'planid', 'studentid' => 'studentid')
@@ -138,20 +137,20 @@ class mystudents extends dynamic_table_sql {
     protected function set_initial_sql() {
         global $USER, $DB;
 
-        $from = ' 
+        $from = '
         {local_cveteval_evalplan} plan
         LEFT JOIN {local_cveteval_role} role ON plan.clsituationid = role.clsituationid
         LEFT JOIN {local_cveteval_group_assign} groupa ON groupa.groupid = plan.groupid
-        LEFT JOIN {local_cveteval_group} grp ON groupa.groupid = grp.id  
+        LEFT JOIN {local_cveteval_group} grp ON groupa.groupid = grp.id
         LEFT JOIN {local_cveteval_clsituation} situation ON situation.id =  plan.clsituationid
-        LEFT JOIN (SELECT '.$DB->sql_fullname('s.firstname','s.lastname').' AS fullname, s.id FROM {user} s ) student
-        ON student.id = groupa.studentid 
+        LEFT JOIN (SELECT ' . $DB->sql_fullname('s.firstname', 's.lastname') . ' AS fullname, s.id FROM {user} s ) student
+        ON student.id = groupa.studentid
         LEFT JOIN (SELECT a.studentid AS studentid, a.evalplanid AS planid, COUNT(*) AS count
-            FROM {local_cveteval_appraisal} a GROUP BY a.studentid, a.evalplanid) apc 
+            FROM {local_cveteval_appraisal} a GROUP BY a.studentid, a.evalplanid) apc
             ON apc.studentid = student.id AND apc.planid = plan.id
         LEFT JOIN {local_cveteval_finalevl} eval ON eval.studentid = student.id AND eval.evalplanid = plan.id
         ';
-        $fields[] = $DB->sql_concat('plan.id','student.id') . ' AS id';
+        $fields[] = $DB->sql_concat('plan.id', 'student.id') . ' AS id';
         $fields[] = 'plan.id AS planid';
         $fields[] = 'student.id AS studentid';
         $fields[] = 'situation.id AS situationid';

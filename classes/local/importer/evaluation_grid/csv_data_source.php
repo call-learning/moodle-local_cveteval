@@ -21,11 +21,12 @@
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 namespace local_cveteval\local\importer\evaluation_grid;
+
 use tool_importer\importer_exception;
 
 defined('MOODLE_INTERNAL') || die();
-
 
 class csv_data_source extends \tool_importer\local\source\csv_data_source {
 

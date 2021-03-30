@@ -23,6 +23,11 @@
  */
 
 namespace local_cveteval\local\persistent\final_evaluation;
+defined('MOODLE_INTERNAL') || die();
+global $CFG;
+require_once($CFG->dirroot . '/lib/grade/grade_scale.php');
+
+use grade_scale;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -44,6 +49,9 @@ class entity extends \core\persistent {
      * @throws \coding_exception
      */
     protected static function define_properties() {
+        $scaleid = get_config('local_cveteval', 'grade_scale');
+        $scale = grade_scale::fetch(array('id' => $scaleid));
+        $scaleitems = $scale->load_items();
         return array(
             'studentid' => array(
                 'type' => PARAM_INT,
@@ -66,13 +74,6 @@ class entity extends \core\persistent {
                     'type' => 'hidden',
                 ]
             ),
-            'grade' => array(
-                'type' => PARAM_INT,
-                'default' => 0,
-                'format' => [
-                    'fullname' => get_string('evaluation:grade', 'local_cveteval')
-                ]
-            ),
             'comment' => array(
                 'type' => PARAM_RAW,
                 'default' => ''
@@ -80,6 +81,16 @@ class entity extends \core\persistent {
             'commentformat' => array(
                 'type' => PARAM_INT,
                 'default' => FORMAT_HTML
+            ),
+
+            'grade' => array(
+                'type' => PARAM_INT,
+                'default' => 0,
+                'format' => [
+                    'fullname' => get_string('evaluation:grade', 'local_cveteval'),
+                    'type' => 'select_choice',
+                    'choices' => $scaleitems
+                ]
             ),
         );
     }

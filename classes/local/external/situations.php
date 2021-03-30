@@ -71,7 +71,8 @@ class situations extends \external_api {
                         VALUE_OPTIONAL),
                     'studentpictureurl' => new external_value(PARAM_URL, 'user picture (avatar)',
                         VALUE_OPTIONAL),
-                    'studentid' => new external_value(PARAM_TEXT, 'student id if this is an appraisal (see type)', VALUE_OPTIONAL),
+                    'studentid' => new external_value(PARAM_TEXT, 'student id if this is an appraisal (see type)',
+                        VALUE_OPTIONAL),
                     'appraisalsrequired' => new external_value(PARAM_INT, 'the number of evaluation needed')
                 )
             )
@@ -85,16 +86,16 @@ class situations extends \external_api {
         global $DB;
         $params = self::validate_parameters(self::get_user_situations_parameters(), array('userid' => $userid));
 
-        // First all situation as student
-        $sql = "SELECT 
-            cls.id, 
+        // First all situation as student.
+        $sql = "SELECT
+            cls.id,
             cls.title,
-            cls.description, 
+            cls.description,
             cls.descriptionformat,
-            pl.starttime, 
+            pl.starttime,
             pl.endtime,
             cls.expectedevalsnb
-            FROM {local_cveteval_group_assign} uga 
+            FROM {local_cveteval_group_assign} uga
             LEFT JOIN {local_cveteval_evalplan} pl ON uga.groupid = pl.groupid
             LEFT JOIN {local_cveteval_clsituation} cls ON cls.id  = pl.clsituationid
             WHERE uga.studentid = :userid AND cls.id IS NOT NULL";
@@ -110,23 +111,23 @@ class situations extends \external_api {
             },
             $studentsituationsdb
         );
-        // Then all situation for the same user but as appraiser
-        $sql = "SELECT 
-            cls.id, 
+        // Then all situation for the same user but as appraiser.
+        $sql = "SELECT
+            cls.id,
             cls.title,
-            cls.description, 
+            cls.description,
             cls.descriptionformat,
-            pl.starttime, 
+            pl.starttime,
             pl.endtime,
             cls.expectedevalsnb,
             uga.studentid
             FROM {local_cveteval_role} sr
             LEFT JOIN {local_cveteval_clsituation} cls ON sr.clsituationid = cls.id
             LEFT JOIN {local_cveteval_evalplan} pl ON cls.id = pl.clsituationid
-            LEFT JOIN {local_cveteval_group_assign} uga ON uga.groupid = pl.groupid 
+            LEFT JOIN {local_cveteval_group_assign} uga ON uga.groupid = pl.groupid
             WHERE sr.userid = :userid AND cls.id IS NOT NULL";
 
-        // Check for appraiser : all students that are on this appraiser's rotation.
+        // Check for appraiser : all students that are on this appraiser's situation.
         $appraisersituationsdb = $DB->get_records_sql($sql, array('userid' => $userid));
 
         $appraisersituations = array_map(

@@ -23,6 +23,7 @@
  */
 
 use local_vetagropro\locallib\setup;
+
 define('CLI_SCRIPT', true);
 require(__DIR__ . '/../../../config.php');
 debugging() || defined('BEHAT_SITE_RUNNING') || die();
@@ -45,12 +46,12 @@ list($options, $unrecognized) = cli_get_params([
 ]);
 
 $help =
-    "php local/cveteval/cli/setup_dev.php -c 
+    "php local/cveteval/cli/setup_dev.php -c
 
 Import the definitions from the fixtures CSV file
     -c : cleanup before importing (empty the related tables before importing again)
     -p : import planning, evalgrid, situations
-    -u : user importation (add users)  
+    -u : user importation (add users)
     -a : add appraisals
 ";
 

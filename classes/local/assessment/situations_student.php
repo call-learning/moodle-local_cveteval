@@ -33,7 +33,7 @@ use local_cveteval\local\persistent\role\entity as role_entity;
 /**
  * A list of student matching this situation
  *
- * @package   local_cltools
+ * @package   local_cveteval
  * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -133,14 +133,14 @@ class situations_student extends dynamic_table_sql {
      */
     protected function set_initial_sql() {
         global $DB;
-        $from = ' 
-         {local_cveteval_group_assign} groupa 
+        $from = '
+         {local_cveteval_group_assign} groupa
          LEFT JOIN {local_cveteval_evalplan} plan ON plan.groupid = groupa.groupid
          LEFT JOIN {local_cveteval_clsituation} situation ON plan.clsituationid = situation.id
-         LEFT JOIN {local_cveteval_finalevl} eval ON eval.evalplanid = plan.id 
-         LEFT JOIN (SELECT '.$DB->sql_concat('u.firstname', 'u.lastname') .' AS fullname, u.id FROM mdl_user u ) assessor
+         LEFT JOIN {local_cveteval_finalevl} eval ON eval.evalplanid = plan.id
+         LEFT JOIN (SELECT ' . $DB->sql_concat('u.firstname', 'u.lastname') . ' AS fullname, u.id FROM mdl_user u ) assessor
             ON assessor.id = eval.assessorid
-         LEFT JOIN (SELECT '.$DB->sql_concat('u.firstname', 'u.lastname') .' AS fullname, u.id FROM mdl_user u ) student
+         LEFT JOIN (SELECT ' . $DB->sql_concat('u.firstname', 'u.lastname') . ' AS fullname, u.id FROM mdl_user u ) student
             ON student.id = groupa.studentid
         ';
         $fields[] = 'situation.id AS id';
@@ -155,7 +155,7 @@ class situations_student extends dynamic_table_sql {
         $fields[] = 'eval.timemodified AS evaluationdate';
         $fields[] = 'plan.starttime AS startdate';
         $fields[] = 'plan.endtime AS enddate';
-        $this->set_sql(join(', ', $fields), $from,'1=1', []);
+        $this->set_sql(join(', ', $fields), $from, '1=1', []);
     }
 
     protected function col_comment($row) {

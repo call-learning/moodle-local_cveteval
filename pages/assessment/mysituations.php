@@ -30,6 +30,7 @@ use local_cveteval\local\assessment\situations;
 
 require_once(__DIR__ . '/../../../../config.php');
 global $CFG, $OUTPUT, $PAGE, $USER;
+
 use local_cveteval\local\persistent\role\entity as role_entity;
 use local_cveteval\local\utils;
 
@@ -38,10 +39,10 @@ if (utils::get_user_role_id($USER->id) != role_entity::ROLE_ASSESSOR_ID) {
     print_error('cannotaccess', 'local_cveteval');
 }
 $PAGE->set_context(\context_system::instance());
-$PAGE->set_title( get_string('assessment', 'local_cveteval')
-    .':'
-    .get_string('mysituations', 'local_cveteval'));
-$PAGE->set_heading( get_string('assessment', 'local_cveteval'));
+$PAGE->set_title(get_string('assessment', 'local_cveteval')
+    . ':'
+    . get_string('mysituations', 'local_cveteval'));
+$PAGE->set_heading(get_string('assessment', 'local_cveteval'));
 $PAGE->set_url(new moodle_url('/local/cveteval/pages/assessment/mysituations.php'));
 
 echo $OUTPUT->header();
@@ -67,7 +68,7 @@ $filterset->set_join_type(filter::JOINTYPE_ALL);
 $filterset->add_filter_from_params(
     'roletype', // Field name.
     filter::JOINTYPE_ALL,
-    [json_encode((object) ['direction' => '=', 'value' =>  role_entity::ROLE_ASSESSOR_ID])]
+    [json_encode((object) ['direction' => '=', 'value' => role_entity::ROLE_ASSESSOR_ID])]
 );
 $filterset->add_filter_from_params(
     'appraiserid', // Field name.
@@ -78,7 +79,7 @@ $entitylist->set_extended_filterset($filterset);
 $renderable = new entity_table_renderable($entitylist);
 
 $renderer = $PAGE->get_renderer('local_cltools');
-/** @var entity_table_renderable entity table */
+/* @var entity_table_renderable entity table */
 echo $renderer->render($renderable);
 
 echo $OUTPUT->footer();

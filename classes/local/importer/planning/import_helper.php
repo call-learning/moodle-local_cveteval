@@ -21,6 +21,7 @@
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 namespace local_cveteval\local\importer\planning;
 defined('MOODLE_INTERNAL') || die();
 
@@ -29,7 +30,7 @@ use tool_importer\importer;
 use local_cveteval\local\persistent\planning\entity as planning_entity;
 use local_cveteval\local\persistent\group\entity as group_entity;
 
-class import {
+class import_helper {
     /**
      * Import the csv file in the given path
      *
@@ -88,12 +89,12 @@ class import {
      * Cleanup previously imported Clinical situation
      */
     public static function cleanup() {
-        foreach(planning_entity::get_records() as $planning) {
+        foreach (planning_entity::get_records() as $planning) {
             $planning->delete();
         }
         // Delete unreferenced groups.
-        foreach(group_entity::get_records() as $group) {
-            if (!planning_entity::record_exists_select("groupid = :groupid", array('groupid'=>$group->get('id')))) {
+        foreach (group_entity::get_records() as $group) {
+            if (!planning_entity::record_exists_select("groupid = :groupid", array('groupid' => $group->get('id')))) {
                 $group->delete();
             }
         }

@@ -146,7 +146,7 @@
         <KEY NAME="usermodified" TYPE="foreign" FIELDS="usermodified" REFTABLE="user" REFFIELDS="id"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="local_cveteval_finalevl" COMMENT="Final evaluation (competvet) for a rotation">
+    <TABLE NAME="local_cveteval_finalevl" COMMENT="Final evaluation (competvet) for a situation">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="studentid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>

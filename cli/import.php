@@ -55,8 +55,7 @@ Import the definitions from a CSV file
         * situation: clinical situation
         * grouping: groups (depends on previously imported planning)
         * criteria: criteria for evaluation
-    -c : cleanup before importing (empty the related tables before importing again) 
-";
+    -c : cleanup before importing (empty the related tables before importing again)";
 
 if ($unrecognized) {
     $unrecognized = implode("\n\t", $unrecognized);
@@ -72,7 +71,7 @@ if (!file_exists($options['input'])) {
     cli_error(get_string('filenotfound', 'error') . ' input:' . $options['input']);
     die();
 }
-$importclass = "\\local_cveteval\\local\\importer\\{$options['type']}\\import";
+$importclass = "\\local_cveteval\\local\\importer\\{$options['type']}\\import_helper";
 if (!class_exists($importclass)) {
     cli_error(get_string('importclassnotfound', 'local_cveteval') . ' class:' . $importclass);
     die();

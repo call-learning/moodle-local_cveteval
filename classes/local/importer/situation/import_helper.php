@@ -30,7 +30,7 @@ use local_cveteval\local\persistent\role\entity as role_entity;
 use local_cveteval\local\persistent\situation\entity as situation_entity;
 use tool_importer\importer;
 
-class import {
+class import_helper {
     /**
      * Import the csv file in the given path
      *
@@ -62,7 +62,7 @@ class import {
             if (!empty($gridmatch[$trimmedval])) {
                 return $gridmatch[$trimmedval];
             } else {
-                $grid = evaluation_grid_entity::get_record(array('idnumber'=> $trimmedval));
+                $grid = evaluation_grid_entity::get_record(array('idnumber' => $trimmedval));
                 if (!$grid) {
                     return 0;
                 }
@@ -141,7 +141,7 @@ class import {
         foreach (situation_entity::get_records() as $situation) {
             $roles = role_entity::get_records(array('clsituationid' => $situation->get('id')));
             if ($roles) {
-                foreach($roles as $role) {
+                foreach ($roles as $role) {
                     $role->delete();
                 }
             }

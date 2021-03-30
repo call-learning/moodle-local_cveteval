@@ -22,7 +22,6 @@ use local_cveteval\local\utils;
  * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 function import_sample_planning($cleanup = false) {
     global $CFG;
     $basepath = $CFG->dirroot . '/local/cveteval/tests/fixtures/';
@@ -32,7 +31,7 @@ function import_sample_planning($cleanup = false) {
         'planning' => 'Sample_Planning.csv',
         'grouping' => 'Sample_Grouping.csv'
     ) as $type => $filename) {
-        $importclass = "\\local_cveteval\\local\\importer\\{$type}\\import";
+        $importclass = "\\local_cveteval\\local\\importer\\{$type}\\import_helper";
         if (!class_exists($importclass)) {
             throw new moodle_exception('importclassnotfound', 'local_cveteval', null,
                 ' class:' . $importclass);
@@ -44,6 +43,12 @@ function import_sample_planning($cleanup = false) {
     }
 }
 
+/**
+ * Import sample users
+ *
+ * @throws dml_exception
+ * @throws moodle_exception
+ */
 function inport_sample_users() {
     global $CFG;
     require_once($CFG->libdir . '/csvlib.class.php');
@@ -82,7 +87,7 @@ function inport_sample_users() {
  * @throws coding_exception
  * @throws dml_exception
  */
-function create_random_appraisals($cleanup, $verbose=true) {
+function create_random_appraisals($cleanup, $verbose = true) {
     global $DB;
 
     $studentsga = $DB->get_records('local_cveteval_group_assign');
@@ -126,7 +131,8 @@ function create_random_appraisals($cleanup, $verbose=true) {
                     $appraisalcrit->criteriaid = $critid;
                     $appraisalcrit->appraisalid = $eap->get('id');
                     $appraisalcrit->grade = rand(0, 5);
-                    $appraisalcrit->comment = rand(1,10)>5? '': 'Comment made by ' .  utils::fast_user_fullname($appid) . "{$appid}";
+                    $appraisalcrit->comment =
+                        rand(1, 10) > 5 ? '' : 'Comment made by ' . utils::fast_user_fullname($appid) . "{$appid}";
                     $appraisalcrit->commentformat = FORMAT_PLAIN;
                     $eappraisalcrit = new \local_cveteval\local\persistent\appraisal_criterion\entity(0, $appraisalcrit);
                     if ($verbose) {

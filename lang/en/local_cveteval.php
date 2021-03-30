@@ -21,26 +21,58 @@
  * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-$string['pluginname'] = 'CompetVet Eval plugin';
 $string['appraiser'] = 'Appraiser';
-$string['student'] = 'Student';
 $string['actions'] = 'Actions';
 $string['add'] = 'Add';
-$string['delete'] = 'Delete';
-$string['title'] = 'Title';
+$string['appraisal:student'] = 'Student name';
+$string['appraisal:count'] = 'Appraisal #';
+$string['appraisal:appraiser'] = 'Appraiser name';
+$string['appraisal:comment'] = 'Comment';
+$string['appraisal:context'] = 'Context';
+$string['appraisal:modificationdate'] = 'Modified';
+$string['appraisalcriteria:grade'] = 'Final Grade';
+$string['assess'] = 'Assess "{$a}"';
+$string['assessment'] = 'Assessment';
 $string['context'] = 'Context';
 $string['contextformat'] = 'Context Format';
 $string['comment'] = 'Comment';
 $string['commentformat'] = 'Comment Format';
+$string['comments'] = 'All comments';
+$string['settings:manage_situations'] = 'Manage situations';
+$string['settings:manage_evaluation_templates'] = 'Manage evaluation templates';
+$string['settings:grade_scale'] = 'Grade Scales';
+$string['settings:general'] = 'Paramètres généraux';
+$string['criterion:label'] = 'Label';
+$string['criterion:comment'] = 'Criterion comment';
 $string['description'] = 'Description';
 $string['descriptionformat'] = 'Description Format';
+$string['delete'] = 'Delete';
 $string['edit'] = 'Edit';
 $string['enablecompetveteval'] = 'Enable cveteval';
-$string['competveteval_manage_rotations'] = 'Manage rotations';
-$string['competveteval_manage_evaluation_templates'] = 'Manage evaluation templates';
+$string['evaluation_grid:entity'] = 'Evaluation Grid';
+$string['evaluation_grid:plural'] = 'Evaluation Grids';
+$string['evaluation_grid:name'] = 'Evaluation Name';
+$string['evaluation_grid:idnumber'] = 'Evaluation Identifier';
+$string['evaluation_template:version'] = 'Evaluation Version';
+$string['evaluation:date'] = "Date";
+$string['evaluation:comment'] = "Comment";
+$string['evaluation:assessor'] = "Assessor";
+$string['evaluation:hasgrade'] = 'Has grade?';
+$string['evaluation:hasgrade'] = 'Has grade?';
+$string['evaluation:grade'] = 'Grade';
+$string['evaluationgrid:default'] = 'Default Evaluation Grid';
+$string['fullname'] = 'Full Name';
+$string['grade:defaultscale'] = 'Default scale (CompetvetEval)';
+$string['grade:defaultscale:description'] = 'Default scale for CompetvetEval';
+$string['idnumber'] = 'ID Number';
+$string['id'] = 'Id';
 $string['list'] = 'List';
 $string['import:dateformat'] = 'd/m/Y';
+$string['mystudents'] = "My students";
+$string['mysituations'] = "My situations";
+$string['mysituations:intro'] = "This is the list of situations you should be able to evaluate. Please
+click on a row to see a list of appraisals / students to assess/evaluate.";
+$string['name'] = 'Full Name';
 $string['planning:entity'] = 'Evaluation Planning';
 $string['planning:plural'] = 'Evaluations Planning';
 $string['planning:title'] = 'Title';
@@ -51,52 +83,17 @@ $string['planning:endtime'] = 'End time';
 $string['planning:studentid'] = 'Student';
 $string['planning:clsituationid'] = 'Clinical situation';
 $string['planning:requiredappraisals'] = 'Required Appraisal #';
-
+$string['pluginname'] = 'CompetVet Eval plugin';
+$string['otherstudents'] = "Other students";
+$string['allsituations'] = "All situations";
+$string['saved'] = 'Saved';
+$string['student'] = 'Student';
 $string['situation:entity'] = 'Clinical situation';
 $string['situation:plural'] = 'Clinical situations';
 $string['situation:title'] = 'Title';
 $string['situation:expectedevalsnb'] = '#Eval';
 $string['situation:evalgridid'] = 'Linked Evaluation Grid';
 $string['situation:groupname'] = 'Group name';
-$string['appraisal:student'] = 'Student name';
-$string['appraisal:count'] = 'Appraisal #';
-$string['appraisal:appraiser'] = 'Appraiser name';
-$string['appraisal:comment'] = 'Comment';
-$string['appraisal:context'] = 'Context';
-$string['appraisal:modificationdate'] = 'Modified';
-
-$string['appraisalcriteria:grade'] = 'Final Grade';
-
-$string['criterion:label'] = 'Label';
-$string['criterion:comment'] = 'Criterion comment';
-
-$string['evaluation_grid:entity'] = 'Evaluation Grid';
-$string['evaluation_grid:plural'] = 'Evaluation Grids';
-$string['evaluation_grid:name'] = 'Evaluation Name';
-$string['evaluation_grid:idnumber'] = 'Evaluation Identifier';
-$string['evaluation_template:version'] = 'Evaluation Version';
-
-$string['evaluation:date'] = "Date";
-$string['evaluation:comment'] = "Comment";
-$string['evaluation:assessor'] = "Assessor";
-$string['evaluation:hasgrade'] = 'Has grade?';
-$string['evaluation:hasgrade'] = 'Has grade?';
-$string['evaluation:grade'] = 'Grade';
-
-$string['assessment'] = 'Assessment';
-$string['assess'] = 'Assess';
-$string['name'] = 'Full Name';
-$string['mystudents'] = "My students";
-$string['mysituations'] = "My situations";
-$string['mysituations:intro'] = "This is the list of situations you should be able to evaluate. Please
-click on a row to see a list of appraisals / students to assess/evaluate.";
-
-$string['fullname'] = 'Full Name';
-$string['idnumber'] = 'ID Number';
-$string['id'] = 'Id';
-$string['view'] = 'View';
+$string['title'] = 'Title';
 $string['thissituation'] = "This situation";
-$string['otherstudents'] = "Other students";
-$string['othersituations'] = "Other situations";
-
-$string['saved'] = 'Saved';
+$string['view'] = 'View';

@@ -21,11 +21,12 @@
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 namespace local_cveteval\local\importer\planning;
+
 use tool_importer\importer_exception;
 
 defined('MOODLE_INTERNAL') || die();
-
 
 class csv_data_source extends \tool_importer\local\source\csv_data_source {
 
@@ -43,13 +44,13 @@ class csv_data_source extends \tool_importer\local\source\csv_data_source {
                 'Date début' => \tool_importer\field_types::TYPE_TEXT,
                 'Date fin' => \tool_importer\field_types::TYPE_TEXT,
             ];
-            if (!$this->csvimporter)  {
+            if (!$this->csvimporter) {
                 throw new importer_exception('nocolumnsdefined', 'tool_importer', null, '');
             }
             if ($allcolumns = $this->csvimporter) {
                 $allcolumns = $this->csvimporter->get_columns();
-                foreach($allcolumns as $colname) {
-                    if (preg_match('/groupe.*/',strtolower($colname))) {
+                foreach ($allcolumns as $colname) {
+                    if (preg_match('/groupe.*/', strtolower($colname))) {
                         $additionalcolumns[$colname] = \tool_importer\field_types::TYPE_TEXT;
                     }
                 }

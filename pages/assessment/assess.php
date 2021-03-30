@@ -49,11 +49,13 @@ $student = core_user::get_user($studentid);
 $evalplan = new local_cveteval\local\persistent\planning\entity($evalplanid);
 $situation = new local_cveteval\local\persistent\situation\entity($evalplan->get('clsituationid'));
 
-$PAGE->set_context(\context_system::instance());
-$PAGE->set_title(get_string('assess', 'local_cveteval', fullname($student))
+$assesstitle = get_string('assess', 'local_cveteval', $situation->get('title'));
+$assessfulltitle = get_string('assessment', 'local_cveteval')
     . ':'
-    . get_string('assess', 'local_cveteval'));
-$PAGE->set_heading(get_string('assess', 'local_cveteval'));
+    . $situation->get('title') . ':' . fullname($student);
+$PAGE->set_context(\context_system::instance());
+$PAGE->set_title($assessfulltitle);
+$PAGE->set_heading($assesstitle);
 $currenturl = new moodle_url('/local/cveteval/pages/assessment/assess.php', array(
     'evalplanid' => $evalplanid,
     'studentid' => $studentid,
@@ -69,7 +71,7 @@ $studentnode = $situationnode->add(
         'situationid' => $situation->get('id'),
     )));
 $currentnode = $studentnode->add(
-    get_string('assess', 'local_cveteval'),
+    get_string('assessment', 'local_cveteval'),
     $currenturl);
 $currentnode->make_active();
 
@@ -91,7 +93,8 @@ $evaluationform = new local_cveteval\local\persistent\final_evaluation\form(null
     ], 'post', '', ['class' => 'd-flex flex-row ceveteval-eval-form']);
 
 echo $OUTPUT->header();
-
+/* @var $OUTPUT core_renderer */
+echo $OUTPUT->heading($assessfulltitle, 3);
 $evaluationform->prepare_for_files();
 if ($data = $evaluationform->get_data()) {
     try {
@@ -109,15 +112,10 @@ $tabs[] = new tabobject('thissituation',
     $currenturl->out(),
     get_string('thissituation', 'local_cveteval'));
 
-//$currenturl->param('tabname', 'otherstudents');
-//$tabs[] = new tabobject('otherstudents',
-//    $currenturl->out(),
-//    get_string('otherstudents', 'local_cveteval'));;
-
-$currenturl->param('tabname', 'othersituations');
-$tabs[] = new tabobject('othersituations',
+$currenturl->param('tabname', 'allsituations');
+$tabs[] = new tabobject('allsituations',
     $currenturl->out(),
-    get_string('othersituations', 'local_cveteval'));
+    get_string('allsituations', 'local_cveteval'));
 
 echo $OUTPUT->tabtree($tabs, $currenttab);
 
@@ -165,17 +163,12 @@ switch ($currenttab) {
         $entitylist->set_extended_filterset($filterset);
 
         $renderer = $PAGE->get_renderer('local_cltools');
-        /** @var entity_table_renderable entity table */
-        $renderable = new entity_table_renderable($entitylist,['dataTree'=> true]);
+        /* @var entity_table_renderable entity table */
+        $renderable = new entity_table_renderable($entitylist, ['dataTree' => true]);
         echo $renderer->render($renderable);
-
-        //$renderable = new entity_table_renderable($entitylist);
-        //$template = 'local_cveteval/assess_student_table';
-        //$renderable = new entity_table_renderable($entitylist);
-        //echo $OUTPUT->render_from_template($template, $renderable->export_for_template($OUTPUT));
         break;
-    case "othersituations":
-        $uniqueid = \html_writer::random_id('othersituation');
+    case "allsituations":
+        $uniqueid = \html_writer::random_id('allsituations');
         $entitylist = new situations_student($uniqueid);
         $filterset = new basic_filterset(
             [
@@ -194,7 +187,7 @@ switch ($currenttab) {
         );
         $entitylist->set_extended_filterset($filterset);
         $renderer = $PAGE->get_renderer('local_cltools');
-        /** @var entity_table_renderable entity table */
+        /* @var entity_table_renderable entity table */
         $renderable = new entity_table_renderable($entitylist);
         echo $renderer->render($renderable);
         break;

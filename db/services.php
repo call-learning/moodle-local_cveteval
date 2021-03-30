@@ -21,7 +21,7 @@
  * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
+defined('MOODLE_INTERNAL') || die();
 $functions = array(
     'local_cveteval_get_user_type' => array(
         'classname'   => 'local_cveteval\\local\\external\\user_type',
@@ -35,7 +35,7 @@ $functions = array(
     'local_cveteval_get_user_situations' => array(
         'classname'   => 'local_cveteval\\local\\external\\situations',
         'methodname'  => 'get_user_situations',
-        'description' => 'Get user\'s clinical situations (either to evaluate if appraiser or student own rotation).',
+        'description' => 'Get user\'s clinical situations (either to evaluate if appraiser or student own situation).',
         'type'        => 'read',
         'ajax' => true,
         'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
@@ -44,7 +44,7 @@ $functions = array(
     'local_cveteval_get_user_appraisals' => array(
         'classname'   => 'local_cveteval\\local\\external\\appraisals',
         'methodname'  => 'get_user_appraisals',
-        'description' => 'Get user\'s clinical situations appraisals (either to evaluate if appraiser or student own rotation).',
+        'description' => 'Get user\'s clinical situations appraisals (either to evaluate if appraiser or student own situation).',
         'type'        => 'read',
         'ajax' => true,
         'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
@@ -53,7 +53,7 @@ $functions = array(
     'local_cveteval_set_user_appraisal' => array(
         'classname'   => 'local_cveteval\\local\\external\\appraisals',
         'methodname'  => 'set_user_appraisal',
-        'description' => 'Get user\'s clinical situations appraisals (either to evaluate if appraiser or student own rotation).',
+        'description' => 'Get user\'s clinical situations appraisals (either to evaluate if appraiser or student own situation).',
         'type'        => 'write',
         'ajax' => true,
         'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
