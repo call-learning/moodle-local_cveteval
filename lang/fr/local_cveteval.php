@@ -33,6 +33,7 @@ $string['appraisal:modificationdate'] = 'Modifié';
 $string['appraisalcriteria:grade'] = 'Note finale';
 $string['assess'] = 'Evaluation de "{$a}"';
 $string['assessment'] = 'Evaluation';
+$string['cachedef_appraisals'] = 'Cache pour la récupération d\'observations';
 $string['context'] = 'Contexte';
 $string['contextformat'] = 'Format du texte';
 $string['comment'] = 'Commentaire';

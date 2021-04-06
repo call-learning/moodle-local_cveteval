@@ -109,6 +109,8 @@ class import_helper {
         $transformer = new \tool_importer\local\transformer\standard($transformdef, ',');
 
         try {
+            global $DB;
+            $transaction = $DB->start_delegated_transaction();
             $importer = new importer($csvimporter,
                 $transformer,
                 new data_importer(),
@@ -120,6 +122,7 @@ class import_helper {
                 'other' => array('filename' => $csvpath));
             $event = \local_cveteval\event\situation_imported::create($eventparams);
             $event->trigger();
+            $transaction->allow_commit();
             return true;
         } catch (\moodle_exception $e) {
             $eventparams = array('context' => \context_system::instance(),

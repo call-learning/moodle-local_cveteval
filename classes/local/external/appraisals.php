@@ -25,11 +25,13 @@
 namespace local_cveteval\local\external;
 defined('MOODLE_INTERNAL') || die();
 
+use cache;
 use external_function_parameters;
 use external_multiple_structure;
 use external_single_structure;
 use external_value;
 
+use external_warnings;
 use \local_cveteval\local\persistent\role\entity as role_entity;
 use \local_cveteval\local\persistent\appraisal\entity as appraisal_entity;
 use \local_cveteval\local\persistent\appraisal_criterion\entity as app_crit_entity;
@@ -77,8 +79,8 @@ class appraisals extends \external_api {
                         )
                     )
                 ),
-                'context' => new external_value(PARAM_TEXT, 'context for appraisal', VALUE_OPTIONAL, ""),
-                'comment' => new external_value(PARAM_TEXT, 'comment for appraisal', VALUE_OPTIONAL, ""),
+                'context' => new external_value(PARAM_TEXT, 'context for appraisal', VALUE_DEFAULT, ""),
+                'comment' => new external_value(PARAM_TEXT, 'comment for appraisal', VALUE_DEFAULT, ""),
                 'id' => new external_value(PARAM_INT, 'id of the appraisal if it already exists',
                     VALUE_OPTIONAL, 0),
             )
@@ -100,8 +102,8 @@ class appraisals extends \external_api {
     public static function set_user_appraisal($situationid, $appraiserid, $studentid, $criteria, $context = "", $comment = "",
         $id = 0) {
         global $DB;
-        $params = self::validate_parameters(self::set_user_appraisal_parameters(), compact("situationid",
-            "appraiserid", "studentid", "context", "comment", "criteria", "id"));
+        $params = self::validate_parameters(self::set_user_appraisal_parameters(),
+            compact("situationid", "appraiserid", "studentid", "criteria", "context", "comment", "id"));
         // Normally we should have only one matching situation per appraiserId and student.
         $sql = "SELECT pl.id FROM {local_cveteval_evalplan} pl
                 LEFT JOIN {local_cveteval_group_assign} ga ON ga.groupid = pl.groupid
@@ -117,51 +119,57 @@ class appraisals extends \external_api {
                     'evalplanid' => $evalplanid,
                     'context' => $context,
                     'contextformat' => FORMAT_PLAIN,
-                    'comment' => $context,
+                    'comment' => $comment,
                     'commentformat' => FORMAT_PLAIN,
                 ];
-                $appraisal = new appraisal_entity($id, $appraisalrecord);
-                if (!$id) {
+                if (!empty($id)) {
+                    $appraisal = new appraisal_entity($id);
+                    $appraisal->from_record($appraisalrecord);
+                } else {
+                    $appraisal = new appraisal_entity(0, $appraisalrecord);
                     $appraisal->create();
                 }
                 $appraisal->save();
                 $id = $appraisal->get('id');
                 foreach ($criteria as $crit) {
                     $critrecord = (object) [
-                        'id' => empty($crit['id']) ? 0 : $crit['id'],
                         'criteriaid' => $crit['criterionid'], // TODO : this should criterionid.
                         'appraisalid' => $id,
                         'grade' => empty($crit['grade']) ? 0 : $crit['grade'],
                         'comment' => empty($crit['comment']) ? "" : $crit['comment']
                     ];
-                    $criterion = app_crit_entity::get_record(array('appraisalid' => $id, 'criteriaid' => $crit['criterionid']));
-                    if (!$criterion) {
+                    if (empty($crit['id'])) {
                         $criterion = new app_crit_entity(0, $critrecord);
                         $criterion->create();
                     } else {
+                        $criterion = app_crit_entity::get_record(array('appraisalid' => $id, 'criteriaid' => $crit['criterionid']));
                         $criterion->from_record($critrecord);
+                        $criterion->save();
                     }
-                    $criterion->save();
                     if ($crit['subcriteria']) {
                         foreach ($crit['subcriteria'] as $scrit) {
                             $critrecord = (object) [
-                                'id' => empty($scrit['id']) ? 0 : $scrit['id'],
                                 'criteriaid' => $scrit['criterionid'], // TODO : this should criterionid.
                                 'appraisalid' => $id,
                                 'grade' => empty($scrit['grade']) ? 0 : $scrit['grade']
                             ];
-                            $criterion = app_crit_entity::get_record(array('appraisalid' => $id, 'criteriaid' => $scrit['id']));
-                            if (!$criterion) {
+                            if (empty($scrit['id'])) {
                                 $criterion = new app_crit_entity(0, $critrecord);
                                 $criterion->create();
                             } else {
+                                $criterion =
+                                    app_crit_entity::get_record(array('appraisalid' => $id, 'criteriaid' => $scrit['criterionid']));
                                 $criterion->from_record($critrecord);
+                                $criterion->save();
                             }
-                            $criterion->save();
                         }
                     }
                 }
                 $transaction->allow_commit();
+                $appraisalscache = cache::make('local_cveteval', 'appraisals');
+                // TODO : improve this as it is hiding the real issue of SQL performance.
+                $appraisalscache->delete($appraiserid);
+                $appraisalscache->delete($studentid);
                 return static::get_appraisal($id);
             } catch (Exception $e) {
                 $transaction->dispose();
@@ -197,12 +205,18 @@ class appraisals extends \external_api {
     }
 
     /**
-     * Return the current role for the user
+     * Get the appraisals for given users
      */
     public static function get_user_appraisals($userid) {
         global $DB;
         $params = self::validate_parameters(self::get_user_appraisals_parameters(), array('userid' => $userid));
+        // TODO : improve this as it is hiding the real issue of SQL performance.
+        $appraisalscache = cache::make('local_cveteval', 'appraisals');
 
+        $appraisals = $appraisalscache->get($userid);
+        if (!empty($appraisals)) {
+            return $appraisals;
+        }
         // Get appraisal done for this user either as a student or as an appraiser.
 
         // First all situation as student.
@@ -226,14 +240,15 @@ class appraisals extends \external_api {
             WHERE appraisal.studentid = :studentid OR appraisal.appraiserid = :appraiserid";
 
         $appraisals = $DB->get_records_sql($sql, array('studentid' => $userid, 'appraiserid' => $userid));
-
+        // TODO : fix performance issue here.
         foreach ($appraisals as &$appr) {
             if (empty($appr->situationid)) {
                 unset($appraisals[$appr->id]);
                 continue; // Appraisal should always have a related situation id.
             }
-            static::set_appraisal_criteria($appr);
+            static::setup_appraisal($appr);
         }
+        $appraisalscache->set($userid, $appraisals);
         return $appraisals;
     }
 
@@ -310,7 +325,7 @@ class appraisals extends \external_api {
     }
 
     /**
-     * Return the current role for the user
+     * Get infromation related to the appraisal
      */
     public static function get_appraisal($appraisalid) {
         global $DB;
@@ -340,12 +355,15 @@ class appraisals extends \external_api {
 
         $appraisal = $DB->get_record_sql($sql, array('appraisalid' => $appraisalid));
 
-        static::set_appraisal_criteria($appraisal);
+        static::setup_appraisal($appraisal);
 
         return $appraisal;
     }
 
-    protected static function set_appraisal_criteria(&$appr) {
+    /**
+     * Setup criteria and other information for the current appraisal.
+     */
+    protected static function setup_appraisal(&$appr) {
         global $DB, $PAGE;
         $studentuser = \core_user::get_user($appr->studentid);
         $appraiseruser = \core_user::get_user($appr->appraiserid);
@@ -390,8 +408,8 @@ class appraisals extends \external_api {
             if (empty($cr->cparentid)) {
                 $cr->subcriteria = [];
                 $rootcriteria[$cr->critid] = (object) [
-                    'id' => (int) $cr->critid,
-                    'criterionid' => (int) $cr->crid,
+                    'id' => (int) $cr->id,
+                    'criterionid' => (int) $cr->critid,
                     'grade' => (int) $cr->grade,
                     'label' => $cr->label,
                     'comment' => format_text($cr->comment, $cr->commentformat),
@@ -401,8 +419,8 @@ class appraisals extends \external_api {
             } else {
                 if (!empty($rootcriteria[$cr->cparentid])) {
                     $rootcriteria[$cr->cparentid]->subcriteria[] = (object) [
-                        'id' => (int) $cr->critid,
-                        'criterionid' => (int) $cr->crid,
+                        'id' => (int) $cr->id,
+                        'criterionid' => (int) $cr->critid,
                         'grade' => (int) $cr->grade,
                         'label' => $cr->label,
                         'timemodified' => $cr->timemodified
@@ -410,7 +428,6 @@ class appraisals extends \external_api {
                 }
             }
         }
-
         $appr->criteria = array_values($rootcriteria);
     }
 }

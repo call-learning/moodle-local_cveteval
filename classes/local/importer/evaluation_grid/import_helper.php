@@ -39,6 +39,7 @@ class import_helper {
      * @throws \tool_importer\importer_exception
      */
     public static function import($csvpath, $delimiter = 'comma', $progressbar = null) {
+        global $DB;
         $csvimporter = new csv_data_source($csvpath, $delimiter);
         function trimmed($value, $columnname) {
             return trim($value);
@@ -68,8 +69,8 @@ class import_helper {
         );
 
         $transformer = new \tool_importer\local\transformer\standard($transformdef);
-
         try {
+            $transaction = $DB->start_delegated_transaction();
             $importer = new importer($csvimporter,
                 $transformer,
                 new data_importer(),
@@ -81,6 +82,7 @@ class import_helper {
                 'other' => array('filename' => $csvpath));
             $event = \local_cveteval\event\evaluation_grid_imported::create($eventparams);
             $event->trigger();
+            $transaction->allow_commit();
             return true;
         } catch (\moodle_exception $e) {
             $eventparams = array('context' => \context_system::instance(),
@@ -93,6 +95,7 @@ class import_helper {
             }
             return false;
         }
+
     }
 
     /**

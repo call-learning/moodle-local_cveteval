@@ -69,7 +69,7 @@ class data_importer extends \tool_importer\data_importer {
      * @return mixed|void
      * @throws importer_exception
      */
-    protected function raw_import($row) {
+    protected function raw_import($row, $rowindex) {
         static $groups = null;
 
         $this->basic_validations($row);
