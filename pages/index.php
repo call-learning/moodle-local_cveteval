@@ -30,8 +30,9 @@ use local_cltools\local\crud\helper\base as crud_helper;
 use local_cltools\local\crud\helper\crud_list;
 
 global $CFG, $OUTPUT, $PAGE;
-require_login();;
+require_login();
 $PAGE->set_url('/local/cveteval/pages/index.php');
+$PAGE->set_context(context_system::instance());
 
 $innerlinks = array(
     'evaluation_grid' => '/local/cveteval/pages/evaluation_grid',

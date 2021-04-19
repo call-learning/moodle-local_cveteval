@@ -22,24 +22,20 @@ use local_cveteval\local\utils;
  * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-function import_sample_planning($cleanup = false) {
-    global $CFG;
-    $basepath = $CFG->dirroot . '/local/cveteval/tests/fixtures/';
-    foreach (array(
-        'evaluation_grid' => 'Sample_Evalgrid.csv',
-        'situation' => 'Sample_Situations.csv',
-        'planning' => 'Sample_Planning.csv',
-        'grouping' => 'Sample_Grouping.csv'
-    ) as $type => $filename) {
+function import_sample_planning($samplefiles, $cleanup = false) {
+    $importid = utils::get_next_importid();
+    foreach ($samplefiles as $type => $filename) {
         $importclass = "\\local_cveteval\\local\\importer\\{$type}\\import_helper";
         if (!class_exists($importclass)) {
             throw new moodle_exception('importclassnotfound', 'local_cveteval', null,
                 ' class:' . $importclass);
         }
+        $importhelper = new $importclass($filename, $importid, 'semicolon');
+
         if ($cleanup) {
-            $importclass::cleanup();
+            $importhelper->cleanup();
         }
-        $importclass::import($basepath . $filename);
+        $importhelper->import();
     }
 }
 
@@ -49,14 +45,14 @@ function import_sample_planning($cleanup = false) {
  * @throws dml_exception
  * @throws moodle_exception
  */
-function inport_sample_users() {
+function inport_sample_users($samplefilepath) {
     global $CFG;
     require_once($CFG->libdir . '/csvlib.class.php');
     require_once($CFG->dirroot . '/user/lib.php');
     $iid = csv_import_reader::get_new_iid('uploaduser');
     $cir = new csv_import_reader($iid, 'uploaduser');
-    $content = file_get_contents($CFG->dirroot . '/local/cveteval/tests/fixtures/users.csv');
-    $cir->load_csv_content($content, 'utf-8', 'comma');
+    $content = file_get_contents($samplefilepath);
+    $cir->load_csv_content($content, 'utf-8', 'semicolon');
     $cir->init();
     $columns = $cir->get_columns();
     while ($csvrow = $cir->next()) {
@@ -106,6 +102,11 @@ function create_random_appraisals($cleanup, $verbose = true) {
                 'groupid = :groupid AND clsituationid = :clsituationid',
                 array('groupid' => $studentga->groupid, 'clsituationid' => $clsituation->get('id')));
             foreach ($evalplansid as $evalplanid) {
+                $shouldcreate = rand(0, 100);
+                if ($shouldcreate % 5) {
+                    continue;
+                }
+
                 $appraiserindex = rand(1, count($appraisersroles)) - 1;
                 $appid = array_values($appraisersroles)[$appraiserindex]->userid;
                 $appraisal = new stdClass();

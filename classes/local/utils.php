@@ -92,6 +92,9 @@ class utils {
         0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
     ];
 
+    /**
+     * @throws \coding_exception
+     */
     public static function create_scale_if_not_present() {
         $scales = grade_scale::fetch_all_global();
         $defaultscale = null;
@@ -116,5 +119,21 @@ class utils {
             $defaultscale->load_items(self::DEFAULT_SCALE_ITEM);
             $defaultscale->update();
         }
+    }
+
+    /**
+     * @return false|int|mixed
+     * @return int
+     * @throws \dml_exception
+     */
+    public static function get_next_importid() {
+        global $DB;
+        $table = \tool_importer\local\import_log::TABLE;
+        // Get the Max importid.
+        // We assume here that there is at least a log from the module with the module set to 'local_cveteval'.
+        $maximportid = $DB->get_field_sql('SELECT COALESCE(MAX(importid),0) AS maximportid FROM {'
+            . $table . '} WHERE 
+        module=:module', ['module' => 'local_cveteval']);
+        return empty($maximportid) ? 0 : $maximportid + 1;
     }
 }

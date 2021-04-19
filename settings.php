@@ -63,18 +63,19 @@ if ($hassiteconfig) {
     $settings->add('cveteval',
         new admin_externalpage('competveteval_manage_situations',
             new lang_string('settings:manage_situations', 'local_cveteval'),
-            $CFG->wwwroot . '/local/cveteval/pages/situations/index.php',
+            $CFG->wwwroot . '/local/cveteval/pages/situation/index.php',
             array('local/cveteval:managesituations'),
             !$enabled
         )
     );
+
     $settings->add('cveteval',
-        new admin_externalpage('competveteval_manage_evaluation_templates',
-            new lang_string('settings:manage_evaluation_templates', 'local_cveteval'),
-            $CFG->wwwroot . '/local/cveteval/pages/evaluation_template/index.php',
-            array('local/cveteval:manageevaluationtemplate'),
-            !$enabled
-        )
+        new admin_externalpage(
+            'cvetevalimport',
+            get_string('import', 'local_cveteval'),
+            $CFG->wwwroot.'/local/cveteval/admin/import.php',
+            array('local/cveteval:import'),
+            !$enabled)
     );
 
     if ($enabled) {

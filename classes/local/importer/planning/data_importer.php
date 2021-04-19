@@ -30,6 +30,7 @@ use local_cveteval\local\persistent\group\entity as group_entity;
 use local_cveteval\local\persistent\situation\entity as situation_entity;
 use tool_importer\field_types;
 use tool_importer\importer_exception;
+use tool_importer\local\import_log;
 
 /**
  * Class data_importer
@@ -48,7 +49,7 @@ class data_importer extends \tool_importer\data_importer {
      * @param null $defaultvals additional default values
      * @throws \dml_exception
      */
-    public function __construct($defaultvals = null, $fielddefinition) {
+    public function __construct($fielddefinition, $defaultvals = null) {
         $this->defaultvalues = [];
         if ($defaultvals) {
             $this->defaultvalues = array_merge($this->defaultvalues, $defaultvals);
@@ -95,15 +96,26 @@ class data_importer extends \tool_importer\data_importer {
         // Now the row and add a planning instance for each group and clinical situation.
         $plannings = [];
         foreach ($groups as $groupname => $group) {
-            $record = new \stdClass();
-            $record->starttime = $row['starttime'];
-            $record->endtime = $row['endtime'];
-            if (!empty($row[$groupname]) && !empty($clsituations[$row[$groupname]])) {
-                $record->groupid = $group->get('id');
-                $record->clsituationid = $clsituations[$row[$groupname]]->get('id');
-                $planning = new planning_entity(0, $record);
-                $planning->create();
-                $plannings[] = $planning;
+            try {
+                $record = new \stdClass();
+                $record->starttime = $row['starttime'];
+                $record->endtime = $row['endtime'];
+                if (!empty($row[$groupname]) && !empty($clsituations[$row[$groupname]])) {
+                    $record->groupid = $group->get('id');
+                    $record->clsituationid = $clsituations[$row[$groupname]]->get('id');
+                    $planning = new planning_entity(0, $record);
+                    $planning->create();
+                    $plannings[] = $planning;
+                }
+            } catch (\moodle_exception $e) {
+                import_log::new_log($rowindex,
+                    'planning:error',
+                    $e->getMessage(),
+                    import_log::LEVEL_ERROR,
+                    '',
+                    'local_cveteval',
+                    $this->source->get_source_type() . ':' . $this->source->get_source_identifier(),
+                    $this->get_import_id());
             }
         }
         return $plannings;

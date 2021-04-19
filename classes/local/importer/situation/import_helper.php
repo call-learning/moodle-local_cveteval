@@ -25,22 +25,56 @@
 namespace local_cveteval\local\importer\situation;
 defined('MOODLE_INTERNAL') || die();
 
+use local_cveteval\local\importer\base_helper;
 use local_cveteval\local\persistent\evaluation_grid\entity as evaluation_grid_entity;
 use local_cveteval\local\persistent\role\entity as role_entity;
 use local_cveteval\local\persistent\situation\entity as situation_entity;
-use tool_importer\importer;
+use tool_importer\local\transformer\standard;
 
-class import_helper {
+class import_helper extends base_helper {
+
     /**
-     * Import the csv file in the given path
+     * import_helper constructor.
      *
      * @param $csvpath
-     * @return bool
-     * @throws \dml_exception
+     * @param $importid
+     * @param string $delimiter
+     * @param string $encoding
+     * @param null $progressbar
      * @throws \tool_importer\importer_exception
      */
-    public static function import($csvpath, $delimiter = 'comma', $progressbar = null) {
-        $csvimporter = new csv_data_source($csvpath, $delimiter);
+    public function __construct($csvpath, $importid, $delimiter = 'semicolon', $encoding = 'utf-8', $progressbar = null) {
+        parent::__construct($csvpath, $importid, $delimiter, $encoding, $progressbar);
+        $this->importeventclass = \local_cveteval\event\situation_imported::class;
+    }
+
+    /**
+     * Cleanup previously imported Clinical situation
+     */
+    public function cleanup() {
+        foreach (situation_entity::get_records() as $situation) {
+            $roles = role_entity::get_records(array('clsituationid' => $situation->get('id')));
+            if ($roles) {
+                foreach ($roles as $role) {
+                    $role->delete();
+                }
+            }
+            $situation->delete();
+        }
+    }
+    /**
+     * @param $csvpath
+     * @param $delimiter
+     * @param $encoding
+     * @return \tool_importer\data_source
+     */
+    protected function create_csv_datasource($csvpath, $delimiter, $encoding) {
+        return new csv_data_source($csvpath, $delimiter, $encoding);
+    }
+    /**
+     * @return \tool_importer\data_transformer
+     */
+    protected function create_transformer() {
         function trimmeduppercase($value, $columnname) {
             return trim(strtoupper($value));
         }
@@ -106,49 +140,13 @@ class import_helper {
                 ),
         );
 
-        $transformer = new \tool_importer\local\transformer\standard($transformdef, ',');
-
-        try {
-            global $DB;
-            $transaction = $DB->start_delegated_transaction();
-            $importer = new importer($csvimporter,
-                $transformer,
-                new data_importer(),
-                $progressbar
-            );
-            $importer->import();
-            // Send an event after importation.
-            $eventparams = array('context' => \context_system::instance(),
-                'other' => array('filename' => $csvpath));
-            $event = \local_cveteval\event\situation_imported::create($eventparams);
-            $event->trigger();
-            $transaction->allow_commit();
-            return true;
-        } catch (\moodle_exception $e) {
-            $eventparams = array('context' => \context_system::instance(),
-                'other' => array('filename' => $csvpath, 'error' => $e->getMessage()));
-            $event = \local_cveteval\event\situation_imported::create($eventparams);
-            $event->trigger();
-            if (defined('CLI_SCRIPT')) {
-                cli_writeln($e->getMessage());
-                cli_writeln($e->getTraceAsString());
-            }
-            return false;
-        }
+        $transformer = new standard($transformdef, ',');
+        return $transformer;
     }
-
     /**
-     * Cleanup previously imported Clinical situation
+     * @return \tool_importer\data_importer
      */
-    public static function cleanup() {
-        foreach (situation_entity::get_records() as $situation) {
-            $roles = role_entity::get_records(array('clsituationid' => $situation->get('id')));
-            if ($roles) {
-                foreach ($roles as $role) {
-                    $role->delete();
-                }
-            }
-            $situation->delete();
-        }
+    protected function create_data_importer() {
+        return new data_importer();
     }
 }

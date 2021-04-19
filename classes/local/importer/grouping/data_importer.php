@@ -29,6 +29,7 @@ use tool_importer\field_types;
 use tool_importer\importer_exception;
 use \local_cveteval\local\persistent\group_assignment\entity as group_assignment_entity;
 use \local_cveteval\local\persistent\group\entity as group_entity;
+use tool_importer\local\import_log;
 
 /**
  * Class data_importer
@@ -47,7 +48,7 @@ class data_importer extends \tool_importer\data_importer {
      * @param null $defaultvals additional default values
      * @throws \dml_exception
      */
-    public function __construct($defaultvals = null, $fielddefinition) {
+    public function __construct($fielddefinition, $defaultvals = null) {
         $this->defaultvalues = [];
         if ($defaultvals) {
             $this->defaultvalues = array_merge($this->defaultvalues, $defaultvals);
@@ -90,28 +91,45 @@ class data_importer extends \tool_importer\data_importer {
         $email = clean_param(trim($row['email']), PARAM_EMAIL);
         $user = \core_user::get_user_by_email($email);
         if (!$user) {
-            return false;
+            import_log::new_log($rowindex,
+                'grouping:usernotfound',
+                $email,
+                import_log::LEVEL_WARNING,
+                'studentid',
+                'local_cveteval',
+                $this->source->get_source_type() . ':' . $this->source->get_source_identifier(),
+                $this->get_import_id());
         } else {
             foreach ($this->grouping as $grouping) {
-                if (!empty($row[$grouping])) {
-                    if (!empty($groups[$row[$grouping]])) {
-                        $group = $groups[$row[$grouping]];
-                        $ga = group_assignment_entity::get_record(array(
-                                'studentid' => $user->id,
-                                'groupid' => $group->get('id')
-                            )
-                        );
-                        if (!$ga) {
-                            $ga = new group_assignment_entity(0, (object) array(
-                                'studentid' => $user->id,
-                                'groupid' => $group->get('id')
-                            )
+                try {
+                    if (!empty($row[$grouping])) {
+                        if (!empty($groups[$row[$grouping]])) {
+                            $group = $groups[$row[$grouping]];
+                            $ga = group_assignment_entity::get_record(array(
+                                    'studentid' => $user->id,
+                                    'groupid' => $group->get('id')
+                                )
                             );
-                            $ga->create();
+                            if (!$ga) {
+                                $ga = new group_assignment_entity(0, (object) array(
+                                    'studentid' => $user->id,
+                                    'groupid' => $group->get('id')
+                                ));
+                                $ga->create();
+                            }
+                            $gassigments[] = $ga;
                         }
-                        $gassigments[] = $ga;
-                    }
 
+                    }
+                } catch(\moodle_exception $e) {
+                    import_log::new_log($rowindex,
+                        'grouping:error',
+                        $e->getMessage(),
+                        import_log::LEVEL_ERROR,
+                        '',
+                        'local_cveteval',
+                        $this->source->get_source_type() . ':' . $this->source->get_source_identifier(),
+                        $this->get_import_id());
                 }
             }
         }

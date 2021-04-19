@@ -25,21 +25,55 @@
 namespace local_cveteval\local\importer\grouping;
 defined('MOODLE_INTERNAL') || die();
 
-use DateTime;
+use local_cveteval\local\importer\base_helper;
+use local_cveteval\local\persistent\group\entity as group_entity;
 use local_cveteval\local\persistent\group_assignment\entity as group_assignment_entity;
-use tool_importer\importer;
+use local_cveteval\local\persistent\planning\entity as planning_entity;
+use tool_importer\local\transformer\standard;
 
-class import_helper {
+class import_helper extends base_helper {
     /**
-     * Import the csv file in the given path
+     * import_helper constructor.
      *
      * @param $csvpath
-     * @return bool
-     * @throws \dml_exception
+     * @param $importid
+     * @param string $delimiter
+     * @param string $encoding
+     * @param null $progressbar
      * @throws \tool_importer\importer_exception
      */
-    public static function import($csvpath, $delimiter = 'comma', $progressbar = null) {
-        $csvimporter = new csv_data_source($csvpath, $delimiter);
+    public function __construct($csvpath, $importid, $delimiter = 'semicolon', $encoding = 'utf-8', $progressbar = null) {
+        parent::__construct($csvpath, $importid, $delimiter, $encoding, $progressbar);
+        $this->importeventclass = \local_cveteval\event\grouping_imported::class;
+    }
+
+    /**
+     * Cleanup previously imported grouping
+     */
+    public function cleanup() {
+        foreach (group_assignment_entity::get_records() as $ga) {
+            $ga->delete();
+        }
+        // Delete unreferenced groups.
+        foreach (group_entity::get_records() as $group) {
+            if (!planning_entity::record_exists_select("groupid = :groupid", array('groupid' => $group->get('id')))) {
+                $group->delete();
+            }
+        }
+    }
+    /**
+     * @param $csvpath
+     * @param $delimiter
+     * @param $encoding
+     * @return \tool_importer\data_source
+     */
+    protected function create_csv_datasource($csvpath, $delimiter, $encoding) {
+        return new csv_data_source($csvpath, $delimiter, $encoding);
+    }
+    /**
+     * @return \tool_importer\data_transformer
+     */
+    protected function create_transformer() {
         function trimmed($value, $columnname) {
             return trim($value);
         }
@@ -55,43 +89,13 @@ class import_helper {
                 ),
         );
 
-        $transformer = new \tool_importer\local\transformer\standard($transformdef);
-
-        try {
-            global $DB;
-            $transaction = $DB->start_delegated_transaction();
-            $importer = new importer($csvimporter,
-                $transformer,
-                new data_importer(null, $csvimporter->get_fields_definition()),
-                $progressbar
-            );
-            $importer->import();
-            // Send an event after importation.
-            $eventparams = array('context' => \context_system::instance(),
-                'other' => array('filename' => $csvpath));
-            $event = \local_cveteval\event\grouping_imported::create($eventparams);
-            $event->trigger();
-            $transaction->allow_commit();
-            return true;
-        } catch (\moodle_exception $e) {
-            $eventparams = array('context' => \context_system::instance(),
-                'other' => array('filename' => $csvpath, 'error' => $e->getMessage()));
-            $event = \local_cveteval\event\grouping_imported::create($eventparams);
-            $event->trigger();
-            if (defined('CLI_SCRIPT')) {
-                cli_writeln($e->getMessage());
-                cli_writeln($e->getTraceAsString());
-            }
-            return false;
-        }
+        $transformer = new standard($transformdef);
+        return $transformer;
     }
-
     /**
-     * Cleanup previously imported grouping
+     * @return \tool_importer\data_importer
      */
-    public static function cleanup() {
-        foreach (group_assignment_entity::get_records() as $ga) {
-            $ga->delete();
-        }
+    protected function create_data_importer() {
+        return new data_importer($this->csvimporter->get_fields_definition());
     }
 }

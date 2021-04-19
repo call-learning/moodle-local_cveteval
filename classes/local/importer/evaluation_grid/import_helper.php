@@ -25,22 +25,51 @@
 namespace local_cveteval\local\importer\evaluation_grid;
 defined('MOODLE_INTERNAL') || die();
 
+use local_cveteval\local\importer\base_helper;
 use local_cveteval\local\persistent\criteria\entity as criteria_entity;
-use tool_importer\importer;
-use \local_cveteval\local\persistent\evaluation_grid\entity as evaluation_grid_entity;
+use local_cveteval\local\persistent\evaluation_grid\entity as evaluation_grid_entity;
+use tool_importer\local\transformer\standard;
 
-class import_helper {
+class import_helper extends base_helper {
     /**
-     * Import the csv file in the given path
+     * import_helper constructor.
      *
      * @param $csvpath
-     * @return bool
-     * @throws \dml_exception
+     * @param $importid
+     * @param string $delimiter
+     * @param string $encoding
+     * @param null $progressbar
      * @throws \tool_importer\importer_exception
      */
-    public static function import($csvpath, $delimiter = 'comma', $progressbar = null) {
-        global $DB;
-        $csvimporter = new csv_data_source($csvpath, $delimiter);
+    public function __construct($csvpath, $importid, $delimiter = 'semicolon', $encoding = 'utf-8', $progressbar = null) {
+        parent::__construct($csvpath, $importid, $delimiter, $encoding, $progressbar);
+        $this->importeventclass = \local_cveteval\event\evaluation_grid_imported::class;
+    }
+
+    /**
+     * Cleanup previously imported evaluation grid
+     */
+    public function cleanup() {
+        foreach (criteria_entity::get_records() as $qa) {
+            $qa->delete();
+        }
+        foreach (evaluation_grid_entity::get_records() as $ga) {
+            $ga->delete();
+        }
+    }
+    /**
+     * @param $csvpath
+     * @param $delimiter
+     * @param $encoding
+     * @return \tool_importer\data_source
+     */
+    protected function create_csv_datasource($csvpath, $delimiter, $encoding) {
+        return new csv_data_source($csvpath, $delimiter, $encoding);
+    }
+    /**
+     * @return \tool_importer\data_transformer
+     */
+    protected function create_transformer() {
         function trimmed($value, $columnname) {
             return trim($value);
         }
@@ -67,46 +96,13 @@ class import_helper {
                     array('to' => 'label', 'transformcallback' => __NAMESPACE__ . '\trimmed')
                 )
         );
-
-        $transformer = new \tool_importer\local\transformer\standard($transformdef);
-        try {
-            $transaction = $DB->start_delegated_transaction();
-            $importer = new importer($csvimporter,
-                $transformer,
-                new data_importer(),
-                $progressbar
-            );
-            $importer->import();
-            // Send an event after importation.
-            $eventparams = array('context' => \context_system::instance(),
-                'other' => array('filename' => $csvpath));
-            $event = \local_cveteval\event\evaluation_grid_imported::create($eventparams);
-            $event->trigger();
-            $transaction->allow_commit();
-            return true;
-        } catch (\moodle_exception $e) {
-            $eventparams = array('context' => \context_system::instance(),
-                'other' => array('filename' => $csvpath, 'error' => $e->getMessage()));
-            $event = \local_cveteval\event\evaluation_grid_imported::create($eventparams);
-            $event->trigger();
-            if (defined('CLI_SCRIPT')) {
-                cli_writeln($e->getMessage());
-                cli_writeln($e->getTraceAsString());
-            }
-            return false;
-        }
-
+        $transformer = new standard($transformdef);
+        return $transformer;
     }
-
     /**
-     * Cleanup previously imported evaluation grid
+     * @return \tool_importer\data_importer
      */
-    public static function cleanup() {
-        foreach (criteria_entity::get_records() as $qa) {
-            $qa->delete();
-        }
-        foreach (evaluation_grid_entity::get_records() as $ga) {
-            $ga->delete();
-        }
+    protected function create_data_importer() {
+        return new data_importer();
     }
 }

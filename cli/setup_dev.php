@@ -37,12 +37,14 @@ list($options, $unrecognized) = cli_get_params([
     'cleanup' => false,
     'users' => false,
     'planning' => false,
-    'appraisals' => false
+    'appraisals' => false,
+    'sampletype' => 'default'
 ], [
     'c' => 'cleanup',
     'u' => 'users',
     'a' => 'appraisals',
-    'p' => 'planning'
+    'p' => 'planning',
+    's' => 'sampletype'
 ]);
 
 $help =
@@ -53,6 +55,7 @@ Import the definitions from the fixtures CSV file
     -p : import planning, evalgrid, situations
     -u : user importation (add users)
     -a : add appraisals
+    -s : sample type (default, short...) 
 ";
 
 if ($unrecognized) {
@@ -67,14 +70,37 @@ if ($options['help']) {
 
 $cleanup = !empty($options['cleanup']) && $options['cleanup'];
 require_once($CFG->dirroot . '/local/cveteval/tests/helpers.php');
+
+$basepath = $CFG->dirroot . '/local/cveteval/tests/fixtures/';
+$sampletype = [
+    'default' => [
+        'users' => $CFG->dirroot . '/local/cveteval/tests/fixtures/users.csv',
+        'cveteval' => [
+            'evaluation_grid' => "{$basepath}/Sample_Evalgrid.csv",
+            'situation' => "{$basepath}/Sample_Situations.csv",
+            'planning' => "{$basepath}/Sample_Planning.csv",
+            'grouping' => "{$basepath}/Sample_Grouping.csv"
+        ]
+    ],
+    'short' => [
+        'users' => $CFG->dirroot . '/local/cveteval/tests/fixtures/ShortSample_Users.csv',
+        'cveteval' => [
+            'evaluation_grid' => "{$basepath}/Sample_Evalgrid.csv",
+            'situation' => "{$basepath}/ShortSample_Situations.csv",
+            'planning' => "{$basepath}/ShortSample_Planning.csv",
+            'grouping' => "{$basepath}/ShortSample_Grouping.csv"
+        ]
+    ]
+];
+
 if (!empty($options['users']) && $options['users']) {
     cli_writeln('Import users...');
-    inport_sample_users();
+    inport_sample_users($sampletype[$options['sampletype']]['users']);
     cli_writeln('Users imported...');
 }
 if (!empty($options['planning']) && $options['planning']) {
     cli_writeln('Import planning...');
-    import_sample_planning($cleanup);
+    import_sample_planning($sampletype[$options['sampletype']]['cveteval'], $cleanup);
     cli_writeln('Planning imported...');
 }
 

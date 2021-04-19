@@ -31,7 +31,7 @@ defined('MOODLE_INTERNAL') || die();
  * @param int $oldversion
  * @return bool
  */
-function xmldb_local_cveteval_install($oldversion) {
+function xmldb_local_cveteval_install() {
     \local_cveteval\local\utils::create_scale_if_not_present();
     return true;
 }
