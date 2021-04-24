@@ -133,7 +133,7 @@ class appraisals extends \external_api {
                 $id = $appraisal->get('id');
                 foreach ($criteria as $crit) {
                     $critrecord = (object) [
-                        'criteriaid' => $crit['criterionid'], // TODO : this should criterionid.
+                        'criterionid' => $crit['criterionid'], // TODO : this should criterionid.
                         'appraisalid' => $id,
                         'grade' => empty($crit['grade']) ? 0 : $crit['grade'],
                         'comment' => empty($crit['comment']) ? "" : $crit['comment']
@@ -142,14 +142,14 @@ class appraisals extends \external_api {
                         $criterion = new app_crit_entity(0, $critrecord);
                         $criterion->create();
                     } else {
-                        $criterion = app_crit_entity::get_record(array('appraisalid' => $id, 'criteriaid' => $crit['criterionid']));
+                        $criterion = app_crit_entity::get_record(array('appraisalid' => $id, 'criterionid' => $crit['criterionid']));
                         $criterion->from_record($critrecord);
                         $criterion->save();
                     }
                     if ($crit['subcriteria']) {
                         foreach ($crit['subcriteria'] as $scrit) {
                             $critrecord = (object) [
-                                'criteriaid' => $scrit['criterionid'], // TODO : this should criterionid.
+                                'criterionid' => $scrit['criterionid'], // TODO : this should criterionid.
                                 'appraisalid' => $id,
                                 'grade' => empty($scrit['grade']) ? 0 : $scrit['grade']
                             ];
@@ -158,7 +158,7 @@ class appraisals extends \external_api {
                                 $criterion->create();
                             } else {
                                 $criterion =
-                                    app_crit_entity::get_record(array('appraisalid' => $id, 'criteriaid' => $scrit['criterionid']));
+                                    app_crit_entity::get_record(array('appraisalid' => $id, 'criterionid' => $scrit['criterionid']));
                                 $criterion->from_record($critrecord);
                                 $criterion->save();
                             }
@@ -390,14 +390,14 @@ class appraisals extends \external_api {
         );
         $appr->type = $type ? (int) $type : role_entity::ROLE_APPRAISER_ID;
         $allapprcriteria = $DB->get_records_sql(
-            "SELECT apc.id, apc.criteriaid, apc.grade, apc.comment, apc.commentformat,
+            "SELECT apc.id, apc.criterionid, apc.grade, apc.comment, apc.commentformat,
                     crit.id AS critid,
                     crit.parentid AS cparentid,
                     crit.sort AS csort,
                     COALESCE(crit.timemodified, crit.timecreated) as timemodified,
                     crit.label
                     FROM {local_cveteval_appr_crit} apc
-                    LEFT JOIN {local_cveteval_criteria} crit ON crit.id = apc.criteriaid
+                    LEFT JOIN {local_cveteval_criterion} crit ON crit.id = apc.criterionid
                     WHERE apc.appraisalid =:appraisalid
                     ORDER BY cparentid, csort ASC
                     ",

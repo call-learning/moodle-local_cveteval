@@ -173,7 +173,7 @@ class appraisals_student extends dynamic_table_sql {
      */
     protected function set_initial_sql() {
         global $DB;
-        $from = '{local_cveteval_criteria} criterion';
+        $from = '{local_cveteval_criterion} criterion';
         $fields = static::FIELDS;
         if ($this->appraiserlist) {
             foreach ($this->appraiserlist as $appraiserid => $appraiserfullname) {
@@ -232,21 +232,21 @@ class appraisals_student extends dynamic_table_sql {
             );
             foreach ($this->appraiserlist as $appraiserid => $fullname) {
                 $grades = $DB->get_records_sql(
-                    "SELECT c.criteriaid, c.grade as grade,
+                    "SELECT c.criterionid, c.grade as grade,
                         c.comment as comment, c.commentformat,
                         appraisal.comment as appraisalcomment, appraisal.commentformat as appraisalcommentformat,
                         appraisal.context as appraisalcontext, appraisal.contextformat as appraisalcontextformat
                     FROM {local_cveteval_appr_crit} c
-                    LEFT JOIN {local_cveteval_criteria} criterion ON criterion.id = c.criteriaid
+                    LEFT JOIN {local_cveteval_criterion} criterion ON criterion.id = c.criterionid
                     LEFT JOIN {local_cveteval_appraisal} appraisal ON appraisal.id = c.appraisalid
                     LEFT JOIN {local_cveteval_evalplan} plan ON plan.id = appraisal.evalplanid
                     LEFT JOIN {local_cveteval_role} role ON plan.clsituationid = role.clsituationid
-                    WHERE appraisal.appraiserid = :appraiserid AND (c.criteriaid = :criteriaid
+                    WHERE appraisal.appraiserid = :appraiserid AND (c.criterionid = :criterionid
                     OR criterion.parentid = :parentcritid ) AND $additionalwhere
                     ",
                     $params + [
                         'appraiserid' => $appraiserid,
-                        'criteriaid' => $row->id,
+                        'criterionid' => $row->id,
                         'parentcritid' => $row->id,
                     ]
 
@@ -255,7 +255,7 @@ class appraisals_student extends dynamic_table_sql {
                 $maingrade = 0;
                 $comments = null;
                 foreach ($grades as $grade) {
-                    if ($grade->criteriaid == $row->id) {
+                    if ($grade->criterionid == $row->id) {
                         $maingrade = $grade->grade;
                         $comments = new stdClass();
                         $comments->criteriacomment = $this->format_text($grade->comment, $grade->commentformat);

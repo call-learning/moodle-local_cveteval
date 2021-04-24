@@ -39,9 +39,9 @@ class csv_data_source extends \tool_importer\local\source\csv_data_source {
     public function get_fields_definition() {
         return [
             'Evaluation Grid Id' => \tool_importer\field_types::TYPE_TEXT,
-            'Criteria Id' => \tool_importer\field_types::TYPE_TEXT,
-            'Criteria Parent Id' => \tool_importer\field_types::TYPE_TEXT,
-            'Criteria Label' => \tool_importer\field_types::TYPE_TEXT,
+            'Criterion Id' => \tool_importer\field_types::TYPE_TEXT,
+            'Criterion Parent Id' => \tool_importer\field_types::TYPE_TEXT,
+            'Criterion Label' => \tool_importer\field_types::TYPE_TEXT,
         ];
     }
 }

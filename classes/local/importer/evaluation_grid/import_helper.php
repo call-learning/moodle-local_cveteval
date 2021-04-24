@@ -26,7 +26,7 @@ namespace local_cveteval\local\importer\evaluation_grid;
 defined('MOODLE_INTERNAL') || die();
 
 use local_cveteval\local\importer\base_helper;
-use local_cveteval\local\persistent\criteria\entity as criteria_entity;
+use local_cveteval\local\persistent\criterion\entity as criterion_entity;
 use local_cveteval\local\persistent\evaluation_grid\entity as evaluation_grid_entity;
 use tool_importer\local\transformer\standard;
 
@@ -50,7 +50,7 @@ class import_helper extends base_helper {
      * Cleanup previously imported evaluation grid
      */
     public function cleanup() {
-        foreach (criteria_entity::get_records() as $qa) {
+        foreach (criterion_entity::get_records() as $qa) {
             $qa->delete();
         }
         foreach (evaluation_grid_entity::get_records() as $ga) {
@@ -83,15 +83,15 @@ class import_helper extends base_helper {
                 array(
                     array('to' => 'evalgridid', 'transformcallback' => __NAMESPACE__ . '\trimmed')
                 ),
-            'Criteria Id' =>
+            'Criterion Id' =>
                 array(
                     array('to' => 'idnumber', 'transformcallback' => __NAMESPACE__ . '\trimmed')
                 ),
-            'Criteria Parent Id' =>
+            'Criterion Parent Id' =>
                 array(
                     array('to' => 'parentidnumber', 'transformcallback' => __NAMESPACE__ . '\trimmed')
                 ),
-            'Criteria Label' =>
+            'Criterion Label' =>
                 array(
                     array('to' => 'label', 'transformcallback' => __NAMESPACE__ . '\trimmed')
                 )

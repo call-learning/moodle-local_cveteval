@@ -15,14 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Criteria template exporter
+ * Criterion template exporter
  *
  * @package   local_cveteval
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_cveteval\local\persistent\criteria;
+namespace local_cveteval\local\persistent\criterion;
 defined('MOODLE_INTERNAL') || die();
 
 use local_cltools\local\crud\entity_exporter;
@@ -30,12 +30,12 @@ use local_cltools\local\crud\entity_exporter;
 /**
  * Class exporter
  *
- * Criteria template exporter
+ * Criterion template exporter
  *
  * @package   local_cveteval
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class exporter extends entity_exporter {
-    protected static $persistentclass = '\\local_cveteval\\local\\persistent\\criteria\\entity';
+    protected static $persistentclass = '\\local_cveteval\\local\\persistent\\criterion\\entity';
 }

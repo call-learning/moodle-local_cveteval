@@ -1,4 +1,4 @@
-"Evaluation Grid Id";"Criteria Id";"Criteria Parent Id";"Criteria Label"
+"Evaluation Grid Id";"Criterion Id";"Criterion Parent Id";"Criterion Label"
 "GRID01";"Q001";;"Savoir être"
 "GRID01";"Q002";"Q001";"Respect des horaires de travail"
 "GRID01";"Q003";"Q001";"Respect des interlocuteurs (clients, personnels, encadrants, pairs, ...)"

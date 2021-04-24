@@ -15,25 +15,25 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Criteria template
+ * Criterion template
  *
  * @package   local_cveteval
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_cveteval\local\persistent\criteria;
+namespace local_cveteval\local\persistent\criterion;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Criteria template entity
+ * Criterion template entity
  *
  * @package   local_cveteval
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class entity extends \core\persistent {
-    const TABLE = 'local_cveteval_criteria';
+    const TABLE = 'local_cveteval_criterion';
 
     /**
      * Usual properties definition for a persistent
@@ -55,7 +55,7 @@ class entity extends \core\persistent {
                 'format' => [
                     'type' => 'entity_selector',
                     'selector_info' => (object) [
-                        'entity_type' => '\\local_cveteval\\local\\persistent\\criteria\\entity',
+                        'entity_type' => '\\local_cveteval\\local\\persistent\\criterion\\entity',
                         'display_field' => 'idnumber'
                     ]
                 ]

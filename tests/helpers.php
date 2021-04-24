@@ -92,8 +92,8 @@ function create_random_appraisals($cleanup, $verbose = true) {
         $DB->delete_records('local_cveteval_appr_crit');
     }
     $allcriterias = $DB->get_records_sql("SELECT crit.id as id, crit.label, egrid.evalgridid
-            FROM {local_cveteval_criteria} crit
-            LEFT JOIN {local_cveteval_cevalgrid} egrid ON crit.id = egrid.criteriaid"
+            FROM {local_cveteval_criterion} crit
+            LEFT JOIN {local_cveteval_cevalgrid} egrid ON crit.id = egrid.criterionid"
     );
     foreach (\local_cveteval\local\persistent\situation\entity::get_records() as $clsituation) {
         $appraisersroles = $DB->get_records('local_cveteval_role', array('clsituationid' => $clsituation->get('id')));
@@ -129,7 +129,7 @@ function create_random_appraisals($cleanup, $verbose = true) {
                     }
                     $critid = $crit->id;
                     $appraisalcrit = new stdClass();
-                    $appraisalcrit->criteriaid = $critid;
+                    $appraisalcrit->criterionid = $critid;
                     $appraisalcrit->appraisalid = $eap->get('id');
                     $appraisalcrit->grade = rand(0, 5);
                     $appraisalcrit->comment =

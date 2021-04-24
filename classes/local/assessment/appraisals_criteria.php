@@ -115,8 +115,8 @@ class appraisals_criteria extends dynamic_table_sql {
     protected function set_initial_sql() {
         global $DB;
         $from = '
-        {local_cveteval_criteria} criterion
-        LEFT JOIN {local_cveteval_appr_crit} critapp ON  criterion.id = critapp.criteriaid
+        {local_cveteval_criterion} criterion
+        LEFT JOIN {local_cveteval_appr_crit} critapp ON  criterion.id = critapp.criterionid
         ';
 
         $this->set_sql(join(', ', static::FIELDS), $from, 'criterion.parentid = 0', []);
@@ -149,8 +149,8 @@ class appraisals_criteria extends dynamic_table_sql {
             $where = " AND ($additionalwhere)";
         }
         $sql = 'SELECT DISTINCT ' . join(', ', static::FIELDS)
-            . ' FROM {local_cveteval_criteria} criterion
-               LEFT JOIN {local_cveteval_appr_crit} critapp ON  criterion.id = critapp.criteriaid
+            . ' FROM {local_cveteval_criterion} criterion
+               LEFT JOIN {local_cveteval_appr_crit} critapp ON  criterion.id = critapp.criterionid
                WHERE criterion.parentid = :parentcriterion ' . $where . ' ORDER BY sort';
         $rows = [];
         $this->setup();

@@ -44,7 +44,7 @@ class entity extends \core\persistent {
      */
     protected static function define_properties() {
         return array(
-            'criteriaid' => array(
+            'criterionid' => array(
                 'type' => PARAM_INT,
                 'default' => ''
             ),

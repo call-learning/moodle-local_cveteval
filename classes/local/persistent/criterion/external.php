@@ -15,14 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Criteria template external API
+ * Criterion template external API
  *
  * @package   local_cveteval
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_cveteval\local\persistent\criteria;
+namespace local_cveteval\local\persistent\criterion;
 
 use external_api;
 use external_multiple_structure;
@@ -35,50 +35,50 @@ global $CFG;
 
 
 /**
- * Criteria template external API
+ * Criterion template external API
  *
  * @package   local_cveteval
  * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class external extends external_api {
-    public static function get_criterias_parameters() {
+    public static function get_criterions_parameters() {
         return entity_utils::external_get_filter_generic_parameters();
     }
 
-    public static function get_criterias($filters) {
+    public static function get_criterions($filters) {
         $inputparams = compact($filters);
-        $params = self::validate_parameters(self::get_criterias_parameters(), $inputparams);
+        $params = self::validate_parameters(self::get_criterions_parameters(), $inputparams);
     }
 
-    public static function get_criterias_returns() {
+    public static function get_criterions_returns() {
         return new external_multiple_structure(
             exporter::get_read_structure()
         );
     }
 
-    public static function create_criteria_parameters() {
+    public static function create_criterion_parameters() {
         return new \external_function_parameters(
             [
-                'criteria' => exporter::get_create_structure()
+                'criterion' => exporter::get_create_structure()
             ]
         );
     }
 
-    public static function create_criteria($criteria) {
+    public static function create_criterion($criterion) {
         global $PAGE;
-        $inputparams = compact($criteria);
-        $params = self::validate_parameters(self::create_criteria_parameters(), $inputparams);
-        $criteria = $params['criteria'];
-        $criteria = new entity(0, $criteria);
-        $criteria->save();
+        $inputparams = compact($criterion);
+        $params = self::validate_parameters(self::create_criterion_parameters(), $inputparams);
+        $criterion = $params['criterion'];
+        $criterion = new entity(0, $criterion);
+        $criterion->save();
         $output = $PAGE->get_renderer('local_cltools');
-        return (new exporter($criteria))->export($output);
+        return (new exporter($criterion))->export($output);
     }
 
-    public static function create_criteria_returns() {
+    public static function create_criterion_returns() {
         return new external_single_structure(
-            ['criteria' => exporter::get_read_structure()]
+            ['criterion' => exporter::get_read_structure()]
         );
     }
 }

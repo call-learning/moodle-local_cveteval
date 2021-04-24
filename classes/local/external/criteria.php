@@ -82,10 +82,11 @@ class criteria extends \external_api {
     public static function get_criteria() {
         global $DB;
         $params = self::validate_parameters(self::get_criteria_parameters(), array());
+        self::validate_context(\context_system::instance());
         $criteriadb = $DB->get_records_sql(
             "SELECT crit.id,crit.label,crit.sort as critsort, crit.parentid, ceg.sort as gridsort, ceg.evalgridid as gridid
-                    FROM {local_cveteval_criteria} crit
-                    LEFT JOIN {local_cveteval_cevalgrid} ceg ON ceg.criteriaid = crit.id
+                    FROM {local_cveteval_criterion} crit
+                    LEFT JOIN {local_cveteval_cevalgrid} ceg ON ceg.criterionid = crit.id
                     ORDER BY ceg.evalgridid, gridsort, crit.parentid, crit.sort ASC
                     "
         );

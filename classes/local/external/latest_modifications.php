@@ -29,19 +29,17 @@ use external_function_parameters;
 use external_single_structure;
 use external_value;
 
-use \local_cveteval\local\persistent\role\entity as role_entity;
-use local_cveteval\local\utils;
-
-class user_type extends \external_api {
+class latest_modifications extends \external_api {
     /**
      * Returns description of method parameters
      *
      * @return external_function_parameters
      */
-    public static function get_user_type_parameters() {
+    public static function get_latest_modifications_parameters() {
         return new external_function_parameters(
             array(
-                'userid' => new external_value(PARAM_INT, 'id of the user', null, NULL_NOT_ALLOWED)
+                'entitytype' => new external_value(PARAM_ALPHAEXT, 'the entity to look for'),
+                'contextid'=> new external_value(PARAM_INT, 'the context id if needed', VALUE_DEFAULT, 0),
             )
         );
     }
@@ -51,10 +49,10 @@ class user_type extends \external_api {
      *
      * @return external_single_structure
      */
-    public static function get_user_type_returns() {
+    public static function get_latest_modifications_returns() {
         return new external_single_structure(
             array(
-                'type' => new external_value(PARAM_TEXT, 'the type of user'),
+                'latestmodifications' => new external_value(PARAM_INT, 'latest modification time'),
             )
         );
     }
@@ -62,12 +60,24 @@ class user_type extends \external_api {
     /**
      * Return the current role for the user
      */
-    public static function get_user_type($userid) {
-        $params = self::validate_parameters(self::get_user_type_parameters(), array('userid' => $userid));
+    public static function get_latest_modifications($entitytype, $contextid) {
+        $params = self::validate_parameters(self::get_latest_modifications_parameters(), array(
+            'entitytype' => $entitytype, 'contextid' => $contextid));
         self::validate_context(\context_system::instance());
-        $roleid = utils::get_user_role_id($userid);
-        return (object) ['type' =>
-            role_entity::ROLE_SHORTNAMES[$roleid]
-        ];
+        return static::get_entity_latest_modifications($entitytype, $contextid);
+    }
+
+    /**
+     * @param $entitytype
+     * @param $contextid
+     * @throws \dml_exception
+     */
+    public static function get_entity_latest_modifications($entitytype, $contextid) {
+        global $DB;
+        $classname = '\\local_cveteval\\local\\persistent\\'.$entitytype;
+        if (class_exists('\\local_cveteval\\local\\persistent\\'.$entitytype)) {
+            return $DB->get_record_sql("SELECT MAX(timemodified) FROM {".$classname::TABLE."}");
+        }
+        return 0;
     }
 }

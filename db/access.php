@@ -41,7 +41,7 @@ $capabilities = array(
             'manager' => CAP_ALLOW
         )
     ),
-    'local/cveteval:managecriteriatemplate' => array(
+    'local/cveteval:managecriteriontemplate' => array(
         'riskbitmask' => RISK_SPAM,
         'captype' => 'write',
         'contextlevel' => CONTEXT_SYSTEM,

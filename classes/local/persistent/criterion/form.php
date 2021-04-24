@@ -15,26 +15,29 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Criteria template list
+ * Criterion template entry form
  *
  * @package   local_cveteval
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_cveteval\local\persistent\criteria;
-defined('MOODLE_INTERNAL') || die();
+namespace local_cveteval\local\persistent\criterion;
 
-use local_cltools\local\crud\entity_table;
+use local_cltools\local\crud\form\entity_form;
+
+defined('MOODLE_INTERNAL') || die();
+global $CFG;
+require_once($CFG->libdir . '/formslib.php');
 
 /**
- * Criteria template list
+ * Criterion template entry form
  *
  * @package   local_cveteval
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
- * @license
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class table extends entity_table {
+class form extends entity_form {
     /** @var string The fully qualified classname. */
-    protected static $persistentclass = '\\local_cveteval\\local\\persistent\\criteria\\entity';
+    protected static $persistentclass = '\\local_cveteval\\local\\persistent\\criterion\\entity';
 }
