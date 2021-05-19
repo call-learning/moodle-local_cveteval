@@ -74,18 +74,10 @@ class import_helper extends base_helper {
      * @return \tool_importer\data_transformer
      */
     protected function create_transformer() {
-        function trimmed($value, $columnname) {
-            return trim($value);
-        }
-
-        function toint($value, $columnname) {
-            return intval($value);
-        }
-
         $transformdef = array(
             'Identifiant' =>
                 array(
-                    array('to' => 'email', 'transformcallback' => __NAMESPACE__ . '\trimmed')
+                    array('to' => 'email', 'transformcallback' => base_helper::class . '::trimmed')
                 ),
         );
 

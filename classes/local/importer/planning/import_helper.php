@@ -67,19 +67,15 @@ class import_helper extends base_helper {
      * @return \tool_importer\data_transformer
      */
     protected function create_transformer() {
-        function totimestamp($value, $columnname) {
-            $date = DateTime::createFromFormat(get_string('import:dateformat', 'local_cveteval'), trim($value));
-            return $date->getTimestamp();
-        }
 
         $transformdef = array(
             'Date début' =>
                 array(
-                    array('to' => 'starttime', 'transformcallback' => __NAMESPACE__ . '\totimestamp')
+                    array('to' => 'starttime', 'transformcallback' => self::class . '::totimestamp')
                 ),
             'Date fin' =>
                 array(
-                    array('to' => 'endtime', 'transformcallback' => __NAMESPACE__ . '\totimestamp')
+                    array('to' => 'endtime', 'transformcallback' => self::class . '::totimestamp')
                 ),
         );
 
@@ -92,4 +88,11 @@ class import_helper extends base_helper {
     protected function create_data_importer() {
         return new data_importer($this->csvimporter->get_fields_definition());
     }
+
+    public static function totimestamp($value, $columnname) {
+        $date = DateTime::createFromFormat(get_string('import:dateformat', 'local_cveteval'), trim($value));
+        $date->setTime(1,0,0,0);
+        return $date->getTimestamp();
+    }
+
 }

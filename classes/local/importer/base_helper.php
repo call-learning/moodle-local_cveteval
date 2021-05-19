@@ -146,4 +146,17 @@ abstract class base_helper {
     public function get_total_row_count() {
         return $this->importer->get_total_row_count();
     }
+
+
+    public static function trimmed($value, $columnname) {
+        return trim($value);
+    }
+
+    public static function toint($value, $columnname) {
+        return intval($value);
+    }
+    static function trimmeduppercase($value, $columnname) {
+        return trim(strtoupper($value));
+    }
+
 }

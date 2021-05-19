@@ -57,6 +57,7 @@ class utils {
      * @throws \dml_exception
      */
     public static function get_user_role_id($userid) {
+        global $DB;
         $roleid = role_entity::ROLE_STUDENT_ID;
         // Check that user exists first, if not it will be a student role.
         if ($user = \core_user::get_user($userid)) {
@@ -76,6 +77,11 @@ class utils {
                 if ($role->get('type') == role_entity::ROLE_ASSESSOR_ID) {
                     $isassessor = true;
                 }
+            }
+            if (persistent\group_assignment\entity::record_exists_select('studentid =:sid', array('sid' => $userid))) {
+                // As we check this globally and not per situation, this means that we ensure that a student stays a student.
+                $isappraiser = false;
+                $isassessor = false;
             }
             if ($isappraiser) {
                 $roleid = role_entity::ROLE_APPRAISER_ID;
@@ -136,4 +142,5 @@ class utils {
         module=:module', ['module' => 'local_cveteval']);
         return empty($maximportid) ? 0 : $maximportid + 1;
     }
+
 }

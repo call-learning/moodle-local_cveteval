@@ -28,6 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 use external_function_parameters;
 use external_single_structure;
 use external_value;
+use local_cveteval\local\persistent\situation\entity as situation_entity;
 
 class latest_modifications extends \external_api {
     /**
@@ -35,11 +36,11 @@ class latest_modifications extends \external_api {
      *
      * @return external_function_parameters
      */
-    public static function get_latest_modifications_parameters() {
+    public static function execute_parameters() {
         return new external_function_parameters(
             array(
                 'entitytype' => new external_value(PARAM_ALPHAEXT, 'the entity to look for'),
-                'contextid'=> new external_value(PARAM_INT, 'the context id if needed', VALUE_DEFAULT, 0),
+                'query' => new external_value(PARAM_TEXT, 'query as json {field:value, field:value}', VALUE_DEFAULT)
             )
         );
     }
@@ -49,7 +50,7 @@ class latest_modifications extends \external_api {
      *
      * @return external_single_structure
      */
-    public static function get_latest_modifications_returns() {
+    public static function execute_returns() {
         return new external_single_structure(
             array(
                 'latestmodifications' => new external_value(PARAM_INT, 'latest modification time'),
@@ -60,23 +61,32 @@ class latest_modifications extends \external_api {
     /**
      * Return the current role for the user
      */
-    public static function get_latest_modifications($entitytype, $contextid) {
-        $params = self::validate_parameters(self::get_latest_modifications_parameters(), array(
-            'entitytype' => $entitytype, 'contextid' => $contextid));
-        self::validate_context(\context_system::instance());
-        return static::get_entity_latest_modifications($entitytype, $contextid);
+    public static function execute($entitytype, $query = null) {
+        static::validate_parameters(static::execute_parameters(), array(
+            'entitytype' => $entitytype, 'query' => $query));
+        static::validate_context(\context_system::instance());
+        return
+            [
+                'latestmodifications' => static::get_entity_latest_modifications($entitytype, $query)
+            ];
     }
 
     /**
      * @param $entitytype
-     * @param $contextid
+     * @param int $contextid
+     * @return false|int|mixed
      * @throws \dml_exception
      */
-    public static function get_entity_latest_modifications($entitytype, $contextid) {
-        global $DB;
-        $classname = '\\local_cveteval\\local\\persistent\\'.$entitytype;
-        if (class_exists('\\local_cveteval\\local\\persistent\\'.$entitytype)) {
-            return $DB->get_record_sql("SELECT MAX(timemodified) FROM {".$classname::TABLE."}");
+    public static function get_entity_latest_modifications($entitytype, $queryjson) {
+        $query = [];
+        if ($queryjson) {
+            $query = json_decode($queryjson);
+        }
+        $latestmodifs = utils::query_entities(base_get_entity::MOBILE_ENTITY_MATCHER[$entitytype],
+            $query, "MAX(e.timemodified) AS time");
+        if ($latestmodifs && count($latestmodifs) > 0) {
+            $latestmodif = reset($latestmodifs);
+            return $latestmodif->time;
         }
         return 0;
     }

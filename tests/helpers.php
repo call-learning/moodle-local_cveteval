@@ -14,7 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 use local_cveteval\local\utils;
-
+use \local_cveteval\local\persistent\situation\entity as situation_entity;
+use \local_cveteval\local\persistent\appraisal\entity as appraisal_entity;
+use \local_cveteval\local\persistent\appraisal_criterion\entity as appraisal_criterion_entity;
 /**
  * Test helpers
  *
@@ -45,7 +47,7 @@ function import_sample_planning($samplefiles, $cleanup = false) {
  * @throws dml_exception
  * @throws moodle_exception
  */
-function inport_sample_users($samplefilepath) {
+function import_sample_users($samplefilepath) {
     global $CFG;
     require_once($CFG->libdir . '/csvlib.class.php');
     require_once($CFG->dirroot . '/user/lib.php');
@@ -70,6 +72,7 @@ function inport_sample_users($samplefilepath) {
         } else {
             $user = (object) array_merge((array) $existinguser, (array) $user);
             user_update_user($user, true, false);
+            unset_user_preference('auth_forcepasswordchange', $user);
         }
     }
 }
@@ -86,25 +89,46 @@ function inport_sample_users($samplefilepath) {
 function create_random_appraisals($cleanup, $verbose = true) {
     global $DB;
 
-    $studentsga = $DB->get_records('local_cveteval_group_assign');
     if ($cleanup) {
         $DB->delete_records('local_cveteval_appraisal');
         $DB->delete_records('local_cveteval_appr_crit');
+    }
+
+    create_appraisal_for_students(null, 5, true);
+}
+
+/**
+ * @param $allcriterias
+ * @param null $studentid if null, all student
+ * @param null $skip
+ * @throws \core\invalid_persistent_exception
+ * @throws coding_exception
+ * @throws dml_exception
+ */
+function create_appraisal_for_students($studentid = null, $skip = null, $verbose = true) {
+    global $DB;
+    $studentidparam = [];
+    if ($studentid) {
+        $studentidparam = array('studentid' => $studentid);
     }
     $allcriterias = $DB->get_records_sql("SELECT crit.id as id, crit.label, egrid.evalgridid
             FROM {local_cveteval_criterion} crit
             LEFT JOIN {local_cveteval_cevalgrid} egrid ON crit.id = egrid.criterionid"
     );
-    foreach (\local_cveteval\local\persistent\situation\entity::get_records() as $clsituation) {
+    $studentsga = $DB->get_records('local_cveteval_group_assign', $studentidparam);
+
+    foreach (situation_entity::get_records() as $clsituation) {
         $appraisersroles = $DB->get_records('local_cveteval_role', array('clsituationid' => $clsituation->get('id')));
         foreach ($studentsga as $studentga) {
             $evalplansid = $DB->get_fieldset_select('local_cveteval_evalplan', 'id',
                 'groupid = :groupid AND clsituationid = :clsituationid',
                 array('groupid' => $studentga->groupid, 'clsituationid' => $clsituation->get('id')));
             foreach ($evalplansid as $evalplanid) {
-                $shouldcreate = rand(0, 100);
-                if ($shouldcreate % 5) {
-                    continue;
+                if ($skip) {
+                    $shouldcreate = rand(0, 100);
+                    if ($shouldcreate % $skip) {
+                        continue;
+                    }
                 }
 
                 $appraiserindex = rand(1, count($appraisersroles)) - 1;
@@ -117,7 +141,7 @@ function create_random_appraisals($cleanup, $verbose = true) {
                 $appraisal->contextformat = FORMAT_PLAIN;
                 $appraisal->comment = 'Comment made by ' . utils::fast_user_fullname($appid) . "{$appid}";
                 $appraisal->commentformat = FORMAT_PLAIN;
-                $eap = new \local_cveteval\local\persistent\appraisal\entity(0, $appraisal);
+                $eap = new appraisal_entity(0, $appraisal);
                 $eap->create();
                 if ($verbose) {
                     cli_writeln('Creating appraisal plan for ' . utils::fast_user_fullname($appid) . ' in situation ' .
@@ -135,7 +159,7 @@ function create_random_appraisals($cleanup, $verbose = true) {
                     $appraisalcrit->comment =
                         rand(1, 10) > 5 ? '' : 'Comment made by ' . utils::fast_user_fullname($appid) . "{$appid}";
                     $appraisalcrit->commentformat = FORMAT_PLAIN;
-                    $eappraisalcrit = new \local_cveteval\local\persistent\appraisal_criterion\entity(0, $appraisalcrit);
+                    $eappraisalcrit = new appraisal_criterion_entity(0, $appraisalcrit);
                     if ($verbose) {
                         cli_writeln('Creating criteria appraisal plan for ' . utils::fast_user_fullname($appid) . ' criteria ' .
                             $crit->label);

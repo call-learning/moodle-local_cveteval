@@ -70,30 +70,22 @@ class import_helper extends base_helper {
      * @return \tool_importer\data_transformer
      */
     protected function create_transformer() {
-        function trimmed($value, $columnname) {
-            return trim($value);
-        }
-
-        function toint($value, $columnname) {
-            return intval($value);
-        }
-
         $transformdef = array(
             'Evaluation Grid Id' =>
                 array(
-                    array('to' => 'evalgridid', 'transformcallback' => __NAMESPACE__ . '\trimmed')
+                    array('to' => 'evalgridid', 'transformcallback' => base_helper::class . '::trimmed')
                 ),
             'Criterion Id' =>
                 array(
-                    array('to' => 'idnumber', 'transformcallback' => __NAMESPACE__ . '\trimmed')
+                    array('to' => 'idnumber', 'transformcallback' => base_helper::class . ':trimmed')
                 ),
             'Criterion Parent Id' =>
                 array(
-                    array('to' => 'parentidnumber', 'transformcallback' => __NAMESPACE__ . '\trimmed')
+                    array('to' => 'parentidnumber', 'transformcallback' => base_helper::class . ':trimmed')
                 ),
             'Criterion Label' =>
                 array(
-                    array('to' => 'label', 'transformcallback' => __NAMESPACE__ . '\trimmed')
+                    array('to' => 'label', 'transformcallback' => base_helper::class . ':trimmed')
                 )
         );
         $transformer = new standard($transformdef);

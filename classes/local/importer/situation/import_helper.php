@@ -75,44 +75,14 @@ class import_helper extends base_helper {
      * @return \tool_importer\data_transformer
      */
     protected function create_transformer() {
-        function trimmeduppercase($value, $columnname) {
-            return trim(strtoupper($value));
-        }
-
-        function trimmed($value, $columnname) {
-            return trim($value);
-        }
-
-        function toint($value, $columnname) {
-            return intval($value);
-        }
-
-        function toevalgridid($value, $columnname) {
-            static $gridmatch = [];
-            $trimmedval = trim($value);
-            if (empty($value)) {
-                return 0;
-            }
-            if (!empty($gridmatch[$trimmedval])) {
-                return $gridmatch[$trimmedval];
-            } else {
-                $grid = evaluation_grid_entity::get_record(array('idnumber' => $trimmedval));
-                if (!$grid) {
-                    return 0;
-                }
-                $gridmatch[$value] = (int) $grid->get('id');
-                return $gridmatch[$value];
-            }
-        }
-
         $transformdef = array(
             'Nom' =>
                 array(
-                    array('to' => 'title', 'transformcallback' => __NAMESPACE__ . '\trimmed')
+                    array('to' => 'title', 'transformcallback' => base_helper::class . '::trimmed')
                 ),
             'Nom court' =>
                 array(
-                    array('to' => 'idnumber', 'transformcallback' => __NAMESPACE__ . '\trimmeduppercase')
+                    array('to' => 'idnumber', 'transformcallback' => base_helper::class . '::trimmeduppercase')
                 ),
             'Description' =>
                 array(
@@ -132,11 +102,11 @@ class import_helper extends base_helper {
                 ),
             'Appreciations' =>
                 array(
-                    array('to' => 'expectedevalsnb', 'transformcallback' => __NAMESPACE__ . '\toint')
+                    array('to' => 'expectedevalsnb', 'transformcallback' => base_helper::class . '::toint')
                 ),
             'GrilleEval' =>
                 array(
-                    array('to' => 'evalgridid', 'transformcallback' => __NAMESPACE__ . '\toevalgridid')
+                    array('to' => 'evalgridid', 'transformcallback' => self::class . '::toevalgridid')
                 ),
         );
 
@@ -148,5 +118,23 @@ class import_helper extends base_helper {
      */
     protected function create_data_importer() {
         return new data_importer();
+    }
+
+    static function toevalgridid($value, $columnname) {
+        static $gridmatch = [];
+        $trimmedval = trim($value);
+        if (empty($value)) {
+            return 0;
+        }
+        if (!empty($gridmatch[$trimmedval])) {
+            return $gridmatch[$trimmedval];
+        } else {
+            $grid = evaluation_grid_entity::get_record(array('idnumber' => $trimmedval));
+            if (!$grid) {
+                return 0;
+            }
+            $gridmatch[$value] = (int) $grid->get('id');
+            return $gridmatch[$value];
+        }
     }
 }

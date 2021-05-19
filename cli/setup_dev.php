@@ -95,7 +95,7 @@ $sampletype = [
 
 if (!empty($options['users']) && $options['users']) {
     cli_writeln('Import users...');
-    inport_sample_users($sampletype[$options['sampletype']]['users']);
+    import_sample_users($sampletype[$options['sampletype']]['users']);
     cli_writeln('Users imported...');
 }
 if (!empty($options['planning']) && $options['planning']) {

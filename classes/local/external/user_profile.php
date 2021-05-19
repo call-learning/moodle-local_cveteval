@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * External services
+ * External services : user profile
  *
  * @package   local_cveteval
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
@@ -25,6 +25,7 @@
 namespace local_cveteval\local\external;
 defined('MOODLE_INTERNAL') || die();
 
+use context_user;
 use external_function_parameters;
 use external_single_structure;
 use external_value;
@@ -32,13 +33,15 @@ use external_value;
 use \local_cveteval\local\persistent\role\entity as role_entity;
 use local_cveteval\local\utils;
 use external_api;
+use user_picture;
+
 /**
  * Get user type
  * Class user_type
  *
  * @package local_cveteval\local\external
  */
-class user_type extends external_api {
+class user_profile extends external_api {
     /**
      * Returns description of method parameters
      *
@@ -47,7 +50,7 @@ class user_type extends external_api {
     public static function execute_parameters() {
         return new external_function_parameters(
             array(
-                'userid' => new external_value(PARAM_INT, 'id of the user', null, NULL_NOT_ALLOWED)
+                'userid' => new external_value(PARAM_INT, 'id of the user', VALUE_REQUIRED, NULL_NOT_ALLOWED)
             )
         );
     }
@@ -60,20 +63,46 @@ class user_type extends external_api {
     public static function execute_returns() {
         return new external_single_structure(
             array(
-                'type' => new external_value(PARAM_TEXT, 'the type of user'),
+                'userid' => new external_value(PARAM_INT, 'id type of user'),
+                'fullname' => new external_value(PARAM_TEXT, 'user fullname'),
+                'firstname' => new external_value(PARAM_TEXT, 'user fullname'),
+                'lastname' => new external_value(PARAM_TEXT, 'user fullname'),
+                'username' => new external_value(PARAM_ALPHANUMEXT, 'username', VALUE_OPTIONAL),
+                'userpictureurl' => new external_value(PARAM_URL, 'user picture (avatar)',
+                    VALUE_OPTIONAL),
             )
         );
     }
 
     /**
-     * Return the current role for the user
+     * Return the current information for the user
      */
     public static function execute($userid) {
+        global $USER, $PAGE;
         self::validate_parameters(self::execute_parameters(), array('userid' => $userid));
         self::validate_context(\context_system::instance());
-        $roleid = utils::get_user_role_id($userid);
-        return (object) ['type' =>
-            role_entity::ROLE_SHORTNAMES[$roleid]
+        $user = \core_user::get_user($userid);
+        $context = context_user::instance($userid);
+        $userinfo = new \stdClass();
+        $userinfo->fullname = fullname($user);
+        $canseeadvanced = true;
+        if ($userid != $USER->id and !has_capability('moodle/user:viewdetails', $context)) {
+            $canseeadvanced = false;
+        }
+        $userpicture = new user_picture($user);
+        $userpicture->includetoken = true;
+        $userpicture->size = 1; // Size f1.
+        $userinfo->studentname = fullname($user);
+
+        $userinfo->studentpictureurl = $userpicture->get_url($PAGE)->out(false);
+        return (object) [
+            'userid' => $userid,
+            'fullname' =>  fullname($user),
+            'firstname' => $canseeadvanced ? $user->firstname : '',
+            'lastname' => $canseeadvanced ? $user->lastname : '',
+            'username' => $canseeadvanced ? $user->username : 'anonymous',
+            'userpictureurl' => $userpicture->get_url($PAGE)->out(false)
         ];
     }
 }
+
