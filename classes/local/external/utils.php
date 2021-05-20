@@ -41,15 +41,15 @@ class utils {
      */
     protected static function get_entity_additional_query($entitytype) {
         global $USER;
-        $paramscheckrole = ['studentid' => $USER->id, 'appraiserid' => $USER->id,'roletypeappraiser' => role_entity::ROLE_APPRAISER_ID,
-                            'roletypeassessor' => role_entity::ROLE_ASSESSOR_ID];
+        $paramscheckrole = ['rolecheckstudentid' => $USER->id, 'rolecheckappraiserid' => $USER->id,'rolechecktypeappraiser' => role_entity::ROLE_APPRAISER_ID,
+                            'rolechecktypeassessor' => role_entity::ROLE_ASSESSOR_ID];
         switch ($entitytype) {
             // Here we make sure that current user can only see evalplan involving him/her.
             case 'planning':
                 return
                     [
-                        '(ga.studentid = :studentid OR ( role.userid = :appraiserid AND (role.type = :roletypeappraiser OR
-               role.type = :roletypeassessor )))',
+                        '(ga.studentid = :rolecheckstudentid OR ( role.userid = :rolecheckappraiserid AND (role.type = :rolechecktypeappraiser OR
+               role.type = :rolechecktypeassessor )))',
                         $paramscheckrole,
                         'LEFT JOIN {local_cveteval_group_assign} ga ON ga.groupid = e.groupid
                         LEFT JOIN {local_cveteval_role} role ON role.clsituationid = e.clsituationid',
@@ -59,8 +59,8 @@ class utils {
             case 'appraisal':
                 return
                     [
-                        '(e.studentid = :studentid OR ( role.userid = :appraiserid AND (role.type = :roletypeappraiser OR
-               role.type = :roletypeassessor )))',
+                        '(e.studentid = :rolecheckstudentid OR ( role.userid = :rolecheckappraiserid AND (role.type = :rolechecktypeappraiser OR
+               role.type = :rolechecktypeassessor )))',
                         $paramscheckrole,
                         'LEFT JOIN {local_cveteval_evalplan} eplan ON eplan.id = e.evalplanid
                         LEFT JOIN {local_cveteval_group_assign} ga ON ga.groupid = eplan.groupid
@@ -71,8 +71,8 @@ class utils {
             case 'appraisal_criterion':
                 return
                     [
-                        '(appr.studentid = :studentid OR ( role.userid = :appraiserid AND (role.type = :roletypeappraiser OR
-               role.type = :roletypeassessor )))',
+                        '(appr.studentid = :rolecheckstudentid OR ( role.userid = :rolecheckappraiserid AND (role.type = :rolechecktypeappraiser OR
+               role.type = :rolechecktypeassessor )))',
                         $paramscheckrole,
                         'LEFT JOIN {local_cveteval_appraisal} appr ON appr.id = e.appraisalid
                         LEFT JOIN {local_cveteval_evalplan} eplan ON eplan.id = appr.evalplanid

@@ -105,7 +105,7 @@ class local_cveteval_api_testcase extends \advanced_testcase {
         $this->assertEquals(
             [
                 'userid' => $userid,
-                'fullname' => 'Guest',
+                'fullname' => 'Adéla Veselá',
                 'firstname' => '',
                 'lastname' => '',
                 'username' => 'anonymous',
@@ -330,14 +330,7 @@ class local_cveteval_api_testcase extends \advanced_testcase {
         require_once($CFG->libdir . '/externallib.php');
         $evalgrid = cevalgrid::get();
         $this->assertNotEmpty($evalgrid);
-        $this->assertCount(1, $evalgrid);
-        // We retrieve all situations here.
-        $this->assertEquals(
-            ['GRID01'],
-            array_values(array_map(function($e) {
-                return $e->idnumber;
-            }, $evalgrid)));
-
+        $this->assertCount(40, $evalgrid);
     }
 
     /**
@@ -397,7 +390,7 @@ class local_cveteval_api_testcase extends \advanced_testcase {
         $this->setUser($user1);
         $evalplan = evalplan::get();
         $this->assertNotEmpty($evalplan);
-        $this->assertCount(4, $evalplan);
+        $this->assertCount(8, $evalplan);
         $allgroupidmatch =
             $DB->get_records_menu('local_cveteval_group', null, '', 'id,name');
         $allclsituation =
