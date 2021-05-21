@@ -43,6 +43,8 @@ class utils {
         global $USER;
         $paramscheckrole = ['rolecheckstudentid' => $USER->id, 'rolecheckappraiserid' => $USER->id,'rolechecktypeappraiser' => role_entity::ROLE_APPRAISER_ID,
                             'rolechecktypeassessor' => role_entity::ROLE_ASSESSOR_ID];
+        $paramscheckroleappraisal = $paramscheckrole;
+        $paramscheckroleappraisal['appraisalcheckstudentid'] = $USER->id;
         switch ($entitytype) {
             // Here we make sure that current user can only see evalplan involving him/her.
             case 'planning':
@@ -59,26 +61,28 @@ class utils {
             case 'appraisal':
                 return
                     [
-                        '(e.studentid = :rolecheckstudentid OR ( role.userid = :rolecheckappraiserid AND (role.type = :rolechecktypeappraiser OR
+                        '(ga.studentid = :rolecheckstudentid AND e.studentid = :appraisalcheckstudentid 
+                        OR ( role.userid = :rolecheckappraiserid AND (role.type = :rolechecktypeappraiser OR
                role.type = :rolechecktypeassessor )))',
-                        $paramscheckrole,
+                        $paramscheckroleappraisal,
                         'LEFT JOIN {local_cveteval_evalplan} eplan ON eplan.id = e.evalplanid
                         LEFT JOIN {local_cveteval_group_assign} ga ON ga.groupid = eplan.groupid
                         LEFT JOIN {local_cveteval_role} role ON role.clsituationid = eplan.clsituationid',
-                        'ORDER BY e.timemodified ASC',
+                        'ORDER BY e.evalplanid, e.timecreated ASC',
                         []
                     ];
             case 'appraisal_criterion':
                 return
                     [
-                        '(appr.studentid = :rolecheckstudentid OR ( role.userid = :rolecheckappraiserid AND (role.type = :rolechecktypeappraiser OR
+                        '(ga.studentid = :rolecheckstudentid AND appr.studentid = :appraisalcheckstudentid 
+                        OR ( role.userid = :rolecheckappraiserid AND (role.type = :rolechecktypeappraiser OR
                role.type = :rolechecktypeassessor )))',
-                        $paramscheckrole,
+                        $paramscheckroleappraisal,
                         'LEFT JOIN {local_cveteval_appraisal} appr ON appr.id = e.appraisalid
                         LEFT JOIN {local_cveteval_evalplan} eplan ON eplan.id = appr.evalplanid
                         LEFT JOIN {local_cveteval_group_assign} ga ON ga.groupid = eplan.groupid
                         LEFT JOIN {local_cveteval_role} role ON role.clsituationid = eplan.clsituationid',
-                        'ORDER BY e.appraisalid, e.timemodified ASC',
+                        'ORDER BY e.appraisalid, e.timecreated ASC',
                         []
                     ];
             default:

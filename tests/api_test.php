@@ -34,6 +34,7 @@ use local_cveteval\local\external\group_assign;
 use local_cveteval\local\external\role;
 use local_cveteval\local\external\user_profile;
 use local_cveteval\local\external\user_type;
+use local_cveteval\local\persistent\appraisal\entity as appraisal_entity;
 use \local_cveteval\local\persistent\role\entity as role_entity;
 
 /**
@@ -134,9 +135,50 @@ class local_cveteval_api_testcase extends \advanced_testcase {
         $this->setUser($user2);
         $appraisals = appraisal::get();
         $this->assertNotEmpty($appraisals);
-        $this->assertCount(8, $appraisals); // 2 students appraisal and 4 observers
+        $this->assertCount(8, $appraisals); // 2 appraisal per eval plan
+        $user2 = \core_user::get_user_by_username('obs2'); // Now as obs1
+        $this->setUser($user2);
+        $appraisals = appraisal::get();
+        $this->assertNotEmpty($appraisals);
+        $this->assertCount(4, $appraisals); // 2 appraisal per students and
+
     }
 
+    /**
+     * Test an API function
+     */
+    public function test_get_get_appraisal_additionalnotinplan() {
+        global $CFG;
+        require_once($CFG->libdir . '/externallib.php');
+        $user1 = \core_user::get_user_by_username('etu1');
+        $user2 = \core_user::get_user_by_username('etu2');
+        create_appraisal_for_students($user1->id, null, false);
+        create_appraisal_for_students($user2->id, null, false);
+        $appraisals = appraisal::get();
+        $this->assertEmpty($appraisals);
+        // Now, I am user 1, I should only get appraisal involving me (either as a student or appraiser)
+        // Create an appraisal that is not in any of the user's plan.
+        $appraisal = new appraisal_entity(0, (object) [
+            'studentid' => $user1->id,
+            'appraiserid' => 1,
+            'evalplanid' => 9999,
+            'context' => 'Should not appear in the list',
+            'contextformat' => FORMAT_HTML,
+            'comment' => 'Should not appear in the list',
+            'commentformat' => FORMAT_HTML
+
+        ]);
+        $appraisal->create();
+        $appraisal->save();
+        $this->setUser($user1);
+        $appraisals = appraisal::get();
+        $this->assertNotEmpty($appraisals);
+        $this->assertCount(6, $appraisals); // 6 situations for this user in his planning.
+        $allcomments = array_map(function($appr) {
+            return $appr->context;
+        }, $appraisals);
+        $this->assertNotContains('Should not appear in the list', $allcomments);
+    }
 
     /**
      * Test an API function
@@ -155,12 +197,12 @@ class local_cveteval_api_testcase extends \advanced_testcase {
         $appraisalscrit = appr_crit::get();
         $this->assertNotEmpty($appraisalscrit);
         // 6 appraisals, 240 criteria
-        $this->assertCount(6*40, $appraisalscrit); // 6 situations for this user in his planning.
+        $this->assertCount(6 * 40, $appraisalscrit); // 6 situations for this user in his planning.
         $user2 = \core_user::get_user_by_username('obs1'); // Now as obs1
         $this->setUser($user2);
         $appraisalscrit = appr_crit::get();
         $this->assertNotEmpty($appraisalscrit);
-        $this->assertCount(8*40, $appraisalscrit); // 6 situations for this user in his planning.
+        $this->assertCount(8 * 40, $appraisalscrit); // 6 situations for this user in his planning.
     }
 
     /**
@@ -385,12 +427,12 @@ class local_cveteval_api_testcase extends \advanced_testcase {
         global $CFG, $DB;
         require_once($CFG->libdir . '/externallib.php');
         // First, no user logged i
-        $user1 = \core_user::get_user_by_username('obs1');
-        // Now, I am user 1, I should only get evalplans involving me (either as a student or appraiser)
+        $user1 = \core_user::get_user_by_username('obs2'); // Obs2 is only in one situation.
+        // Now, I am obs2, I should only get evalplans involving me (either as a student or appraiser)
         $this->setUser($user1);
         $evalplan = evalplan::get();
         $this->assertNotEmpty($evalplan);
-        $this->assertCount(8, $evalplan);
+        $this->assertCount(4, $evalplan);
         $allgroupidmatch =
             $DB->get_records_menu('local_cveteval_group', null, '', 'id,name');
         $allclsituation =
