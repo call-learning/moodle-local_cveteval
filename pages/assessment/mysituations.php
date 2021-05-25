@@ -38,7 +38,7 @@ require_login();
 if (utils::get_user_role_id($USER->id) != role_entity::ROLE_ASSESSOR_ID) {
     print_error('cannotaccess', 'local_cveteval');
 }
-$PAGE->set_context(\context_system::instance());
+$PAGE->set_context(context_system::instance());
 $PAGE->set_title(get_string('assessment', 'local_cveteval')
     . ':'
     . get_string('mysituations', 'local_cveteval'));
@@ -48,7 +48,7 @@ $PAGE->set_url(new moodle_url('/local/cveteval/pages/assessment/mysituations.php
 echo $OUTPUT->header();
 
 echo $OUTPUT->box(get_string('mysituations:intro', 'local_cveteval'));
-$uniqueid = \html_writer::random_id('situationtable');
+$uniqueid = html_writer::random_id('situationtable');
 $entitylist = new situations($uniqueid);
 $filterset = new basic_filterset(
     [

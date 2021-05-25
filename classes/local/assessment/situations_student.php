@@ -29,6 +29,7 @@ use local_cltools\local\dmlutils;
 use local_cltools\local\field\base;
 use local_cltools\local\table\dynamic_table_sql;
 use local_cveteval\local\persistent\role\entity as role_entity;
+use ReflectionException;
 
 /**
  * A list of student matching this situation
@@ -54,7 +55,7 @@ class situations_student extends dynamic_table_sql {
      * Add all the fields from persistent class except the reserved ones
      *
      * @return array
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     protected function setup_fields() {
         $fields = [

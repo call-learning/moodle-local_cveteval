@@ -25,8 +25,11 @@
 namespace local_cveteval\local\importer\evaluation_grid;
 defined('MOODLE_INTERNAL') || die();
 
-use \local_cveteval\local\persistent\evaluation_grid\entity as evaluation_grid_entity;
-use \local_cveteval\local\persistent\criterion\entity as criterion_entity;
+use coding_exception;
+use dml_exception;
+use local_cveteval\local\persistent\evaluation_grid\entity as evaluation_grid_entity;
+use local_cveteval\local\persistent\criterion\entity as criterion_entity;
+use stdClass;
 use tool_importer\field_types;
 use tool_importer\importer_exception;
 
@@ -42,13 +45,44 @@ class data_importer extends \tool_importer\data_importer {
      * data_importer constructor.
      *
      * @param null $defaultvals additional default values
-     * @throws \dml_exception
+     * @throws dml_exception
      */
     public function __construct($defaultvals = null) {
         $this->defaultvalues = [];
         if ($defaultvals) {
             $this->defaultvalues = array_merge($this->defaultvalues, $defaultvals);
         }
+    }
+
+    /**
+     * Get the field definition array
+     *
+     * The associative array has at least a series of column names
+     * Types are derived from the field_types class
+     * 'fieldname' => [ 'type' => TYPE_XXX, ...]
+     *
+     * @return array
+     * @throws coding_exception
+     */
+    public function get_fields_definition() {
+        return [
+            'evalgridid' => [
+                'type' => field_types::TYPE_TEXT,
+                'required' => true
+            ],
+            'idnumber' => [
+                'type' => field_types::TYPE_TEXT,
+                'required' => true
+            ],
+            'parentidnumber' => [
+                'type' => field_types::TYPE_TEXT,
+                'required' => false
+            ],
+            'label' => [
+                'type' => field_types::TYPE_TEXT,
+                'required' => true
+            ]
+        ];
     }
 
     /**
@@ -77,7 +111,7 @@ class data_importer extends \tool_importer\data_importer {
             $evalgrid->create();
         }
 
-        $criterionrecord = new \stdClass();
+        $criterionrecord = new stdClass();
         $criterionrecord->label = $row['label'];
         $criterionrecord->idnumber = $row['idnumber'];
         $parentcriterion = criterion_entity::get_record(['idnumber' => $row['parentidnumber']]);
@@ -88,7 +122,7 @@ class data_importer extends \tool_importer\data_importer {
         $criterion->create();
 
         // Here we do without persistent class as it is just a link table.
-        $cevalgridrecord = new \stdClass();
+        $cevalgridrecord = new stdClass();
         $cevalgridrecord->criterionid = $criterion->get('id');
         $cevalgridrecord->evalgridid = $evalgrid->get('id');
         $cevalgridrecord->sort =
@@ -96,37 +130,6 @@ class data_importer extends \tool_importer\data_importer {
         $DB->insert_record('local_cveteval_cevalgrid', $cevalgridrecord);
 
         return $criterionrecord;
-    }
-
-    /**
-     * Get the field definition array
-     *
-     * The associative array has at least a series of column names
-     * Types are derived from the field_types class
-     * 'fieldname' => [ 'type' => TYPE_XXX, ...]
-     *
-     * @return array
-     * @throws \coding_exception
-     */
-    public function get_fields_definition() {
-        return [
-            'evalgridid' => [
-                'type' => field_types::TYPE_TEXT,
-                'required' => true
-            ],
-            'idnumber' => [
-                'type' => field_types::TYPE_TEXT,
-                'required' => true
-            ],
-            'parentidnumber' => [
-                'type' => field_types::TYPE_TEXT,
-                'required' => false
-            ],
-            'label' => [
-                'type' => field_types::TYPE_TEXT,
-                'required' => true
-            ]
-        ];
     }
 }
 

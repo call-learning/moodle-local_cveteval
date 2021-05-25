@@ -25,26 +25,15 @@
 namespace local_cveteval\local\external;
 defined('MOODLE_INTERNAL') || die();
 
+use context_system;
+use dml_exception;
+use external_api;
 use external_function_parameters;
 use external_single_structure;
 use external_value;
 use local_cveteval\local\persistent\situation\entity as situation_entity;
 
-class latest_modifications extends \external_api {
-    /**
-     * Returns description of method parameters
-     *
-     * @return external_function_parameters
-     */
-    public static function execute_parameters() {
-        return new external_function_parameters(
-            array(
-                'entitytype' => new external_value(PARAM_ALPHAEXT, 'the entity to look for'),
-                'query' => new external_value(PARAM_TEXT, 'query as json {field:value, field:value}', VALUE_DEFAULT)
-            )
-        );
-    }
-
+class latest_modifications extends external_api {
     /**
      * Returns description of method parameters
      *
@@ -64,7 +53,7 @@ class latest_modifications extends \external_api {
     public static function execute($entitytype, $query = null) {
         static::validate_parameters(static::execute_parameters(), array(
             'entitytype' => $entitytype, 'query' => $query));
-        static::validate_context(\context_system::instance());
+        static::validate_context(context_system::instance());
         return
             [
                 'latestmodifications' => static::get_entity_latest_modifications($entitytype, $query)
@@ -72,10 +61,24 @@ class latest_modifications extends \external_api {
     }
 
     /**
+     * Returns description of method parameters
+     *
+     * @return external_function_parameters
+     */
+    public static function execute_parameters() {
+        return new external_function_parameters(
+            array(
+                'entitytype' => new external_value(PARAM_ALPHAEXT, 'the entity to look for'),
+                'query' => new external_value(PARAM_TEXT, 'query as json {field:value, field:value}', VALUE_DEFAULT)
+            )
+        );
+    }
+
+    /**
      * @param $entitytype
      * @param int $contextid
      * @return false|int|mixed
-     * @throws \dml_exception
+     * @throws dml_exception
      */
     public static function get_entity_latest_modifications($entitytype, $queryjson) {
         $query = [];

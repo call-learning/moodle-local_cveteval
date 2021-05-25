@@ -21,7 +21,9 @@
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 namespace local_cveteval\local\importer\situation;
+
 use tool_importer\field_types;
 
 defined('MOODLE_INTERNAL') || die();

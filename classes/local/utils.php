@@ -24,20 +24,28 @@
 
 namespace local_cveteval\local;
 
+use coding_exception;
 use core_user;
+use dml_exception;
 use grade_scale;
-use \local_cveteval\local\persistent\role\entity as role_entity;
+use lang_string;
+use local_cveteval\local\persistent\role\entity as role_entity;
 use stdClass;
+use tool_importer\local\import_log;
 
 defined('MOODLE_INTERNAL') || die();
 
 class utils {
+    const DEFAULT_SCALE_ITEM = [
+        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
+    ];
+
     /**
      * To get usernames in a loop faster
      *
      * @param $userid
-     * @return \lang_string|string
-     * @throws \dml_exception
+     * @return lang_string|string
+     * @throws dml_exception
      */
     public static function fast_user_fullname($userid) {
         static $usernames = [];
@@ -54,13 +62,12 @@ class utils {
      *
      * @param $userid
      * @return int
-     * @throws \dml_exception
+     * @throws dml_exception
      */
     public static function get_user_role_id($userid) {
-        global $DB;
         $roleid = role_entity::ROLE_STUDENT_ID;
         // Check that user exists first, if not it will be a student role.
-        if ($user = \core_user::get_user($userid)) {
+        if ($user = core_user::get_user($userid)) {
             $roles = role_entity::get_records_select(
                 "userid = :userid AND type IN (:appraisertype, :assessortype)",
                 array(
@@ -94,12 +101,8 @@ class utils {
         return $roleid;
     }
 
-    const DEFAULT_SCALE_ITEM = [
-        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
-    ];
-
     /**
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public static function create_scale_if_not_present() {
         $scales = grade_scale::fetch_all_global();
@@ -130,16 +133,15 @@ class utils {
     /**
      * @return false|int|mixed
      * @return int
-     * @throws \dml_exception
+     * @throws dml_exception
      */
     public static function get_next_importid() {
         global $DB;
-        $table = \tool_importer\local\import_log::TABLE;
+        $table = import_log::TABLE;
         // Get the Max importid.
         // We assume here that there is at least a log from the module with the module set to 'local_cveteval'.
         $maximportid = $DB->get_field_sql('SELECT COALESCE(MAX(importid),0) AS maximportid FROM {'
-            . $table . '} WHERE 
-        module=:module', ['module' => 'local_cveteval']);
+            . $table . '} WHERE module=:module', ['module' => 'local_cveteval']);
         return empty($maximportid) ? 0 : $maximportid + 1;
     }
 

@@ -55,8 +55,7 @@ Import the definitions from the fixtures CSV file
     -p : import planning, evalgrid, situations
     -u : user importation (add users)
     -a : add appraisals
-    -s : sample type (default, short...) 
-";
+    -s : sample type (default, short...)";
 
 if ($unrecognized) {
     $unrecognized = implode("\n\t", $unrecognized);

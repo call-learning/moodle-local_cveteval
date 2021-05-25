@@ -27,6 +27,8 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/lib/grade/grade_scale.php');
 
+use coding_exception;
+use core\persistent;
 use grade_scale;
 
 defined('MOODLE_INTERNAL') || die();
@@ -38,7 +40,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class entity extends \core\persistent {
+class entity extends persistent {
 
     const TABLE = 'local_cveteval_finalevl';
 
@@ -46,7 +48,7 @@ class entity extends \core\persistent {
      * Usual properties definition for a persistent
      *
      * @return array|array[]
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     protected static function define_properties() {
         $scaleid = get_config('local_cveteval', 'grade_scale');

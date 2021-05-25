@@ -21,14 +21,15 @@
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 namespace local_cveteval\local\persistent\planning;
 defined('MOODLE_INTERNAL') || die();
 
 use external_api;
+use external_function_parameters;
 use external_multiple_structure;
 use external_single_structure;
 use local_cltools\local\crud\entity_utils;
-
 
 /**
  * Evaluation planning external API
@@ -38,26 +39,18 @@ use local_cltools\local\crud\entity_utils;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class external extends external_api {
-    public static function get_plannings_parameters() {
-        return entity_utils::external_get_filter_generic_parameters();
-    }
-
     public static function get_plannings($filters) {
         $inputparams = compact($filters);
         $params = self::validate_parameters(self::get_plannings_parameters(), $inputparams);
     }
 
+    public static function get_plannings_parameters() {
+        return entity_utils::external_get_filter_generic_parameters();
+    }
+
     public static function get_plannings_returns() {
         return new external_multiple_structure(
             exporter::get_read_structure()
-        );
-    }
-
-    public static function create_planning_parameters() {
-        return new \external_function_parameters(
-            [
-                'planning' => exporter::get_create_structure()
-            ]
         );
     }
 
@@ -70,6 +63,14 @@ class external extends external_api {
         $planning->save();
         $output = $PAGE->get_renderer('local_cveteval');
         return (new exporter($planning))->export($output);
+    }
+
+    public static function create_planning_parameters() {
+        return new external_function_parameters(
+            [
+                'planning' => exporter::get_create_structure()
+            ]
+        );
     }
 
     public static function create_planning_returns() {

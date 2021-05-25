@@ -21,9 +21,11 @@
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 namespace local_cveteval\local\persistent\import_log;
 defined('MOODLE_INTERNAL') || die();
 
+use coding_exception;
 use local_cltools\local\crud\entity_table;
 use tool_importer\local\import_log;
 
@@ -35,11 +37,13 @@ use tool_importer\local\import_log;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class table extends entity_table {
+    protected static $persistentclass = import_log::class;
+
     /**
      * Usual properties definition for a persistent
      *
      * @return array|array[]
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     protected static function define_properties() {
         return array(
@@ -72,6 +76,4 @@ class table extends entity_table {
         );
         return $columns;
     }
-
-    protected static $persistentclass = import_log::class;
 }

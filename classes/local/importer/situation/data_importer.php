@@ -25,6 +25,9 @@
 namespace local_cveteval\local\importer\situation;
 defined('MOODLE_INTERNAL') || die();
 
+use coding_exception;
+use core_user;
+use dml_exception;
 use local_cltools\local\crud\entity_utils;
 use local_cveteval\event\role_importation_failed;
 use local_cveteval\local\persistent\role\entity as role_entity;
@@ -44,13 +47,47 @@ class data_importer extends \tool_importer\data_importer {
      * data_importer constructor.
      *
      * @param null $defaultvals additional default values
-     * @throws \dml_exception
+     * @throws dml_exception
      */
     public function __construct($defaultvals = null) {
         $this->defaultvalues = ['descriptionformat' => FORMAT_HTML, 'evalgridid' => 0];
         if ($defaultvals) {
             $this->defaultvalues = array_merge($this->defaultvalues, $defaultvals);
         }
+    }
+
+    /**
+     * Get the field definition array
+     *
+     * The associative array has at least a series of column names
+     * Types are derived from the field_types class
+     * 'fieldname' => [ 'type' => TYPE_XXX, ...]
+     *
+     * @return array
+     * @throws coding_exception
+     */
+    public function get_fields_definition() {
+        $propertydef = situation_entity::properties_definition();
+        $fielddef = [];
+        foreach ($propertydef as $propname => $propdef) {
+            $fielddef[$propname] = [
+                'type' => ($propdef['type'] == PARAM_INT) ? field_types::TYPE_INT : field_types::TYPE_TEXT,
+                'required' => entity_utils::is_property_required($propdef)
+            ];
+        }
+        $fielddef['assessors'] = [
+            'type' => field_types::TYPE_TEXT,
+            'required' => true
+        ];
+        $fielddef['appraisers'] = [
+            'type' => field_types::TYPE_TEXT,
+            'required' => true
+        ];
+        $fielddef['evalgridid'] = [
+            'type' => field_types::TYPE_INT,
+            'required' => false
+        ];
+        return $fielddef;
     }
 
     /**
@@ -87,44 +124,10 @@ class data_importer extends \tool_importer\data_importer {
         return $situation;
     }
 
-    /**
-     * Get the field definition array
-     *
-     * The associative array has at least a series of column names
-     * Types are derived from the field_types class
-     * 'fieldname' => [ 'type' => TYPE_XXX, ...]
-     *
-     * @return array
-     * @throws \coding_exception
-     */
-    public function get_fields_definition() {
-        $propertydef = situation_entity::properties_definition();
-        $fielddef = [];
-        foreach ($propertydef as $propname => $propdef) {
-            $fielddef[$propname] = [
-                'type' => ($propdef['type'] == PARAM_INT) ? field_types::TYPE_INT : field_types::TYPE_TEXT,
-                'required' => entity_utils::is_property_required($propdef)
-            ];
-        }
-        $fielddef['assessors'] = [
-            'type' => field_types::TYPE_TEXT,
-            'required' => true
-        ];
-        $fielddef['appraisers'] = [
-            'type' => field_types::TYPE_TEXT,
-            'required' => true
-        ];
-        $fielddef['evalgridid'] = [
-            'type' => field_types::TYPE_INT,
-            'required' => false
-        ];
-        return $fielddef;
-    }
-
     public function add_roles($emails, $clinicalsituationid, $roletype) {
         foreach ($emails as $email) {
             $email = clean_param(trim($email), PARAM_EMAIL);
-            $user = \core_user::get_user_by_email($email);
+            $user = core_user::get_user_by_email($email);
             if (!$user) {
                 $eventparams = array(
                     'other' => ['reason' => 1, 'email' => $email]

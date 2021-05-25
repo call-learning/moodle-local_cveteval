@@ -28,14 +28,15 @@ global $CFG;
 
 use local_cltools\local\crud\helper\base as crud_helper;
 use local_cltools\local\crud\helper\crud_list;
+use local_cltools\local\crud\navigation\routed_navigation;
 
 global $CFG, $OUTPUT, $PAGE;
-require_login();;
+require_login();
 
 $action = optional_param('action', crud_list::ACTION, PARAM_TEXT);
 $entityclassname = '\\local_cveteval\\local\\persistent\\evaluation_grid\\entity';
 
-$navigation = new \local_cltools\local\crud\navigation\routed_navigation($entityclassname);
+$navigation = new routed_navigation($entityclassname);
 $crudmgmt = crud_helper::create(
     $entityclassname,
     $action,

@@ -26,9 +26,14 @@ namespace local_cveteval\local\importer\planning;
 defined('MOODLE_INTERNAL') || die();
 
 use DateTime;
+use local_cveteval\event\planning_imported;
 use local_cveteval\local\importer\base_helper;
 use local_cveteval\local\persistent\planning\entity as planning_entity;
 use local_cveteval\local\persistent\group\entity as group_entity;
+use tool_importer\data_source;
+use tool_importer\data_transformer;
+use tool_importer\importer_exception;
+use tool_importer\local\transformer\standard;
 
 class import_helper extends base_helper {
     /**
@@ -39,12 +44,19 @@ class import_helper extends base_helper {
      * @param string $delimiter
      * @param string $encoding
      * @param null $progressbar
-     * @throws \tool_importer\importer_exception
+     * @throws importer_exception
      */
     public function __construct($csvpath, $importid, $delimiter = 'semicolon', $encoding = 'utf-8', $progressbar = null) {
         parent::__construct($csvpath, $importid, $delimiter, $encoding, $progressbar);
-        $this->importeventclass = \local_cveteval\event\planning_imported::class;
+        $this->importeventclass = planning_imported::class;
     }
+
+    public static function totimestamp($value, $columnname) {
+        $date = DateTime::createFromFormat(get_string('import:dateformat', 'local_cveteval'), trim($value));
+        $date->setTime(1, 0, 0, 0);
+        return $date->getTimestamp();
+    }
+
     /**
      * Cleanup previously imported Clinical situation
      */
@@ -58,13 +70,14 @@ class import_helper extends base_helper {
      * @param $csvpath
      * @param $delimiter
      * @param $encoding
-     * @return \tool_importer\data_source
+     * @return data_source
      */
     protected function create_csv_datasource($csvpath, $delimiter, $encoding) {
         return new csv_data_source($csvpath, $delimiter, $encoding);
     }
+
     /**
-     * @return \tool_importer\data_transformer
+     * @return data_transformer
      */
     protected function create_transformer() {
 
@@ -79,20 +92,15 @@ class import_helper extends base_helper {
                 ),
         );
 
-        $transformer = new \tool_importer\local\transformer\standard($transformdef);
+        $transformer = new standard($transformdef);
         return $transformer;
     }
+
     /**
      * @return \tool_importer\data_importer
      */
     protected function create_data_importer() {
         return new data_importer($this->csvimporter->get_fields_definition());
-    }
-
-    public static function totimestamp($value, $columnname) {
-        $date = DateTime::createFromFormat(get_string('import:dateformat', 'local_cveteval'), trim($value));
-        $date->setTime(1,0,0,0);
-        return $date->getTimestamp();
     }
 
 }

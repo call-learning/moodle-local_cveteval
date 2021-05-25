@@ -24,6 +24,7 @@
 
 namespace local_cveteval\local\importer\evaluation_grid;
 
+use tool_importer\field_types;
 use tool_importer\importer_exception;
 
 defined('MOODLE_INTERNAL') || die();
@@ -38,10 +39,10 @@ class csv_data_source extends \tool_importer\local\source\csv_data_source {
      */
     public function get_fields_definition() {
         return [
-            'Evaluation Grid Id' => \tool_importer\field_types::TYPE_TEXT,
-            'Criterion Id' => \tool_importer\field_types::TYPE_TEXT,
-            'Criterion Parent Id' => \tool_importer\field_types::TYPE_TEXT,
-            'Criterion Label' => \tool_importer\field_types::TYPE_TEXT,
+            'Evaluation Grid Id' => field_types::TYPE_TEXT,
+            'Criterion Id' => field_types::TYPE_TEXT,
+            'Criterion Parent Id' => field_types::TYPE_TEXT,
+            'Criterion Label' => field_types::TYPE_TEXT,
         ];
     }
 }

@@ -25,6 +25,7 @@
 namespace local_cveteval\local\persistent\role;
 defined('MOODLE_INTERNAL') || die();
 
+use coding_exception;
 use local_cltools\local\crud\form\entity_form;
 
 /**
@@ -35,11 +36,14 @@ use local_cltools\local\crud\form\entity_form;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class form extends entity_form {
+    /** @var string The fully qualified classname. */
+    protected static $persistentclass = '\\local_cveteval\\local\\persistent\\role\\entity';
+
     /**
      * Form property in order to display the right widget for the form.
      *
      * @return array|array[]
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     protected static function get_fields_definition() {
         return array(
@@ -65,7 +69,4 @@ class form extends entity_form {
             ]
         );
     }
-
-    /** @var string The fully qualified classname. */
-    protected static $persistentclass = '\\local_cveteval\\local\\persistent\\role\\entity';
 }

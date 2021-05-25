@@ -78,7 +78,7 @@ if (!class_exists($importclass)) {
     cli_error(get_string('importclassnotfound', 'local_cveteval') . ' class:' . $importclass);
     die();
 }
-$importhelper =  new $importclass($options['input'], $importid, 'comma');
+$importhelper = new $importclass($options['input'], $importid, 'comma');
 
 if (!empty($options['cleanup']) && $options['cleanup']) {
     $importhelper->cleanup();

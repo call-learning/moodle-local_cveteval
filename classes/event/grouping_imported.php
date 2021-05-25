@@ -37,17 +37,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class grouping_imported extends \core\event\base {
-    /**
-     * Init method.
-     *
-     * @return void
-     */
-    protected function init() {
-        $this->data['crud'] = 'u';
-        $this->data['edulevel'] = self::LEVEL_OTHER;
-    }
-
+class grouping_imported extends base {
     /**
      * Returns localised event name.
      *
@@ -55,20 +45,6 @@ class grouping_imported extends \core\event\base {
      */
     public static function get_name() {
         return get_string('groupingimported', 'local_cveteval');
-    }
-
-    /**
-     * Returns non-localised event description with id's for admin use only.
-     *
-     * @return string
-     */
-    public function get_description() {
-        $filename = s($this->other['filename']);
-        $error = s($this->other['error']);
-        return "CSV User data has been imported ({$filename})" . ($error ?
-                " and the following error occured: ($error)" :
-                ""
-            );
     }
 
     /**
@@ -88,5 +64,29 @@ class grouping_imported extends \core\event\base {
     public static function get_other_mapping() {
         // Nothing to map.
         return false;
+    }
+
+    /**
+     * Returns non-localised event description with id's for admin use only.
+     *
+     * @return string
+     */
+    public function get_description() {
+        $filename = s($this->other['filename']);
+        $error = s($this->other['error']);
+        return "CSV User data has been imported ({$filename})" . ($error ?
+                " and the following error occured: ($error)" :
+                ""
+            );
+    }
+
+    /**
+     * Init method.
+     *
+     * @return void
+     */
+    protected function init() {
+        $this->data['crud'] = 'u';
+        $this->data['edulevel'] = self::LEVEL_OTHER;
     }
 }

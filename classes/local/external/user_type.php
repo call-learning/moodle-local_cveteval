@@ -25,13 +25,15 @@
 namespace local_cveteval\local\external;
 defined('MOODLE_INTERNAL') || die();
 
+use context_system;
 use external_function_parameters;
 use external_single_structure;
 use external_value;
 
-use \local_cveteval\local\persistent\role\entity as role_entity;
+use local_cveteval\local\persistent\role\entity as role_entity;
 use local_cveteval\local\utils;
 use external_api;
+
 /**
  * Get user type
  * Class user_type
@@ -39,19 +41,6 @@ use external_api;
  * @package local_cveteval\local\external
  */
 class user_type extends external_api {
-    /**
-     * Returns description of method parameters
-     *
-     * @return external_function_parameters
-     */
-    public static function execute_parameters() {
-        return new external_function_parameters(
-            array(
-                'userid' => new external_value(PARAM_INT, 'id of the user', null, NULL_NOT_ALLOWED)
-            )
-        );
-    }
-
     /**
      * Returns description of method parameters
      *
@@ -70,10 +59,23 @@ class user_type extends external_api {
      */
     public static function execute($userid) {
         self::validate_parameters(self::execute_parameters(), array('userid' => $userid));
-        self::validate_context(\context_system::instance());
+        self::validate_context(context_system::instance());
         $roleid = utils::get_user_role_id($userid);
         return (object) ['type' =>
             role_entity::ROLE_SHORTNAMES[$roleid]
         ];
+    }
+
+    /**
+     * Returns description of method parameters
+     *
+     * @return external_function_parameters
+     */
+    public static function execute_parameters() {
+        return new external_function_parameters(
+            array(
+                'userid' => new external_value(PARAM_INT, 'id of the user', null, NULL_NOT_ALLOWED)
+            )
+        );
     }
 }

@@ -24,6 +24,7 @@
 
 namespace local_cveteval\local\persistent\planning;
 defined('MOODLE_INTERNAL') || die();
+
 use local_cltools\local\crud\form\entity_form;
 
 /**

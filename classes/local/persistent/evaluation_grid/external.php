@@ -25,6 +25,7 @@
 namespace local_cveteval\local\persistent\evaluation_grid;
 
 use external_api;
+use external_function_parameters;
 use external_multiple_structure;
 use external_single_structure;
 use local_cltools\local\crud\entity_utils;
@@ -32,7 +33,6 @@ use local_cltools\local\crud\entity_utils;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-
 
 /**
  * Evaluation grid external API
@@ -42,26 +42,18 @@ global $CFG;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class external extends external_api {
-    public static function get_evaluation_grids_parameters() {
-        return entity_utils::external_get_filter_generic_parameters();
-    }
-
     public static function get_evaluation_grids($filters) {
         $inputparams = compact($filters);
         $params = self::validate_parameters(self::get_evaluation_grids_parameters(), $inputparams);
     }
 
+    public static function get_evaluation_grids_parameters() {
+        return entity_utils::external_get_filter_generic_parameters();
+    }
+
     public static function get_evaluation_grids_returns() {
         return new external_multiple_structure(
             exporter::get_read_structure()
-        );
-    }
-
-    public static function create_evaluation_grid_parameters() {
-        return new \external_function_parameters(
-            [
-                'evaluation_grid' => exporter::get_create_structure()
-            ]
         );
     }
 
@@ -74,6 +66,14 @@ class external extends external_api {
         $evaluationgrid->save();
         $output = $PAGE->get_renderer('local_cltools');
         return (new exporter($evaluationgrid))->export($output);
+    }
+
+    public static function create_evaluation_grid_parameters() {
+        return new external_function_parameters(
+            [
+                'evaluation_grid' => exporter::get_create_structure()
+            ]
+        );
     }
 
     public static function create_evaluation_grid_returns() {

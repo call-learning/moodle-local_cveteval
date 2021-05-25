@@ -25,10 +25,14 @@
 namespace local_cveteval\local\importer\grouping;
 defined('MOODLE_INTERNAL') || die();
 
+use local_cveteval\event\grouping_imported;
 use local_cveteval\local\importer\base_helper;
 use local_cveteval\local\persistent\group\entity as group_entity;
 use local_cveteval\local\persistent\group_assignment\entity as group_assignment_entity;
 use local_cveteval\local\persistent\planning\entity as planning_entity;
+use tool_importer\data_source;
+use tool_importer\data_transformer;
+use tool_importer\importer_exception;
 use tool_importer\local\transformer\standard;
 
 class import_helper extends base_helper {
@@ -40,11 +44,11 @@ class import_helper extends base_helper {
      * @param string $delimiter
      * @param string $encoding
      * @param null $progressbar
-     * @throws \tool_importer\importer_exception
+     * @throws importer_exception
      */
     public function __construct($csvpath, $importid, $delimiter = 'semicolon', $encoding = 'utf-8', $progressbar = null) {
         parent::__construct($csvpath, $importid, $delimiter, $encoding, $progressbar);
-        $this->importeventclass = \local_cveteval\event\grouping_imported::class;
+        $this->importeventclass = grouping_imported::class;
     }
 
     /**
@@ -61,17 +65,19 @@ class import_helper extends base_helper {
             }
         }
     }
+
     /**
      * @param $csvpath
      * @param $delimiter
      * @param $encoding
-     * @return \tool_importer\data_source
+     * @return data_source
      */
     protected function create_csv_datasource($csvpath, $delimiter, $encoding) {
         return new csv_data_source($csvpath, $delimiter, $encoding);
     }
+
     /**
-     * @return \tool_importer\data_transformer
+     * @return data_transformer
      */
     protected function create_transformer() {
         $transformdef = array(
@@ -84,6 +90,7 @@ class import_helper extends base_helper {
         $transformer = new standard($transformdef);
         return $transformer;
     }
+
     /**
      * @return \tool_importer\data_importer
      */

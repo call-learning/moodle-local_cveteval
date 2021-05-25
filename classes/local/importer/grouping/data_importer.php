@@ -25,10 +25,14 @@
 namespace local_cveteval\local\importer\grouping;
 defined('MOODLE_INTERNAL') || die();
 
+use coding_exception;
+use core_user;
+use dml_exception;
+use moodle_exception;
 use tool_importer\field_types;
 use tool_importer\importer_exception;
-use \local_cveteval\local\persistent\group_assignment\entity as group_assignment_entity;
-use \local_cveteval\local\persistent\group\entity as group_entity;
+use local_cveteval\local\persistent\group_assignment\entity as group_assignment_entity;
+use local_cveteval\local\persistent\group\entity as group_entity;
 use tool_importer\local\import_log;
 
 /**
@@ -46,7 +50,7 @@ class data_importer extends \tool_importer\data_importer {
      * data_importer constructor.
      *
      * @param null $defaultvals additional default values
-     * @throws \dml_exception
+     * @throws dml_exception
      */
     public function __construct($fielddefinition, $defaultvals = null) {
         $this->defaultvalues = [];
@@ -58,6 +62,32 @@ class data_importer extends \tool_importer\data_importer {
                 $this->grouping[] = $name;
             }
         }
+    }
+
+    /**
+     * Get the field definition array
+     *
+     * The associative array has at least a series of column names
+     * Types are derived from the field_types class
+     * 'fieldname' => [ 'type' => TYPE_XXX, ...]
+     *
+     * @return array
+     * @throws coding_exception
+     */
+    public function get_fields_definition() {
+        $fielddef = [];
+        $fielddef['email'] = [
+            'type' => field_types::TYPE_TEXT,
+            'required' => true
+        ];
+
+        foreach ($this->grouping as $groupingname) {
+            $fielddef[$groupingname] = [
+                'type' => field_types::TYPE_TEXT,
+                'required' => false
+            ];
+        }
+        return $fielddef;
     }
 
     /**
@@ -89,7 +119,7 @@ class data_importer extends \tool_importer\data_importer {
         $gassigments = [];
 
         $email = clean_param(trim($row['email']), PARAM_EMAIL);
-        $user = \core_user::get_user_by_email($email);
+        $user = core_user::get_user_by_email($email);
         if (!$user) {
             import_log::new_log($rowindex,
                 'grouping:usernotfound',
@@ -121,7 +151,7 @@ class data_importer extends \tool_importer\data_importer {
                         }
 
                     }
-                } catch(\moodle_exception $e) {
+                } catch (moodle_exception $e) {
                     import_log::new_log($rowindex,
                         'grouping:error',
                         $e->getMessage(),
@@ -134,32 +164,6 @@ class data_importer extends \tool_importer\data_importer {
             }
         }
         return $gassigments;
-    }
-
-    /**
-     * Get the field definition array
-     *
-     * The associative array has at least a series of column names
-     * Types are derived from the field_types class
-     * 'fieldname' => [ 'type' => TYPE_XXX, ...]
-     *
-     * @return array
-     * @throws \coding_exception
-     */
-    public function get_fields_definition() {
-        $fielddef = [];
-        $fielddef['email'] = [
-            'type' => field_types::TYPE_TEXT,
-            'required' => true
-        ];
-
-        foreach ($this->grouping as $groupingname) {
-            $fielddef[$groupingname] = [
-                'type' => field_types::TYPE_TEXT,
-                'required' => false
-            ];
-        }
-        return $fielddef;
     }
 }
 

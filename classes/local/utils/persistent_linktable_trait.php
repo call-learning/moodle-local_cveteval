@@ -31,6 +31,6 @@ global $CFG;
 
 trait persistent_link_table {
     public static function get_linked_entity_table($fieldname) {
-        return (object)[];
+        return (object) [];
     }
 }

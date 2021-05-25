@@ -81,7 +81,6 @@ $entitylist->set_extended_filterset($filterset);
 $renderable = new entity_table_renderable($entitylist);
 
 $renderer = $PAGE->get_renderer('local_cltools');
-/** @var entity_table_renderable entity table */
 echo $renderer->render($renderable);
 
 echo $OUTPUT->footer();

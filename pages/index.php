@@ -42,11 +42,11 @@ $innerlinks = array(
 
 $innerlinkshtml = [];
 foreach ($innerlinks as $name => $linkurl) {
-    $linkhtml = \html_writer::span(get_string("$name:entity", 'local_cveteval'));
-    $linkhtml .= \html_writer::link(
+    $linkhtml = html_writer::span(get_string("$name:entity", 'local_cveteval'));
+    $linkhtml .= html_writer::link(
         new moodle_url($CFG->wwwroot . $linkurl), get_string('edit'));
     $innerlinkshtml[] = $linkhtml;
 }
 echo $OUTPUT->header();
-echo \html_writer::alist($innerlinkshtml);
+echo html_writer::alist($innerlinkshtml);
 echo $OUTPUT->footer();

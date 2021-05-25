@@ -25,10 +25,14 @@
 namespace local_cveteval\local\importer\situation;
 defined('MOODLE_INTERNAL') || die();
 
+use local_cveteval\event\situation_imported;
 use local_cveteval\local\importer\base_helper;
 use local_cveteval\local\persistent\evaluation_grid\entity as evaluation_grid_entity;
 use local_cveteval\local\persistent\role\entity as role_entity;
 use local_cveteval\local\persistent\situation\entity as situation_entity;
+use tool_importer\data_source;
+use tool_importer\data_transformer;
+use tool_importer\importer_exception;
 use tool_importer\local\transformer\standard;
 
 class import_helper extends base_helper {
@@ -41,11 +45,37 @@ class import_helper extends base_helper {
      * @param string $delimiter
      * @param string $encoding
      * @param null $progressbar
-     * @throws \tool_importer\importer_exception
+     * @throws importer_exception
      */
     public function __construct($csvpath, $importid, $delimiter = 'semicolon', $encoding = 'utf-8', $progressbar = null) {
         parent::__construct($csvpath, $importid, $delimiter, $encoding, $progressbar);
-        $this->importeventclass = \local_cveteval\event\situation_imported::class;
+        $this->importeventclass = situation_imported::class;
+    }
+
+    /**
+     * To eval grid
+     *
+     * @param $value
+     * @param $columnname
+     * @return int|mixed
+     * @throws \coding_exception
+     */
+    public static function toevalgridid($value, $columnname) {
+        static $gridmatch = [];
+        $trimmedval = trim($value);
+        if (empty($value)) {
+            return 0;
+        }
+        if (!empty($gridmatch[$trimmedval])) {
+            return $gridmatch[$trimmedval];
+        } else {
+            $grid = evaluation_grid_entity::get_record(array('idnumber' => $trimmedval));
+            if (!$grid) {
+                return 0;
+            }
+            $gridmatch[$value] = (int) $grid->get('id');
+            return $gridmatch[$value];
+        }
     }
 
     /**
@@ -62,17 +92,19 @@ class import_helper extends base_helper {
             $situation->delete();
         }
     }
+
     /**
      * @param $csvpath
      * @param $delimiter
      * @param $encoding
-     * @return \tool_importer\data_source
+     * @return data_source
      */
     protected function create_csv_datasource($csvpath, $delimiter, $encoding) {
         return new csv_data_source($csvpath, $delimiter, $encoding);
     }
+
     /**
-     * @return \tool_importer\data_transformer
+     * @return data_transformer
      */
     protected function create_transformer() {
         $transformdef = array(
@@ -113,28 +145,11 @@ class import_helper extends base_helper {
         $transformer = new standard($transformdef, ',');
         return $transformer;
     }
+
     /**
      * @return \tool_importer\data_importer
      */
     protected function create_data_importer() {
         return new data_importer();
-    }
-
-    static function toevalgridid($value, $columnname) {
-        static $gridmatch = [];
-        $trimmedval = trim($value);
-        if (empty($value)) {
-            return 0;
-        }
-        if (!empty($gridmatch[$trimmedval])) {
-            return $gridmatch[$trimmedval];
-        } else {
-            $grid = evaluation_grid_entity::get_record(array('idnumber' => $trimmedval));
-            if (!$grid) {
-                return 0;
-            }
-            $gridmatch[$value] = (int) $grid->get('id');
-            return $gridmatch[$value];
-        }
     }
 }

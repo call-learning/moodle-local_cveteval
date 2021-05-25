@@ -25,11 +25,13 @@
 namespace local_cveteval\local\assessment;
 defined('MOODLE_INTERNAL') || die();
 
+use coding_exception;
 use local_cltools\local\dmlutils;
 use local_cltools\local\field\base;
 use local_cltools\local\table\dynamic_table_sql;
 use local_cveteval\local\persistent\role\entity as role_entity;
 use local_cveteval\output\grade_widget;
+use ReflectionException;
 
 /**
  * A list of student matching this situation
@@ -40,6 +42,18 @@ use local_cveteval\output\grade_widget;
  */
 class appraisals_criteria extends dynamic_table_sql {
 
+    protected const FIELDS = [
+        'critapp.id AS id',
+        'critapp.appraisalid AS appraisalid',
+        'COALESCE(critapp.grade, 0) AS grade',
+        'critapp.comment AS comment',
+        'criterion.sort AS sort',
+        'criterion.label AS label',
+        'criterion.parentid AS criterionparentid',
+        'criterion.id AS criterionid',
+        'COALESCE(critapp.timemodified,0) AS datetime'
+    ];
+
     public function __construct($uniqueid) {
         parent::__construct($uniqueid);
         $this->fieldaliases = [
@@ -48,12 +62,61 @@ class appraisals_criteria extends dynamic_table_sql {
     }
 
     /**
+     * Retrieve data from the database and return a row set
+     *
+     * @return array
+     */
+    public function retrieve_raw_data($pagesize) {
+        global $DB;
+        list($additionalwhere, $params) = $this->filterset->get_sql_for_filter();
+        $where = '';
+        if ($additionalwhere) {
+            $where = " AND ($additionalwhere)";
+        }
+        $sql = 'SELECT DISTINCT ' . join(', ', static::FIELDS)
+            . ' FROM {local_cveteval_criterion} criterion
+               LEFT JOIN {local_cveteval_appr_crit} critapp ON  criterion.id = critapp.criterionid
+               WHERE criterion.parentid = :parentcriterion ' . $where . ' ORDER BY sort';
+        $rows = [];
+        $this->setup();
+        $this->query_db($pagesize, false);
+        $rows = [];
+        foreach ($this->rawdata as $row) {
+            $params['parentcriterion'] = $row->criterionid;
+            $subcriteria = $DB->get_records_sql($sql, $params);
+            $formattedrow = $this->format_row($row);
+            if ($subcriteria) {
+                foreach ($subcriteria as &$sub) {
+                    $sub->grade = $this->col_grade($sub);
+                }
+                $formattedrow['_children'] = array_values($subcriteria);
+            }
+            $rows[] = (object) $formattedrow;
+        }
+        $this->close_recordset();
+        return $rows;
+    }
+
+    /**
+     * Grade column
+     *
+     * @param $row
+     * @return bool|string
+     * @throws coding_exception
+     */
+    protected function col_grade($row) {
+        global $PAGE;
+        $renderer = $PAGE->get_renderer('local_cveteval');
+        return $renderer->render(new grade_widget($row->grade));
+    }
+
+    /**
      * Default property definition
      *
      * Add all the fields from persistent class except the reserved ones
      *
      * @return array
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     protected function setup_fields() {
         $fields = [
@@ -95,18 +158,6 @@ class appraisals_criteria extends dynamic_table_sql {
         $this->setup_other_fields();
     }
 
-    protected const FIELDS = [
-        'critapp.id AS id',
-        'critapp.appraisalid AS appraisalid',
-        'COALESCE(critapp.grade, 0) AS grade',
-        'critapp.comment AS comment',
-        'criterion.sort AS sort',
-        'criterion.label AS label',
-        'criterion.parentid AS criterionparentid',
-        'criterion.id AS criterionid',
-        'COALESCE(critapp.timemodified,0) AS datetime'
-    ];
-
     /**
      * Set SQL parameters (where, from,....) from the entity
      *
@@ -121,55 +172,6 @@ class appraisals_criteria extends dynamic_table_sql {
 
         $this->set_sql(join(', ', static::FIELDS), $from, 'criterion.parentid = 0', []);
         // Just the first set, we will fold the other row in the result.
-    }
-
-    /**
-     * Grade column
-     *
-     * @param $row
-     * @return bool|string
-     * @throws \coding_exception
-     */
-    protected function col_grade($row) {
-        global $PAGE;
-        $renderer = $PAGE->get_renderer('local_cveteval');
-        return $renderer->render(new grade_widget($row->grade));
-    }
-
-    /**
-     * Retrieve data from the database and return a row set
-     *
-     * @return array
-     */
-    public function retrieve_raw_data($pagesize) {
-        global $DB;
-        list($additionalwhere, $params) = $this->filterset->get_sql_for_filter();
-        $where = '';
-        if ($additionalwhere) {
-            $where = " AND ($additionalwhere)";
-        }
-        $sql = 'SELECT DISTINCT ' . join(', ', static::FIELDS)
-            . ' FROM {local_cveteval_criterion} criterion
-               LEFT JOIN {local_cveteval_appr_crit} critapp ON  criterion.id = critapp.criterionid
-               WHERE criterion.parentid = :parentcriterion ' . $where . ' ORDER BY sort';
-        $rows = [];
-        $this->setup();
-        $this->query_db($pagesize, false);
-        $rows = [];
-        foreach ($this->rawdata as $row) {
-            $params['parentcriterion'] = $row->criterionid;
-            $subcriteria = $DB->get_records_sql($sql, $params);
-            $formattedrow = $this->format_row($row);
-            if ($subcriteria) {
-                foreach ($subcriteria as &$sub) {
-                    $sub->grade = $this->col_grade($sub);
-                }
-                $formattedrow['_children'] = array_values($subcriteria);
-            }
-            $rows[] = (object) $formattedrow;
-        }
-        $this->close_recordset();
-        return $rows;
     }
 }
 

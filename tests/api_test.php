@@ -126,21 +126,21 @@ class local_cveteval_api_testcase extends \advanced_testcase {
         create_appraisal_for_students($user2->id, null, false);
         $appraisals = appraisal::get();
         $this->assertEmpty($appraisals);
-        // Now, I am user 1, I should only get appraisal involving me (either as a student or appraiser)
+        // Now, I am user 1, I should only get appraisal involving me (either as a student or appraiser).
         $this->setUser($user1);
         $appraisals = appraisal::get();
         $this->assertNotEmpty($appraisals);
         $this->assertCount(6, $appraisals); // 6 situations for this user in his planning.
-        $user2 = \core_user::get_user_by_username('obs1'); // Now as obs1
+        $user2 = \core_user::get_user_by_username('obs1'); // Now as obs1.
         $this->setUser($user2);
         $appraisals = appraisal::get();
         $this->assertNotEmpty($appraisals);
-        $this->assertCount(8, $appraisals); // 2 appraisal per eval plan
-        $user2 = \core_user::get_user_by_username('obs2'); // Now as obs1
+        $this->assertCount(8, $appraisals); // 2 appraisal per eval plan.
+        $user2 = \core_user::get_user_by_username('obs2'); // Now as obs1.
         $this->setUser($user2);
         $appraisals = appraisal::get();
         $this->assertNotEmpty($appraisals);
-        $this->assertCount(4, $appraisals); // 2 appraisal per students and
+        $this->assertCount(4, $appraisals); // 2 appraisal per students and.
 
     }
 
@@ -192,13 +192,13 @@ class local_cveteval_api_testcase extends \advanced_testcase {
         create_appraisal_for_students($user2->id, null, false);
         $appraisalscrit = appr_crit::get();
         $this->assertEmpty($appraisalscrit);
-        // Now, I am user 1, I should only get appraisal involving me (either as a student or appraiser)
+        // Now, I am user 1, I should only get appraisal involving me (either as a student or appraiser).
         $this->setUser($user1);
         $appraisalscrit = appr_crit::get();
         $this->assertNotEmpty($appraisalscrit);
         // 6 appraisals, 240 criteria
         $this->assertCount(6 * 40, $appraisalscrit); // 6 situations for this user in his planning.
-        $user2 = \core_user::get_user_by_username('obs1'); // Now as obs1
+        $user2 = \core_user::get_user_by_username('obs1'); // Now as obs1.
         $this->setUser($user2);
         $appraisalscrit = appr_crit::get();
         $this->assertNotEmpty($appraisalscrit);
@@ -394,7 +394,7 @@ class local_cveteval_api_testcase extends \advanced_testcase {
         require_once($CFG->libdir . '/externallib.php');
         // First, no user logged i
         $user1 = \core_user::get_user_by_username('etu1');
-        // Now, I am user 1, I should only get evalplans involving me (either as a student or appraiser)
+        // Now, I am user 1, I should only get evalplans involving me (either as a student or appraiser).
         $this->setUser($user1);
         $evalplan = evalplan::get();
         $this->assertNotEmpty($evalplan);
@@ -428,7 +428,7 @@ class local_cveteval_api_testcase extends \advanced_testcase {
         require_once($CFG->libdir . '/externallib.php');
         // First, no user logged i
         $user1 = \core_user::get_user_by_username('obs2'); // Obs2 is only in one situation.
-        // Now, I am obs2, I should only get evalplans involving me (either as a student or appraiser)
+        // Now, I am obs2, I should only get evalplans involving me (either as a student or appraiser).
         $this->setUser($user1);
         $evalplan = evalplan::get();
         $this->assertNotEmpty($evalplan);
@@ -462,68 +462,68 @@ class local_cveteval_api_testcase extends \advanced_testcase {
             (object) [
                 'groupid' => 'Groupe A',
                 'clsituationid' => 'Consultations de médecine générale',
-                'starttime' => '12/04/2021',
-                'endtime' => '19/04/2021'
+                'starttime' => '24/05/2021',
+                'endtime' => '30/05/2021'
             ],
             (object) [
                 'groupid' => 'Groupe B',
                 'clsituationid' => 'Urgences-Soins intensifs',
-                'starttime' => '12/04/2021',
-                'endtime' => '19/04/2021'
+                'starttime' => '24/05/2021',
+                'endtime' => '30/05/2021'
             ],
             (object) [
                 'groupid' => 'Groupe A',
                 'clsituationid' => 'Médecine interne',
-                'starttime' => '19/04/2021',
-                'endtime' => '26/04/2021'
+                'starttime' => '31/05/2021',
+                'endtime' => '06/06/2021'
             ],
             (object) [
                 'groupid' => 'Groupe B',
                 'clsituationid' => 'Consultations de médecine générale',
-                'starttime' => '19/04/2021',
-                'endtime' => '26/04/2021',
+                'starttime' => '31/05/2021',
+                'endtime' => '06/06/2021',
             ],
             (object) [
                 'groupid' => 'Groupe A',
                 'clsituationid' => 'Urgences-Soins intensifs',
-                'starttime' => '26/04/2021',
-                'endtime' => '03/05/2021',
+                'starttime' => '07/06/2021',
+                'endtime' => '13/06/2021',
             ],
             (object) [
                 'groupid' => 'Groupe B',
                 'clsituationid' => 'Médecine interne',
-                'starttime' => '26/04/2021',
-                'endtime' => '03/05/202',
+                'starttime' => '31/05/2021',
+                'endtime' => '06/06/2021',
             ],
             (object) [
                 'groupid' => 'Groupe A',
                 'clsituationid' => 'Consultations de médecine générale',
+                'starttime' => '14/06/2021',
+                'endtime' => '20/06/2021',
+            ],
+            (object) [
+                'groupid' => 'Groupe B',
+                'clsituationid' => 'Urgences-Soins intensifs',
                 'starttime' => '03/05/2021',
                 'endtime' => '10/05/2021',
             ],
             (object) [
-                'groupid' => 'Groupe B',
-                'clsituationid' => 'Urgences-Soins intensifs',
-                'starttime' => '03/05/2021',
-                'endtime' => '10/05/2021',
-            ],
-            (object) [
                 'groupid' => 'Groupe A',
                 'clsituationid' => 'Médecine interne',
-                'starttime' => '10/05/2021',
-                'endtime' => '17/05/2021',
+                'starttime' => '21/06/2021',
+                'endtime' => '27/06/2021',
             ],
             (object) [
                 'groupid' => 'Groupe B',
                 'clsituationid' => 'Consultations de médecine générale',
-                'starttime' => '10/05/2021',
-                'endtime' => '17/05/2021',
+                'starttime' => '21/06/2021',
+                'endtime' => '27/06/2021',
             ],
             (object) [
                 'groupid' => 'Groupe A',
                 'clsituationid' => 'Urgences-Soins intensifs',
-                'starttime' => '17/05/2021',
-                'endtime' => '24/05/2021',
+                'starttime' => '28/06/2021',
+                'endtime' => '04/07/2021',
             ],
             (object) [
                 'groupid' => 'Groupe B',

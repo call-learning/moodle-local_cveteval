@@ -28,6 +28,7 @@ use coding_exception;
 use core_text;
 use csv_import_reader;
 use dml_exception;
+use moodleform;
 
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
@@ -41,7 +42,7 @@ require_once($CFG->libdir . '/csvlib.class.php');
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class cveteval_import_form extends \moodleform {
+class cveteval_import_form extends moodleform {
 
     /**
      * Form definition
@@ -56,13 +57,12 @@ class cveteval_import_form extends \moodleform {
 
         foreach (self::get_files_to_upload() as $filetype => $settings) {
             $fieldtype = $filetype . 'file';
-            $mform->addElement('filepicker', $fieldtype, get_string('import:'.$filetype, 'local_cveteval'));
+            $mform->addElement('filepicker', $fieldtype, get_string('import:' . $filetype, 'local_cveteval'));
             if (!empty($settings) && !empty($settings['required']) && $settings['required']) {
                 $mform->addRule($fieldtype, null, 'required');
             }
         }
         $mform->addElement('header', 'headingparams', get_string('import:heading:parameters', 'local_cveteval'));
-
 
         $choices = csv_import_reader::get_delimiter_list();
         $mform->addElement('select', 'delimiter', get_string('csvdelimiter', 'local_cveteval'), $choices);
@@ -75,7 +75,7 @@ class cveteval_import_form extends \moodleform {
         }
 
         $choices = core_text::get_encodings();
-        $mform->addElement('select', 'encoding', get_string('encoding','local_cveteval'), $choices);
+        $mform->addElement('select', 'encoding', get_string('encoding', 'local_cveteval'), $choices);
         $mform->setDefault('encoding', 'UTF-8');
 
         $mform->addElement('advcheckbox', 'cleanupbefore',
@@ -96,10 +96,10 @@ class cveteval_import_form extends \moodleform {
      */
     public static function get_files_to_upload() {
         return array(
-            'evaluation_grid' => ['required' => false, 'order'=> 1],
-            'situation' => ['required' => true, 'order'=> 2 ],
-            'planning' => ['required' => true, 'order'=> 3],
-            'grouping' => ['required' => true, 'order'=> 4],
+            'evaluation_grid' => ['required' => false, 'order' => 1],
+            'situation' => ['required' => true, 'order' => 2],
+            'planning' => ['required' => true, 'order' => 3],
+            'grouping' => ['required' => true, 'order' => 4],
         );
     }
 }

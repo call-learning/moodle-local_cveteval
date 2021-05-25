@@ -25,11 +25,18 @@
 namespace local_cveteval\local\importer;
 defined('MOODLE_INTERNAL') || die();
 
+use context_system;
+use dml_exception;
 use local_cveteval\local\importer\grouping\csv_data_source;
 use local_cveteval\local\persistent\evaluation_grid\entity as evaluation_grid_entity;
 use local_cveteval\local\persistent\role\entity as role_entity;
 use local_cveteval\local\persistent\situation\entity as situation_entity;
+use moodle_exception;
+use tool_importer\data_importer;
+use tool_importer\data_source;
+use tool_importer\data_transformer;
 use tool_importer\importer;
+use tool_importer\importer_exception;
 use tool_importer\local\transformer\standard;
 
 abstract class base_helper {
@@ -48,15 +55,16 @@ abstract class base_helper {
     protected $importer = null;
     /**
      * Class used to send events
+     *
      * @var null
      */
     protected $importeventclass = null;
     /**
-     * @var \tool_importer\data_transformer
+     * @var data_transformer
      */
     protected $transformer;
     /**
-     * @var \tool_importer\data_importer
+     * @var data_importer
      */
     protected $dataimporter;
 
@@ -68,14 +76,14 @@ abstract class base_helper {
      * @param string $delimiter
      * @param string $encoding
      * @param null $progressbar
-     * @throws \tool_importer\importer_exception
+     * @throws importer_exception
      */
     public function __construct($csvpath, $importid, $delimiter = 'semicolon', $encoding = 'utf-8', $progressbar = null) {
         $this->csvimporter = $this->create_csv_datasource($csvpath, $delimiter, $encoding);
         $this->transformer = $this->create_transformer();
         $this->dataimporter = $this->create_data_importer();
         $this->csvpath = $csvpath;
-        $this->importer = new importer( $this->csvimporter,
+        $this->importer = new importer($this->csvimporter,
             $this->transformer,
             $this->dataimporter,
             $progressbar,
@@ -84,11 +92,41 @@ abstract class base_helper {
     }
 
     /**
+     * @param $csvpath
+     * @param $delimiter
+     * @param $encoding
+     * @return data_source
+     */
+    abstract protected function create_csv_datasource($csvpath, $delimiter, $encoding);
+
+    /**
+     * @return data_transformer
+     */
+    abstract protected function create_transformer();
+
+    /**
+     * @return data_importer
+     */
+    abstract protected function create_data_importer();
+
+    public static function trimmed($value, $columnname) {
+        return trim($value);
+    }
+
+    public static function toint($value, $columnname) {
+        return intval($value);
+    }
+
+    public static function trimmeduppercase($value, $columnname) {
+        return trim(strtoupper($value));
+    }
+
+    /**
      * Import the csv file in the given path
      *
      * @return bool success or failure
-     * @throws \dml_exception
-     * @throws \tool_importer\importer_exception
+     * @throws dml_exception
+     * @throws importer_exception
      */
     public function import() {
         try {
@@ -96,14 +134,14 @@ abstract class base_helper {
             $transaction = $DB->start_delegated_transaction();
             $this->importer->import();
             // Send an event after importation.
-            $eventparams = array('context' => \context_system::instance(),
+            $eventparams = array('context' => context_system::instance(),
                 'other' => array('filename' => $this->csvpath));
             $event = $this->importeventclass::create($eventparams);
             $event->trigger();
             $transaction->allow_commit();
             return true;
-        } catch (\moodle_exception $e) {
-            $eventparams = array('context' => \context_system::instance(),
+        } catch (moodle_exception $e) {
+            $eventparams = array('context' => context_system::instance(),
                 'other' => array('filename' => $this->csvpath, 'error' => $e->getMessage()));
             $event = $this->importeventclass::create($eventparams);
             $event->trigger();
@@ -114,24 +152,6 @@ abstract class base_helper {
             return false;
         }
     }
-
-    /**
-     * @param $csvpath
-     * @param $delimiter
-     * @param $encoding
-     * @return \tool_importer\data_source
-     */
-    protected abstract function create_csv_datasource($csvpath, $delimiter, $encoding);
-
-    /**
-     * @return \tool_importer\data_transformer
-     */
-    protected abstract function create_transformer();
-
-    /**
-     * @return \tool_importer\data_importer
-     */
-    protected abstract function create_data_importer();
 
     /**
      * @return int|mixed
@@ -145,18 +165,6 @@ abstract class base_helper {
      */
     public function get_total_row_count() {
         return $this->importer->get_total_row_count();
-    }
-
-
-    public static function trimmed($value, $columnname) {
-        return trim($value);
-    }
-
-    public static function toint($value, $columnname) {
-        return intval($value);
-    }
-    static function trimmeduppercase($value, $columnname) {
-        return trim(strtoupper($value));
     }
 
 }

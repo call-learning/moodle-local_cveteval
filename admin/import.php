@@ -26,10 +26,10 @@ use local_cveteval\local\forms\cveteval_import_form;
 use local_cveteval\local\utils;
 
 define('NO_OUTPUT_BUFFERING', true);
-global $CFG;
 require_once(__DIR__ . '../../../../config.php');
-require_once($CFG->libdir . "/adminlib.php");
 global $CFG, $OUTPUT, $PAGE;
+require_once($CFG->libdir . "/adminlib.php");
+
 admin_externalpage_setup('cvetevalimport');
 $PAGE->set_title(get_string('import', 'local_cveteval'));
 $PAGE->set_heading(get_string('import', 'local_cveteval'));
@@ -69,21 +69,21 @@ if ($formdata = $form->get_data()) {
         }
         $fileinput = $files[$filetype];
         echo $OUTPUT->box(get_string('import:importing', 'local_cveteval',
-            get_string('import:'.$filetype, 'local_cveteval')));
+            get_string('import:' . $filetype, 'local_cveteval')));
         $progressbar = new progress_bar();
         $progressbar->create();
         if ($fileinput) {
-            $importhelper =  new $importclass($files[$filetype], $importid, $delimiter, $encoding, $progressbar);
+            $importhelper = new $importclass($files[$filetype], $importid, $delimiter, $encoding, $progressbar);
 
             if (!empty($cleanupbefore)) {
                 $importhelper->cleanup();
             }
             $importhelper->import();
             $info = (object) [
-                'rowcount'=>$importhelper->get_row_imported_count(),
-                'totalrows'=> $importhelper->get_total_row_count()
+                'rowcount' => $importhelper->get_row_imported_count(),
+                'totalrows' => $importhelper->get_total_row_count()
             ];
-            echo $OUTPUT->box(get_string('import:imported', 'local_cveteval',$info));
+            echo $OUTPUT->box(get_string('import:imported', 'local_cveteval', $info));
         }
     }
     $manageurl = new moodle_url('/local/cveteval/pages/index.php');

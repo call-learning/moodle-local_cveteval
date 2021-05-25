@@ -24,7 +24,11 @@
 
 namespace local_cveteval\event;
 
+use coding_exception;
+use context_system;
 use core\event\base;
+use dml_exception;
+use moodle_url;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -44,24 +48,19 @@ defined('MOODLE_INTERNAL') || die();
  */
 class role_importation_failed extends base {
     /**
-     * Init method.
-     *
-     * @return void
-     * @throws \dml_exception
-     */
-    protected function init() {
-        $this->context = \context_system::instance();
-        $this->data['crud'] = 'r';
-        $this->data['edulevel'] = self::LEVEL_OTHER;
-    }
-
-    /**
      * Return localised event name.
      *
      * @return string
      */
     public static function get_name() {
         return get_string('roleimportationfailed', 'local_cveteval');
+    }
+
+    /**
+     * @return false
+     */
+    public static function get_other_mapping() {
+        return false;
     }
 
     /**
@@ -74,11 +73,11 @@ class role_importation_failed extends base {
         $email = s($this->other['email']);
         $reasonid = $this->other['reason'];
         $roleimportation = 'Role importation failed';
-        switch ($reasonid){
+        switch ($reasonid) {
             case 1:
-                return $roleimportation." '{$email}'. User does not exist (error ID '{$reasonid}').";
+                return $roleimportation . " '{$email}'. User does not exist (error ID '{$reasonid}').";
             default:
-                return $roleimportation." '{$email}', error ID '{$reasonid}'.";
+                return $roleimportation . " '{$email}', error ID '{$reasonid}'.";
 
         }
     }
@@ -86,34 +85,39 @@ class role_importation_failed extends base {
     /**
      * Get URL related to the action.
      *
-     * @return \moodle_url
+     * @return moodle_url
      */
     public function get_url() {
         return null;
     }
 
     /**
+     * Init method.
+     *
+     * @return void
+     * @throws dml_exception
+     */
+    protected function init() {
+        $this->context = context_system::instance();
+        $this->data['crud'] = 'r';
+        $this->data['edulevel'] = self::LEVEL_OTHER;
+    }
+
+    /**
      * Custom validation.
      *
-     * @throws \coding_exception when validation does not pass.
      * @return void
+     * @throws coding_exception when validation does not pass.
      */
     protected function validate_data() {
         parent::validate_data();
 
         if (!isset($this->other['reason'])) {
-            throw new \coding_exception('The \'reason\' value must be set in other.');
+            throw new coding_exception('The \'reason\' value must be set in other.');
         }
 
         if (!isset($this->other['email'])) {
-            throw new \coding_exception('The \'email\' value must be set in other.');
+            throw new coding_exception('The \'email\' value must be set in other.');
         }
-    }
-
-    /**
-     * @return false
-     */
-    public static function get_other_mapping() {
-        return false;
     }
 }

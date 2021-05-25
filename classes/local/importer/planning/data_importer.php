@@ -25,9 +25,13 @@
 namespace local_cveteval\local\importer\planning;
 defined('MOODLE_INTERNAL') || die();
 
+use coding_exception;
+use dml_exception;
 use local_cveteval\local\persistent\planning\entity as planning_entity;
 use local_cveteval\local\persistent\group\entity as group_entity;
 use local_cveteval\local\persistent\situation\entity as situation_entity;
+use moodle_exception;
+use stdClass;
 use tool_importer\field_types;
 use tool_importer\importer_exception;
 use tool_importer\local\import_log;
@@ -47,7 +51,7 @@ class data_importer extends \tool_importer\data_importer {
      * data_importer constructor.
      *
      * @param null $defaultvals additional default values
-     * @throws \dml_exception
+     * @throws dml_exception
      */
     public function __construct($fielddefinition, $defaultvals = null) {
         $this->defaultvalues = [];
@@ -60,6 +64,46 @@ class data_importer extends \tool_importer\data_importer {
             }
         }
         $this->add_groups();
+    }
+
+    public function add_groups() {
+        foreach ($this->groups as $groupname) {
+            $groupname = clean_param(trim($groupname), PARAM_TEXT);
+            if (!group_entity::get_record(['name' => $groupname])) {
+                $group = new group_entity(0, (object) ['name' => $groupname]);
+                $group->create();
+            }
+        }
+    }
+
+    /**
+     * Get the field definition array
+     *
+     * The associative array has at least a series of column names
+     * Types are derived from the field_types class
+     * 'fieldname' => [ 'type' => TYPE_XXX, ...]
+     *
+     * @return array
+     * @throws coding_exception
+     */
+    public function get_fields_definition() {
+        $fielddef = [];
+        $fielddef['starttime'] = [
+            'type' => field_types::TYPE_INT,
+            'required' => true
+        ];
+        $fielddef['starttime'] = [
+            'type' => field_types::TYPE_INT,
+            'required' => true
+        ];
+
+        foreach ($this->groups as $groupname) {
+            $fielddef[$groupname] = [
+                'type' => field_types::TYPE_TEXT,
+                'required' => false
+            ];
+        }
+        return $fielddef;
     }
 
     /**
@@ -97,7 +141,7 @@ class data_importer extends \tool_importer\data_importer {
         $plannings = [];
         foreach ($groups as $groupname => $group) {
             try {
-                $record = new \stdClass();
+                $record = new stdClass();
                 $record->starttime = $row['starttime'];
                 $record->endtime = $row['endtime'];
                 if (!empty($row[$groupname]) && !empty($clsituations[$row[$groupname]])) {
@@ -107,7 +151,7 @@ class data_importer extends \tool_importer\data_importer {
                     $planning->create();
                     $plannings[] = $planning;
                 }
-            } catch (\moodle_exception $e) {
+            } catch (moodle_exception $e) {
                 import_log::new_log($rowindex,
                     'planning:error',
                     $e->getMessage(),
@@ -119,46 +163,6 @@ class data_importer extends \tool_importer\data_importer {
             }
         }
         return $plannings;
-    }
-
-    /**
-     * Get the field definition array
-     *
-     * The associative array has at least a series of column names
-     * Types are derived from the field_types class
-     * 'fieldname' => [ 'type' => TYPE_XXX, ...]
-     *
-     * @return array
-     * @throws \coding_exception
-     */
-    public function get_fields_definition() {
-        $fielddef = [];
-        $fielddef['starttime'] = [
-            'type' => field_types::TYPE_INT,
-            'required' => true
-        ];
-        $fielddef['starttime'] = [
-            'type' => field_types::TYPE_INT,
-            'required' => true
-        ];
-
-        foreach ($this->groups as $groupname) {
-            $fielddef[$groupname] = [
-                'type' => field_types::TYPE_TEXT,
-                'required' => false
-            ];
-        }
-        return $fielddef;
-    }
-
-    public function add_groups() {
-        foreach ($this->groups as $groupname) {
-            $groupname = clean_param(trim($groupname), PARAM_TEXT);
-            if (!group_entity::get_record(['name' => $groupname])) {
-                $group = new group_entity(0, (object) ['name' => $groupname]);
-                $group->create();
-            }
-        }
     }
 }
 

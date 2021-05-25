@@ -53,7 +53,7 @@ $assesstitle = get_string('assess', 'local_cveteval', $situation->get('title'));
 $assessfulltitle = get_string('assessment', 'local_cveteval')
     . ':'
     . $situation->get('title') . ':' . fullname($student);
-$PAGE->set_context(\context_system::instance());
+$PAGE->set_context(context_system::instance());
 $PAGE->set_title($assessfulltitle);
 $PAGE->set_heading($assesstitle);
 $currenturl = new moodle_url('/local/cveteval/pages/assessment/assess.php', array(
@@ -100,7 +100,7 @@ if ($data = $evaluationform->get_data()) {
     try {
         $evaluationform->save_data();
         echo $OUTPUT->notification(get_string('saved', 'local_cveteval'), 'notifysuccess');
-    } catch (\moodle_exception $e) {
+    } catch (moodle_exception $e) {
         echo $OUTPUT->notification($e->getMessage(), 'notifyfailure');
     }
 }
@@ -123,7 +123,7 @@ $entitylist = null;
 
 switch ($currenttab) {
     case "thissituation":
-        $uniqueid = \html_writer::random_id('thisituationtable');
+        $uniqueid = html_writer::random_id('thisituationtable');
         $entitylist = new appraisals_student($uniqueid);
         $filterset = new basic_filterset(
             [
@@ -168,7 +168,7 @@ switch ($currenttab) {
         echo $renderer->render($renderable);
         break;
     case "allsituations":
-        $uniqueid = \html_writer::random_id('allsituations');
+        $uniqueid = html_writer::random_id('allsituations');
         $entitylist = new situations_student($uniqueid);
         $filterset = new basic_filterset(
             [

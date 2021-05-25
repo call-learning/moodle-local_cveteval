@@ -24,6 +24,7 @@
 
 namespace local_cveteval\output;
 
+use coding_exception;
 use renderable;
 use renderer_base;
 use templatable;
@@ -37,7 +38,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2020 CALL Learning - Laurent David laurent@call-learning.fr
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class grade_widget implements renderable, templatable  {
+class grade_widget implements renderable, templatable {
 
     /**
      * @var int
@@ -50,6 +51,7 @@ class grade_widget implements renderable, templatable  {
     protected $hassubgrades;
 
     protected $comments = null;
+
     /**
      * Constructor
      *
@@ -66,12 +68,12 @@ class grade_widget implements renderable, templatable  {
      *
      * @param renderer_base $output
      * @return object
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function export_for_template(renderer_base $output) {
-        $context = (object)[
-            'gradeiconurl' => $output->image_url('grade/'.$this->grade, 'local_cveteval')->out(false),
-            'gradetext' => get_string('grade:'. $this->grade, 'local_cveteval'),
+        $context = (object) [
+            'gradeiconurl' => $output->image_url('grade/' . $this->grade, 'local_cveteval')->out(false),
+            'gradetext' => get_string('grade:' . $this->grade, 'local_cveteval'),
             'hassubgrades' => $this->hassubgrades,
         ];
         if ($this->comments) {

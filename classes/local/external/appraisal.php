@@ -25,6 +25,7 @@
 namespace local_cveteval\local\external;
 defined('MOODLE_INTERNAL') || die();
 
+use context_system;
 use external_function_parameters;
 use external_multiple_structure;
 use external_single_structure;
@@ -53,29 +54,6 @@ class appraisal extends base_get_entity {
                     'timecreated' => new external_value(PARAM_INT, 'last modification time'),
                     'usermodified' => new external_value(PARAM_INT, 'user modified'),
                 )
-            )
-        );
-    }
-
-    /**
-     * Returns description of method parameters
-     *
-     * @return external_function_parameters
-     */
-    public static function submit_parameters() {
-        return new external_function_parameters(
-            array(
-                'id' => new external_value(PARAM_INT, 'id of the appraisal criterion', VALUE_DEFAULT),
-                'studentid' => new external_value(PARAM_INT, 'id of the student'),
-                'appraiserid' => new external_value(PARAM_INT, 'id of the appraiser'),
-                'evalplanid' => new external_value(PARAM_INT, 'id of the evalplan'),
-                'context' => new external_value(PARAM_TEXT, 'context', VALUE_DEFAULT, ""),
-                'contextformat' => new external_value(PARAM_INT, 'context format', VALUE_DEFAULT, FORMAT_PLAIN),
-                'comment' => new external_value(PARAM_TEXT, 'comment', VALUE_DEFAULT, ""),
-                'commentformat' => new external_value(PARAM_INT, 'comment format', VALUE_DEFAULT, FORMAT_PLAIN),
-                'timemodified' => new external_value(PARAM_INT, 'last modification time', VALUE_DEFAULT, 0),
-                'timecreated' => new external_value(PARAM_INT, 'last modification time', VALUE_DEFAULT, 0),
-                'usermodified' => new external_value(PARAM_INT, 'user modified', VALUE_DEFAULT, 0),
             )
         );
     }
@@ -112,15 +90,38 @@ class appraisal extends base_get_entity {
         $params = self::validate_parameters(self::submit_parameters(),
             compact('id', 'studentid', 'appraiserid', 'evalplanid', 'context', 'contextformat', 'comment',
                 'commentformat', 'timemodified', 'timecreated', 'usermodified'));
-        $context = \context_system::instance();
+        $context = context_system::instance();
         self::validate_context($context);
 
         $appraisal = null;
         $entities = self::entities_submit([$params], entity::class);
         if (!empty($entities)) {
-                return $entities[0];
+            return $entities[0];
         }
         return $appraisal;
+    }
+
+    /**
+     * Returns description of method parameters
+     *
+     * @return external_function_parameters
+     */
+    public static function submit_parameters() {
+        return new external_function_parameters(
+            array(
+                'id' => new external_value(PARAM_INT, 'id of the appraisal criterion', VALUE_DEFAULT),
+                'studentid' => new external_value(PARAM_INT, 'id of the student'),
+                'appraiserid' => new external_value(PARAM_INT, 'id of the appraiser'),
+                'evalplanid' => new external_value(PARAM_INT, 'id of the evalplan'),
+                'context' => new external_value(PARAM_TEXT, 'context', VALUE_DEFAULT, ""),
+                'contextformat' => new external_value(PARAM_INT, 'context format', VALUE_DEFAULT, FORMAT_PLAIN),
+                'comment' => new external_value(PARAM_TEXT, 'comment', VALUE_DEFAULT, ""),
+                'commentformat' => new external_value(PARAM_INT, 'comment format', VALUE_DEFAULT, FORMAT_PLAIN),
+                'timemodified' => new external_value(PARAM_INT, 'last modification time', VALUE_DEFAULT, 0),
+                'timecreated' => new external_value(PARAM_INT, 'last modification time', VALUE_DEFAULT, 0),
+                'usermodified' => new external_value(PARAM_INT, 'user modified', VALUE_DEFAULT, 0),
+            )
+        );
     }
 
 }

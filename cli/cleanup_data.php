@@ -51,7 +51,6 @@ Options:
     -h --help                   Print this help.
 ";
 
-
 if (!$options['yes']) {
     $agree = cli_input('This will cleanup all from this module tables. Are you sure ?[y|N]');
     if ($agree !== 'y') {

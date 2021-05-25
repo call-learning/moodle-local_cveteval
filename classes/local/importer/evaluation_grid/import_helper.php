@@ -25,9 +25,13 @@
 namespace local_cveteval\local\importer\evaluation_grid;
 defined('MOODLE_INTERNAL') || die();
 
+use local_cveteval\event\evaluation_grid_imported;
 use local_cveteval\local\importer\base_helper;
 use local_cveteval\local\persistent\criterion\entity as criterion_entity;
 use local_cveteval\local\persistent\evaluation_grid\entity as evaluation_grid_entity;
+use tool_importer\data_source;
+use tool_importer\data_transformer;
+use tool_importer\importer_exception;
 use tool_importer\local\transformer\standard;
 
 class import_helper extends base_helper {
@@ -39,11 +43,11 @@ class import_helper extends base_helper {
      * @param string $delimiter
      * @param string $encoding
      * @param null $progressbar
-     * @throws \tool_importer\importer_exception
+     * @throws importer_exception
      */
     public function __construct($csvpath, $importid, $delimiter = 'semicolon', $encoding = 'utf-8', $progressbar = null) {
         parent::__construct($csvpath, $importid, $delimiter, $encoding, $progressbar);
-        $this->importeventclass = \local_cveteval\event\evaluation_grid_imported::class;
+        $this->importeventclass = evaluation_grid_imported::class;
     }
 
     /**
@@ -57,17 +61,19 @@ class import_helper extends base_helper {
             $ga->delete();
         }
     }
+
     /**
      * @param $csvpath
      * @param $delimiter
      * @param $encoding
-     * @return \tool_importer\data_source
+     * @return data_source
      */
     protected function create_csv_datasource($csvpath, $delimiter, $encoding) {
         return new csv_data_source($csvpath, $delimiter, $encoding);
     }
+
     /**
-     * @return \tool_importer\data_transformer
+     * @return data_transformer
      */
     protected function create_transformer() {
         $transformdef = array(
@@ -91,6 +97,7 @@ class import_helper extends base_helper {
         $transformer = new standard($transformdef);
         return $transformer;
     }
+
     /**
      * @return \tool_importer\data_importer
      */

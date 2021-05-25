@@ -24,6 +24,7 @@
 
 namespace local_cveteval\local\importer\planning;
 
+use tool_importer\field_types;
 use tool_importer\importer_exception;
 
 defined('MOODLE_INTERNAL') || die();
@@ -41,8 +42,8 @@ class csv_data_source extends \tool_importer\local\source\csv_data_source {
 
         if (!$columns) {
             $additionalcolumns = [
-                'Date début' => \tool_importer\field_types::TYPE_TEXT,
-                'Date fin' => \tool_importer\field_types::TYPE_TEXT,
+                'Date début' => field_types::TYPE_TEXT,
+                'Date fin' => field_types::TYPE_TEXT,
             ];
             if (!$this->csvimporter) {
                 throw new importer_exception('nocolumnsdefined', 'tool_importer', null, '');
@@ -51,7 +52,7 @@ class csv_data_source extends \tool_importer\local\source\csv_data_source {
                 $allcolumns = $this->csvimporter->get_columns();
                 foreach ($allcolumns as $colname) {
                     if (preg_match('/groupe.*/', strtolower($colname))) {
-                        $additionalcolumns[$colname] = \tool_importer\field_types::TYPE_TEXT;
+                        $additionalcolumns[$colname] = field_types::TYPE_TEXT;
                     }
                 }
             }

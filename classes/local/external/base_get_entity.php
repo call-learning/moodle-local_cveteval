@@ -25,12 +25,56 @@
 namespace local_cveteval\local\external;
 defined('MOODLE_INTERNAL') || die();
 
+use context_system;
+use external_api;
 use external_function_parameters;
 use external_multiple_structure;
 use external_value;
 
+abstract class base_get_entity extends external_api {
+    const MOBILE_ENTITY_MATCHER = [
+        'appr_crit' => 'appraisal_criterion',
+        'appraisal' => 'appraisal',
+        'clsituation' => 'situation',
+        'cevalgrid' => 'cevalgrid',
+        'evalplan' => 'planning',
+        'criterion' => 'criterion',
+        'group_assign' => 'group_assignment',
+        'role' => 'role'
+    ];
 
-abstract class base_get_entity extends \external_api {
+    /**
+     * Returns description of method parameters
+     *
+     * @return external_multiple_structure
+     */
+    abstract public static function get_returns();
+
+    /**
+     * Return the elements
+     */
+    public static function get($query = null) {
+        $classname = static::class;
+        $baseclassname = substr($classname, strrpos($classname, '\\') + 1);
+        return self::basic_get(self::MOBILE_ENTITY_MATCHER[$baseclassname], $query);
+    }
+
+    /**
+     * Return the elements
+     */
+    public static function basic_get($entityname, $query) {
+        // TODO: leverage the persistent entities features to get the right columns/fields to return.
+        $params = self::validate_parameters(self::get_parameters(), array('query' => $query));
+        $queryobject = [];
+        if (!empty($params['query'])) {
+            $queryobject = json_decode($params['query']);
+        }
+        $context = context_system::instance();
+        self::validate_context($context);
+        $entities = utils::query_entities($entityname, $queryobject);
+        return $entities;
+    }
+
     /**
      * Returns description of method parameters
      *
@@ -44,42 +88,14 @@ abstract class base_get_entity extends \external_api {
         );
     }
 
-    /**
-     * Returns description of method parameters
-     *
-     * @return external_multiple_structure
-     */
-    abstract public static function get_returns();
-
-    /**
-     * Return the elements
-     */
-    public static function basic_get($entityname, $query) {
-        // TODO: leverage the persistent entities features to get the right columns/fields to return.
-        $params = self::validate_parameters(self::get_parameters(), array('query' => $query));
-        $queryobject = [];
-        if (!empty($params['query'])) {
-            $queryobject = json_decode($params['query']);
-        }
-        $context = \context_system::instance();
-        self::validate_context($context);
-        $entities = utils::query_entities($entityname, $queryobject);
-        return $entities;
-    }
-
-    /**
-     * Return the elements
-     */
-    public static function get($query = null) {
-        $classname = static::class;
-        $baseclassname  = substr($classname, strrpos($classname, '\\') + 1);
-        return self::basic_get(self::MOBILE_ENTITY_MATCHER[$baseclassname], $query);
-    }
+    // Due to changes in the API  AND mobile version, the entities in Moodle have slightly
+    // different names than the relevant tables. We will need to uniformise this at some point.
 
     /**
      * Submit new entities, no check
      *
      * TODO: check for user right at submission
+     *
      * @param $entityarray
      * @param $entityclass
      * @return array
@@ -104,19 +120,6 @@ abstract class base_get_entity extends \external_api {
         }
         return $entities;
     }
-
-    // Due to changes in the API  AND mobile version, the entities in Moodle have slightly
-    // different names than the relevant tables. We will need to uniformise this at some point.
-    const MOBILE_ENTITY_MATCHER = [
-        'appr_crit' => 'appraisal_criterion',
-        'appraisal' => 'appraisal',
-        'clsituation' => 'situation',
-        'cevalgrid' => 'cevalgrid',
-        'evalplan' => 'planning',
-        'criterion' => 'criterion',
-        'group_assign' => 'group_assignment',
-        'role' => 'role'
-    ];
 }
 
 

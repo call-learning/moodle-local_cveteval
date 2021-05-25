@@ -25,14 +25,17 @@
 namespace local_cveteval\local\external;
 defined('MOODLE_INTERNAL') || die();
 
+use context_system;
 use context_user;
+use core_user;
 use external_function_parameters;
 use external_single_structure;
 use external_value;
 
-use \local_cveteval\local\persistent\role\entity as role_entity;
+use local_cveteval\local\persistent\role\entity as role_entity;
 use local_cveteval\local\utils;
 use external_api;
+use stdClass;
 use user_picture;
 
 /**
@@ -42,19 +45,6 @@ use user_picture;
  * @package local_cveteval\local\external
  */
 class user_profile extends external_api {
-    /**
-     * Returns description of method parameters
-     *
-     * @return external_function_parameters
-     */
-    public static function execute_parameters() {
-        return new external_function_parameters(
-            array(
-                'userid' => new external_value(PARAM_INT, 'id of the user', VALUE_REQUIRED, NULL_NOT_ALLOWED)
-            )
-        );
-    }
-
     /**
      * Returns description of method parameters
      *
@@ -80,10 +70,10 @@ class user_profile extends external_api {
     public static function execute($userid) {
         global $USER, $PAGE;
         self::validate_parameters(self::execute_parameters(), array('userid' => $userid));
-        self::validate_context(\context_system::instance());
-        $user = \core_user::get_user($userid);
+        self::validate_context(context_system::instance());
+        $user = core_user::get_user($userid);
         $context = context_user::instance($userid);
-        $userinfo = new \stdClass();
+        $userinfo = new stdClass();
         $userinfo->fullname = fullname($user);
         $canseeadvanced = true;
         if ($userid != $USER->id and !has_capability('moodle/user:viewdetails', $context)) {
@@ -97,12 +87,25 @@ class user_profile extends external_api {
         $userinfo->studentpictureurl = $userpicture->get_url($PAGE)->out(false);
         return (object) [
             'userid' => $userid,
-            'fullname' =>  fullname($user),
+            'fullname' => fullname($user),
             'firstname' => $canseeadvanced ? $user->firstname : '',
             'lastname' => $canseeadvanced ? $user->lastname : '',
             'username' => $canseeadvanced ? $user->username : 'anonymous',
             'userpictureurl' => $userpicture->get_url($PAGE)->out(false)
         ];
+    }
+
+    /**
+     * Returns description of method parameters
+     *
+     * @return external_function_parameters
+     */
+    public static function execute_parameters() {
+        return new external_function_parameters(
+            array(
+                'userid' => new external_value(PARAM_INT, 'id of the user', VALUE_REQUIRED, NULL_NOT_ALLOWED)
+            )
+        );
     }
 }
 

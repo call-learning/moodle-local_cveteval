@@ -25,6 +25,7 @@
 namespace local_cveteval\local\external;
 defined('MOODLE_INTERNAL') || die();
 
+use context_system;
 use core\persistent;
 use external_function_parameters;
 use external_multiple_structure;
@@ -33,29 +34,6 @@ use external_value;
 use local_cveteval\local\persistent\appraisal_criterion\entity;
 
 class appr_crit extends base_get_entity {
-
-    /**
-     * Returns description of method parameters
-     *
-     * @return external_multiple_structure
-     */
-    public static function get_returns() {
-        return new external_multiple_structure(
-            new external_single_structure(
-                array(
-                    'id' => new external_value(PARAM_INT, 'id of the appraisal criterion'),
-                    'criterionid' => new external_value(PARAM_INT, 'id of the criterion'),
-                    'appraisalid' => new external_value(PARAM_INT, 'id of the appraisal'),
-                    'grade' => new external_value(PARAM_INT, 'grade for appraisal'),
-                    'comment' => new external_value(PARAM_TEXT, 'comment'),
-                    'commentformat' => new external_value(PARAM_INT, 'comment format', VALUE_DEFAULT, FORMAT_PLAIN),
-                    'timemodified' => new external_value(PARAM_INT, 'last modification time'),
-                    'timecreated' => new external_value(PARAM_INT, 'last modification time'),
-                    'usermodified' => new external_value(PARAM_INT, 'user modified'),
-                )
-            )
-        );
-    }
 
     /**
      * Returns description of method parameters
@@ -95,11 +73,34 @@ class appr_crit extends base_get_entity {
     }
 
     /**
+     * Returns description of method parameters
+     *
+     * @return external_multiple_structure
+     */
+    public static function get_returns() {
+        return new external_multiple_structure(
+            new external_single_structure(
+                array(
+                    'id' => new external_value(PARAM_INT, 'id of the appraisal criterion'),
+                    'criterionid' => new external_value(PARAM_INT, 'id of the criterion'),
+                    'appraisalid' => new external_value(PARAM_INT, 'id of the appraisal'),
+                    'grade' => new external_value(PARAM_INT, 'grade for appraisal'),
+                    'comment' => new external_value(PARAM_TEXT, 'comment'),
+                    'commentformat' => new external_value(PARAM_INT, 'comment format', VALUE_DEFAULT, FORMAT_PLAIN),
+                    'timemodified' => new external_value(PARAM_INT, 'last modification time'),
+                    'timecreated' => new external_value(PARAM_INT, 'last modification time'),
+                    'usermodified' => new external_value(PARAM_INT, 'user modified'),
+                )
+            )
+        );
+    }
+
+    /**
      * Return the elements
      */
     public static function submit($appraisals) {
         // TODO: leverage the persistent entities features to get the right columns/fields to return.
-        $context = \context_system::instance();
+        $context = context_system::instance();
         self::validate_context($context);
 
         $entities = [];
