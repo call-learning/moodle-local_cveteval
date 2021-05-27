@@ -57,7 +57,7 @@ class user_profile extends external_api {
                 'fullname' => new external_value(PARAM_TEXT, 'user fullname'),
                 'firstname' => new external_value(PARAM_TEXT, 'user fullname'),
                 'lastname' => new external_value(PARAM_TEXT, 'user fullname'),
-                'username' => new external_value(PARAM_ALPHANUMEXT, 'username', VALUE_OPTIONAL),
+                'username' => new external_value(PARAM_RAW_TRIMMED, 'username', VALUE_OPTIONAL),
                 'userpictureurl' => new external_value(PARAM_URL, 'user picture (avatar)',
                     VALUE_OPTIONAL),
             )
