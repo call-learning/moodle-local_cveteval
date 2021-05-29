@@ -53,14 +53,17 @@ class cveteval_import_form extends moodleform {
     public function definition() {
         $mform = $this->_form;
 
-        $mform->addElement('header', 'headingfile', get_string('import:heading:file', 'local_cveteval'));
+        $mform->addElement('header', 'headingfile', get_string('headingfile', 'local_cveteval'));
+        $mform->addHelpButton('headingfile', 'headingfile', 'local_cveteval');
 
         foreach (self::get_files_to_upload() as $filetype => $settings) {
             $fieldtype = $filetype . 'file';
             $mform->addElement('filepicker', $fieldtype, get_string('import:' . $filetype, 'local_cveteval'));
             if (!empty($settings) && !empty($settings['required']) && $settings['required']) {
                 $mform->addRule($fieldtype, null, 'required');
+                $mform->addHelpButton($fieldtype, $fieldtype, 'local_cveteval');
             }
+
         }
         $mform->addElement('header', 'headingparams', get_string('import:heading:parameters', 'local_cveteval'));
 
@@ -96,10 +99,10 @@ class cveteval_import_form extends moodleform {
      */
     public static function get_files_to_upload() {
         return array(
-            'evaluation_grid' => ['required' => false, 'order' => 1],
             'situation' => ['required' => true, 'order' => 2],
             'planning' => ['required' => true, 'order' => 3],
             'grouping' => ['required' => true, 'order' => 4],
+            'evaluation_grid' => ['required' => false, 'order' => 1],
         );
     }
 }

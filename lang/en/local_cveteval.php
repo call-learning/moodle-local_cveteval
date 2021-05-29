@@ -52,6 +52,9 @@ $string['delete'] = 'Delete';
 $string['encoding'] = 'Encoding';
 $string['edit'] = 'Edit';
 $string['enablecompetveteval'] = 'Enable cveteval';
+$string['evaluation_gridfile'] = 'Evaluation grid';
+$string['evaluation_gridfile_help'] = '(Optional)A list of evaluation criteria in CSV format. The file must contain the following headers
+<pre>"Evaluation Grid Id";"Criterion Id";"Criterion Parent Id";"Criterion Label"</pre>';
 $string['evaluation_grid:entity'] = 'Evaluation Grid';
 $string['evaluation_grid:plural'] = 'Evaluation Grids';
 $string['evaluation_grid:name'] = 'Evaluation Name';
@@ -65,6 +68,9 @@ $string['evaluation:hasgrade'] = 'Has grade?';
 $string['evaluation:grade'] = 'Grade';
 $string['evaluationgrid:default'] = 'Default Evaluation Grid';
 $string['fullname'] = 'Full Name';
+$string['groupingfile'] = 'List of student grouping';
+$string['groupingfile_help'] = 'A list of grouping in CSV format. The file must contain the following headers
+<pre>"Nom de l\'étudiant";"Prénom";"Identifiant";"Groupement 1"</pre>';
 $string['grade:defaultscale'] = 'Default scale (CompetvetEval)';
 $string['grade:defaultscale:description'] = 'Default scale for CompetvetEval';
 $string['idnumber'] = 'ID Number';
@@ -72,7 +78,17 @@ $string['id'] = 'Id';
 $string['list'] = 'List';
 $string['import:dateformat'] = 'd/m/Y';
 $string['import'] = 'Import';
-$string['import:heading:file'] = 'Import files';
+$string['headingfile'] = 'Import files';
+$string['headingfile_help']= 'You can import situation, plannning and groups here. All files except the evaluation grid are
+manadatory here .<br>
+Beware all files must match. For example:
+<ul>
+<li>(Situation) - GrilleEval => (Grille Evaluation) - Evaluation Grid Id</li>
+<li>(Planning) - Groupe XXX => (Groupes) - Un des groupes dans les colonnes de Groupement</li>
+<li>(Planning) - Situation (nom court) => (Situation) - Nom court</li>
+</ul>
+Any mismatch in the files can lead to malfunctionning applications. 
+';
 $string['import:heading:process'] = 'Process files';
 $string['import:heading:parameters'] = 'Importation parameters';
 $string['import:importviacron'] = 'Import via CRON';
@@ -90,6 +106,9 @@ $string['mysituations'] = 'My situations';
 $string['mysituations:intro'] = 'This is the list of situations you should be able to evaluate. Please
 click on a row to see a list of appraisals / students to assess/evaluate.';
 $string['name'] = 'Full Name';
+$string['planningfile'] = 'List of planning';
+$string['planningfile_help'] = 'A list of planning in CSV format. The file must contain the following headers
+<pre>"Date début";"Date fin";"Groupe XX";"Groupe YY"</pre>';
 $string['planning:entity'] = 'Evaluation Planning';
 $string['planning:plural'] = 'Evaluations Planning';
 $string['planning:title'] = 'Title';
@@ -111,6 +130,10 @@ $string['situation:title'] = 'Title';
 $string['situation:expectedevalsnb'] = '#Eval';
 $string['situation:evalgridid'] = 'Linked Evaluation Grid';
 $string['situation:groupname'] = 'Group name';
+$string['situationfile'] = 'List of situations';
+$string['situationfile_help'] = 'A list of situation in CSV format. The file must contain the following headers
+<pre>"Description";"Nom";"Nom court";"ResponsableUE";"Responsable";"Evaluateurs";"Observateurs";"Appreciations";
+"GrilleEval";"Etiquettes"</pre>';
 $string['title'] = 'Title';
 $string['thissituation'] = 'This situation';
 $string['view'] = 'View';
