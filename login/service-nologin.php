@@ -15,21 +15,19 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version details.
+ * This file is used to call any registered externallib function in Moodle.
  *
- * @package   local_cveteval
- * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
+ * It will process more than one request and return more than one response if required.
+ * It is recommended to add webservice functions and re-use this script instead of
+ * writing any new custom ajax scripts.
+ *
+ * @since Moodle 2.9
+ * @package core
+ * @copyright 2015 Damyon Wiese
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
-$plugin->version   = 2021033029;      // The current module version (Date: YYYYMMDDXX).
-$plugin->requires  = 2014050800;      // Requires this Moodle version.
-$plugin->maturity  = MATURITY_RC;
-$plugin->release   = '1.0.0'; // No more specific course fields.
-$plugin->component = 'local_cveteval';// Full name of the plugin (used for diagnostics).
-$plugin->cron      = 0;
-$plugin->dependencies = [
-    'local_cltools' => ANY_VERSION
-];
+define('NO_MOODLE_COOKIES', true);
+define('ALLOW_GET_PARAMETERS', true);
+header('Access-Control-Allow-Origin: http://localhost:8100');
+require_once('../../../lib/ajax/service.php');

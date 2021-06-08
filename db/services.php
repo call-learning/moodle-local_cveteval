@@ -30,7 +30,7 @@ $functions = array(
         'type'        => 'read',
         'ajax' => true,
         'capabilities' => 'local/cveteval:mobileaccess',
-        'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
+        'services' => array(CVETEVAL_MOBILE_SERVICE),
     ),
     'local_cveteval_get_user_profile' => array(
         'classname'   => 'local_cveteval\\local\\external\\user_profile',
@@ -40,7 +40,7 @@ $functions = array(
         'ajax' => true,
         'capabilities' => '',
         // TODO: We will need to create new service for this app.
-        'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
+        'services' => array(CVETEVAL_MOBILE_SERVICE),
     ),
     'local_cveteval_get_appraisal' => array(
         'classname'   => 'local_cveteval\\local\\external\\appraisal',
@@ -49,7 +49,7 @@ $functions = array(
         'type'        => 'read',
         'ajax' => true,
         'capabilities' => 'local/cveteval:mobileaccess',
-        'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
+        'services' => array(CVETEVAL_MOBILE_SERVICE),
     ),
     'local_cveteval_get_appr_crit' => array(
         'classname'   => 'local_cveteval\\local\\external\\appr_crit',
@@ -58,7 +58,7 @@ $functions = array(
         'type'        => 'read',
         'ajax' => true,
         'capabilities' => 'local/cveteval:mobileaccess',
-        'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
+        'services' => array(CVETEVAL_MOBILE_SERVICE),
     ),
     'local_cveteval_get_evalplan' => array(
         'classname'   => 'local_cveteval\\local\\external\\evalplan',
@@ -67,7 +67,7 @@ $functions = array(
         'type'        => 'read',
         'ajax' => true,
         'capabilities' => 'local/cveteval:mobileaccess',
-        'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
+        'services' => array(CVETEVAL_MOBILE_SERVICE),
     ),
     'local_cveteval_get_clsituation' => array(
         'classname'   => 'local_cveteval\\local\\external\\clsituation',
@@ -76,7 +76,7 @@ $functions = array(
         'type'        => 'read',
         'ajax' => true,
         'capabilities' => 'local/cveteval:mobileaccess',
-        'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
+        'services' => array(CVETEVAL_MOBILE_SERVICE),
     ),
     'local_cveteval_get_criterion' => array(
         'classname'   => 'local_cveteval\\local\\external\\criterion',
@@ -85,7 +85,7 @@ $functions = array(
         'type'        => 'read',
         'ajax' => true,
         'capabilities' => 'local/cveteval:mobileaccess',
-        'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
+        'services' => array(CVETEVAL_MOBILE_SERVICE),
     ),
     'local_cveteval_get_cevalgrid' => array(
         'classname'   => 'local_cveteval\\local\\external\\cevalgrid',
@@ -94,7 +94,7 @@ $functions = array(
         'type'        => 'read',
         'ajax' => true,
         'capabilities' => 'local/cveteval:mobileaccess',
-        'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
+        'services' => array(CVETEVAL_MOBILE_SERVICE),
     ),
     'local_cveteval_get_role' => array(
         'classname'   => 'local_cveteval\\local\\external\\role',
@@ -103,7 +103,7 @@ $functions = array(
         'type'        => 'read',
         'ajax' => true,
         'capabilities' => 'local/cveteval:mobileaccess',
-        'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
+        'services' => array(CVETEVAL_MOBILE_SERVICE),
     ),
     'local_cveteval_get_group_assign' => array(
         'classname'   => 'local_cveteval\\local\\external\\group_assign',
@@ -112,7 +112,7 @@ $functions = array(
         'type'        => 'read',
         'ajax' => true,
         'capabilities' => 'local/cveteval:mobileaccess',
-        'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
+        'services' => array(CVETEVAL_MOBILE_SERVICE),
     ),
     'local_cveteval_get_latest_modifications' => array(
         'classname'   => 'local_cveteval\\local\\external\\latest_modifications',
@@ -121,7 +121,7 @@ $functions = array(
         'type'        => 'read',
         'ajax' => true,
         'capabilities' => 'local/cveteval:mobileaccess',
-        'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
+        'services' => array(CVETEVAL_MOBILE_SERVICE),
     ),
     'local_cveteval_submit_appraisal' => array(
         'classname'   => 'local_cveteval\\local\\external\\appraisal',
@@ -130,7 +130,7 @@ $functions = array(
         'type'        => 'write',
         'ajax' => true,
         'capabilities' => 'local/cveteval:mobileaccess',
-        'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
+        'services' => array(CVETEVAL_MOBILE_SERVICE),
     ),
     'local_cveteval_submit_appraisal_criteria' => array(
         'classname'   => 'local_cveteval\\local\\external\\appr_crit',
@@ -139,6 +139,18 @@ $functions = array(
         'type'        => 'write',
         'ajax' => true,
         'capabilities' => 'local/cveteval:mobileaccess',
-        'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
+        'services' => array(CVETEVAL_MOBILE_SERVICE),
+    ),
+    'local_cveteval_get_idplist' => array(
+        'classname'   => 'local_cveteval\\local\\external\\auth',
+        'methodname'  => 'idp_list',
+        'description' => 'Get IDP list for connexion',
+        'type'        => 'read',
+        'ajax' => true,
+        'capabilities' => '',
+        'loginrequired' => false,
+        'services' => array(CVETEVAL_MOBILE_SERVICE)
     )
 );
+
+$services = \local_cveteval\local\utils::get_mobile_services_definition($functions);

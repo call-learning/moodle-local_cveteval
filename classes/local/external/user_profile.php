@@ -67,16 +67,21 @@ class user_profile extends external_api {
     /**
      * Return the current information for the user
      */
-    public static function execute($userid) {
+    public static function execute($userid=0) {
         global $USER, $PAGE;
         self::validate_parameters(self::execute_parameters(), array('userid' => $userid));
         self::validate_context(context_system::instance());
-        $user = core_user::get_user($userid);
-        $context = context_user::instance($userid);
+        if ($userid) {
+            $user = core_user::get_user($userid);
+        } else {
+            $user = $USER;
+        }
+
+        $context = context_user::instance($user->id);
         $userinfo = new stdClass();
         $userinfo->fullname = fullname($user);
         $canseeadvanced = true;
-        if ($userid != $USER->id and !has_capability('moodle/user:viewdetails', $context)) {
+        if ($user->id != $USER->id and !has_capability('moodle/user:viewdetails', $context)) {
             $canseeadvanced = false;
         }
         $userpicture = new user_picture($user);
@@ -86,7 +91,7 @@ class user_profile extends external_api {
 
         $userinfo->studentpictureurl = $userpicture->get_url($PAGE)->out(false);
         return (object) [
-            'userid' => $userid,
+            'userid' => $user->id,
             'fullname' => fullname($user),
             'firstname' => $canseeadvanced ? $user->firstname : '',
             'lastname' => $canseeadvanced ? $user->lastname : '',
@@ -103,7 +108,7 @@ class user_profile extends external_api {
     public static function execute_parameters() {
         return new external_function_parameters(
             array(
-                'userid' => new external_value(PARAM_INT, 'id of the user', VALUE_REQUIRED, NULL_NOT_ALLOWED)
+                'userid' => new external_value(PARAM_INT, 'id of the user', VALUE_OPTIONAL)
             )
         );
     }

@@ -91,6 +91,8 @@ $sampletype = [
         ]
     ]
 ];
+\local_cveteval\local\utils::create_scale_if_not_present();
+\local_cveteval\local\utils::setup_mobile_service(true);
 
 if (!empty($options['users']) && $options['users']) {
     cli_writeln('Import users...');

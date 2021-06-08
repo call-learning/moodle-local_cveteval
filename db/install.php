@@ -33,5 +33,6 @@ defined('MOODLE_INTERNAL') || die();
  */
 function xmldb_local_cveteval_install() {
     \local_cveteval\local\utils::create_scale_if_not_present();
+    \local_cveteval\local\utils::setup_mobile_service(true);
     return true;
 }

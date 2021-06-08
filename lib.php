@@ -28,6 +28,26 @@ use local_cveteval\local\persistent\role\entity as role_entity;
 
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Application service name
+ */
+define('CVETEVAL_MOBILE_SERVICE', 'cveteval_app_service');
+
+/**
+ * Get plugin file
+ *
+ * @param $course
+ * @param $cm
+ * @param $context
+ * @param $filearea
+ * @param $args
+ * @param $forcedownload
+ * @param array $options
+ * @return false
+ * @throws coding_exception
+ * @throws moodle_exception
+ * @throws require_login_exception
+ */
 function local_cveteval_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = array()) {
     // Check the contextlevel is as expected - if your plugin is a block, this becomes CONTEXT_BLOCK, etc.
     if ($context->contextlevel != CONTEXT_SYSTEM) {
@@ -71,9 +91,16 @@ function local_cveteval_pluginfile($course, $cm, $context, $filearea, $args, $fo
  * Nothing for now
  */
 function local_cveteval_enable_disable_plugin_callback() {
-    // Nothing for now.
+    $enabled = $CFG->enablecompetveteval ?? false;
+    \local_cveteval\local\utils::setup_mobile_service($enabled);
 }
 
+/**
+ * Extends navigation
+ * @param global_navigation $nav
+ * @throws coding_exception
+ * @throws dml_exception
+ */
 function local_cveteval_extend_navigation(global_navigation $nav) {
     global $CFG, $USER;
     $enabled = !empty($CFG->enablecompetveteval) && $CFG->enablecompetveteval;
