@@ -50,7 +50,7 @@ class auth extends external_api {
                             'url' => new external_value(PARAM_RAW, 'URL to launch IDP connexion',
                                 VALUE_OPTIONAL),
                             'name' => new external_value(PARAM_TEXT, 'IDP fullname'),
-                            'iconurl' => new external_value(PARAM_TEXT, 'IDP icon url', VALUE_OPTIONAL),
+                            'iconurl' => new external_value(PARAM_RAW, 'IDP icon url', VALUE_OPTIONAL),
                         )
                     )
         );
@@ -71,7 +71,7 @@ class auth extends external_api {
                 } else {
                     $idp['url'] = $idp['url']->out();
                 }
-
+                $idp['iconurl'] = $idp['iconurl']->out();
                 $currentidplist[$index] = $idp;
             }
             if ($currentidplist) {
