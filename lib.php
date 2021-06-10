@@ -15,9 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Moodle Mini CMS utility.
- *
- * Provide the ability to manage site pages through blocks.
+ * Lib for CompetVetEval
  *
  * @package   local_cveteval
  * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>

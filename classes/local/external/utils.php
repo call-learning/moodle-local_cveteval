@@ -145,4 +145,15 @@ class utils {
                 return ['1=1', [], '', '', '', []];
         }
     }
+
+    /**
+     * Launch URL
+     * @param $params
+     * @return string
+     * @throws \moodle_exception
+     */
+    public static function get_application_launch_url($params) {
+        $url = new \moodle_url('/', $params);
+        return "fr.calllearning.competveteval://".$url->get_query_string();
+    }
 }

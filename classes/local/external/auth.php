@@ -25,18 +25,11 @@
 namespace local_cveteval\local\external;
 defined('MOODLE_INTERNAL') || die();
 
-use context_system;
-use context_user;
-use core_user;
 use external_function_parameters;
 use external_single_structure;
 use external_value;
-
-use local_cveteval\local\persistent\role\entity as role_entity;
-use local_cveteval\local\utils;
 use external_api;
-use stdClass;
-use user_picture;
+use moodle_url;
 
 /**
  * Get user type
@@ -48,12 +41,10 @@ class auth extends external_api {
     /**
      * Returns description of method parameters
      *
-     * @return external_single_structure
+     * @return external_multiple_structure
      */
     public static function idp_list_returns() {
-        return new external_single_structure(
-            array(
-                'idplist' => new \external_multiple_structure(
+        return new \external_multiple_structure(
                     new external_single_structure(
                         array(
                             'url' => new external_value(PARAM_RAW, 'URL to launch IDP connexion',
@@ -62,8 +53,6 @@ class auth extends external_api {
                             'iconurl' => new external_value(PARAM_TEXT, 'IDP icon url', VALUE_OPTIONAL),
                         )
                     )
-                )
-            )
         );
     }
 
@@ -75,17 +64,21 @@ class auth extends external_api {
         $idplist = [];
         foreach ($authsenabled as $auth) {
             $authplugin = get_auth_plugin($auth);
-            $currentidplist = $authplugin->loginpage_idp_list('');
+            $currentidplist = $authplugin->loginpage_idp_list(utils::get_application_launch_url([]));
             foreach($currentidplist  as $index => $idp) {
+                if( $auth == 'cas') {
+                    $idp['url'] = (new moodle_url('/local/cveteval/login/cas-login.php', array('authCAS' => 'CAS')))->out();
+                } else {
+                    $idp['url'] = $idp['url']->out();
+                }
 
-                $idp['url'] = $idp['url']->out();
                 $currentidplist[$index] = $idp;
             }
             if ($currentidplist) {
                 $idplist = array_merge($currentidplist, $idplist);
             }
         }
-       return (object) ['idplist' => $idplist];
+       return $idplist;
     }
 
     /**

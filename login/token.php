@@ -26,11 +26,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+
+
 define('AJAX_SCRIPT', true);
 define('REQUIRE_CORRECT_ACCESS', true);
 define('NO_MOODLE_COOKIES', true);
-
-require_once(__DIR__ . '../../../config.php');
+use local_cveteval\local\utils;
+require_once(__DIR__ . '../../../../config.php');
 global $CFG, $OUTPUT, $USER, $DB;
 require_once($CFG->libdir . '/externallib.php');
 
@@ -67,7 +69,7 @@ $returnedvalue = new stdClass();
 
 $user = authenticate_user_login($username, $password, false, $reason, false);
 if (!empty($user)) {
-
+    require_once($CFG->dirroot . '/local/cveteval/lib.php');
     // Cannot authenticate unless maintenance access is granted.
     $hasmaintenanceaccess = has_capability('moodle/site:maintenanceaccess', $systemcontext, $user);
     if (!empty($CFG->maintenance_enabled) and !$hasmaintenanceaccess) {
@@ -103,7 +105,7 @@ if (!empty($user)) {
     }
 
     // Get an existing token or create a new one.
-    $token = external_generate_token_for_current_user($service);
+    $token = utils::external_generate_token_for_current_user($service);
     $privatetoken = $token->privatetoken;
     external_log_token_request($token);
 

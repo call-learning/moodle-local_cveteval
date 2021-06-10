@@ -29,5 +29,5 @@
 
 define('NO_MOODLE_COOKIES', true);
 define('ALLOW_GET_PARAMETERS', true);
-header('Access-Control-Allow-Origin: http://localhost:8100');
+header('Access-Control-Allow-Origin: *');
 require_once('../../../lib/ajax/service.php');
