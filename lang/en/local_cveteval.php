@@ -132,6 +132,7 @@ $string['planning:requiredappraisals'] = 'Required Appraisal #';
 $string['pluginname'] = 'CompetVet Eval plugin';
 $string['otherstudents'] = 'Other students';
 $string['allsituations'] = 'All situations';
+$string['role:entity'] = 'Roles';
 $string['saved'] = 'Saved';
 $string['student'] = 'Student';
 $string['situation:entity'] = 'Clinical situation';

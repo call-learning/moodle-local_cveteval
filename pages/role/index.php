@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Main page for all editions
+ * Main page for all planning editions
  *
  * Routing is made through the action parameter.
  *
@@ -23,31 +23,34 @@
  * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-require_once(__DIR__ . '/../../../config.php');
+require_once(__DIR__ . '/../../../../config.php');
 global $CFG;
 
 use local_cltools\local\crud\helper\base as crud_helper;
 use local_cltools\local\crud\helper\crud_list;
+use local_cltools\local\crud\navigation\routed_navigation;
 
 global $CFG, $OUTPUT, $PAGE;
 require_login();
-$PAGE->set_url('/local/cveteval/pages/index.php');
-$PAGE->set_context(context_system::instance());
-$PAGE->set_pagelayout('standard');
-$innerlinks = array(
-    'evaluation_grid' => '/local/cveteval/pages/evaluation_grid',
-    'planning' => '/local/cveteval/pages/planning',
-    'situation' => '/local/cveteval/pages/situation',
-    'role' => '/local/cveteval/pages/role',
+
+$action = optional_param('action', crud_list::ACTION, PARAM_TEXT);
+$entityclassname = '\\local_cveteval\\local\\persistent\\role\\entity';
+
+$navigation = new routed_navigation($entityclassname);
+$crudmgmt = crud_helper::create(
+    $entityclassname,
+    $action,
+    null,
+    null,
+    null,
+    null,
+    $navigation
 );
 
-$innerlinkshtml = [];
-foreach ($innerlinks as $name => $linkurl) {
-    $linkhtml = html_writer::span(get_string("$name:entity", 'local_cveteval'));
-    $linkhtml .= html_writer::link(
-        new moodle_url($CFG->wwwroot . $linkurl), get_string('edit'), array('class'=>'m-1 btn btn-secondary'));
-    $innerlinkshtml[] = $linkhtml;
-}
+$crudmgmt->setup_page($PAGE);
+
+$out = $crudmgmt->action_process();
+
 echo $OUTPUT->header();
-echo html_writer::alist($innerlinkshtml);
+echo $out;
 echo $OUTPUT->footer();

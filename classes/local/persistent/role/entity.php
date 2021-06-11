@@ -60,10 +60,15 @@ class entity extends persistent {
         return array(
             'userid' => array(
                 'type' => PARAM_INT,
-                'default' => ''
+                'default' => '',
             ),
             'clsituationid' => array(
                 'type' => PARAM_INT,
+                'format' => [
+                    'type' => 'entity_selector',
+                    'entityclass' => \local_cveteval\local\persistent\situation\entity::class,
+                    'displayfield' => 'title'
+                ]
             ),
             'type' => array(
                 'type' => PARAM_INT,
