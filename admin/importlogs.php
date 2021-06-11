@@ -34,6 +34,7 @@ require_login();
 require_capability('local/cveteval:import', context_system::instance());
 $importid = required_param('importid', PARAM_INT);
 $returnurl = optional_param('returnurl', null, PARAM_RAW);
+$PAGE->set_pagelayout('standard');
 $PAGE->set_context(context_system::instance());
 $PAGE->set_title(get_string('import:logs', 'local_cveteval'));
 $PAGE->set_heading(get_string('import:logs', 'local_cveteval'));

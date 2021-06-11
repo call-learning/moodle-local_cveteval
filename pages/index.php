@@ -33,7 +33,7 @@ global $CFG, $OUTPUT, $PAGE;
 require_login();
 $PAGE->set_url('/local/cveteval/pages/index.php');
 $PAGE->set_context(context_system::instance());
-
+$PAGE->set_pagelayout('standard');
 $innerlinks = array(
     'evaluation_grid' => '/local/cveteval/pages/evaluation_grid',
     'planning' => '/local/cveteval/pages/planning',

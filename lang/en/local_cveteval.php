@@ -40,6 +40,7 @@ $string['comment'] = 'Comment';
 $string['commentformat'] = 'Comment Format';
 $string['comments'] = 'All comments';
 $string['cvetevalappservicename'] = 'CompetVetEval Application Service';
+$string['settings:manage_entities'] = 'Manage entities';
 $string['settings:manage_situations'] = 'Manage situations';
 $string['settings:manage_evaluation_templates'] = 'Manage evaluation templates';
 $string['settings:grade_scale'] = 'Grade Scales';

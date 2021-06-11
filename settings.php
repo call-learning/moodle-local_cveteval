@@ -61,9 +61,9 @@ if ($hassiteconfig) {
     }
 
     $settings->add('cveteval',
-        new admin_externalpage('competveteval_manage_situations',
-            new lang_string('settings:manage_situations', 'local_cveteval'),
-            $CFG->wwwroot . '/local/cveteval/pages/situation/index.php',
+        new admin_externalpage('competveteval_manage_entities',
+            new lang_string('settings:manage_entities', 'local_cveteval'),
+            $CFG->wwwroot . '/local/cveteval/pages/index.php',
             array('local/cveteval:managesituations'),
             !$enabled
         )

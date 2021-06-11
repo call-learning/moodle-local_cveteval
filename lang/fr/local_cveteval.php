@@ -101,6 +101,7 @@ $string['import:importing'] = 'Importation de {$a}';
 $string['import:imported'] = 'Importation {$a->rowcount}/{$a->totalrows}';
 $string['import:logs'] = 'Logs d\'importation';
 $string['list'] = 'Liste';
+$string['settings:manage_entities'] = 'Gère les entités (situation, ...)';
 $string['cveteval:managesituations'] = 'Gère les situations';
 $string['cveteval:manageevaluationtemplate'] = 'Gère les modèles d\'évaluation';
 $string['cveteval:managecriteriontemplate'] = 'Gère les modèles de critères';
