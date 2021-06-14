@@ -43,6 +43,7 @@ class latest_modifications extends external_api {
         return new external_single_structure(
             array(
                 'latestmodifications' => new external_value(PARAM_INT, 'latest modification time'),
+                'warnings' => new \external_warnings(),
             )
         );
     }
@@ -53,10 +54,29 @@ class latest_modifications extends external_api {
     public static function execute($entitytype, $query = null) {
         static::validate_parameters(static::execute_parameters(), array(
             'entitytype' => $entitytype, 'query' => $query));
-        static::validate_context(context_system::instance());
+        $latestmodifications = 0;
+        $warnings = [];
+        try {
+            static::validate_context(context_system::instance());
+            $latestmodifications = static::get_entity_latest_modifications($entitytype, $query);
+            if ($latestmodifications < 0) {
+                $warnings[] = [
+                    'item' => $entitytype,
+                    'warningcode' => 'nolatestmodifs',
+                    'message' => get_string('api:nolatestmodifs', 'local_cveteval')
+                ];
+            }
+        } catch (\moodle_exception $e) {
+            $warnings[] = [
+                'item' => $entitytype,
+                'warningcode' => 'generalerror',
+                'message' => get_string('api:generalerror', 'local_cveteval', $e->getMessage())
+            ];
+        }
         return
             [
-                'latestmodifications' => static::get_entity_latest_modifications($entitytype, $query)
+                'latestmodifications' => $latestmodifications,
+                'warnings' => $warnings
             ];
     }
 
@@ -69,14 +89,16 @@ class latest_modifications extends external_api {
         return new external_function_parameters(
             array(
                 'entitytype' => new external_value(PARAM_ALPHAEXT, 'the entity to look for'),
-                'query' => new external_value(PARAM_TEXT, 'query as json {field:value, field:value}', VALUE_DEFAULT)
+                'query' => new external_value(PARAM_NOTAGS, 'query as json {field:value, field:value}',
+                    VALUE_DEFAULT,
+                    '{}'),
             )
         );
     }
 
     /**
      * @param $entitytype
-     * @param int $contextid
+     * @param string $queryjson
      * @return false|int|mixed
      * @throws dml_exception
      */
@@ -91,6 +113,6 @@ class latest_modifications extends external_api {
             $latestmodif = reset($latestmodifs);
             return intval($latestmodif->time);
         }
-        return 0;
+        return -1;
     }
 }

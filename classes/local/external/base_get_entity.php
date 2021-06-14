@@ -83,7 +83,9 @@ abstract class base_get_entity extends external_api {
     public static function get_parameters() {
         return new external_function_parameters(
             array(
-                'query' => new external_value(PARAM_NOTAGS, 'query as json {field:value, field:value}', VALUE_DEFAULT),
+                'query' => new external_value(PARAM_NOTAGS, 'query as json {field:value, field:value}',
+                    VALUE_DEFAULT,
+                    '{}'),
             )
         );
     }
