@@ -102,6 +102,10 @@ $string['import:imported'] = 'Importation {$a->rowcount}/{$a->totalrows}';
 $string['import:logs'] = 'Logs d\'importation';
 $string['list'] = 'Liste';
 $string['settings:manage_entities'] = 'Gère les entités (situation, ...)';
+$string['cleanup'] = 'Vider toutes les données CompetVetEval';
+$string['cleanup:confirm'] = 'Cette opération va vider toutes les tables de CompetVetEval, les situations mais aussi les observations
+ faites jusqu\'à présent. Les données ne sont pas récupérables. Etes vous sûr ?';
+$string['cveteval:cleanupdata'] = 'Vider les données CompetVetEval';
 $string['cveteval:managesituations'] = 'Gère les situations';
 $string['cveteval:manageevaluationtemplate'] = 'Gère les modèles d\'évaluation';
 $string['cveteval:managecriteriontemplate'] = 'Gère les modèles de critères';

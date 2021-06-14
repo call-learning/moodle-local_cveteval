@@ -25,6 +25,14 @@
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = array(
+    'local/cveteval:cleanupdata' => array(
+        'riskbitmask' => RISK_DATALOSS,
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'manager' => CAP_ALLOW
+        )
+    ),
     'local/cveteval:managesituations' => array(
         'riskbitmask' => RISK_SPAM,
         'captype' => 'write',

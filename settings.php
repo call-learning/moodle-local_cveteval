@@ -78,6 +78,15 @@ if ($hassiteconfig) {
             !$enabled)
     );
 
+    $settings->add('cveteval',
+        new admin_externalpage(
+            'cvetevalcleanup',
+            get_string('cleanup', 'local_cveteval'),
+            $CFG->wwwroot.'/local/cveteval/admin/cleanup.php',
+            array('local/cveteval:import'),
+            !$enabled)
+    );
+
     if ($enabled) {
         $ADMIN->add('root', $settings); // Add it to the main admin men.
     }

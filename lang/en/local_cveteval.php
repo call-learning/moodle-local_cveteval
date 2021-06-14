@@ -35,6 +35,9 @@ $string['assess'] = 'Assess "{$a}"';
 $string['assessment'] = 'Assessment';
 $string['cachedef_appraisals'] = 'Cache for appraisal retrieval';
 $string['context'] = 'Context';
+$string['cleanup'] = 'Cleanup all CompetVetEval Data';
+$string['cleanup:confirm'] = 'This will cleanup all table for CompetVetEval, like situations list but also all apraisal done so far
+and data will not be recoverable. Are you sure ?';
 $string['contextformat'] = 'Context Format';
 $string['comment'] = 'Comment';
 $string['commentformat'] = 'Comment Format';
@@ -103,6 +106,7 @@ $string['import:importing'] = 'Importing {$a}';
 $string['import:imported'] = 'Imported {$a->rowcount}/{$a->totalrows}';
 $string['import:logs'] = 'Import logs';
 $string['list'] = 'List';
+$string['cveteval:cleanupdata'] = 'Cleanup data';
 $string['cveteval:managesituations'] = 'Manage situations';
 $string['cveteval:manageevaluationtemplate'] = 'Manage evaluations templates';
 $string['cveteval:managecriteriontemplate'] = 'Manage criterion templates';

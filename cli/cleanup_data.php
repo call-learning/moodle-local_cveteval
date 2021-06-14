@@ -52,32 +52,11 @@ Options:
 ";
 
 if (!$options['yes']) {
-    $agree = cli_input('This will cleanup all from this module tables. Are you sure ?[y|N]');
+    $agree = cli_input(get_string('cleanup:confirm', 'local_cveteval').'[y|N]');
     if ($agree !== 'y') {
         cli_writeln('Cancelled...');
         exit();
     }
 }
 
-global $DB;
-
-foreach (array('local_cveteval_evalplan',
-    'local_cveteval_clsituation',
-    'local_cveteval_evalgrid',
-    'local_cveteval_criterion',
-    'local_cveteval_cevalgrid',
-    'local_cveteval_role',
-    'local_cveteval_appraisal',
-    'local_cveteval_appr_crit',
-    'local_cveteval_finalevl',
-    'local_cveteval_appr_com',
-    'local_cveteval_apprq_com',
-    'local_cveteval_group_assign',
-    'local_cveteval_group') as $table) {
-
-    cli_writeln("Deleting records from $table...");
-    $DB->delete_records($table);
-}
-$importlogclass = import_log::class;
-cli_writeln("Deleting records from import log...");
-$DB->delete_records($importlogclass::TABLE, ['module' => 'local_cveteval']);
+\local_cveteval\local\utils::cleanup_all_data();

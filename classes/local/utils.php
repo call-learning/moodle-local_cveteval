@@ -108,7 +108,7 @@ class utils {
      */
     public static function create_scale_if_not_present() {
         global $CFG;
-        require_once($CFG->dirroot.'/grade/lib.php');
+        require_once($CFG->dirroot . '/grade/lib.php');
         $scales = grade_scale::fetch_all_global();
         $defaultscale = null;
         foreach ($scales as $scale) {
@@ -218,6 +218,7 @@ class utils {
 
     /**
      * Get or create mobile service
+     *
      * @param false $isenabled
      * @return stdClass
      * @throws coding_exception
@@ -300,6 +301,7 @@ class utils {
      *
      * Very similar to the externallib.php:external_generate_token_for_current_user
      * but allowing login and tokens for the competVetEval.
+     *
      * @param object $service
      * @return mixed|stdClass|null
      * @throws coding_exception
@@ -419,4 +421,41 @@ class utils {
         return $token;
     }
 
+    /**
+     * Cleanup all data
+     *
+     * @throws dml_exception
+     */
+    public static function cleanup_all_data() {
+        global $DB;
+        foreach (array('local_cveteval_evalplan',
+            'local_cveteval_clsituation',
+            'local_cveteval_evalgrid',
+            'local_cveteval_criterion',
+            'local_cveteval_cevalgrid',
+            'local_cveteval_role',
+            'local_cveteval_appraisal',
+            'local_cveteval_appr_crit',
+            'local_cveteval_finalevl',
+            'local_cveteval_appr_com',
+            'local_cveteval_apprq_com',
+            'local_cveteval_group_assign',
+            'local_cveteval_group') as $table) {
+            $message = "Deleting records from $table...";
+            if (defined('CLI_SCRIPT') && CLI_SCRIPT == true) {
+                cli_writeln($message);
+            } else {
+                echo \html_writer::div($message);
+            }
+            $DB->delete_records($table);
+        }
+        $importlogclass = import_log::class;
+        $message = "Deleting records from import log...";
+        if (defined('CLI_SCRIPT') && CLI_SCRIPT == true) {
+            cli_writeln($message);
+        } else {
+            echo \html_writer::div($message);
+        }
+        $DB->delete_records($importlogclass::TABLE, ['module' => 'local_cveteval']);
+    }
 }

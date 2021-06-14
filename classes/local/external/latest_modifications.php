@@ -89,7 +89,7 @@ class latest_modifications extends external_api {
             $query, "MAX(e.timemodified) AS time");
         if ($latestmodifs && count($latestmodifs) > 0) {
             $latestmodif = reset($latestmodifs);
-            return $latestmodif->time;
+            return intval($latestmodif->time);
         }
         return 0;
     }
