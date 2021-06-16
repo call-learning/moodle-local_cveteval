@@ -41,7 +41,7 @@ use local_cveteval\local\persistent\appraisal\entity;
 class appraisal extends base_get_entity {
 
     protected static function single_appraisal_returns() {
-        new external_single_structure(
+        return new external_single_structure(
             array(
                 'id' => new external_value(PARAM_INT, 'id of the appraisal criterion'),
                 'studentid' => new external_value(PARAM_INT, 'id of the student'),
