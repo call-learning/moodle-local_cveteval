@@ -36,5 +36,9 @@ function xmldb_local_cveteval_upgrade($oldversion) {
         \local_cveteval\local\utils::create_scale_if_not_present();
         upgrade_plugin_savepoint(true, 2021033016, 'local', 'cveteval');
     }
+    if ($oldversion < 2021033034) {
+        \local_cveteval\local\utils::setup_mobile_service(true);
+        upgrade_plugin_savepoint(true, 2021033034, 'local', 'cveteval');
+    }
     return true;
 }

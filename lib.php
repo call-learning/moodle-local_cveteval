@@ -27,11 +27,6 @@ use local_cveteval\local\persistent\role\entity as role_entity;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Application service name
- */
-define('CVETEVAL_MOBILE_SERVICE', 'cveteval_app_service');
-
-/**
  * Get plugin file
  *
  * @param $course

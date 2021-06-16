@@ -34,9 +34,7 @@ use local_cveteval\local\persistent\role\entity as role_entity;
 use moodle_exception;
 use stdClass;
 use tool_importer\local\import_log;
-
 defined('MOODLE_INTERNAL') || die();
-
 /**
  * Class utils
  *
@@ -45,6 +43,11 @@ defined('MOODLE_INTERNAL') || die();
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class utils {
+    /**
+     * Application service name
+     */
+    const CVETEVAL_MOBILE_SERVICE = 'cveteval_app_service';
+
     const DEFAULT_SCALE_ITEM = [
         0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
     ];
@@ -197,7 +200,7 @@ class utils {
             static::get_or_create_mobile_service(); // Make sure service is created but disabled.
             $otherenabledservices = $DB->get_records_select('external_services',
                 'enabled = :enabled AND (shortname != :shortname OR shortname IS NULL)', array('enabled' => 1,
-                    'shortname' => CVETEVAL_MOBILE_SERVICE));
+                    'shortname' => self::CVETEVAL_MOBILE_SERVICE));
             if (empty($otherenabledservices)) {
                 set_config('enablewebservices', false);
 
@@ -236,13 +239,13 @@ class utils {
         require_once($CFG->dirroot . '/local/cveteval/lib.php');
 
         $webservicemanager = new \webservice();
-        $mobileservice = $webservicemanager->get_external_service_by_shortname(CVETEVAL_MOBILE_SERVICE);
+        $mobileservice = $webservicemanager->get_external_service_by_shortname(self::CVETEVAL_MOBILE_SERVICE);
         if (!$mobileservice) {
             // Create it.
             // Load service info
             require_once($CFG->dirroot . '/lib/upgradelib.php');
             external_update_descriptions('local_cveteval');
-            $mobileservice = $webservicemanager->get_external_service_by_shortname(CVETEVAL_MOBILE_SERVICE);
+            $mobileservice = $webservicemanager->get_external_service_by_shortname(self::CVETEVAL_MOBILE_SERVICE);
         }
         $mobileservice->enabled = $isenabled;
         $webservicemanager->update_external_service($mobileservice);
@@ -296,7 +299,7 @@ class utils {
                 'enabled' => 0,
                 'requiredcapability' => 'local/cveteval:mobileaccess',
                 'component' => 'local_cveteval',
-                'shortname' => CVETEVAL_MOBILE_SERVICE,
+                'shortname' => self::CVETEVAL_MOBILE_SERVICE,
                 'restrictedusers' => 0,
                 'downloadfiles' => true,
                 'uploadfiles' => false,
@@ -388,7 +391,7 @@ class utils {
             $token = array_pop($tokens);
         } else {
             $context = context_system::instance();
-            $isofficialservice = $service->shortname == CVETEVAL_MOBILE_SERVICE;
+            $isofficialservice = $service->shortname == self::CVETEVAL_MOBILE_SERVICE;
 
             if (($isofficialservice and has_capability('moodle/webservice:createmobiletoken', $context)) or
                 (!is_siteadmin($USER) && has_capability('moodle/webservice:createtoken', $context))) {

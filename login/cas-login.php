@@ -95,7 +95,7 @@ if ($frm and isset($frm->username)) {                             // Login WITH 
         // Get an existing token or create a new one.
         $timenow = time();
         // Check if the service exists and is enabled.
-        $service = $DB->get_record('external_services', array('shortname' => CVETEVAL_MOBILE_SERVICE, 'enabled' => 1));
+        $service = $DB->get_record('external_services', array('shortname' => utils::CVETEVAL_MOBILE_SERVICE, 'enabled' => 1));
         if (empty($service)) {
             // Will throw exception if no token found.
             throw new moodle_exception('servicenotavailable', 'webservice');
