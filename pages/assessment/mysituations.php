@@ -45,38 +45,19 @@ $PAGE->set_title(get_string('assessment', 'local_cveteval')
 $PAGE->set_heading(get_string('assessment', 'local_cveteval'));
 $PAGE->set_url(new moodle_url('/local/cveteval/pages/assessment/mysituations.php'));
 $PAGE->set_pagelayout('standard');
-
+/* @var core_renderer $OUTPUT */
+if (has_capability('local/cveteval:exportgrades', context_system::instance())) {
+    $download = $OUTPUT->download_dataformat_selector(
+        get_string('grades:export', 'local_cveteval'),
+        $CFG->wwwroot . '/local/cveteval/pages/assessment/export.php');
+    $PAGE->set_button(
+        $download
+    );
+}
 echo $OUTPUT->header();
 
 echo $OUTPUT->box(get_string('mysituations:intro', 'local_cveteval'));
-$uniqueid = html_writer::random_id('situationtable');
-$entitylist = new situations($uniqueid);
-$filterset = new basic_filterset(
-    [
-        'roletype' => (object)
-        [
-            'filterclass' => 'local_cltools\\local\filter\\numeric_comparison_filter',
-            'required' => true
-        ],
-        'appraiserid' => (object)
-        [
-            'filterclass' => 'local_cltools\\local\filter\\numeric_comparison_filter',
-            'required' => true
-        ],
-    ]
-);
-$filterset->set_join_type(filter::JOINTYPE_ALL);
-$filterset->add_filter_from_params(
-    'roletype', // Field name.
-    filter::JOINTYPE_ALL,
-    [json_encode((object) ['direction' => '=', 'value' => role_entity::ROLE_ASSESSOR_ID])]
-);
-$filterset->add_filter_from_params(
-    'appraiserid', // Field name.
-    filter::JOINTYPE_ALL,
-    [json_encode((object) ['direction' => '=', 'value' => $USER->id])]
-);
-$entitylist->set_extended_filterset($filterset);
+$entitylist = \local_cveteval\local\assessment\assessment_utils::get_mysituations_list($USER->id);
 $renderable = new entity_table_renderable($entitylist);
 
 $renderer = $PAGE->get_renderer('local_cltools');

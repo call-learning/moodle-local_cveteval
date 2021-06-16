@@ -42,7 +42,9 @@ use user_picture;
  * Get user type
  * Class user_type
  *
- * @package local_cveteval\local\external
+ * @package   local_cveteval
+ * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class user_profile extends external_api {
     /**
@@ -57,7 +59,7 @@ class user_profile extends external_api {
                 'fullname' => new external_value(PARAM_TEXT, 'user fullname'),
                 'firstname' => new external_value(PARAM_TEXT, 'user fullname'),
                 'lastname' => new external_value(PARAM_TEXT, 'user fullname'),
-                'username' => new external_value(PARAM_RAW_TRIMMED, 'username', VALUE_OPTIONAL),
+                'username' => new external_value(PARAM_RAW_TRIMMED, 'username'),
                 'userpictureurl' => new external_value(PARAM_URL, 'user picture (avatar)',
                     VALUE_OPTIONAL),
             )
@@ -67,7 +69,7 @@ class user_profile extends external_api {
     /**
      * Return the current information for the user
      */
-    public static function execute($userid=0) {
+    public static function execute($userid = 0) {
         global $USER, $PAGE;
         self::validate_parameters(self::execute_parameters(), array('userid' => $userid));
         self::validate_context(context_system::instance());
@@ -91,7 +93,7 @@ class user_profile extends external_api {
 
         $userinfo->studentpictureurl = $userpicture->get_url($PAGE)->out(false);
         return (object) [
-            'userid' => $user->id,
+            'userid' => intval($user->id),
             'fullname' => fullname($user),
             'firstname' => $canseeadvanced ? $user->firstname : '',
             'lastname' => $canseeadvanced ? $user->lastname : '',
@@ -108,7 +110,7 @@ class user_profile extends external_api {
     public static function execute_parameters() {
         return new external_function_parameters(
             array(
-                'userid' => new external_value(PARAM_INT, 'id of the user', VALUE_OPTIONAL)
+                'userid' => new external_value(PARAM_INT, 'id of the user', VALUE_DEFAULT, 0)
             )
         );
     }

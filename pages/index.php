@@ -45,7 +45,7 @@ $innerlinkshtml = [];
 foreach ($innerlinks as $name => $linkurl) {
     $linkhtml = html_writer::span(get_string("$name:entity", 'local_cveteval'));
     $linkhtml .= html_writer::link(
-        new moodle_url($CFG->wwwroot . $linkurl), get_string('edit'), array('class'=>'m-1 btn btn-secondary'));
+        new moodle_url($CFG->wwwroot . $linkurl), get_string('edit'), array('class' => 'm-1 btn btn-secondary'));
     $innerlinkshtml[] = $linkhtml;
 }
 echo $OUTPUT->header();

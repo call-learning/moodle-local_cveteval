@@ -31,40 +31,17 @@ use external_multiple_structure;
 use external_single_structure;
 use external_value;
 use local_cveteval\local\persistent\appraisal\entity;
-
+/**
+ * Class appraisal
+ *
+ * @package   local_cveteval
+ * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class appraisal extends base_get_entity {
-    /**
-     * Return the elements
-     *
-     * @return external_multiple_structure
-     */
-    public static function get_returns() {
-        return new external_multiple_structure(
-            new external_single_structure(
-                array(
-                    'id' => new external_value(PARAM_INT, 'id of the appraisal criterion'),
-                    'studentid' => new external_value(PARAM_INT, 'id of the student'),
-                    'appraiserid' => new external_value(PARAM_INT, 'id of the appraiser'),
-                    'evalplanid' => new external_value(PARAM_INT, 'id of the evalplan'),
-                    'context' => new external_value(PARAM_TEXT, 'context'),
-                    'contextformat' => new external_value(PARAM_INT, 'context format', VALUE_DEFAULT, FORMAT_PLAIN),
-                    'comment' => new external_value(PARAM_TEXT, 'comment'),
-                    'commentformat' => new external_value(PARAM_INT, 'comment format', VALUE_DEFAULT, FORMAT_PLAIN),
-                    'timemodified' => new external_value(PARAM_INT, 'last modification time'),
-                    'timecreated' => new external_value(PARAM_INT, 'last modification time'),
-                    'usermodified' => new external_value(PARAM_INT, 'user modified'),
-                )
-            )
-        );
-    }
 
-    /**
-     * Returns description of method parameters
-     *
-     * @return external_single_structure
-     */
-    public static function submit_returns() {
-        return new external_single_structure(
+    protected static function single_appraisal_returns() {
+        new external_single_structure(
             array(
                 'id' => new external_value(PARAM_INT, 'id of the appraisal criterion'),
                 'studentid' => new external_value(PARAM_INT, 'id of the student'),
@@ -79,6 +56,25 @@ class appraisal extends base_get_entity {
                 'usermodified' => new external_value(PARAM_INT, 'user modified'),
             )
         );
+    }
+    /**
+     * Return the elements
+     *
+     * @return external_multiple_structure
+     */
+    public static function get_returns() {
+        return new external_multiple_structure(
+            static::single_appraisal_returns()
+        );
+    }
+
+    /**
+     * Returns description of method parameters
+     *
+     * @return external_single_structure
+     */
+    public static function submit_returns() {
+        return static::single_appraisal_returns();
     }
 
     /**

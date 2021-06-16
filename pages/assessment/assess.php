@@ -124,44 +124,7 @@ $entitylist = null;
 
 switch ($currenttab) {
     case "thissituation":
-        $uniqueid = html_writer::random_id('thisituationtable');
-        $entitylist = new appraisals_student($uniqueid);
-        $filterset = new basic_filterset(
-            [
-                'roletype' => (object)
-                [
-                    'filterclass' => 'local_cltools\\local\filter\\numeric_comparison_filter',
-                    'required' => true
-                ],
-                'situationid' => (object)
-                [
-                    'filterclass' => 'local_cltools\\local\filter\\numeric_comparison_filter',
-                    'required' => true,
-                ],
-                'studentid' => (object)
-                [
-                    'filterclass' => 'local_cltools\\local\filter\\numeric_comparison_filter',
-                    'required' => true,
-                ]
-            ]
-        );
-        $filterset->set_join_type(filter::JOINTYPE_ALL);
-        $filterset->add_filter_from_params(
-            'roletype', // Field name.
-            filter::JOINTYPE_ALL,
-            [json_encode((object) ['direction' => '=', 'value' => role_entity::ROLE_ASSESSOR_ID])]
-        );
-        $filterset->add_filter_from_params(
-            'situationid', // Field name.
-            filter::JOINTYPE_ALL,
-            [json_encode((object) ['direction' => '=', 'value' => $situation->get('id')])]
-        );
-        $filterset->add_filter_from_params(
-            'studentid', // Field name.
-            filter::JOINTYPE_ALL,
-            [json_encode((object) ['direction' => '=', 'value' => $studentid])]
-        );
-        $entitylist->set_extended_filterset($filterset);
+        $entitylist = \local_cveteval\local\assessment\assessment_utils::get_thissituation_list($studentid, $evalplan->get('id'));
 
         $renderer = $PAGE->get_renderer('local_cltools');
         /* @var entity_table_renderable entity table */
@@ -169,24 +132,7 @@ switch ($currenttab) {
         echo $renderer->render($renderable);
         break;
     case "allsituations":
-        $uniqueid = html_writer::random_id('allsituations');
-        $entitylist = new situations_student($uniqueid);
-        $filterset = new basic_filterset(
-            [
-                'studentid' => (object)
-                [
-                    'filterclass' => 'local_cltools\\local\filter\\numeric_comparison_filter',
-                    'required' => true,
-                ]
-            ]
-        );
-        $filterset->set_join_type(filter::JOINTYPE_ALL);
-        $filterset->add_filter_from_params(
-            'studentid', // Field name.
-            filter::JOINTYPE_ALL,
-            [json_encode((object) ['direction' => '=', 'value' => $studentid])]
-        );
-        $entitylist->set_extended_filterset($filterset);
+        $entitylist = \local_cveteval\local\assessment\assessment_utils::get_situation_student($studentid);
         $renderer = $PAGE->get_renderer('local_cltools');
         /* @var entity_table_renderable entity table */
         $renderable = new entity_table_renderable($entitylist);

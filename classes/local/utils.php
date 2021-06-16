@@ -37,6 +37,13 @@ use tool_importer\local\import_log;
 
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Class utils
+ *
+ * @package   local_cveteval
+ * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class utils {
     const DEFAULT_SCALE_ITEM = [
         0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
@@ -164,10 +171,10 @@ class utils {
 
         global $DB;
         if ($enabled) {
-            // Similar code as in adminlib.php (admin_setting_enablemobileservice)
+            // Similar code as in adminlib.php (admin_setting_enablemobileservice).
             set_config('enablewebservices', true);
 
-            //Enable mobile service
+            // Enable mobile service.
             static::get_or_create_mobile_service(true);
 
             // Enable REST server.
@@ -186,7 +193,7 @@ class utils {
             // Allow rest:use capability for authenticated user.
             static::set_protocol_cap(true);
         } else {
-            //disable web service system if no other services are enabled
+            // Disable web service system if no other services are enabled.
             static::get_or_create_mobile_service(); // Make sure service is created but disabled.
             $otherenabledservices = $DB->get_records_select('external_services',
                 'enabled = :enabled AND (shortname != :shortname OR shortname IS NULL)', array('enabled' => 1,
@@ -248,10 +255,12 @@ class utils {
      * Set the 'webservice/rest:use' to the Authenticated user role (allow or not)
      *
      * @param bool $status true to allow, false to not set
+     * @throws coding_exception
+     * @throws dml_exception
      */
     private static function set_protocol_cap($status) {
         global $CFG, $DB;
-        $roleid = $CFG->defaultuserroleid ?? $DB->get_field('role', array('shortname' => 'user'));
+        $roleid = $CFG->defaultuserroleid ?? $DB->get_field('role', 'id', array('shortname' => 'user'));
         if ($roleid) {
             $params = array();
             $params['permission'] = CAP_ALLOW;
@@ -259,11 +268,11 @@ class utils {
             $params['capability'] = 'webservice/rest:use';
             $protocolcapallowed = $DB->record_exists('role_capabilities', $params);
             if ($status and !$protocolcapallowed) {
-                //need to allow the cap
+                // Need to allow the cap.
                 $permission = CAP_ALLOW;
                 $assign = true;
             } else if (!$status and $protocolcapallowed) {
-                //need to disallow the cap
+                // Need to disallow the cap.
                 $permission = CAP_INHERIT;
                 $assign = true;
             }

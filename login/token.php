@@ -26,12 +26,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
-
 define('AJAX_SCRIPT', true);
 define('REQUIRE_CORRECT_ACCESS', true);
 define('NO_MOODLE_COOKIES', true);
+
 use local_cveteval\local\utils;
+
 require_once(__DIR__ . '../../../../config.php');
 global $CFG, $OUTPUT, $USER, $DB;
 require_once($CFG->libdir . '/externallib.php');
@@ -82,7 +82,7 @@ if (!empty($user)) {
     if (empty($user->confirmed)) {
         throw new moodle_exception('usernotconfirmed', 'moodle', '', $user->username);
     }
-    // check credential expiry
+    // Check credential expiry.
     $userauth = get_auth_plugin($user->auth);
     if (!empty($userauth->config->expiration) and $userauth->config->expiration == 1) {
         $days2expire = $userauth->password_expire($user->username);
@@ -91,16 +91,16 @@ if (!empty($user)) {
         }
     }
 
-    // let enrol plugins deal with new enrolments if necessary
+    // Let enrol plugins deal with new enrolments if necessary.
     enrol_check_plugins($user);
 
-    // setup user session to check capability
+    // Setup user session to check capability.
     \core\session\manager::set_user($user);
 
-    //check if the service exists and is enabled
+    // Check if the service exists and is enabled.
     $service = $DB->get_record('external_services', array('shortname' => $serviceshortname, 'enabled' => 1));
     if (empty($service)) {
-        // will throw exception if no token found
+        // Will throw exception if no token found.
         throw new moodle_exception('servicenotavailable', 'webservice');
     }
 

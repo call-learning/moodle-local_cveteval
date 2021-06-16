@@ -26,11 +26,8 @@ namespace local_cveteval\local\assessment;
 defined('MOODLE_INTERNAL') || die();
 
 use local_cltools\local\field\base;
-use local_cltools\local\filter\basic_filterset;
-use local_cltools\local\filter\filter;
 use local_cltools\local\table\dynamic_table_sql;
 use moodle_url;
-use local_cveteval\local\persistent\role\entity as role_entity;
 use ReflectionException;
 
 /**
@@ -136,7 +133,7 @@ class mystudents extends dynamic_table_sql {
      * This can be overridden when we are looking at linked entities.
      */
     protected function set_initial_sql() {
-        global $USER, $DB;
+        global $DB;
 
         $from = '
         {local_cveteval_evalplan} plan

@@ -30,7 +30,13 @@ use external_api;
 use external_function_parameters;
 use external_multiple_structure;
 use external_value;
-
+/**
+ * Class base_get_entity
+ *
+ * @package   local_cveteval
+ * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 abstract class base_get_entity extends external_api {
     const MOBILE_ENTITY_MATCHER = [
         'appr_crit' => 'appraisal_criterion',
@@ -71,7 +77,7 @@ abstract class base_get_entity extends external_api {
         }
         $context = context_system::instance();
         self::validate_context($context);
-        $entities = utils::query_entities($entityname, $queryobject);
+        $entities = external_utils::query_entities($entityname, $queryobject);
         return $entities;
     }
 

@@ -26,15 +26,13 @@ namespace local_cveteval\local\assessment;
 defined('MOODLE_INTERNAL') || die();
 
 use coding_exception;
-use local_cltools\local\dmlutils;
 use local_cltools\local\field\base;
 use local_cltools\local\table\dynamic_table_sql;
-use local_cveteval\local\persistent\role\entity as role_entity;
 use local_cveteval\output\grade_widget;
 use ReflectionException;
 
 /**
- * A list of student matching this situation
+ * A list of appraisal criteria for a given appraisal
  *
  * @package   local_cveteval
  * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
@@ -136,7 +134,7 @@ class appraisals_criteria extends dynamic_table_sql {
                 "type" => "text"
             ],
             'grade' => [
-                "fullname" => get_string("appraisalcriteria:grade", 'local_cveteval'),
+                "fullname" => get_string("appraisalcriterion:grade", 'local_cveteval'),
                 "rawtype" => PARAM_FLOAT,
                 "type" => "html"
             ],
@@ -164,7 +162,6 @@ class appraisals_criteria extends dynamic_table_sql {
      * This can be overridden when we are looking at linked entities.
      */
     protected function set_initial_sql() {
-        global $DB;
         $from = '
         {local_cveteval_criterion} criterion
         LEFT JOIN {local_cveteval_appr_crit} critapp ON  criterion.id = critapp.criterionid

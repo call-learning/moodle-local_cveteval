@@ -36,7 +36,7 @@ use stdClass;
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class utils {
+class external_utils {
 
     /**
      * Query entities

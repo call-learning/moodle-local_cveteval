@@ -64,7 +64,7 @@ class appraisals_student extends dynamic_table_sql {
         parent::__construct($uniqueid);
         // A  bit of a hack here. We use this on subqueries only...
         $this->fieldaliases = [
-            'situationid' => 'plan.clsituationid',
+            'planid' => 'plan.id',
             'studentid' => 'appraisal.studentid',
             'roletype' => 'role.type',
             'criterionname' => 'criterion.label'
@@ -97,7 +97,6 @@ class appraisals_student extends dynamic_table_sql {
      * This can be overridden when we are looking at linked entities.
      */
     protected function set_initial_sql() {
-        global $DB;
         $from = '{local_cveteval_criterion} criterion';
         $fields = static::FIELDS;
         if ($this->appraiserlist) {
@@ -147,6 +146,13 @@ class appraisals_student extends dynamic_table_sql {
         return array_values($rootcriteria);
     }
 
+    /**
+     * Get appraisal criteria grade
+     *
+     * @param $row
+     * @throws \dml_exception
+     * @throws coding_exception
+     */
     public function get_appraisal_criteria_grade(&$row) {
         global $DB;
         global $PAGE;
@@ -239,7 +245,7 @@ class appraisals_student extends dynamic_table_sql {
                 LEFT JOIN {local_cveteval_group_assign} groupa ON groupa.groupid = plan.groupid
                 LEFT JOIN {local_cveteval_role} role ON plan.clsituationid = role.clsituationid
                 LEFT JOIN (SELECT ' . $DB->sql_concat_join("' '", array('u.firstname', 'u.lastname'))
-                . ' AS fullname, u.id FROM mdl_user u ) appraiser ON appraiser.id = appraisal.appraiserid';
+                . ' AS fullname, u.id FROM {user} u ) appraiser ON appraiser.id = appraisal.appraiserid';
             $fields = [];
             $fields[] = 'appraisal.id AS id';
             $fields[] = 'appraisal.appraiserid AS appraiserid';

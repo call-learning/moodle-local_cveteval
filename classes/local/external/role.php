@@ -29,7 +29,13 @@ use external_function_parameters;
 use external_multiple_structure;
 use external_single_structure;
 use external_value;
-
+/**
+ * Class role
+ *
+ * @package   local_cveteval
+ * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class role extends base_get_entity {
     /**
      * Returns description of method parameters

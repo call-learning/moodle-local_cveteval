@@ -23,9 +23,10 @@
  */
 
 namespace local_cltools;
-
+defined('MOODLE_INTERNAL') || die();
 use local_cveteval\local\external\appr_crit;
 use local_cveteval\local\external\appraisal;
+use local_cveteval\local\external\auth;
 use local_cveteval\local\external\clsituation;
 use local_cveteval\local\external\criterion;
 use local_cveteval\local\external\cevalgrid;
@@ -36,7 +37,9 @@ use local_cveteval\local\external\user_profile;
 use local_cveteval\local\external\user_type;
 use local_cveteval\local\persistent\appraisal\entity as appraisal_entity;
 use \local_cveteval\local\persistent\role\entity as role_entity;
+global $CFG;
 
+require_once($CFG->libdir . '/externallib.php');
 /**
  * API tests
  *
@@ -70,8 +73,6 @@ class local_cveteval_api_testcase extends \advanced_testcase {
      * Test if the User Type API is functional
      */
     public function test_get_user_type() {
-        global $CFG;
-        require_once($CFG->libdir . '/externallib.php');
         $this->assertEquals(
             (object)
             ['type' => role_entity::ROLE_SHORTNAMES[role_entity::ROLE_STUDENT_ID]],
@@ -80,7 +81,7 @@ class local_cveteval_api_testcase extends \advanced_testcase {
             (object)
             ['type' => role_entity::ROLE_SHORTNAMES[role_entity::ROLE_ASSESSOR_ID]],
             user_type::execute((\core_user::get_user_by_username('resp1'))->id));
-        // Obs 1 to 5 are also assessors
+        // Obs 1 to 5 are also assessors.
         $this->assertEquals(
             (object)
             ['type' => role_entity::ROLE_SHORTNAMES[role_entity::ROLE_ASSESSOR_ID]],
@@ -100,8 +101,6 @@ class local_cveteval_api_testcase extends \advanced_testcase {
      * Test if the User Type API is functional
      */
     public function test_get_user_profile() {
-        global $CFG;
-        require_once($CFG->libdir . '/externallib.php');
         $userid = (\core_user::get_user_by_username('etu1'))->id;
         $this->assertEquals(
             [
@@ -111,15 +110,13 @@ class local_cveteval_api_testcase extends \advanced_testcase {
                 'lastname' => '',
                 'username' => 'anonymous',
                 'userpictureurl' => 'https://www.example.com/moodle/theme/image.php/_s/boost/core/1/u/f1'],
-            (array) user_profile::execute($userid));
+            (array) user_profile::execute(intval($userid)));
     }
 
     /**
      * Test an API function
      */
     public function test_get_get_appraisal() {
-        global $CFG;
-        require_once($CFG->libdir . '/externallib.php');
         $user1 = \core_user::get_user_by_username('etu1');
         $user2 = \core_user::get_user_by_username('etu2');
         create_appraisal_for_students($user1->id, null, false);
@@ -148,8 +145,6 @@ class local_cveteval_api_testcase extends \advanced_testcase {
      * Test an API function
      */
     public function test_get_get_appraisal_additionalnotinplan() {
-        global $CFG;
-        require_once($CFG->libdir . '/externallib.php');
         $user1 = \core_user::get_user_by_username('etu1');
         $user2 = \core_user::get_user_by_username('etu2');
         create_appraisal_for_students($user1->id, null, false);
@@ -184,8 +179,6 @@ class local_cveteval_api_testcase extends \advanced_testcase {
      * Test an API function
      */
     public function test_get_get_appraisal_crit() {
-        global $CFG;
-        require_once($CFG->libdir . '/externallib.php');
         $user1 = \core_user::get_user_by_username('etu1');
         $user2 = \core_user::get_user_by_username('etu2');
         create_appraisal_for_students($user1->id, null, false);
@@ -209,8 +202,6 @@ class local_cveteval_api_testcase extends \advanced_testcase {
      * Test an API function
      */
     public function test_get_get_situation() {
-        global $CFG;
-        require_once($CFG->libdir . '/externallib.php');
         $situations = clsituation::get();
         $this->assertNotEmpty($situations);
         // We retrieve all situations here.
@@ -226,8 +217,7 @@ class local_cveteval_api_testcase extends \advanced_testcase {
      * Test an API function
      */
     public function test_get_get_role() {
-        global $CFG, $DB;
-        require_once($CFG->libdir . '/externallib.php');
+        global $DB;
         $roles = role::get();
         $allusersmatch =
             $DB->get_records_menu('user', null, '', 'id,username');
@@ -327,8 +317,6 @@ class local_cveteval_api_testcase extends \advanced_testcase {
      * Test an API function
      */
     public function test_get_get_criterion() {
-        global $CFG;
-        require_once($CFG->libdir . '/externallib.php');
         $criteria = criterion::get();
         $this->assertNotEmpty($criteria);
         // We retrieve all situations here.
@@ -346,8 +334,7 @@ class local_cveteval_api_testcase extends \advanced_testcase {
      * Test an API function
      */
     public function test_get_get_group_assign() {
-        global $CFG, $DB;
-        require_once($CFG->libdir . '/externallib.php');
+        global $DB;
         $groupassign = group_assign::get();
         $this->assertNotEmpty($groupassign);
         $this->assertCount(5, $groupassign);
@@ -368,8 +355,6 @@ class local_cveteval_api_testcase extends \advanced_testcase {
      * Test an API function
      */
     public function test_get_get_evalgrid() {
-        global $CFG, $DB;
-        require_once($CFG->libdir . '/externallib.php');
         $evalgrid = cevalgrid::get();
         $this->assertNotEmpty($evalgrid);
         $this->assertCount(40, $evalgrid);
@@ -379,9 +364,7 @@ class local_cveteval_api_testcase extends \advanced_testcase {
      * Test an API function
      */
     public function test_get_get_evalplan_no_user() {
-        global $CFG, $DB;
-        require_once($CFG->libdir . '/externallib.php');
-        // First, no user logged i
+        // First, no user logged in.
         $evalplan = evalplan::get();
         $this->assertEmpty($evalplan);
     }
@@ -390,9 +373,8 @@ class local_cveteval_api_testcase extends \advanced_testcase {
      * Test an API function
      */
     public function test_get_get_evalplan_student() {
-        global $CFG, $DB;
-        require_once($CFG->libdir . '/externallib.php');
-        // First, no user logged i
+        global $DB;
+        // First, no user logged in.
         $user1 = \core_user::get_user_by_username('etu1');
         // Now, I am user 1, I should only get evalplans involving me (either as a student or appraiser).
         $this->setUser($user1);
@@ -424,9 +406,8 @@ class local_cveteval_api_testcase extends \advanced_testcase {
      * Test an API function
      */
     public function test_get_get_evalplan_observer() {
-        global $CFG, $DB;
-        require_once($CFG->libdir . '/externallib.php');
-        // First, no user logged i
+        global $DB;
+        // First, no user logged in.
         $user1 = \core_user::get_user_by_username('obs2'); // Obs2 is only in one situation.
         // Now, I am obs2, I should only get evalplans involving me (either as a student or appraiser).
         $this->setUser($user1);
@@ -452,6 +433,16 @@ class local_cveteval_api_testcase extends \advanced_testcase {
                 ];
             }, $evalplan)));
 
+    }
+
+    /**
+     * All eval plans
+     */
+    public function test_get_idplist() {
+        global $CFG;
+        $this->resetAfterTest();
+        $CFG->auth = $CFG->auth . ',cas';
+        $this->assertEquals(auth::idp_list(), []);
     }
 
     /**
@@ -533,5 +524,6 @@ class local_cveteval_api_testcase extends \advanced_testcase {
             ]
         ];
     }
+
 
 }

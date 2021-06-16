@@ -17,6 +17,7 @@ use local_cveteval\local\utils;
 use \local_cveteval\local\persistent\situation\entity as situation_entity;
 use \local_cveteval\local\persistent\appraisal\entity as appraisal_entity;
 use \local_cveteval\local\persistent\appraisal_criterion\entity as appraisal_criterion_entity;
+defined('MOODLE_INTERNAL') || die();
 /**
  * Test helpers
  *
@@ -105,7 +106,7 @@ function create_random_appraisals($cleanup, $verbose = true) {
  * @throws coding_exception
  * @throws dml_exception
  */
-function create_appraisal_for_students($studentid = null, $skip = null, $verbose = true) {
+function create_appraisal_for_students($studentid = null, $skip = null, $verbose = true, $forcedappraiserid = 0) {
     global $DB;
     $studentidparam = [];
     if ($studentid) {
@@ -130,9 +131,11 @@ function create_appraisal_for_students($studentid = null, $skip = null, $verbose
                         continue;
                     }
                 }
-
-                $appraiserindex = rand(1, count($appraisersroles)) - 1;
-                $appid = array_values($appraisersroles)[$appraiserindex]->userid;
+                $appid = $forcedappraiserid;
+                if (!$forcedappraiserid) {
+                    $appraiserindex = rand(1, count($appraisersroles)) - 1;
+                    $appid = array_values($appraisersroles)[$appraiserindex]->userid;
+                }
                 $appraisal = new stdClass();
                 $appraisal->studentid = $studentga->studentid;
                 $appraisal->appraiserid = $appid;

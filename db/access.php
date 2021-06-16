@@ -93,6 +93,14 @@ $capabilities = array(
             'user' => CAP_ALLOW
         )
     ),
+    'local/cveteval:exportgrades' => array(
+        'riskbitmask' => RISK_SPAM,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'manager' => CAP_ALLOW
+        )
+    ),
     'local/cveteval:mobileaccess' => array(
         'riskbitmask' => RISK_SPAM,
         'captype' => 'write',

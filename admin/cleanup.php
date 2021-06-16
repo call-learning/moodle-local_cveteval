@@ -43,14 +43,14 @@ if ($confirm) {
     \local_cveteval\local\utils::cleanup_all_data();
     /* @var core_renderer $OUTPUT */
     echo $OUTPUT->continue_button(
-        new moodle_url('/admin/category.php', array('category'=>'cveteval'))
+        new moodle_url('/admin/category.php', array('category' => 'cveteval'))
     );
 } else {
     sesskey();
     echo $OUTPUT->confirm(
         get_string('cleanup:confirm', 'local_cveteval'),
         new moodle_url($PAGE->url, array('confirm' => 1)),
-        new moodle_url('/admin/category.php', array('category'=>'cveteval'))
+        new moodle_url('/admin/category.php', array('category' => 'cveteval'))
     );
 }
 

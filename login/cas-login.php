@@ -31,7 +31,6 @@ global $CFG, $SESSION, $USER;
 require_once($CFG->libdir . '/externallib.php');
 require_once($CFG->dirroot . '/local/cveteval/lib.php');
 
-
 if (!is_enabled_auth('cas')) {
     throw new moodle_exception('casnotenabled');
 }
@@ -43,7 +42,7 @@ $user = false;
 $authplugin->loginpage_hook();
 $mobilelaunchparams = [];
 
-if ($frm and isset($frm->username)) {                             // Login WITH cookies
+if ($frm and isset($frm->username)) {                             // Login WITH cookies.
 
     $frm->username = trim(core_text::strtolower($frm->username));
 
@@ -60,17 +59,17 @@ if ($frm and isset($frm->username)) {                             // Login WITH 
     }
     if ($user) {
         global $DB;
-        // language setup
+        // Language setup.
         if (isguestuser($user)) {
-            // no predefined language for guests - use existing session or default site lang
+            // No predefined language for guests - use existing session or default site lang.
             unset($user->lang);
 
         } else if (!empty($user->lang)) {
-            // unset previous session language - use user preference instead
+            // Unset previous session language - use user preference instead.
             unset($SESSION->lang);
         }
 
-        if (empty($user->confirmed)) {// This account was never confirmed
+        if (empty($user->confirmed)) { // This account was never confirmed.
             global $PAGE, $OUTPUT;
             $PAGE->set_title(get_string("mustconfirm"));
             $PAGE->set_heading(get_site()->fullname);
@@ -90,15 +89,15 @@ if ($frm and isset($frm->username)) {                             // Login WITH 
             die;
         }
 
-        /// Let's get them all set up.
+        // Let's get them all set up.
         complete_user_login($user);
 
         // Get an existing token or create a new one.
         $timenow = time();
-        //check if the service exists and is enabled
+        // Check if the service exists and is enabled.
         $service = $DB->get_record('external_services', array('shortname' => CVETEVAL_MOBILE_SERVICE, 'enabled' => 1));
         if (empty($service)) {
-            // will throw exception if no token found
+            // Will throw exception if no token found.
             throw new moodle_exception('servicenotavailable', 'webservice');
         }
 
@@ -128,5 +127,4 @@ if ($frm and isset($frm->username)) {                             // Login WITH 
     }
 }
 
-
-header('Location: ' . local_cveteval\local\external\utils::get_application_launch_url($mobilelaunchparams));
+header('Location: ' . local_cveteval\local\external\external_utils::get_application_launch_url($mobilelaunchparams));

@@ -31,8 +31,14 @@ use external_api;
 use external_function_parameters;
 use external_single_structure;
 use external_value;
-use local_cveteval\local\persistent\situation\entity as situation_entity;
 
+/**
+ * Class latest_modifications
+ *
+ * @package   local_cveteval
+ * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class latest_modifications extends external_api {
     /**
      * Returns description of method parameters
@@ -107,7 +113,7 @@ class latest_modifications extends external_api {
         if ($queryjson) {
             $query = json_decode($queryjson);
         }
-        $latestmodifs = utils::query_entities(base_get_entity::MOBILE_ENTITY_MATCHER[$entitytype],
+        $latestmodifs = external_utils::query_entities(base_get_entity::MOBILE_ENTITY_MATCHER[$entitytype],
             $query, "MAX(e.timemodified) AS time");
         if ($latestmodifs && count($latestmodifs) > 0) {
             $latestmodif = reset($latestmodifs);

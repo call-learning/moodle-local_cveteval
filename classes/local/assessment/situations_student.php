@@ -60,7 +60,7 @@ class situations_student extends dynamic_table_sql {
     protected function setup_fields() {
         $fields = [
             'id' => [
-                "fullname" => 'situationid',
+                "fullname" => 'planid',
                 "rawtype" => PARAM_INT,
                 "type" => "hidden"
             ],
@@ -83,6 +83,16 @@ class situations_student extends dynamic_table_sql {
                 "fullname" => get_string("situation:title", 'local_cveteval'),
                 "rawtype" => PARAM_TEXT,
                 "type" => "text"
+            ],
+            'startdate' => [
+                "fullname" => get_string("planning:starttime", 'local_cveteval'),
+                "rawtype" => PARAM_INT,
+                "type" => "date"
+            ],
+            'enddate' => [
+                "fullname" => get_string("planning:endtime", 'local_cveteval'),
+                "rawtype" => PARAM_INT,
+                "type" => "date"
             ],
             'assessorfullname' => [
                 "fullname" => get_string("evaluation:assessor", 'local_cveteval'),
@@ -109,16 +119,6 @@ class situations_student extends dynamic_table_sql {
                 "rawtype" => PARAM_INT,
                 "type" => "datetime"
             ],
-            'startdate' => [
-                "fullname" => get_string("planning:starttime", 'local_cveteval'),
-                "rawtype" => PARAM_INT,
-                "type" => "datetime"
-            ],
-            'enddate' => [
-                "fullname" => get_string("planning:starttime", 'local_cveteval'),
-                "rawtype" => PARAM_INT,
-                "type" => "datetime"
-            ]
         ];
         $this->fields = [];
         foreach ($fields as $name => $prop) {
@@ -144,7 +144,7 @@ class situations_student extends dynamic_table_sql {
          LEFT JOIN (SELECT ' . $DB->sql_concat('u.firstname', 'u.lastname') . ' AS fullname, u.id FROM mdl_user u ) student
             ON student.id = groupa.studentid
         ';
-        $fields[] = 'situation.id AS id';
+        $fields[] = 'plan.id AS id';
         $fields[] = 'groupa.studentid AS studentid';
         $fields[] = 'eval.assessorid AS assessorid';
         $fields[] = 'situation.id AS situationid';

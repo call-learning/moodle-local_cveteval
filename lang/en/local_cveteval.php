@@ -65,7 +65,7 @@ $string['evaluation_grid:plural'] = 'Evaluation Grids';
 $string['evaluation_grid:name'] = 'Evaluation Name';
 $string['evaluation_grid:idnumber'] = 'Evaluation Identifier';
 $string['evaluation_template:version'] = 'Evaluation Version';
-$string['evaluation:date'] = "Date";
+$string['evaluation:date'] = "Evaluation Date";
 $string['evaluation:comment'] = "Comment";
 $string['evaluation:assessor'] = "Assessor";
 $string['evaluation:hasgrade'] = 'Has grade?';
@@ -78,21 +78,22 @@ $string['groupingfile_help'] = 'A list of grouping in CSV format. The file must 
 <pre>"Nom de l\'étudiant";"Prénom";"Identifiant";"Groupement 1"</pre>';
 $string['grade:defaultscale'] = 'Default scale (CompetvetEval)';
 $string['grade:defaultscale:description'] = 'Default scale for CompetvetEval';
+$string['grade:value'] = 'Grade: {$a}';
+$string['grades:export'] = 'Export Grades';
 $string['idnumber'] = 'ID Number';
 $string['id'] = 'Id';
 $string['import:dateformat'] = 'd/m/Y';
 $string['import'] = 'Import';
 $string['headingfile'] = 'Import files';
-$string['headingfile_help']= 'You can import situation, plannning and groups here. All files except the evaluation grid are
-manadatory here .<br>
+$string['headingfile_help'] = 'You can import situation, plannning and groups here. All files except the evaluation grid
+ are manadatory here .<br>
 Beware all files must match. For example:
 <ul>
 <li>(Situation) - GrilleEval => (Grille Evaluation) - Evaluation Grid Id</li>
 <li>(Planning) - Groupe XXX => (Groupes) - Un des groupes dans les colonnes de Groupement</li>
 <li>(Planning) - Situation (nom court) => (Situation) - Nom court</li>
 </ul>
-Any mismatch in the files can lead to malfunctionning applications. 
-';
+Any mismatch in the files can lead to malfunctionning applications.';
 $string['import:heading:process'] = 'Process files';
 $string['import:heading:parameters'] = 'Importation parameters';
 $string['import:importviacron'] = 'Import via CRON';
@@ -152,3 +153,4 @@ $string['situationfile_help'] = 'A list of situation in CSV format. The file mus
 $string['title'] = 'Title';
 $string['thissituation'] = 'This situation';
 $string['view'] = 'View';
+

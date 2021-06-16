@@ -38,7 +38,9 @@ use external_api;
  * Get user type
  * Class user_type
  *
- * @package local_cveteval\local\external
+ * @package   local_cveteval
+ * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class user_type extends external_api {
     /**

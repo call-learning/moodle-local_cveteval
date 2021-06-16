@@ -21,13 +21,14 @@
  * It is recommended to add webservice functions and re-use this script instead of
  * writing any new custom ajax scripts.
  *
- * @since Moodle 2.9
- * @package core
- * @copyright 2015 Damyon Wiese
+ * @package   local_cveteval
+ * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 define('NO_MOODLE_COOKIES', true);
 define('ALLOW_GET_PARAMETERS', true);
+define('AJAX_SCRIPT', true);
+require_once('../../../config.php');
 header('Access-Control-Allow-Origin: *');
 require_once('../../../lib/ajax/service.php');

@@ -52,7 +52,7 @@ $string['descriptionformat'] = 'Format de la description';
 $string['delete'] = 'Effacer';
 $string['edit'] = 'Editer';
 $string['evaluation_gridfile'] = 'Critères de la grille d\'évaluation';
-$string['evaluation_gridfile_help'] =  '(Optional)Une liste de critères d\'évaluation en format CSV. 
+$string['evaluation_gridfile_help'] = '(Optional)Une liste de critères d\'évaluation en format CSV.
 Le fichier doit contenir les entêtes suivants:
 <pre>"Evaluation Grid Id";"Criterion Id";"Criterion Parent Id";"Criterion Label"</pre>';
 $string['enablecompetveteval'] = 'Activer CompetVetEval';
@@ -61,7 +61,7 @@ $string['evaluation_grid:plural'] = 'Grilles d\'évaluation';
 $string['evaluation_grid:name'] = 'Nom de l\'évaluation';
 $string['evaluation_grid:idnumber'] = 'Identifiant de l\'évaluation';
 $string['evaluation_template:version'] = 'Version de l\'évaluation';
-$string['evaluation:date'] = "Date";
+$string['evaluation:date'] = "Date évaluation";
 $string['evaluation:comment'] = "Commentaire";
 $string['evaluation:assessor'] = "Evaluateur final";
 $string['evaluation:hasgrade'] = 'Note?';
@@ -74,11 +74,13 @@ $string['groupingfile_help'] = 'Une liste de groupes en format CSV. Le fichier d
 <pre>"Nom de l\'étudiant";"Prénom";"Identifiant";"Groupement 1"</pre>';
 $string['grade:defaultscale'] = 'Echelle de note par défault (CompetvetEval)';
 $string['grade:defaultscale:description'] = 'Echelle de note par défault pour CompetvetEval';
+$string['grade:value'] = 'Note: {$a}';
+$string['grades:export'] = 'Exporter les notes';
 $string['idnumber'] = 'Identifiant';
 $string['id'] = 'Identifiant';
 $string['import'] = 'Importation';
 $string['headingfile'] = 'Importer les fichiers';
-$string['headingfile_help']= 'Vous pouvez importer des situation, planning and groups ici. Les fichiers de situation, planning et groupes 
+$string['headingfile_help'] = 'Vous pouvez importer des situation, planning and groups ici. Les fichiers de situation, planning et groupes
 sont obligatoires, le fichier de critères d\'évaluation.<br>
 Attention les fichiers doivent bien correspondre les uns avec les autres. Par exemple:
 <ul>
@@ -86,8 +88,7 @@ Attention les fichiers doivent bien correspondre les uns avec les autres. Par ex
 <li>(Planning) - Groupe XXX => (Groupes) - Un des groupes dans les colonnes de Groupement</li>
 <li>(Planning) - Situation (nom court) => (Situation) - Nom court</li>
 </ul>
-Des problèmes de correspondance peuvent se traduirent plus tard par des dysfonctionnements. 
-';
+Des problèmes de correspondance peuvent se traduirent plus tard par des dysfonctionnements.';
 $string['import:heading:process'] = 'Importation des fichiers';
 $string['import:heading:parameters'] = 'Paramètres importation';
 $string['import:importviacron'] = 'Importer par CRON';
