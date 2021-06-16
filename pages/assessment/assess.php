@@ -56,6 +56,7 @@ $assessfulltitle = get_string('assessment', 'local_cveteval')
 $PAGE->set_context(context_system::instance());
 $PAGE->set_title($assessfulltitle);
 $PAGE->set_heading($assesstitle);
+$PAGE->set_pagelayout('standard');
 $currenturl = new moodle_url('/local/cveteval/pages/assessment/assess.php', array(
     'evalplanid' => $evalplanid,
     'studentid' => $studentid,

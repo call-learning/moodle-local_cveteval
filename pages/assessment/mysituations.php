@@ -44,6 +44,7 @@ $PAGE->set_title(get_string('assessment', 'local_cveteval')
     . get_string('mysituations', 'local_cveteval'));
 $PAGE->set_heading(get_string('assessment', 'local_cveteval'));
 $PAGE->set_url(new moodle_url('/local/cveteval/pages/assessment/mysituations.php'));
+$PAGE->set_pagelayout('standard');
 
 echo $OUTPUT->header();
 

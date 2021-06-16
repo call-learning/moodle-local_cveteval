@@ -47,7 +47,7 @@ $currenturl = new moodle_url('/local/cveteval/pages/assessment/mystudents.php', 
     'situationid' => $situationid,
 ));
 $PAGE->set_url($currenturl);
-
+$PAGE->set_pagelayout('standard');
 $situationnode = $PAGE->navigation->add(
     get_string('mysituations', 'local_cveteval'),
     new moodle_url('/local/cveteval/pages/assessment/mysituations.php'),
