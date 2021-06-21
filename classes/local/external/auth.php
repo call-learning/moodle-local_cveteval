@@ -70,9 +70,9 @@ class auth extends external_api {
                 if ($auth == 'cas') {
                     $idp['url'] = (new moodle_url('/local/cveteval/login/cas-login.php', array('authCAS' => 'CAS')))->out();
                 } else {
-                    $idp['url'] = $idp['url']->out();
+                    $idp['url'] = $idp['url'] ? $idp['url']->out() : '';
                 }
-                $idp['iconurl'] = $idp['iconurl']->out();
+                $idp['iconurl'] = $idp['iconurl'] ? $idp['iconurl']->out() : '';
                 $currentidplist[$index] = $idp;
             }
             if ($currentidplist) {
