@@ -28,11 +28,11 @@ defined('MOODLE_INTERNAL') || die();
 use coding_exception;
 use core_user;
 use dml_exception;
+use local_cveteval\local\persistent\group\entity as group_entity;
+use local_cveteval\local\persistent\group_assignment\entity as group_assignment_entity;
 use moodle_exception;
 use tool_importer\field_types;
 use tool_importer\importer_exception;
-use local_cveteval\local\persistent\group_assignment\entity as group_assignment_entity;
-use local_cveteval\local\persistent\group\entity as group_entity;
 use tool_importer\local\import_log;
 
 /**

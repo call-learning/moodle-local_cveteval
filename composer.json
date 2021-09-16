@@ -1,18 +1,18 @@
 {
-    "name": "calllearning/moodle-local_cveteval",
-    "description": "Moodle cveteval Plugin",
-    "license": "GPLv3",
-    "authors": [
-        {
-            "name": "Laurent David / CALL Learning",
-            "email": "laurent@call-learning.fr"
-        }
-    ],
-    "type": "moodle-local",
-    "require": {
-      "composer/installers": "~1.0"
-    },
-    "extra": {
-      "installer-name": "cveteval"
+  "name": "calllearning/moodle-local_cveteval",
+  "description": "Moodle cveteval Plugin",
+  "license": "GPLv3",
+  "authors": [
+    {
+      "name": "Laurent David / CALL Learning",
+      "email": "laurent@call-learning.fr"
     }
+  ],
+  "type": "moodle-local",
+  "require": {
+    "composer/installers": "~1.0"
+  },
+  "extra": {
+    "installer-name": "cveteval"
+  }
 }

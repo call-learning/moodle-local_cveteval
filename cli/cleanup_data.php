@@ -22,8 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use local_cveteval\local\utils;
 use local_vetagropro\locallib\setup;
-use tool_importer\local\import_log;
 
 define('CLI_SCRIPT', true);
 require(__DIR__ . '/../../../config.php');
@@ -52,11 +52,11 @@ Options:
 ";
 
 if (!$options['yes']) {
-    $agree = cli_input(get_string('cleanup:confirm', 'local_cveteval').'[y|N]');
+    $agree = cli_input(get_string('cleanup:confirm', 'local_cveteval') . '[y|N]');
     if ($agree !== 'y') {
         cli_writeln('Cancelled...');
         exit();
     }
 }
 
-\local_cveteval\local\utils::cleanup_all_data();
+utils::cleanup_all_data();

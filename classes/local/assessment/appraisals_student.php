@@ -26,6 +26,7 @@ namespace local_cveteval\local\assessment;
 defined('MOODLE_INTERNAL') || die();
 
 use coding_exception;
+use dml_exception;
 use local_cltools\local\field\base;
 use local_cltools\local\filter\filterset;
 use local_cltools\local\table\dynamic_table_sql;
@@ -150,7 +151,7 @@ class appraisals_student extends dynamic_table_sql {
      * Get appraisal criteria grade
      *
      * @param $row
-     * @throws \dml_exception
+     * @throws dml_exception
      * @throws coding_exception
      */
     public function get_appraisal_criteria_grade(&$row) {

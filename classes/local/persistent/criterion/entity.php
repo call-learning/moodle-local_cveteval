@@ -23,6 +23,7 @@
  */
 
 namespace local_cveteval\local\persistent\criterion;
+
 use coding_exception;
 use core\persistent;
 

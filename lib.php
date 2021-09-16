@@ -23,6 +23,7 @@
  */
 
 use local_cveteval\local\persistent\role\entity as role_entity;
+use local_cveteval\local\utils;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -85,11 +86,12 @@ function local_cveteval_pluginfile($course, $cm, $context, $filearea, $args, $fo
  */
 function local_cveteval_enable_disable_plugin_callback() {
     $enabled = $CFG->enablecompetveteval ?? false;
-    \local_cveteval\local\utils::setup_mobile_service($enabled);
+    utils::setup_mobile_service($enabled);
 }
 
 /**
  * Extends navigation
+ *
  * @param global_navigation $nav
  * @throws coding_exception
  * @throws dml_exception
@@ -98,7 +100,7 @@ function local_cveteval_extend_navigation(global_navigation $nav) {
     global $CFG, $USER;
     $enabled = !empty($CFG->enablecompetveteval) && $CFG->enablecompetveteval;
     if ($enabled) {
-        if (\local_cveteval\local\utils::get_user_role_id($USER->id) == role_entity::ROLE_ASSESSOR_ID) {
+        if (utils::get_user_role_id($USER->id) == role_entity::ROLE_ASSESSOR_ID) {
             $node = navigation_node::create(
                 get_string('assessment', 'local_cveteval'),
                 new moodle_url('/local/cveteval/pages/assessment/mysituations.php'),

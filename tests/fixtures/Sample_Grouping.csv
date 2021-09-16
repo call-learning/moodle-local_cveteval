@@ -1,101 +1,101 @@
-"Nom de l'étudiant";"Prénom";"Identifiant";"Groupement 1";"Groupement 2";"Groupement 3";"Groupement 4";"Groupement 5";"Groupement 6"
-"Veselá";"Adéla";"student_000088@example.com";"Groupe 12a";"Groupe 12";"Groupe 11-12";"Groupe 11c-12a";;"Groupe 11a-12a"
-"Horáková";"Anna";"student_000057@example.com";"Groupe 6b";"Groupe 6";"Groupe 5-6";"Groupe 6b-6c";"Groupe 6a-6b";
-"Davis";"Ava";"student_000019@example.com";"Groupe 8a";"Groupe 8";"Groupe 7-8";"Groupe 7c-8a";;"Groupe 7a-8a"
-"Rodríguez";"Ava";"student_000059@example.com";"Groupe 10c";"Groupe 10";"Groupe 9-10";"Groupe 10b-10c";;"Groupe 9c-10c"
-"Wilson";"Ava";"student_000075@example.com";"Groupe 7a";"Groupe 7";"Groupe 7-8";"Groupe 7a-7b";;"Groupe 7a-8a"
-"Kučerová";"Eliška";"student_000098@example.com";"Groupe 6b";"Groupe 6";"Groupe 5-6";"Groupe 6b-6c";"Groupe 6a-6b";
-"García";"Emma";"student_000013@example.com";"Groupe 3c";"Groupe 3";"Groupe 3-4";"Groupe 3c-4a";"Groupe 3b-3c";
-"Wilson";"Emma";"student_000030@example.com";"Groupe 10b";"Groupe 10";"Groupe 9-10";"Groupe 10b-10c";;"Groupe 9b-10b"
-"Johnson";"Ethan";"student_000089@example.com";"Groupe 8c";"Groupe 8";"Groupe 7-8";"Groupe 8b-8c";;"Groupe 7c-8c"
-"Hoffmann";"Hanna";"student_000021@example.com";"Groupe 5b";"Groupe 5";"Groupe 5-6";"Groupe 5a-5b";"Groupe 5b-5c";
-"Wagner";"Hanna";"student_000036@example.com";"Groupe 4a";"Groupe 4";"Groupe 3-4";"Groupe 3c-4a";"Groupe 4a-4b";
-"García";"Isabella";"student_000022@example.com";"Groupe 12c";"Groupe 12";"Groupe 11-12";"Groupe 12b-12c";;"Groupe 11c-12c"
-"García";"Isabella";"student_000065@example.com";"Groupe 2b";"Groupe 2";"Groupe 1-2";"Groupe 2b-2c";"Groupe 2a-2b";
-"Johnson";"Jacob";"student_000001@example.com";"Groupe 7b";"Groupe 7";"Groupe 7-8";"Groupe 7a-7b";;"Groupe 7b-8b"
-"Johnson";"Jacob";"student_000094@example.com";"Groupe 1b";"Groupe 1";"Groupe 1-2";"Groupe 1a-1b";"Groupe 1b-1c";
-"Jones";"Jacob";"student_000054@example.com";"Groupe 12b";"Groupe 12";"Groupe 11-12";"Groupe 12b-12c";;"Groupe 11b-12b"
-"Williams";"Jacob";"student_000087@example.com";"Groupe 2a";"Groupe 2";"Groupe 1-2";"Groupe 1c-2a";"Groupe 2a-2b";
-"Černý";"Jakub";"student_000047@example.com";"Groupe 8b";"Groupe 8";"Groupe 7-8";"Groupe 8b-8c";;"Groupe 7b-8b"
-"Dvořák";"Jakub";"student_000006@example.com";"Groupe 6c";"Groupe 6";"Groupe 5-6";"Groupe 6b-6c";"Groupe 1a-6c";
-"Novotný";"Jakub";"student_000026@example.com";"Groupe 3b";"Groupe 3";"Groupe 3-4";"Groupe 3a-3b";"Groupe 3b-3c";
-"Novotný";"Jakub";"student_000051@example.com";"Groupe 8a";"Groupe 8";"Groupe 7-8";"Groupe 7c-8a";;"Groupe 7a-8a"
-"Novák";"Jan";"student_000069@example.com";"Groupe 4b";"Groupe 4";"Groupe 3-4";"Groupe 4b-4c";"Groupe 4a-4b";
-"Svoboda";"Jan";"student_000064@example.com";"Groupe 10c";"Groupe 10";"Groupe 9-10";"Groupe 10b-10c";;"Groupe 9c-10c"
-"Williams";"Jayden";"student_000027@example.com";"Groupe 9a";"Groupe 9";"Groupe 9-10";"Groupe 9a-9b";;"Groupe 9a-10a"
-"Kučerová";"Karolína";"student_000049@example.com";"Groupe 10c";"Groupe 10";"Groupe 9-10";"Groupe 10b-10c";;"Groupe 9c-10c"
-"Němcová";"Karolína";"student_000086@example.com";"Groupe 12c";"Groupe 12";"Groupe 11-12";"Groupe 12b-12c";;"Groupe 11c-12c"
-"Veselá";"Karolína";"student_000004@example.com";"Groupe 1a";"Groupe 1";"Groupe 1-2";"Groupe 1a-1b";"Groupe 1a-6c";
-"Wagner";"Laura";"student_000072@example.com";"Groupe 11b";"Groupe 11";"Groupe 11-12";"Groupe 11a-11b";;"Groupe 11b-12b"
-"Wagner";"Leah";"student_000034@example.com";"Groupe 1b";"Groupe 1";"Groupe 1-2";"Groupe 1a-1b";"Groupe 1b-1c";
-"Wagner";"Leah";"student_000077@example.com";"Groupe 11b";"Groupe 11";"Groupe 11-12";"Groupe 11a-11b";;"Groupe 11b-12b"
-"Wagner";"Lena";"student_000017@example.com";"Groupe 6b";"Groupe 6";"Groupe 5-6";"Groupe 6b-6c";"Groupe 6a-6b";
-"Schmidt";"Leon";"student_000076@example.com";"Groupe 12c";"Groupe 12";"Groupe 11-12";"Groupe 12b-12c";;"Groupe 11c-12c"
-"Becker";"Leonie";"student_000061@example.com";"Groupe 7c";"Groupe 7";"Groupe 7-8";"Groupe 7c-8a";;"Groupe 7c-8c"
-"Hoffmann";"Leonie";"student_000044@example.com";"Groupe 6c";"Groupe 6";"Groupe 5-6";"Groupe 6b-6c";"Groupe 1a-6c";
-"Schulz";"Leonie";"student_000020@example.com";"Groupe 2a";"Groupe 2";"Groupe 1-2";"Groupe 1c-2a";"Groupe 2a-2b";
-"Svoboda";"Lukáš";"student_000032@example.com";"Groupe 8c";"Groupe 8";"Groupe 7-8";"Groupe 8b-8c";;"Groupe 7c-8c"
-"Svoboda";"Lukáš";"student_000056@example.com";"Groupe 9b";"Groupe 9";"Groupe 9-10";"Groupe 9a-9b";;"Groupe 9b-10b"
-"Svoboda";"Lukáš";"student_000084@example.com";"Groupe 5c";"Groupe 5";"Groupe 5-6";"Groupe 5c-6a";"Groupe 5b-5c";
-"Černý";"Matěj";"student_000068@example.com";"Groupe 2b";"Groupe 2";"Groupe 1-2";"Groupe 2b-2c";"Groupe 2a-2b";
-"Novák";"Matěj";"student_000042@example.com";"Groupe 2c";"Groupe 2";"Groupe 1-2";"Groupe 2b-2c";"Groupe 2c-3a";
-"Novotný";"Matěj";"student_000009@example.com";"Groupe 1c";"Groupe 1";"Groupe 1-2";"Groupe 1c-2a";"Groupe 1b-1c";
-"Svoboda";"Matěj";"student_000071@example.com";"Groupe 3a";"Groupe 3";"Groupe 3-4";"Groupe 3a-3b";"Groupe 2c-3a";
-"Miller";"Olivia";"student_000067@example.com";"Groupe 6c";"Groupe 6";"Groupe 5-6";"Groupe 6b-6c";"Groupe 1a-6c";
-"Wilson";"Olivia";"student_000099@example.com";"Groupe 8c";"Groupe 8";"Groupe 7-8";"Groupe 8b-8c";;"Groupe 7c-8c"
-"Davis";"Sophia";"student_000033@example.com";"Groupe 4a";"Groupe 4";"Groupe 3-4";"Groupe 3c-4a";"Groupe 4a-4b";
-"Rodríguez";"Sophia";"student_000005@example.com";"Groupe 6a";"Groupe 6";"Groupe 5-6";"Groupe 5c-6a";"Groupe 6a-6b";
-"Veselá";"Tereza";"student_000018@example.com";"Groupe 5c";"Groupe 5";"Groupe 5-6";"Groupe 5c-6a";"Groupe 5b-5c";
-"Schneider";"Timm";"student_000080@example.com";"Groupe 3b";"Groupe 3";"Groupe 3-4";"Groupe 3a-3b";"Groupe 3b-3c";
-"Johnson";"William";"student_000016@example.com";"Groupe 1c";"Groupe 1";"Groupe 1-2";"Groupe 1c-2a";"Groupe 1b-1c";
-"Иванов";"Александр";"student_000007@example.com";"Groupe 11a";"Groupe 11";"Groupe 11-12";"Groupe 11a-11b";;"Groupe 11a-12a"
-"Иванов";"Александр";"student_000092@example.com";"Groupe 11c";"Groupe 11";"Groupe 11-12";"Groupe 11c-12a";;"Groupe 11c-12c"
-"Кузнецов";"Александр";"student_000053@example.com";"Groupe 8b";"Groupe 8";"Groupe 7-8";"Groupe 8b-8c";;"Groupe 7b-8b"
-"Попов";"Артем";"student_000015@example.com";"Groupe 4c";"Groupe 4";"Groupe 3-4";"Groupe 4b-4c";"Groupe 4c-5a";
-"Попов";"Артем";"student_000050@example.com";"Groupe 1c";"Groupe 1";"Groupe 1-2";"Groupe 1c-2a";"Groupe 1b-1c";
-"Смирнов";"Артем";"student_000029@example.com";"Groupe 7b";"Groupe 7";"Groupe 7-8";"Groupe 7a-7b";;"Groupe 7b-8b"
-"Соколов";"Артем";"student_000081@example.com";"Groupe 8b";"Groupe 8";"Groupe 7-8";"Groupe 8b-8c";;"Groupe 7b-8b"
-"Кузнецов";"Даниил";"student_000041@example.com";"Groupe 7a";"Groupe 7";"Groupe 7-8";"Groupe 7a-7b";;"Groupe 7a-8a"
-"Смирнов";"Даниил";"student_000091@example.com";"Groupe 1c";"Groupe 1";"Groupe 1-2";"Groupe 1c-2a";"Groupe 1b-1c";
-"Лебедева";"Дарья";"student_000073@example.com";"Groupe 8c";"Groupe 8";"Groupe 7-8";"Groupe 8b-8c";;"Groupe 7c-8c"
-"Лебедева";"Дарья";"student_000079@example.com";"Groupe 5a";"Groupe 5";"Groupe 5-6";"Groupe 5a-5b";"Groupe 4c-5a";
-"Петрова";"Дарья";"student_000048@example.com";"Groupe 9c";"Groupe 9";"Groupe 9-10";"Groupe 9c-10a";;"Groupe 9c-10c"
-"Соколов";"Иван";"student_000093@example.com";"Groupe 8a";"Groupe 8";"Groupe 7-8";"Groupe 7c-8a";;"Groupe 7a-8a"
-"Кузнецов";"Максим";"student_000058@example.com";"Groupe 2a";"Groupe 2";"Groupe 1-2";"Groupe 1c-2a";"Groupe 2a-2b";
-"Лебедева";"Мария";"student_000052@example.com";"Groupe 9c";"Groupe 9";"Groupe 9-10";"Groupe 9c-10a";;"Groupe 9c-10c"
-"Морозова";"Мария";"student_000074@example.com";"Groupe 3b";"Groupe 3";"Groupe 3-4";"Groupe 3a-3b";"Groupe 3b-3c";
-"Лебедева";"Полина";"student_000062@example.com";"Groupe 9a";"Groupe 9";"Groupe 9-10";"Groupe 9a-9b";;"Groupe 9a-10a"
-"Козлова";"София";"student_000037@example.com";"Groupe 7c";"Groupe 7";"Groupe 7-8";"Groupe 7c-8a";;"Groupe 7c-8c"
-"Козлова";"София";"student_000060@example.com";"Groupe 6a";"Groupe 6";"Groupe 5-6";"Groupe 5c-6a";"Groupe 6a-6b";
-"伊藤";"さくら";"student_000038@example.com";"Groupe 4c";"Groupe 4";"Groupe 3-4";"Groupe 4b-4c";"Groupe 4c-5a";
-"刘";"伟";"student_000023@example.com";"Groupe 5b";"Groupe 5";"Groupe 5-6";"Groupe 5a-5b";"Groupe 5b-5c";
-"周";"伟";"student_000040@example.com";"Groupe 6c";"Groupe 6";"Groupe 5-6";"Groupe 6b-6c";"Groupe 1a-6c";
-"张";"伟";"student_000082@example.com";"Groupe 10b";"Groupe 10";"Groupe 9-10";"Groupe 10b-10c";;"Groupe 9b-10b"
-"张";"伟";"student_000095@example.com";"Groupe 12a";"Groupe 12";"Groupe 11-12";"Groupe 11c-12a";;"Groupe 11a-12a"
-"李";"伟";"student_000083@example.com";"Groupe 10c";"Groupe 10";"Groupe 9-10";"Groupe 10b-10c";;"Groupe 9c-10c"
-"楊";"伟";"student_000003@example.com";"Groupe 4b";"Groupe 4";"Groupe 3-4";"Groupe 4b-4c";"Groupe 4a-4b";
-"王";"伟";"student_000035@example.com";"Groupe 5a";"Groupe 5";"Groupe 5-6";"Groupe 5a-5b";"Groupe 4c-5a";
-"王";"伟";"student_000063@example.com";"Groupe 2c";"Groupe 2";"Groupe 1-2";"Groupe 2b-2c";"Groupe 2c-3a";
-"陈";"伟";"student_000012@example.com";"Groupe 6b";"Groupe 6";"Groupe 5-6";"Groupe 6b-6c";"Groupe 6a-6b";
-"陈";"伟";"student_000046@example.com";"Groupe 4a";"Groupe 4";"Groupe 3-4";"Groupe 3c-4a";"Groupe 4a-4b";
-"吳";"敏";"student_000024@example.com";"Groupe 11c";"Groupe 11";"Groupe 11-12";"Groupe 11c-12a";;"Groupe 11c-12c"
-"吳";"敏";"student_000066@example.com";"Groupe 5c";"Groupe 5";"Groupe 5-6";"Groupe 5c-6a";"Groupe 5b-5c";
-"楊";"敏";"student_000045@example.com";"Groupe 2a";"Groupe 2";"Groupe 1-2";"Groupe 1c-2a";"Groupe 2a-2b";
-"吳";"秀英";"student_000028@example.com";"Groupe 3b";"Groupe 3";"Groupe 3-4";"Groupe 3a-3b";"Groupe 3b-3c";
-"楊";"秀英";"student_000078@example.com";"Groupe 9c";"Groupe 9";"Groupe 9-10";"Groupe 9c-10a";;"Groupe 9c-10c"
-"趙";"秀英";"student_000090@example.com";"Groupe 10a";"Groupe 10";"Groupe 9-10";"Groupe 9c-10a";;"Groupe 9a-10a"
-"黃";"秀英";"student_000014@example.com";"Groupe 11b";"Groupe 11";"Groupe 11-12";"Groupe 11a-11b";;"Groupe 11b-12b"
-"黃";"秀英";"student_000096@example.com";"Groupe 10a";"Groupe 10";"Groupe 9-10";"Groupe 9c-10a";;"Groupe 9a-10a"
-"中村";"美咲";"student_000085@example.com";"Groupe 11a";"Groupe 11";"Groupe 11-12";"Groupe 11a-11b";;"Groupe 11a-12a"
-"伊藤";"美咲";"student_000002@example.com";"Groupe 7c";"Groupe 7";"Groupe 7-8";"Groupe 7c-8a";;"Groupe 7c-8c"
-"伊藤";"美咲";"student_000039@example.com";"Groupe 11a";"Groupe 11";"Groupe 11-12";"Groupe 11a-11b";;"Groupe 11a-12a"
-"斎藤";"美咲";"student_000010@example.com";"Groupe 11a";"Groupe 11";"Groupe 11-12";"Groupe 11a-11b";;"Groupe 11a-12a"
-"斎藤";"美咲";"student_000011@example.com";"Groupe 11b";"Groupe 11";"Groupe 11-12";"Groupe 11a-11b";;"Groupe 11b-12b"
-"高橋";"翔";"student_000031@example.com";"Groupe 5a";"Groupe 5";"Groupe 5-6";"Groupe 5a-5b";"Groupe 4c-5a";
-"渡辺";"翔太";"student_000055@example.com";"Groupe 3c";"Groupe 3";"Groupe 3-4";"Groupe 3c-4a";"Groupe 3b-3c";
-"陈";"芳";"student_000100@example.com";"Groupe 5b";"Groupe 5";"Groupe 5-6";"Groupe 5a-5b";"Groupe 5b-5c";
-"中村";"葵";"student_000008@example.com";"Groupe 3a";"Groupe 3";"Groupe 3-4";"Groupe 3a-3b";"Groupe 2c-3a";
-"山本";"葵";"student_000025@example.com";"Groupe 12a";"Groupe 12";"Groupe 11-12";"Groupe 11c-12a";;"Groupe 11a-12a"
-"伊藤";"陽菜";"student_000043@example.com";"Groupe 2c";"Groupe 2";"Groupe 1-2";"Groupe 2b-2c";"Groupe 2c-3a";
-"小林";"陽菜";"student_000097@example.com";"Groupe 7b";"Groupe 7";"Groupe 7-8";"Groupe 7a-7b";;"Groupe 7b-8b"
-"鈴木";"颯太";"student_000070@example.com";"Groupe 10b";"Groupe 10";"Groupe 9-10";"Groupe 10b-10c";;"Groupe 9b-10b"
+"Nom de l'étudiant";"Prénom"   ;"Identifiant"               ;"Groupement 1";"Groupement 2";"Groupement 3";"Groupement 4"  ;"Groupement 5";"Groupement 6"
+"Veselá"           ;"Adéla"    ;"student_000088@example.com";"Groupe 12a"  ;"Groupe 12"   ;"Groupe 11-12";"Groupe 11c-12a";              ;"Groupe 11a-12a"
+"Horáková"         ;"Anna"     ;"student_000057@example.com";"Groupe 6b"   ;"Groupe 6"    ;"Groupe 5-6"  ;"Groupe 6b-6c"  ;"Groupe 6a-6b";
+"Davis"            ;"Ava"      ;"student_000019@example.com";"Groupe 8a"   ;"Groupe 8"    ;"Groupe 7-8"  ;"Groupe 7c-8a"  ;              ;"Groupe 7a-8a"
+"Rodríguez"        ;"Ava"      ;"student_000059@example.com";"Groupe 10c"  ;"Groupe 10"   ;"Groupe 9-10" ;"Groupe 10b-10c";              ;"Groupe 9c-10c"
+"Wilson"           ;"Ava"      ;"student_000075@example.com";"Groupe 7a"   ;"Groupe 7"    ;"Groupe 7-8"  ;"Groupe 7a-7b"  ;              ;"Groupe 7a-8a"
+"Kučerová"         ;"Eliška"   ;"student_000098@example.com";"Groupe 6b"   ;"Groupe 6"    ;"Groupe 5-6"  ;"Groupe 6b-6c"  ;"Groupe 6a-6b";
+"García"           ;"Emma"     ;"student_000013@example.com";"Groupe 3c"   ;"Groupe 3"    ;"Groupe 3-4"  ;"Groupe 3c-4a"  ;"Groupe 3b-3c";
+"Wilson"           ;"Emma"     ;"student_000030@example.com";"Groupe 10b"  ;"Groupe 10"   ;"Groupe 9-10" ;"Groupe 10b-10c";              ;"Groupe 9b-10b"
+"Johnson"          ;"Ethan"    ;"student_000089@example.com";"Groupe 8c"   ;"Groupe 8"    ;"Groupe 7-8"  ;"Groupe 8b-8c"  ;              ;"Groupe 7c-8c"
+"Hoffmann"         ;"Hanna"    ;"student_000021@example.com";"Groupe 5b"   ;"Groupe 5"    ;"Groupe 5-6"  ;"Groupe 5a-5b"  ;"Groupe 5b-5c";
+"Wagner"           ;"Hanna"    ;"student_000036@example.com";"Groupe 4a"   ;"Groupe 4"    ;"Groupe 3-4"  ;"Groupe 3c-4a"  ;"Groupe 4a-4b";
+"García"           ;"Isabella" ;"student_000022@example.com";"Groupe 12c"  ;"Groupe 12"   ;"Groupe 11-12";"Groupe 12b-12c";              ;"Groupe 11c-12c"
+"García"           ;"Isabella" ;"student_000065@example.com";"Groupe 2b"   ;"Groupe 2"    ;"Groupe 1-2"  ;"Groupe 2b-2c"  ;"Groupe 2a-2b";
+"Johnson"          ;"Jacob"    ;"student_000001@example.com";"Groupe 7b"   ;"Groupe 7"    ;"Groupe 7-8"  ;"Groupe 7a-7b"  ;              ;"Groupe 7b-8b"
+"Johnson"          ;"Jacob"    ;"student_000094@example.com";"Groupe 1b"   ;"Groupe 1"    ;"Groupe 1-2"  ;"Groupe 1a-1b"  ;"Groupe 1b-1c";
+"Jones"            ;"Jacob"    ;"student_000054@example.com";"Groupe 12b"  ;"Groupe 12"   ;"Groupe 11-12";"Groupe 12b-12c";              ;"Groupe 11b-12b"
+"Williams"         ;"Jacob"    ;"student_000087@example.com";"Groupe 2a"   ;"Groupe 2"    ;"Groupe 1-2"  ;"Groupe 1c-2a"  ;"Groupe 2a-2b";
+"Černý"            ;"Jakub"    ;"student_000047@example.com";"Groupe 8b"   ;"Groupe 8"    ;"Groupe 7-8"  ;"Groupe 8b-8c"  ;              ;"Groupe 7b-8b"
+"Dvořák"           ;"Jakub"    ;"student_000006@example.com";"Groupe 6c"   ;"Groupe 6"    ;"Groupe 5-6"  ;"Groupe 6b-6c"  ;"Groupe 1a-6c";
+"Novotný"          ;"Jakub"    ;"student_000026@example.com";"Groupe 3b"   ;"Groupe 3"    ;"Groupe 3-4"  ;"Groupe 3a-3b"  ;"Groupe 3b-3c";
+"Novotný"          ;"Jakub"    ;"student_000051@example.com";"Groupe 8a"   ;"Groupe 8"    ;"Groupe 7-8"  ;"Groupe 7c-8a"  ;              ;"Groupe 7a-8a"
+"Novák"            ;"Jan"      ;"student_000069@example.com";"Groupe 4b"   ;"Groupe 4"    ;"Groupe 3-4"  ;"Groupe 4b-4c"  ;"Groupe 4a-4b";
+"Svoboda"          ;"Jan"      ;"student_000064@example.com";"Groupe 10c"  ;"Groupe 10"   ;"Groupe 9-10" ;"Groupe 10b-10c";              ;"Groupe 9c-10c"
+"Williams"         ;"Jayden"   ;"student_000027@example.com";"Groupe 9a"   ;"Groupe 9"    ;"Groupe 9-10" ;"Groupe 9a-9b"  ;              ;"Groupe 9a-10a"
+"Kučerová"         ;"Karolína" ;"student_000049@example.com";"Groupe 10c"  ;"Groupe 10"   ;"Groupe 9-10" ;"Groupe 10b-10c";              ;"Groupe 9c-10c"
+"Němcová"          ;"Karolína" ;"student_000086@example.com";"Groupe 12c"  ;"Groupe 12"   ;"Groupe 11-12";"Groupe 12b-12c";              ;"Groupe 11c-12c"
+"Veselá"           ;"Karolína" ;"student_000004@example.com";"Groupe 1a"   ;"Groupe 1"    ;"Groupe 1-2"  ;"Groupe 1a-1b"  ;"Groupe 1a-6c";
+"Wagner"           ;"Laura"    ;"student_000072@example.com";"Groupe 11b"  ;"Groupe 11"   ;"Groupe 11-12";"Groupe 11a-11b";              ;"Groupe 11b-12b"
+"Wagner"           ;"Leah"     ;"student_000034@example.com";"Groupe 1b"   ;"Groupe 1"    ;"Groupe 1-2"  ;"Groupe 1a-1b"  ;"Groupe 1b-1c";
+"Wagner"           ;"Leah"     ;"student_000077@example.com";"Groupe 11b"  ;"Groupe 11"   ;"Groupe 11-12";"Groupe 11a-11b";              ;"Groupe 11b-12b"
+"Wagner"           ;"Lena"     ;"student_000017@example.com";"Groupe 6b"   ;"Groupe 6"    ;"Groupe 5-6"  ;"Groupe 6b-6c"  ;"Groupe 6a-6b";
+"Schmidt"          ;"Leon"     ;"student_000076@example.com";"Groupe 12c"  ;"Groupe 12"   ;"Groupe 11-12";"Groupe 12b-12c";              ;"Groupe 11c-12c"
+"Becker"           ;"Leonie"   ;"student_000061@example.com";"Groupe 7c"   ;"Groupe 7"    ;"Groupe 7-8"  ;"Groupe 7c-8a"  ;              ;"Groupe 7c-8c"
+"Hoffmann"         ;"Leonie"   ;"student_000044@example.com";"Groupe 6c"   ;"Groupe 6"    ;"Groupe 5-6"  ;"Groupe 6b-6c"  ;"Groupe 1a-6c";
+"Schulz"           ;"Leonie"   ;"student_000020@example.com";"Groupe 2a"   ;"Groupe 2"    ;"Groupe 1-2"  ;"Groupe 1c-2a"  ;"Groupe 2a-2b";
+"Svoboda"          ;"Lukáš"    ;"student_000032@example.com";"Groupe 8c"   ;"Groupe 8"    ;"Groupe 7-8"  ;"Groupe 8b-8c"  ;              ;"Groupe 7c-8c"
+"Svoboda"          ;"Lukáš"    ;"student_000056@example.com";"Groupe 9b"   ;"Groupe 9"    ;"Groupe 9-10" ;"Groupe 9a-9b"  ;              ;"Groupe 9b-10b"
+"Svoboda"          ;"Lukáš"    ;"student_000084@example.com";"Groupe 5c"   ;"Groupe 5"    ;"Groupe 5-6"  ;"Groupe 5c-6a"  ;"Groupe 5b-5c";
+"Černý"            ;"Matěj"    ;"student_000068@example.com";"Groupe 2b"   ;"Groupe 2"    ;"Groupe 1-2"  ;"Groupe 2b-2c"  ;"Groupe 2a-2b";
+"Novák"            ;"Matěj"    ;"student_000042@example.com";"Groupe 2c"   ;"Groupe 2"    ;"Groupe 1-2"  ;"Groupe 2b-2c"  ;"Groupe 2c-3a";
+"Novotný"          ;"Matěj"    ;"student_000009@example.com";"Groupe 1c"   ;"Groupe 1"    ;"Groupe 1-2"  ;"Groupe 1c-2a"  ;"Groupe 1b-1c";
+"Svoboda"          ;"Matěj"    ;"student_000071@example.com";"Groupe 3a"   ;"Groupe 3"    ;"Groupe 3-4"  ;"Groupe 3a-3b"  ;"Groupe 2c-3a";
+"Miller"           ;"Olivia"   ;"student_000067@example.com";"Groupe 6c"   ;"Groupe 6"    ;"Groupe 5-6"  ;"Groupe 6b-6c"  ;"Groupe 1a-6c";
+"Wilson"           ;"Olivia"   ;"student_000099@example.com";"Groupe 8c"   ;"Groupe 8"    ;"Groupe 7-8"  ;"Groupe 8b-8c"  ;              ;"Groupe 7c-8c"
+"Davis"            ;"Sophia"   ;"student_000033@example.com";"Groupe 4a"   ;"Groupe 4"    ;"Groupe 3-4"  ;"Groupe 3c-4a"  ;"Groupe 4a-4b";
+"Rodríguez"        ;"Sophia"   ;"student_000005@example.com";"Groupe 6a"   ;"Groupe 6"    ;"Groupe 5-6"  ;"Groupe 5c-6a"  ;"Groupe 6a-6b";
+"Veselá"           ;"Tereza"   ;"student_000018@example.com";"Groupe 5c"   ;"Groupe 5"    ;"Groupe 5-6"  ;"Groupe 5c-6a"  ;"Groupe 5b-5c";
+"Schneider"        ;"Timm"     ;"student_000080@example.com";"Groupe 3b"   ;"Groupe 3"    ;"Groupe 3-4"  ;"Groupe 3a-3b"  ;"Groupe 3b-3c";
+"Johnson"          ;"William"  ;"student_000016@example.com";"Groupe 1c"   ;"Groupe 1"    ;"Groupe 1-2"  ;"Groupe 1c-2a"  ;"Groupe 1b-1c";
+"Иванов"           ;"Александр";"student_000007@example.com";"Groupe 11a"  ;"Groupe 11"   ;"Groupe 11-12";"Groupe 11a-11b";              ;"Groupe 11a-12a"
+"Иванов"           ;"Александр";"student_000092@example.com";"Groupe 11c"  ;"Groupe 11"   ;"Groupe 11-12";"Groupe 11c-12a";              ;"Groupe 11c-12c"
+"Кузнецов"         ;"Александр";"student_000053@example.com";"Groupe 8b"   ;"Groupe 8"    ;"Groupe 7-8"  ;"Groupe 8b-8c"  ;              ;"Groupe 7b-8b"
+"Попов"            ;"Артем"    ;"student_000015@example.com";"Groupe 4c"   ;"Groupe 4"    ;"Groupe 3-4"  ;"Groupe 4b-4c"  ;"Groupe 4c-5a";
+"Попов"            ;"Артем"    ;"student_000050@example.com";"Groupe 1c"   ;"Groupe 1"    ;"Groupe 1-2"  ;"Groupe 1c-2a"  ;"Groupe 1b-1c";
+"Смирнов"          ;"Артем"    ;"student_000029@example.com";"Groupe 7b"   ;"Groupe 7"    ;"Groupe 7-8"  ;"Groupe 7a-7b"  ;              ;"Groupe 7b-8b"
+"Соколов"          ;"Артем"    ;"student_000081@example.com";"Groupe 8b"   ;"Groupe 8"    ;"Groupe 7-8"  ;"Groupe 8b-8c"  ;              ;"Groupe 7b-8b"
+"Кузнецов"         ;"Даниил"   ;"student_000041@example.com";"Groupe 7a"   ;"Groupe 7"    ;"Groupe 7-8"  ;"Groupe 7a-7b"  ;              ;"Groupe 7a-8a"
+"Смирнов"          ;"Даниил"   ;"student_000091@example.com";"Groupe 1c"   ;"Groupe 1"    ;"Groupe 1-2"  ;"Groupe 1c-2a"  ;"Groupe 1b-1c";
+"Лебедева"         ;"Дарья"    ;"student_000073@example.com";"Groupe 8c"   ;"Groupe 8"    ;"Groupe 7-8"  ;"Groupe 8b-8c"  ;              ;"Groupe 7c-8c"
+"Лебедева"         ;"Дарья"    ;"student_000079@example.com";"Groupe 5a"   ;"Groupe 5"    ;"Groupe 5-6"  ;"Groupe 5a-5b"  ;"Groupe 4c-5a";
+"Петрова"          ;"Дарья"    ;"student_000048@example.com";"Groupe 9c"   ;"Groupe 9"    ;"Groupe 9-10" ;"Groupe 9c-10a" ;              ;"Groupe 9c-10c"
+"Соколов"          ;"Иван"     ;"student_000093@example.com";"Groupe 8a"   ;"Groupe 8"    ;"Groupe 7-8"  ;"Groupe 7c-8a"  ;              ;"Groupe 7a-8a"
+"Кузнецов"         ;"Максим"   ;"student_000058@example.com";"Groupe 2a"   ;"Groupe 2"    ;"Groupe 1-2"  ;"Groupe 1c-2a"  ;"Groupe 2a-2b";
+"Лебедева"         ;"Мария"    ;"student_000052@example.com";"Groupe 9c"   ;"Groupe 9"    ;"Groupe 9-10" ;"Groupe 9c-10a" ;              ;"Groupe 9c-10c"
+"Морозова"         ;"Мария"    ;"student_000074@example.com";"Groupe 3b"   ;"Groupe 3"    ;"Groupe 3-4"  ;"Groupe 3a-3b"  ;"Groupe 3b-3c";
+"Лебедева"         ;"Полина"   ;"student_000062@example.com";"Groupe 9a"   ;"Groupe 9"    ;"Groupe 9-10" ;"Groupe 9a-9b"  ;              ;"Groupe 9a-10a"
+"Козлова"          ;"София"    ;"student_000037@example.com";"Groupe 7c"   ;"Groupe 7"    ;"Groupe 7-8"  ;"Groupe 7c-8a"  ;              ;"Groupe 7c-8c"
+"Козлова"          ;"София"    ;"student_000060@example.com";"Groupe 6a"   ;"Groupe 6"    ;"Groupe 5-6"  ;"Groupe 5c-6a"  ;"Groupe 6a-6b";
+"伊藤"               ;"さくら"      ;"student_000038@example.com";"Groupe 4c"   ;"Groupe 4"    ;"Groupe 3-4"  ;"Groupe 4b-4c"  ;"Groupe 4c-5a";
+"刘"                ;"伟"        ;"student_000023@example.com";"Groupe 5b"   ;"Groupe 5"    ;"Groupe 5-6"  ;"Groupe 5a-5b"  ;"Groupe 5b-5c";
+"周"                ;"伟"        ;"student_000040@example.com";"Groupe 6c"   ;"Groupe 6"    ;"Groupe 5-6"  ;"Groupe 6b-6c"  ;"Groupe 1a-6c";
+"张"                ;"伟"        ;"student_000082@example.com";"Groupe 10b"  ;"Groupe 10"   ;"Groupe 9-10" ;"Groupe 10b-10c";              ;"Groupe 9b-10b"
+"张"                ;"伟"        ;"student_000095@example.com";"Groupe 12a"  ;"Groupe 12"   ;"Groupe 11-12";"Groupe 11c-12a";              ;"Groupe 11a-12a"
+"李"                ;"伟"        ;"student_000083@example.com";"Groupe 10c"  ;"Groupe 10"   ;"Groupe 9-10" ;"Groupe 10b-10c";              ;"Groupe 9c-10c"
+"楊"                ;"伟"        ;"student_000003@example.com";"Groupe 4b"   ;"Groupe 4"    ;"Groupe 3-4"  ;"Groupe 4b-4c"  ;"Groupe 4a-4b";
+"王"                ;"伟"        ;"student_000035@example.com";"Groupe 5a"   ;"Groupe 5"    ;"Groupe 5-6"  ;"Groupe 5a-5b"  ;"Groupe 4c-5a";
+"王"                ;"伟"        ;"student_000063@example.com";"Groupe 2c"   ;"Groupe 2"    ;"Groupe 1-2"  ;"Groupe 2b-2c"  ;"Groupe 2c-3a";
+"陈"                ;"伟"        ;"student_000012@example.com";"Groupe 6b"   ;"Groupe 6"    ;"Groupe 5-6"  ;"Groupe 6b-6c"  ;"Groupe 6a-6b";
+"陈"                ;"伟"        ;"student_000046@example.com";"Groupe 4a"   ;"Groupe 4"    ;"Groupe 3-4"  ;"Groupe 3c-4a"  ;"Groupe 4a-4b";
+"吳"                ;"敏"        ;"student_000024@example.com";"Groupe 11c"  ;"Groupe 11"   ;"Groupe 11-12";"Groupe 11c-12a";              ;"Groupe 11c-12c"
+"吳"                ;"敏"        ;"student_000066@example.com";"Groupe 5c"   ;"Groupe 5"    ;"Groupe 5-6"  ;"Groupe 5c-6a"  ;"Groupe 5b-5c";
+"楊"                ;"敏"        ;"student_000045@example.com";"Groupe 2a"   ;"Groupe 2"    ;"Groupe 1-2"  ;"Groupe 1c-2a"  ;"Groupe 2a-2b";
+"吳"                ;"秀英"       ;"student_000028@example.com";"Groupe 3b"   ;"Groupe 3"    ;"Groupe 3-4"  ;"Groupe 3a-3b"  ;"Groupe 3b-3c";
+"楊"                ;"秀英"       ;"student_000078@example.com";"Groupe 9c"   ;"Groupe 9"    ;"Groupe 9-10" ;"Groupe 9c-10a" ;              ;"Groupe 9c-10c"
+"趙"                ;"秀英"       ;"student_000090@example.com";"Groupe 10a"  ;"Groupe 10"   ;"Groupe 9-10" ;"Groupe 9c-10a" ;              ;"Groupe 9a-10a"
+"黃"                ;"秀英"       ;"student_000014@example.com";"Groupe 11b"  ;"Groupe 11"   ;"Groupe 11-12";"Groupe 11a-11b";              ;"Groupe 11b-12b"
+"黃"                ;"秀英"       ;"student_000096@example.com";"Groupe 10a"  ;"Groupe 10"   ;"Groupe 9-10" ;"Groupe 9c-10a" ;              ;"Groupe 9a-10a"
+"中村"               ;"美咲"       ;"student_000085@example.com";"Groupe 11a"  ;"Groupe 11"   ;"Groupe 11-12";"Groupe 11a-11b";              ;"Groupe 11a-12a"
+"伊藤"               ;"美咲"       ;"student_000002@example.com";"Groupe 7c"   ;"Groupe 7"    ;"Groupe 7-8"  ;"Groupe 7c-8a"  ;              ;"Groupe 7c-8c"
+"伊藤"               ;"美咲"       ;"student_000039@example.com";"Groupe 11a"  ;"Groupe 11"   ;"Groupe 11-12";"Groupe 11a-11b";              ;"Groupe 11a-12a"
+"斎藤"               ;"美咲"       ;"student_000010@example.com";"Groupe 11a"  ;"Groupe 11"   ;"Groupe 11-12";"Groupe 11a-11b";              ;"Groupe 11a-12a"
+"斎藤"               ;"美咲"       ;"student_000011@example.com";"Groupe 11b"  ;"Groupe 11"   ;"Groupe 11-12";"Groupe 11a-11b";              ;"Groupe 11b-12b"
+"高橋"               ;"翔"        ;"student_000031@example.com";"Groupe 5a"   ;"Groupe 5"    ;"Groupe 5-6"  ;"Groupe 5a-5b"  ;"Groupe 4c-5a";
+"渡辺"               ;"翔太"       ;"student_000055@example.com";"Groupe 3c"   ;"Groupe 3"    ;"Groupe 3-4"  ;"Groupe 3c-4a"  ;"Groupe 3b-3c";
+"陈"                ;"芳"        ;"student_000100@example.com";"Groupe 5b"   ;"Groupe 5"    ;"Groupe 5-6"  ;"Groupe 5a-5b"  ;"Groupe 5b-5c";
+"中村"               ;"葵"        ;"student_000008@example.com";"Groupe 3a"   ;"Groupe 3"    ;"Groupe 3-4"  ;"Groupe 3a-3b"  ;"Groupe 2c-3a";
+"山本"               ;"葵"        ;"student_000025@example.com";"Groupe 12a"  ;"Groupe 12"   ;"Groupe 11-12";"Groupe 11c-12a";              ;"Groupe 11a-12a"
+"伊藤"               ;"陽菜"       ;"student_000043@example.com";"Groupe 2c"   ;"Groupe 2"    ;"Groupe 1-2"  ;"Groupe 2b-2c"  ;"Groupe 2c-3a";
+"小林"               ;"陽菜"       ;"student_000097@example.com";"Groupe 7b"   ;"Groupe 7"    ;"Groupe 7-8"  ;"Groupe 7a-7b"  ;              ;"Groupe 7b-8b"
+"鈴木"               ;"颯太"       ;"student_000070@example.com";"Groupe 10b"  ;"Groupe 10"   ;"Groupe 9-10" ;"Groupe 10b-10c";              ;"Groupe 9b-10b"

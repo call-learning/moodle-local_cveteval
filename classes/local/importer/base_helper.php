@@ -28,16 +28,12 @@ defined('MOODLE_INTERNAL') || die();
 use context_system;
 use dml_exception;
 use local_cveteval\local\importer\grouping\csv_data_source;
-use local_cveteval\local\persistent\evaluation_grid\entity as evaluation_grid_entity;
-use local_cveteval\local\persistent\role\entity as role_entity;
-use local_cveteval\local\persistent\situation\entity as situation_entity;
 use moodle_exception;
 use tool_importer\data_importer;
 use tool_importer\data_source;
 use tool_importer\data_transformer;
 use tool_importer\importer;
 use tool_importer\importer_exception;
-use tool_importer\local\transformer\standard;
 
 abstract class base_helper {
 

@@ -22,7 +22,6 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use local_cveteval\local\forms\cveteval_import_form;
 use local_cveteval\local\utils;
 
 define('NO_OUTPUT_BUFFERING', true);
@@ -40,7 +39,7 @@ echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('cleanup', 'local_cveteval'));
 if ($confirm) {
     require_sesskey();
-    \local_cveteval\local\utils::cleanup_all_data();
+    utils::cleanup_all_data();
     /* @var core_renderer $OUTPUT */
     echo $OUTPUT->continue_button(
         new moodle_url('/admin/category.php', array('category' => 'cveteval'))

@@ -30,6 +30,7 @@ define('AJAX_SCRIPT', true);
 define('REQUIRE_CORRECT_ACCESS', true);
 define('NO_MOODLE_COOKIES', true);
 
+use core\session\manager;
 use local_cveteval\local\utils;
 
 require_once(__DIR__ . '../../../../config.php');
@@ -95,7 +96,7 @@ if (!empty($user)) {
     enrol_check_plugins($user);
 
     // Setup user session to check capability.
-    \core\session\manager::set_user($user);
+    manager::set_user($user);
 
     // Check if the service exists and is enabled.
     $service = $DB->get_record('external_services', array('shortname' => $serviceshortname, 'enabled' => 1));

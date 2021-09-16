@@ -25,10 +25,11 @@
 namespace local_cveteval\local\external;
 defined('MOODLE_INTERNAL') || die();
 
+use external_api;
 use external_function_parameters;
+use external_multiple_structure;
 use external_single_structure;
 use external_value;
-use external_api;
 use moodle_url;
 
 /**
@@ -45,7 +46,7 @@ class auth extends external_api {
      * @return external_multiple_structure
      */
     public static function idp_list_returns() {
-        return new \external_multiple_structure(
+        return new external_multiple_structure(
             new external_single_structure(
                 array(
                     'url' => new external_value(PARAM_RAW, 'URL to launch IDP connexion',
@@ -88,7 +89,7 @@ class auth extends external_api {
      * @return external_function_parameters
      */
     public static function idp_list_parameters() {
-        return new \external_function_parameters([]);
+        return new external_function_parameters([]);
     }
 }
 

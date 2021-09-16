@@ -22,6 +22,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use local_cveteval\local\utils;
 use local_vetagropro\locallib\setup;
 
 define('CLI_SCRIPT', true);
@@ -91,8 +92,8 @@ $sampletype = [
         ]
     ]
 ];
-\local_cveteval\local\utils::create_scale_if_not_present();
-\local_cveteval\local\utils::setup_mobile_service(true);
+utils::create_scale_if_not_present();
+utils::setup_mobile_service(true);
 
 if (!empty($options['users']) && $options['users']) {
     cli_writeln('Import users...');

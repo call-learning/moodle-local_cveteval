@@ -24,8 +24,6 @@
 
 namespace local_cveteval\utils;
 
-use renderer_base;
-
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 

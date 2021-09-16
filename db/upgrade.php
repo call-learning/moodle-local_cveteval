@@ -23,6 +23,8 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use local_cveteval\local\utils;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -33,11 +35,11 @@ defined('MOODLE_INTERNAL') || die();
  */
 function xmldb_local_cveteval_upgrade($oldversion) {
     if ($oldversion < 2021033016) {
-        \local_cveteval\local\utils::create_scale_if_not_present();
+        utils::create_scale_if_not_present();
         upgrade_plugin_savepoint(true, 2021033016, 'local', 'cveteval');
     }
     if ($oldversion < 2021033034) {
-        \local_cveteval\local\utils::setup_mobile_service(true);
+        utils::setup_mobile_service(true);
         upgrade_plugin_savepoint(true, 2021033034, 'local', 'cveteval');
     }
     return true;

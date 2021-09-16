@@ -33,8 +33,9 @@
     {{#comments}}
         <button type="button" class="btn btn-light" data-toggle="modal" data-target="#modal-{{uniqid}}">{{#pix}}t/viewdetails{{/pix}}</button>
 
-        <div class="modal"  data-backdrop="false" data-region="modal-container" id="modal-{{uniqid}}" tabindex="-1" role="dialog" aria-labelledby="modallabel-{{uniqid}}" aria-hidden="true">
-            <div  class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document" data-region="modal" tabindex="0">
+        <div class="modal" data-backdrop="false" data-region="modal-container" id="modal-{{uniqid}}" tabindex="-1" role="dialog" aria-labelledby="modallabel-{{uniqid}}"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document" data-region="modal" tabindex="0">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="modallabel-{{uniqid}}">{{#str}}comments, local_cveteval{{/str}}</h5>

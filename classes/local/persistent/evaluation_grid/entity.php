@@ -23,6 +23,7 @@
  */
 
 namespace local_cveteval\local\persistent\evaluation_grid;
+
 use coding_exception;
 use core\persistent;
 

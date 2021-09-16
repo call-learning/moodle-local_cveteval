@@ -10,10 +10,11 @@
 
 
 .ceveteval-eval-form #fitem_id_comment_editor {
-    flex-grow : 4;
+    flex-grow: 4;
 }
+
 .ceveteval-eval-form #fitem_id_grade {
-    flex-grow : 1;
+    flex-grow: 1;
 }
 
 .ceveteval-eval-form .form-group.row.fitem {

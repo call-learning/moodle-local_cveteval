@@ -24,22 +24,27 @@
 
 namespace local_cltools;
 defined('MOODLE_INTERNAL') || die();
+
+use advanced_testcase;
+use core_user;
 use local_cveteval\local\external\appr_crit;
 use local_cveteval\local\external\appraisal;
 use local_cveteval\local\external\auth;
+use local_cveteval\local\external\cevalgrid;
 use local_cveteval\local\external\clsituation;
 use local_cveteval\local\external\criterion;
-use local_cveteval\local\external\cevalgrid;
 use local_cveteval\local\external\evalplan;
 use local_cveteval\local\external\group_assign;
 use local_cveteval\local\external\role;
 use local_cveteval\local\external\user_profile;
 use local_cveteval\local\external\user_type;
 use local_cveteval\local\persistent\appraisal\entity as appraisal_entity;
-use \local_cveteval\local\persistent\role\entity as role_entity;
+use local_cveteval\local\persistent\role\entity as role_entity;
+
 global $CFG;
 
 require_once($CFG->libdir . '/externallib.php');
+
 /**
  * API tests
  *
@@ -47,7 +52,7 @@ require_once($CFG->libdir . '/externallib.php');
  * @copyright   2020 CALL Learning <contact@call-learning.fr>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class local_cveteval_api_testcase extends \advanced_testcase {
+class local_cveteval_api_testcase extends advanced_testcase {
 
     public function setUp() {
         global $CFG;
@@ -76,32 +81,32 @@ class local_cveteval_api_testcase extends \advanced_testcase {
         $this->assertEquals(
             (object)
             ['type' => role_entity::ROLE_SHORTNAMES[role_entity::ROLE_STUDENT_ID]],
-            user_type::execute((\core_user::get_user_by_username('etu1'))->id));
+            user_type::execute((core_user::get_user_by_username('etu1'))->id));
         $this->assertEquals(
             (object)
             ['type' => role_entity::ROLE_SHORTNAMES[role_entity::ROLE_ASSESSOR_ID]],
-            user_type::execute((\core_user::get_user_by_username('resp1'))->id));
+            user_type::execute((core_user::get_user_by_username('resp1'))->id));
         // Obs 1 to 5 are also assessors.
         $this->assertEquals(
             (object)
             ['type' => role_entity::ROLE_SHORTNAMES[role_entity::ROLE_ASSESSOR_ID]],
-            user_type::execute((\core_user::get_user_by_username('obs1'))->id));
+            user_type::execute((core_user::get_user_by_username('obs1'))->id));
         $this->assertEquals(
             (object)
             ['type' => role_entity::ROLE_SHORTNAMES[role_entity::ROLE_APPRAISER_ID]],
-            user_type::execute((\core_user::get_user_by_username('obs6'))->id));
+            user_type::execute((core_user::get_user_by_username('obs6'))->id));
         // This user was both in groups and in roles, default to student.
         $this->assertEquals(
             (object)
             ['type' => role_entity::ROLE_SHORTNAMES[role_entity::ROLE_STUDENT_ID]],
-            user_type::execute((\core_user::get_user_by_username('obs7'))->id));
+            user_type::execute((core_user::get_user_by_username('obs7'))->id));
     }
 
     /**
      * Test if the User Type API is functional
      */
     public function test_get_user_profile() {
-        $userid = (\core_user::get_user_by_username('etu1'))->id;
+        $userid = (core_user::get_user_by_username('etu1'))->id;
         $this->assertEquals(
             [
                 'userid' => $userid,
@@ -117,8 +122,8 @@ class local_cveteval_api_testcase extends \advanced_testcase {
      * Test an API function
      */
     public function test_get_get_appraisal() {
-        $user1 = \core_user::get_user_by_username('etu1');
-        $user2 = \core_user::get_user_by_username('etu2');
+        $user1 = core_user::get_user_by_username('etu1');
+        $user2 = core_user::get_user_by_username('etu2');
         create_appraisal_for_students($user1->id, null, false);
         create_appraisal_for_students($user2->id, null, false);
         $appraisals = appraisal::get();
@@ -128,12 +133,12 @@ class local_cveteval_api_testcase extends \advanced_testcase {
         $appraisals = appraisal::get();
         $this->assertNotEmpty($appraisals);
         $this->assertCount(6, $appraisals); // 6 situations for this user in his planning.
-        $user2 = \core_user::get_user_by_username('obs1'); // Now as obs1.
+        $user2 = core_user::get_user_by_username('obs1'); // Now as obs1.
         $this->setUser($user2);
         $appraisals = appraisal::get();
         $this->assertNotEmpty($appraisals);
         $this->assertCount(8, $appraisals); // 2 appraisal per eval plan.
-        $user2 = \core_user::get_user_by_username('obs2'); // Now as obs1.
+        $user2 = core_user::get_user_by_username('obs2'); // Now as obs1.
         $this->setUser($user2);
         $appraisals = appraisal::get();
         $this->assertNotEmpty($appraisals);
@@ -145,8 +150,8 @@ class local_cveteval_api_testcase extends \advanced_testcase {
      * Test an API function
      */
     public function test_get_get_appraisal_additionalnotinplan() {
-        $user1 = \core_user::get_user_by_username('etu1');
-        $user2 = \core_user::get_user_by_username('etu2');
+        $user1 = core_user::get_user_by_username('etu1');
+        $user2 = core_user::get_user_by_username('etu2');
         create_appraisal_for_students($user1->id, null, false);
         create_appraisal_for_students($user2->id, null, false);
         $appraisals = appraisal::get();
@@ -179,8 +184,8 @@ class local_cveteval_api_testcase extends \advanced_testcase {
      * Test an API function
      */
     public function test_get_get_appraisal_crit() {
-        $user1 = \core_user::get_user_by_username('etu1');
-        $user2 = \core_user::get_user_by_username('etu2');
+        $user1 = core_user::get_user_by_username('etu1');
+        $user2 = core_user::get_user_by_username('etu2');
         create_appraisal_for_students($user1->id, null, false);
         create_appraisal_for_students($user2->id, null, false);
         $appraisalscrit = appr_crit::get();
@@ -191,7 +196,7 @@ class local_cveteval_api_testcase extends \advanced_testcase {
         $this->assertNotEmpty($appraisalscrit);
         // 6 appraisals, 240 criteria
         $this->assertCount(6 * 40, $appraisalscrit); // 6 situations for this user in his planning.
-        $user2 = \core_user::get_user_by_username('obs1'); // Now as obs1.
+        $user2 = core_user::get_user_by_username('obs1'); // Now as obs1.
         $this->setUser($user2);
         $appraisalscrit = appr_crit::get();
         $this->assertNotEmpty($appraisalscrit);
@@ -309,7 +314,7 @@ class local_cveteval_api_testcase extends \advanced_testcase {
                     'clsituationid' => $allclsituation[$r->clsituationid],
                     'type' => $r->type,
                 ];
-            }, $roles)));;
+            }, $roles)));
 
     }
 
@@ -341,7 +346,7 @@ class local_cveteval_api_testcase extends \advanced_testcase {
         $allstudentsid =
             $DB->get_fieldset_select('user', 'id', $DB->sql_like('username', ':namelike'),
                 array('namelike' => '%etu%'));
-        $allstudentsid[] = (\core_user::get_user_by_username('obs7'))->id;
+        $allstudentsid[] = (core_user::get_user_by_username('obs7'))->id;
         // We retrieve all situations here.
         $this->assertEquals(
             $allstudentsid,
@@ -375,7 +380,7 @@ class local_cveteval_api_testcase extends \advanced_testcase {
     public function test_get_get_evalplan_student() {
         global $DB;
         // First, no user logged in.
-        $user1 = \core_user::get_user_by_username('etu1');
+        $user1 = core_user::get_user_by_username('etu1');
         // Now, I am user 1, I should only get evalplans involving me (either as a student or appraiser).
         $this->setUser($user1);
         $evalplan = evalplan::get();
@@ -400,49 +405,6 @@ class local_cveteval_api_testcase extends \advanced_testcase {
                 ];
             }, $evalplan)));
 
-    }
-
-    /**
-     * Test an API function
-     */
-    public function test_get_get_evalplan_observer() {
-        global $DB;
-        // First, no user logged in.
-        $user1 = \core_user::get_user_by_username('obs2'); // Obs2 is only in one situation.
-        // Now, I am obs2, I should only get evalplans involving me (either as a student or appraiser).
-        $this->setUser($user1);
-        $evalplan = evalplan::get();
-        $this->assertNotEmpty($evalplan);
-        $this->assertCount(4, $evalplan);
-        $allgroupidmatch =
-            $DB->get_records_menu('local_cveteval_group', null, '', 'id,name');
-        $allclsituation =
-            $DB->get_records_menu('local_cveteval_clsituation', null, '', 'id,title');
-        // We retrieve all situations here.
-
-        $this->assertEquals(
-            array_values(array_filter($this->get_all_evalplans(), function($plan) {
-                return $plan->clsituationid == 'Consultations de médecine générale';
-            })),
-            array_values(array_map(function($s) use ($allgroupidmatch, $allclsituation) {
-                return (object) [
-                    'groupid' => $allgroupidmatch[$s->groupid],
-                    'clsituationid' => $allclsituation[$s->clsituationid],
-                    'starttime' => strftime('%d/%m/%Y', $s->starttime),
-                    'endtime' => strftime('%d/%m/%Y', $s->endtime),
-                ];
-            }, $evalplan)));
-
-    }
-
-    /**
-     * All eval plans
-     */
-    public function test_get_idplist() {
-        global $CFG;
-        $this->resetAfterTest();
-        $CFG->auth = $CFG->auth . ',cas';
-        $this->assertEquals(auth::idp_list(), []);
     }
 
     /**
@@ -525,5 +487,47 @@ class local_cveteval_api_testcase extends \advanced_testcase {
         ];
     }
 
+    /**
+     * Test an API function
+     */
+    public function test_get_get_evalplan_observer() {
+        global $DB;
+        // First, no user logged in.
+        $user1 = core_user::get_user_by_username('obs2'); // Obs2 is only in one situation.
+        // Now, I am obs2, I should only get evalplans involving me (either as a student or appraiser).
+        $this->setUser($user1);
+        $evalplan = evalplan::get();
+        $this->assertNotEmpty($evalplan);
+        $this->assertCount(4, $evalplan);
+        $allgroupidmatch =
+            $DB->get_records_menu('local_cveteval_group', null, '', 'id,name');
+        $allclsituation =
+            $DB->get_records_menu('local_cveteval_clsituation', null, '', 'id,title');
+        // We retrieve all situations here.
+
+        $this->assertEquals(
+            array_values(array_filter($this->get_all_evalplans(), function($plan) {
+                return $plan->clsituationid == 'Consultations de médecine générale';
+            })),
+            array_values(array_map(function($s) use ($allgroupidmatch, $allclsituation) {
+                return (object) [
+                    'groupid' => $allgroupidmatch[$s->groupid],
+                    'clsituationid' => $allclsituation[$s->clsituationid],
+                    'starttime' => strftime('%d/%m/%Y', $s->starttime),
+                    'endtime' => strftime('%d/%m/%Y', $s->endtime),
+                ];
+            }, $evalplan)));
+
+    }
+
+    /**
+     * All eval plans
+     */
+    public function test_get_idplist() {
+        global $CFG;
+        $this->resetAfterTest();
+        $CFG->auth = $CFG->auth . ',cas';
+        $this->assertEquals(auth::idp_list(), []);
+    }
 
 }

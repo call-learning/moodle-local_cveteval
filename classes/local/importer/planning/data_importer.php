@@ -27,8 +27,8 @@ defined('MOODLE_INTERNAL') || die();
 
 use coding_exception;
 use dml_exception;
-use local_cveteval\local\persistent\planning\entity as planning_entity;
 use local_cveteval\local\persistent\group\entity as group_entity;
+use local_cveteval\local\persistent\planning\entity as planning_entity;
 use local_cveteval\local\persistent\situation\entity as situation_entity;
 use moodle_exception;
 use stdClass;

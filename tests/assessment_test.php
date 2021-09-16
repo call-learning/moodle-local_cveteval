@@ -24,10 +24,14 @@
 
 namespace local_cltools;
 
+use advanced_testcase;
+use core_user;
 use local_cveteval\local\assessment\assessment_utils;
-use local_cveteval\local\persistent\planning\entity as planning_entity;
 use local_cveteval\local\persistent\appraisal\entity as appraisal_entity;
-use \local_cveteval\local\persistent\situation\entity as situation_entity;
+use local_cveteval\local\persistent\planning\entity as planning_entity;
+use local_cveteval\local\persistent\situation\entity as situation_entity;
+use moodle_url;
+
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->libdir . '/externallib.php');
@@ -39,7 +43,7 @@ require_once($CFG->libdir . '/externallib.php');
  * @copyright   2020 CALL Learning <contact@call-learning.fr>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class local_cveteval_assessment_testcase extends \advanced_testcase {
+class local_cveteval_assessment_testcase extends advanced_testcase {
 
     public function setUp() {
         global $CFG;
@@ -66,10 +70,10 @@ class local_cveteval_assessment_testcase extends \advanced_testcase {
      */
     public function test_list_situation() {
         $this->resetAfterTest();
-        $obs1 = \core_user::get_user_by_username('obs1');
+        $obs1 = core_user::get_user_by_username('obs1');
         $this->setUser($obs1);
         $entitylist = assessment_utils::get_mysituations_list($obs1->id);
-        $entitylist->define_baseurl(new \moodle_url('/'));
+        $entitylist->define_baseurl(new moodle_url('/'));
         $rows = $entitylist->retrieve_raw_data(100);
         $this->assertCount(1, $rows);
         $this->assertEquals($rows[0]->idnumber, "TMG");
@@ -80,11 +84,11 @@ class local_cveteval_assessment_testcase extends \advanced_testcase {
      */
     public function test_list_mystudents() {
         $this->resetAfterTest();
-        $obs1 = \core_user::get_user_by_username('obs1');
+        $obs1 = core_user::get_user_by_username('obs1');
         $this->setUser($obs1);
         $tmgsituation = situation_entity::get_record(array('idnumber' => 'TMG'));
         $entitylist = assessment_utils::get_mystudents_list($obs1->id, $tmgsituation->get('id'));
-        $entitylist->define_baseurl(new \moodle_url('/'));
+        $entitylist->define_baseurl(new moodle_url('/'));
         $rows = $entitylist->retrieve_raw_data(100);
         $this->assertCount(10, $rows);
         $this->assertEquals($rows[0]->studentfullname, "Adéla Veselá");
@@ -101,14 +105,14 @@ class local_cveteval_assessment_testcase extends \advanced_testcase {
      */
     public function test_list_appraisal_students() {
         $this->resetAfterTest();
-        $obs1 = \core_user::get_user_by_username('obs1');
-        $student = \core_user::get_user_by_username('etu1');
+        $obs1 = core_user::get_user_by_username('obs1');
+        $student = core_user::get_user_by_username('etu1');
         $this->setUser($obs1);
         $tmgsituation = situation_entity::get_record(array('idnumber' => 'TMG'));
         $evalplans = planning_entity::get_records(array('clsituationid' => $tmgsituation->get('id')));
         $evalplan = reset($evalplans);
         $entitylist = assessment_utils::get_thissituation_list($student->id, $evalplan->get('id'));
-        $entitylist->define_baseurl(new \moodle_url('/'));
+        $entitylist->define_baseurl(new moodle_url('/'));
         $rows = $entitylist->retrieve_raw_data(100);
         $this->assertCount(7, $rows);
         $this->assertEquals($rows[0]->criterionname, "Savoir être");
@@ -117,8 +121,8 @@ class local_cveteval_assessment_testcase extends \advanced_testcase {
 
     public function test_list_assessment_criteria() {
         $this->resetAfterTest();
-        $obs1 = \core_user::get_user_by_username('obs1');
-        $student = \core_user::get_user_by_username('etu1');
+        $obs1 = core_user::get_user_by_username('obs1');
+        $student = core_user::get_user_by_username('etu1');
         $this->setUser($obs1);
         create_appraisal_for_students($student->id, null, false, $obs1->id);
         $tmgsituation = situation_entity::get_record(array('idnumber' => 'TMG'));
@@ -127,7 +131,7 @@ class local_cveteval_assessment_testcase extends \advanced_testcase {
         $appraisal = appraisal_entity::get_record(array('studentid' => $student->id, 'appraiserid' => $obs1->id,
             'evalplanid' => $evalplan->get('id')));
         $entitylist = assessment_utils::get_assessmentcriteria_list($appraisal->get('id'));
-        $entitylist->define_baseurl(new \moodle_url('/'));
+        $entitylist->define_baseurl(new moodle_url('/'));
         $rows = $entitylist->retrieve_raw_data(100);
         $this->assertCount(7, $rows);
         $this->assertCount(5, $rows[0]->_children);

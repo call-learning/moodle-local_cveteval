@@ -31,6 +31,8 @@ use external_api;
 use external_function_parameters;
 use external_single_structure;
 use external_value;
+use external_warnings;
+use moodle_exception;
 
 /**
  * Class latest_modifications
@@ -49,7 +51,7 @@ class latest_modifications extends external_api {
         return new external_single_structure(
             array(
                 'latestmodifications' => new external_value(PARAM_INT, 'latest modification time'),
-                'warnings' => new \external_warnings(),
+                'warnings' => new external_warnings(),
             )
         );
     }
@@ -72,7 +74,7 @@ class latest_modifications extends external_api {
                     'message' => get_string('api:nolatestmodifs', 'local_cveteval')
                 ];
             }
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $warnings[] = [
                 'item' => $entitytype,
                 'warningcode' => 'generalerror',

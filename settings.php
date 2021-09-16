@@ -73,7 +73,7 @@ if ($hassiteconfig) {
         new admin_externalpage(
             'cvetevalimport',
             get_string('import', 'local_cveteval'),
-            $CFG->wwwroot.'/local/cveteval/admin/import.php',
+            $CFG->wwwroot . '/local/cveteval/admin/import.php',
             array('local/cveteval:import'),
             !$enabled)
     );
@@ -82,7 +82,7 @@ if ($hassiteconfig) {
         new admin_externalpage(
             'cvetevalcleanup',
             get_string('cleanup', 'local_cveteval'),
-            $CFG->wwwroot.'/local/cveteval/admin/cleanup.php',
+            $CFG->wwwroot . '/local/cveteval/admin/cleanup.php',
             array('local/cveteval:import'),
             !$enabled)
     );

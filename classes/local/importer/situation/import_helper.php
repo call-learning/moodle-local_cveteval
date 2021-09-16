@@ -25,6 +25,7 @@
 namespace local_cveteval\local\importer\situation;
 defined('MOODLE_INTERNAL') || die();
 
+use coding_exception;
 use local_cveteval\event\situation_imported;
 use local_cveteval\local\importer\base_helper;
 use local_cveteval\local\persistent\evaluation_grid\entity as evaluation_grid_entity;
@@ -58,7 +59,7 @@ class import_helper extends base_helper {
      * @param $value
      * @param $columnname
      * @return int|mixed
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public static function toevalgridid($value, $columnname) {
         static $gridmatch = [];

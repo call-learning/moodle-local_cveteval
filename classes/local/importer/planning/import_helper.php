@@ -29,7 +29,6 @@ use DateTime;
 use local_cveteval\event\planning_imported;
 use local_cveteval\local\importer\base_helper;
 use local_cveteval\local\persistent\planning\entity as planning_entity;
-use local_cveteval\local\persistent\group\entity as group_entity;
 use tool_importer\data_source;
 use tool_importer\data_transformer;
 use tool_importer\importer_exception;

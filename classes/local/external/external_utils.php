@@ -27,6 +27,8 @@ defined('MOODLE_INTERNAL') || die();
 
 use dml_exception;
 use local_cveteval\local\persistent\role\entity as role_entity;
+use moodle_exception;
+use moodle_url;
 use stdClass;
 
 /**
@@ -108,39 +110,39 @@ class external_utils {
             // Here we make sure that current user can only see evalplan involving him/her.
             case 'planning':
                 return [
-                        '(ga.studentid = :rolecheckstudentid OR ( role.userid = :rolecheckappraiserid AND'
-                        . ' (role.type = :rolechecktypeappraiser OR role.type = :rolechecktypeassessor )))',
-                        $paramscheckrole,
-                        'LEFT JOIN {local_cveteval_group_assign} ga ON ga.groupid = e.groupid
+                    '(ga.studentid = :rolecheckstudentid OR ( role.userid = :rolecheckappraiserid AND'
+                    . ' (role.type = :rolechecktypeappraiser OR role.type = :rolechecktypeassessor )))',
+                    $paramscheckrole,
+                    'LEFT JOIN {local_cveteval_group_assign} ga ON ga.groupid = e.groupid
                         LEFT JOIN {local_cveteval_role} role ON role.clsituationid = e.clsituationid',
-                        'ORDER BY e.starttime ASC',
-                        []
-                    ];
+                    'ORDER BY e.starttime ASC',
+                    []
+                ];
             case 'appraisal':
                 return [
-                        '(ga.studentid = :rolecheckstudentid AND e.studentid = :appraisalcheckstudentid'
-                        . ' OR ( role.userid = :rolecheckappraiserid AND (role.type = :rolechecktypeappraiser OR
+                    '(ga.studentid = :rolecheckstudentid AND e.studentid = :appraisalcheckstudentid'
+                    . ' OR ( role.userid = :rolecheckappraiserid AND (role.type = :rolechecktypeappraiser OR
                role.type = :rolechecktypeassessor )))',
-                        $paramscheckroleappraisal,
-                        'LEFT JOIN {local_cveteval_evalplan} eplan ON eplan.id = e.evalplanid
+                    $paramscheckroleappraisal,
+                    'LEFT JOIN {local_cveteval_evalplan} eplan ON eplan.id = e.evalplanid
                         LEFT JOIN {local_cveteval_group_assign} ga ON ga.groupid = eplan.groupid
                         LEFT JOIN {local_cveteval_role} role ON role.clsituationid = eplan.clsituationid',
-                        'ORDER BY e.evalplanid, e.timecreated ASC',
-                        []
-                    ];
+                    'ORDER BY e.evalplanid, e.timecreated ASC',
+                    []
+                ];
             case 'appraisal_criterion':
                 return [
-                        '(ga.studentid = :rolecheckstudentid AND appr.studentid = :appraisalcheckstudentid'
-                        . ' OR ( role.userid = :rolecheckappraiserid AND (role.type = :rolechecktypeappraiser OR
+                    '(ga.studentid = :rolecheckstudentid AND appr.studentid = :appraisalcheckstudentid'
+                    . ' OR ( role.userid = :rolecheckappraiserid AND (role.type = :rolechecktypeappraiser OR
                role.type = :rolechecktypeassessor )))',
-                        $paramscheckroleappraisal,
-                        'LEFT JOIN {local_cveteval_appraisal} appr ON appr.id = e.appraisalid
+                    $paramscheckroleappraisal,
+                    'LEFT JOIN {local_cveteval_appraisal} appr ON appr.id = e.appraisalid
                         LEFT JOIN {local_cveteval_evalplan} eplan ON eplan.id = appr.evalplanid
                         LEFT JOIN {local_cveteval_group_assign} ga ON ga.groupid = eplan.groupid
                         LEFT JOIN {local_cveteval_role} role ON role.clsituationid = eplan.clsituationid',
-                        'ORDER BY e.appraisalid, e.timecreated ASC',
-                        []
-                    ];
+                    'ORDER BY e.appraisalid, e.timecreated ASC',
+                    []
+                ];
             default:
                 return ['1=1', [], '', '', '', []];
         }
@@ -148,12 +150,13 @@ class external_utils {
 
     /**
      * Launch URL
+     *
      * @param $params
      * @return string
-     * @throws \moodle_exception
+     * @throws moodle_exception
      */
     public static function get_application_launch_url($params) {
-        $url = new \moodle_url('/', $params);
-        return "fr.calllearning.competveteval://".$url->get_query_string();
+        $url = new moodle_url('/', $params);
+        return "fr.calllearning.competveteval://" . $url->get_query_string();
     }
 }

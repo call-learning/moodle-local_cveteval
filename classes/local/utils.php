@@ -26,15 +26,21 @@ namespace local_cveteval\local;
 
 use coding_exception;
 use context_system;
+use core\event\webservice_token_created;
+use core\session\manager;
 use core_user;
 use dml_exception;
 use grade_scale;
+use html_writer;
 use lang_string;
 use local_cveteval\local\persistent\role\entity as role_entity;
 use moodle_exception;
 use stdClass;
 use tool_importer\local\import_log;
+use webservice;
+
 defined('MOODLE_INTERNAL') || die();
+
 /**
  * Class utils
  *
@@ -238,7 +244,7 @@ class utils {
         require_once($CFG->dirroot . '/webservice/lib.php');
         require_once($CFG->dirroot . '/local/cveteval/lib.php');
 
-        $webservicemanager = new \webservice();
+        $webservicemanager = new webservice();
         $mobileservice = $webservicemanager->get_external_service_by_shortname(self::CVETEVAL_MOBILE_SERVICE);
         if (!$mobileservice) {
             // Create it.
@@ -363,7 +369,7 @@ class utils {
             $unsettoken = false;
             // If sid is set then there must be a valid associated session no matter the token type.
             if (!empty($token->sid)) {
-                if (!\core\session\manager::session_exists($token->sid)) {
+                if (!manager::session_exists($token->sid)) {
                     // This token will never be valid anymore, delete it.
                     $DB->delete_records('external_tokens', array('sid' => $token->sid));
                     $unsettoken = true;
@@ -423,7 +429,7 @@ class utils {
                         'auto' => true
                     )
                 );
-                $event = \core\event\webservice_token_created::create($params);
+                $event = webservice_token_created::create($params);
                 $event->add_record_snapshot('external_tokens', $eventtoken);
                 $event->trigger();
             } else {
@@ -457,7 +463,7 @@ class utils {
             if (defined('CLI_SCRIPT') && CLI_SCRIPT == true) {
                 cli_writeln($message);
             } else {
-                echo \html_writer::div($message);
+                echo html_writer::div($message);
             }
             $DB->delete_records($table);
         }
@@ -466,7 +472,7 @@ class utils {
         if (defined('CLI_SCRIPT') && CLI_SCRIPT == true) {
             cli_writeln($message);
         } else {
-            echo \html_writer::div($message);
+            echo html_writer::div($message);
         }
         $DB->delete_records($importlogclass::TABLE, ['module' => 'local_cveteval']);
     }

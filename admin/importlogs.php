@@ -22,7 +22,6 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use local_cltools\local\crud\entity_utils;
 use local_cltools\local\filter\basic_filterset;
 use local_cltools\local\filter\filter;
 use local_cltools\output\table\entity_table_renderable;

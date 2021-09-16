@@ -26,9 +26,6 @@
 require_once(__DIR__ . '/../../../config.php');
 global $CFG;
 
-use local_cltools\local\crud\helper\base as crud_helper;
-use local_cltools\local\crud\helper\crud_list;
-
 global $CFG, $OUTPUT, $PAGE;
 require_login();
 $PAGE->set_url('/local/cveteval/pages/index.php');

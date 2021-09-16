@@ -33,11 +33,11 @@
      data-table-handler='{{handler}}'
      data-table-iscrud='{{tableuniqueid}}'
      data-table-otheroptions='{{otheroptions}}'
-    >
+>
 </div>
 
 {{#js}}
     require(['local_cveteval/assess-other-student-table'], function(assesstable) {
-        assesstable.init('table-{{uniqid}}');
+    assesstable.init('table-{{uniqid}}');
     });
 {{/js}}

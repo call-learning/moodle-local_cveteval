@@ -24,6 +24,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\session\manager;
 use local_cveteval\local\utils;
 
 require_once(__DIR__ . '/../../../config.php');
@@ -81,7 +82,7 @@ if ($frm and isset($frm->username)) {                             // Login WITH 
                     'username' => $frm->username,
                     'password' => $frm->password,
                     'resendconfirmemail' => true,
-                    'logintoken' => \core\session\manager::get_login_token()
+                    'logintoken' => manager::get_login_token()
                 ]
             );
             echo $OUTPUT->single_button($resendconfirmurl, get_string('emailconfirmationresend'));

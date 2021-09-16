@@ -27,16 +27,10 @@ defined('MOODLE_INTERNAL') || die();
 
 use coding_exception;
 use html_writer;
-use local_cltools\local\field\base;
 use local_cltools\local\filter\basic_filterset;
 use local_cltools\local\filter\filter;
-use local_cltools\local\filter\filterset;
-use local_cltools\local\table\dynamic_table_sql;
-use local_cveteval\output\grade_widget;
-use ReflectionException;
-use stdClass;
-use table_sql;
 use local_cveteval\local\persistent\role\entity as role_entity;
+
 /**
  * A list of function to build up the assessment pages
  *
@@ -137,6 +131,7 @@ class assessment_utils {
 
     /**
      * Get this criteria list for this evalplan / studentid
+     *
      * @param $studentid
      * @param $evalplanid
      * @return appraisals_student
@@ -184,9 +179,9 @@ class assessment_utils {
         return $entitylist;
     }
 
-
     /**
      * Get grade for this given assessment
+     *
      * @param $appraisalid
      * @return appraisals_criteria
      * @throws coding_exception

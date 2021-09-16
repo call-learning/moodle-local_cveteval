@@ -22,11 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use local_cltools\local\crud\entity_exporter;
-use local_cltools\local\filter\basic_filterset;
-use local_cltools\local\filter\filter;
 use local_cltools\output\table\entity_table_renderable;
-use local_cveteval\local\assessment\mystudents;
+use local_cveteval\local\assessment\assessment_utils;
 use local_cveteval\local\persistent\role\entity as role_entity;
 use local_cveteval\local\persistent\situation\exporter;
 use local_cveteval\local\utils;
@@ -36,7 +33,7 @@ global $CFG, $OUTPUT, $PAGE, $USER;
 $situationid = required_param('situationid', PARAM_INT);
 require_login();
 if (utils::get_user_role_id($USER->id) != role_entity::ROLE_ASSESSOR_ID) {
-    print_error('cannotaccess', 'local_cveteval');
+    throw new moodle_exception('cannotaccess', 'local_cveteval');
 }
 $PAGE->set_context(context_system::instance());
 $PAGE->set_title(get_string('assessment', 'local_cveteval')
@@ -67,7 +64,7 @@ echo $OUTPUT->render_from_template(
     $situationcontext->export($OUTPUT)
 );
 
-$entitylist = \local_cveteval\local\assessment\assessment_utils::get_mystudents_list($USER->id, $situationid);
+$entitylist = assessment_utils::get_mystudents_list($USER->id, $situationid);
 
 $renderable = new entity_table_renderable($entitylist);
 

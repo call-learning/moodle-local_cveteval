@@ -13,10 +13,12 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+use core\invalid_persistent_exception;
+use local_cveteval\local\persistent\appraisal\entity as appraisal_entity;
+use local_cveteval\local\persistent\appraisal_criterion\entity as appraisal_criterion_entity;
+use local_cveteval\local\persistent\situation\entity as situation_entity;
 use local_cveteval\local\utils;
-use \local_cveteval\local\persistent\situation\entity as situation_entity;
-use \local_cveteval\local\persistent\appraisal\entity as appraisal_entity;
-use \local_cveteval\local\persistent\appraisal_criterion\entity as appraisal_criterion_entity;
+
 defined('MOODLE_INTERNAL') || die();
 /**
  * Test helpers
@@ -83,7 +85,7 @@ function import_sample_users($samplefilepath) {
  *
  * TODO: Optimise queries (redondant loops)
  *
- * @throws \core\invalid_persistent_exception
+ * @throws invalid_persistent_exception
  * @throws coding_exception
  * @throws dml_exception
  */
@@ -102,7 +104,7 @@ function create_random_appraisals($cleanup, $verbose = true) {
  * @param $allcriterias
  * @param null $studentid if null, all student
  * @param null $skip
- * @throws \core\invalid_persistent_exception
+ * @throws invalid_persistent_exception
  * @throws coding_exception
  * @throws dml_exception
  */

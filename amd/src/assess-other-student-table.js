@@ -64,7 +64,7 @@ export const init = async (tabulatorelementid) => {
                 ajaxFiltering: false,
                 ajaxSorting: false,
                 paginationDataReceived: false,
-                layout:"fitColumns",
+                layout: "fitColumns",
                 ajaxResponse: ajaxSubtableResponseProcessorData
             }
         );
@@ -74,11 +74,11 @@ export const init = async (tabulatorelementid) => {
         tableUniqueid,
         tableelement.data('table-pagesize'),
         tableelement.data('tableFilters'),
-        (e, row) =>   {
-                const id = row.getData().id;
-                if (e.target.className === "tabulator-cell") {
-                    $(".appraisalSubtable" + id + "").toggle();
-                }
+        (e, row) => {
+            const id = row.getData().id;
+            if (e.target.className === "tabulator-cell") {
+                $(".appraisalSubtable" + id + "").toggle();
+            }
         },
         {
             rowFormatter: rowFormatter,

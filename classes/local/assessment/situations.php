@@ -26,11 +26,7 @@ namespace local_cveteval\local\assessment;
 defined('MOODLE_INTERNAL') || die();
 
 use local_cltools\local\crud\entity_table;
-use local_cltools\local\field\base;
-use local_cltools\local\table\dynamic_table_sql;
 use moodle_url;
-use pix_icon;
-use popup_action;
 
 /**
  * Persistent list base class

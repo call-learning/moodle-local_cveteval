@@ -31,6 +31,7 @@ use external_multiple_structure;
 use external_single_structure;
 use external_value;
 use local_cveteval\local\persistent\appraisal\entity;
+
 /**
  * Class appraisal
  *
@@ -39,6 +40,17 @@ use local_cveteval\local\persistent\appraisal\entity;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class appraisal extends base_get_entity {
+
+    /**
+     * Return the elements
+     *
+     * @return external_multiple_structure
+     */
+    public static function get_returns() {
+        return new external_multiple_structure(
+            static::single_appraisal_returns()
+        );
+    }
 
     protected static function single_appraisal_returns() {
         return new external_single_structure(
@@ -55,16 +67,6 @@ class appraisal extends base_get_entity {
                 'timecreated' => new external_value(PARAM_INT, 'last modification time'),
                 'usermodified' => new external_value(PARAM_INT, 'user modified'),
             )
-        );
-    }
-    /**
-     * Return the elements
-     *
-     * @return external_multiple_structure
-     */
-    public static function get_returns() {
-        return new external_multiple_structure(
-            static::single_appraisal_returns()
         );
     }
 

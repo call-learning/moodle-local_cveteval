@@ -25,10 +25,8 @@
 namespace local_cveteval\local\assessment;
 defined('MOODLE_INTERNAL') || die();
 
-use local_cltools\local\dmlutils;
 use local_cltools\local\field\base;
 use local_cltools\local\table\dynamic_table_sql;
-use local_cveteval\local\persistent\role\entity as role_entity;
 use ReflectionException;
 
 /**

@@ -25,7 +25,6 @@
 namespace local_cveteval\local\external;
 defined('MOODLE_INTERNAL') || die();
 
-use external_function_parameters;
 use external_multiple_structure;
 use external_single_structure;
 use external_value;

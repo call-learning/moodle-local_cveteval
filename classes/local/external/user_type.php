@@ -26,13 +26,12 @@ namespace local_cveteval\local\external;
 defined('MOODLE_INTERNAL') || die();
 
 use context_system;
+use external_api;
 use external_function_parameters;
 use external_single_structure;
 use external_value;
-
 use local_cveteval\local\persistent\role\entity as role_entity;
 use local_cveteval\local\utils;
-use external_api;
 
 /**
  * Get user type

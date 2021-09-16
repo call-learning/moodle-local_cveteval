@@ -22,27 +22,20 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use local_cltools\local\crud\entity_utils;
-use local_cltools\local\filter\basic_filterset;
-use local_cltools\local\filter\filter;
-use local_cltools\local\filter\filterset;
 use local_cltools\output\table\entity_table_renderable;
-use local_cveteval\local\assessment\appraisals_student;
-use local_cveteval\local\assessment\situations;
+use local_cveteval\local\assessment\assessment_utils;
+use local_cveteval\local\persistent\role\entity as role_entity;
+use local_cveteval\local\utils;
 
 require_once(__DIR__ . '/../../../../config.php');
 global $CFG, $OUTPUT, $PAGE, $USER;
-
-use local_cveteval\local\assessment\situations_student;
-use local_cveteval\local\persistent\role\entity as role_entity;
-use local_cveteval\local\utils;
 
 $evalplanid = required_param('evalplanid', PARAM_INT);
 $studentid = required_param('studentid', PARAM_INT);
 $currenttab = optional_param('tabname', 'thissituation', PARAM_ALPHA);
 require_login();
 if (utils::get_user_role_id($USER->id) != role_entity::ROLE_ASSESSOR_ID) {
-    print_error('cannotaccess', 'local_cveteval');
+    throw new moodle_exception('cannotaccess', 'local_cveteval');
 }
 $student = core_user::get_user($studentid);
 
@@ -124,7 +117,7 @@ $entitylist = null;
 
 switch ($currenttab) {
     case "thissituation":
-        $entitylist = \local_cveteval\local\assessment\assessment_utils::get_thissituation_list($studentid, $evalplan->get('id'));
+        $entitylist = assessment_utils::get_thissituation_list($studentid, $evalplan->get('id'));
 
         $renderer = $PAGE->get_renderer('local_cltools');
         /* @var entity_table_renderable entity table */
@@ -132,7 +125,7 @@ switch ($currenttab) {
         echo $renderer->render($renderable);
         break;
     case "allsituations":
-        $entitylist = \local_cveteval\local\assessment\assessment_utils::get_situation_student($studentid);
+        $entitylist = assessment_utils::get_situation_student($studentid);
         $renderer = $PAGE->get_renderer('local_cltools');
         /* @var entity_table_renderable entity table */
         $renderable = new entity_table_renderable($entitylist);

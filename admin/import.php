@@ -65,7 +65,7 @@ if ($formdata = $form->get_data()) {
     foreach ($filesbyorder as $order => $filetype) {
         $importclass = "\\local_cveteval\\local\\importer\\{$filetype}\\import_helper";
         if (!class_exists($importclass)) {
-            print_error(get_string('importclassnotfound', 'local_cveteval') . ' class:' . $importclass);
+            throw new moodle_exception('importclassnotfound', 'local_cveteval', null, ' class:' . $importclass);
         }
         $fileinput = $files[$filetype];
         echo $OUTPUT->box(get_string('import:importing', 'local_cveteval',

@@ -27,8 +27,8 @@ defined('MOODLE_INTERNAL') || die();
 
 use coding_exception;
 use dml_exception;
-use local_cveteval\local\persistent\evaluation_grid\entity as evaluation_grid_entity;
 use local_cveteval\local\persistent\criterion\entity as criterion_entity;
+use local_cveteval\local\persistent\evaluation_grid\entity as evaluation_grid_entity;
 use stdClass;
 use tool_importer\field_types;
 use tool_importer\importer_exception;
