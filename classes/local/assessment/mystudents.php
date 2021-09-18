@@ -162,3 +162,4 @@ class mystudents extends dynamic_table_sql {
         $this->set_sql(join(', ', $fields), $from, '');
     }
 }
+

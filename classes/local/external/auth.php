@@ -92,4 +92,3 @@ class auth extends external_api {
         return new external_function_parameters([]);
     }
 }
-

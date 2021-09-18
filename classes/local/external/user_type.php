@@ -80,3 +80,4 @@ class user_type extends external_api {
         );
     }
 }
+

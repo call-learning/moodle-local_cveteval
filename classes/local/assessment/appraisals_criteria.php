@@ -171,4 +171,3 @@ class appraisals_criteria extends dynamic_table_sql {
         // Just the first set, we will fold the other row in the result.
     }
 }
-

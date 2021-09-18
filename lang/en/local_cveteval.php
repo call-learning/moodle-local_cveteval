@@ -153,4 +153,3 @@ $string['situationfile_help'] = 'A list of situation in CSV format. The file mus
 $string['title'] = 'Title';
 $string['thissituation'] = 'This situation';
 $string['view'] = 'View';
-

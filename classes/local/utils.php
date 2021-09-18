@@ -248,7 +248,7 @@ class utils {
         $mobileservice = $webservicemanager->get_external_service_by_shortname(self::CVETEVAL_MOBILE_SERVICE);
         if (!$mobileservice) {
             // Create it.
-            // Load service info
+            // Load service info.
             require_once($CFG->dirroot . '/lib/upgradelib.php');
             external_update_descriptions('local_cveteval');
             $mobileservice = $webservicemanager->get_external_service_by_shortname(self::CVETEVAL_MOBILE_SERVICE);

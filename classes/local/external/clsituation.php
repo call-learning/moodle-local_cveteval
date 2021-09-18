@@ -69,3 +69,4 @@ class clsituation extends base_get_entity {
 
 
 
+

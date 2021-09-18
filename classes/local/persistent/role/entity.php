@@ -78,3 +78,4 @@ class entity extends persistent {
         );
     }
 }
+

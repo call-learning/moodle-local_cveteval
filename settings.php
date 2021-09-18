@@ -99,4 +99,3 @@ if ($hassiteconfig) {
     $optionalsubsystems = $ADMIN->locate('optionalsubsystems');
     $optionalsubsystems->add($enableoption);
 }
-

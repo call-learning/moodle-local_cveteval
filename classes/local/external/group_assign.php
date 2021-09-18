@@ -60,5 +60,3 @@ class group_assign extends base_get_entity {
 
 }
 
-
-

@@ -47,7 +47,7 @@ class assessment_utils_testcase extends \advanced_testcase {
         ]
     ];
 
-    const SAMPLE_CRITERIA_EVAL =  [
+    const SAMPLE_CRITERIA_EVAL = [
         [
             'criterionidnumber' => 'criterion1',
             'grade' => 1,
@@ -120,7 +120,7 @@ class assessment_utils_testcase extends \advanced_testcase {
             'studentname' => 'student1',
             'groupname' => 'Group 1'
         ]);
-        // Create 2 appraisal for assessor 1
+        // Create 2 appraisal for assessor 1.
         $generator->create_appraisal([
             'studentname' => 'student1',
             'appraisername' => 'assessor1',
@@ -159,11 +159,13 @@ class assessment_utils_testcase extends \advanced_testcase {
         $data = $assessment->retrieve_raw_data(10);
         // Check that we have one row.
         $this->assertCount(1, $data);
-        $columnswithappraisergrade =  array_filter(
-            (array)$data[0],
-            function($keyname) {return strstr($keyname, 'appraisergrade' );},
+        $columnswithappraisergrade = array_filter(
+            (array) $data[0],
+            function($keyname) {
+                return strstr($keyname, 'appraisergrade');
+            },
             ARRAY_FILTER_USE_KEY);
         // Three assessments.
-        $this->assertCount(3,$columnswithappraisergrade);
+        $this->assertCount(3, $columnswithappraisergrade);
     }
 }

@@ -133,7 +133,3 @@ abstract class base_get_entity extends external_api {
 
 
 
-
-
-
-

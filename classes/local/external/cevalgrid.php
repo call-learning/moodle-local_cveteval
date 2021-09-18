@@ -65,6 +65,3 @@ class cevalgrid extends base_get_entity {
 
 
 
-
-
-

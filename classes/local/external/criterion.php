@@ -61,4 +61,3 @@ class criterion extends base_get_entity {
     }
 
 }
-

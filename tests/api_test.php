@@ -235,76 +235,82 @@ class local_cveteval_api_testcase extends advanced_testcase {
                 (object) array(
                     'userid' => 'obs1',
                     'clsituationid' => 'Consultations de médecine générale',
-                    'type' => '1',
+                    'type' => role_entity::ROLE_APPRAISER_ID,
                 ),
                 (object) array(
                     'userid' => 'obs2',
                     'clsituationid' => 'Consultations de médecine générale',
-                    'type' => '1',
+                    'type' => role_entity::ROLE_APPRAISER_ID,
                 ),
                 (object) array(
                     'userid' => 'resp1',
                     'clsituationid' => 'Consultations de médecine générale',
-                    'type' => '2',
+                    'type' => role_entity::ROLE_ASSESSOR_ID,
                 ),
                 (object) array(
                     'userid' => 'obs1',
                     'clsituationid' => 'Consultations de médecine générale',
-                    'type' => '2',
+                    'type' => role_entity::ROLE_ASSESSOR_ID,
                 ),
 
                 (object) array(
                     'userid' => 'obs2',
                     'clsituationid' => 'Consultations de médecine générale',
-                    'type' => '2',
+                    'type' => role_entity::ROLE_ASSESSOR_ID,
                 ),
 
                 (object) array(
                     'userid' => 'resp2',
                     'clsituationid' => 'Médecine interne',
-                    'type' => '2',
+                    'type' => role_entity::ROLE_ASSESSOR_ID,
                 ),
 
                 (object) array(
                     'userid' => 'obs3',
                     'clsituationid' => 'Médecine interne',
-                    'type' => '2',
+                    'type' => role_entity::ROLE_ASSESSOR_ID,
                 ),
 
                 (object) array(
                     'userid' => 'obs4',
                     'clsituationid' => 'Médecine interne',
-                    'type' => '2',
+                    'type' => role_entity::ROLE_ASSESSOR_ID,
                 ),
 
                 (object) array(
                     'userid' => 'obs1',
                     'clsituationid' => 'Urgences-Soins intensifs',
-                    'type' => '1',
+                    'type' => role_entity::ROLE_APPRAISER_ID,
                 ),
 
                 (object) array(
                     'userid' => 'obs7',
                     'clsituationid' => 'Urgences-Soins intensifs',
-                    'type' => '1',
+                    'type' => role_entity::ROLE_APPRAISER_ID,
                 ),
 
                 (object) array(
                     'userid' => 'obs6',
                     'clsituationid' => 'Urgences-Soins intensifs',
-                    'type' => '1',
+                    'type' => role_entity::ROLE_APPRAISER_ID,
+                ),
+
+                (object) array(
+                    'userid' => 'resp1',
+                    'clsituationid' => 'Urgences-Soins intensifs',
+                    'type' => role_entity::ROLE_ASSESSOR_ID,
                 ),
 
                 (object) array(
                     'userid' => 'resp3',
                     'clsituationid' => 'Urgences-Soins intensifs',
-                    'type' => '2',
+                    'type' => role_entity::ROLE_ASSESSOR_ID,
                 ),
 
                 (object) array(
                     'userid' => 'obs5',
                     'clsituationid' => 'Urgences-Soins intensifs',
-                    'type' => '2',
+                    'type' => role_entity::ROLE_ASSESSOR_ID,
                 ),
             ]
             ,

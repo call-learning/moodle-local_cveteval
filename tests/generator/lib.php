@@ -174,7 +174,7 @@ class local_cveteval_generator extends \component_generator_base {
         $appraisal->create();
         if (!empty($criteria)) {
             foreach ($criteria as $criterion) {
-                if(!isset($criterion['appraisalid'])) {
+                if (!isset($criterion['appraisalid'])) {
                     $criterion['appraisalid'] = $appraisal->get('id');
                 }
                 $this->create_appraisal_criterion($criterion);
@@ -258,42 +258,6 @@ class local_cveteval_generator extends \component_generator_base {
         $group->create();
         return $group;
     }
-    ///**
-    // * Create a comment for appraisal
-    // *
-    // * @param array $data
-    // * @throws \core\invalid_persistent_exception
-    // * @throws coding_exception
-    // */
-    //public function create_appraisal_comment(array $data) {
-    //    $this->get_from_username($data, 'studentname', 'studentid');
-    //    $this->get_from_username($data, 'assessorname', 'assessorid');
-    //    $evaliplanid = $this->get_evalplanid_from_date_and_situation($data);
-    //    if ($evaliplanid) {
-    //        $data['evalplanid'] = $evaliplanid;
-    //    }
-    //    $appraisal = new local_cveteval\local\persistent\final_evaluation\entity($data);
-    //    $appraisal->create();
-    //}
-
-    ///**
-    // * Create a comment for appraisal criterion
-    // *
-    // * @param array $data
-    // * @throws \core\invalid_persistent_exception
-    // * @throws coding_exception
-    // */
-    //public function create_appraisal_criterion_comment(array $data) {
-    //    $this->get_from_username($data, 'username', 'userid');
-    //
-    //    $this->get_from_username($data, 'assessorname', 'assessorid');
-    //    $evaliplanid = $this->get_evalplanid_from_date_and_situation($data);
-    //    if ($evaliplanid) {
-    //        $data['evalplanid'] = $evaliplanid;
-    //    }
-    //    $appraisal = new local_cveteval\local\persistent\final_evaluation\entity($data);
-    //    $appraisal->create();
-    //}
 
     /**
      * Get from username
@@ -342,7 +306,7 @@ class local_cveteval_generator extends \component_generator_base {
                 array('clsituationid' => $situationid));
 
             foreach ($evalplans as $ep) {
-                if ($ep->get('starttime') >= ($date - $roundtime)  && $ep->get('starttime') <= ($date + $roundtime)) {
+                if ($ep->get('starttime') >= ($date - $roundtime) && $ep->get('starttime') <= ($date + $roundtime)) {
                     $evalplanid = $ep->get('id');
                 }
             }

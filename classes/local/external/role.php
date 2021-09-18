@@ -57,7 +57,6 @@ class role extends base_get_entity {
             )
         );
     }
-
 }
 
 

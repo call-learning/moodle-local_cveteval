@@ -172,7 +172,7 @@ class appraisals_student extends dynamic_table_sql {
                     LEFT JOIN {local_cveteval_criterion} criterion ON criterion.id = c.criterionid
                     LEFT JOIN {local_cveteval_appraisal} appraisal ON appraisal.id = c.appraisalid
                     LEFT JOIN {local_cveteval_evalplan} plan ON plan.id = appraisal.evalplanid
-                    LEFT JOIN {local_cveteval_role} role ON plan.clsituationid = role.clsituationid  
+                    LEFT JOIN {local_cveteval_role} role ON plan.clsituationid = role.clsituationid
                         AND role.userid = appraisal.appraiserid
                     WHERE appraisal.appraiserid = :appraiserid AND c.appraisalid = :appraisalid
                     AND c.criterionid = :criterionid
@@ -291,4 +291,3 @@ class appraisals_student extends dynamic_table_sql {
         return 'appraisergrade' . ($appraiserid + $appraisalid);
     }
 }
-

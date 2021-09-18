@@ -118,5 +118,3 @@ class appr_crit extends base_get_entity {
 
 }
 
-
-
