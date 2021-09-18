@@ -57,9 +57,9 @@ $transformcsv = function($finaleval) {
         'assessoremail' => $assessor->email,
         'assessorusername' => $assessor->username,
         'grade' => $finaleval->grade,
-        'comment' => format_text($finaleval->comment, $finaleval->commentformat),
-        'timemodified' => usertime($finaleval->timemodified),
-        'timecreated' => usertime($finaleval->timecreated),
+        'comment' => html_to_text(format_text($finaleval->comment, $finaleval->commentformat)),
+        'timemodified' => userdate($finaleval->timemodified, get_string('strftimedatetime', 'core_langconfig')),
+        'timecreated' => userdate($finaleval->timecreated, get_string('strftimedatetime', 'core_langconfig')),
     ];
 };
 if (method_exists('dataformat', 'download_data')) {

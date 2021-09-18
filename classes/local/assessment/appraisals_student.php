@@ -101,11 +101,11 @@ class appraisals_student extends dynamic_table_sql {
         $from = '{local_cveteval_criterion} criterion';
         $fields = static::FIELDS;
         if ($this->appraiserlist) {
-            foreach ($this->appraiserlist as $appraiserid => $appraiserfullname) {
-                $fields['appraisergrade' . $appraiserid] = " '' AS appraisergrade'.$appraiserid";
+            foreach ($this->appraiserlist as $appraisalid => $appraiserid) {
+                $fields[] = " '' AS " . $this->get_appraiser_appraisal_columnname($appraiserid, $appraisalid);
             }
         }
-        $this->set_sql(join(', ', static::FIELDS), $from, '1=1', []);
+        $this->set_sql(join(', ', $fields), $from, '1=1', []);
     }
 
     /**
@@ -162,43 +162,45 @@ class appraisals_student extends dynamic_table_sql {
             list($additionalwhere, $params) = $this->filterset->get_sql_for_filter('',
                 array('criterionname')
             );
-            foreach ($this->appraiserlist as $appraiserid => $fullname) {
-                $grades = $DB->get_records_sql(
-                    "SELECT c.criterionid, c.grade as grade,
-                        c.comment as comment, c.commentformat,
-                        appraisal.comment as appraisalcomment, appraisal.commentformat as appraisalcommentformat,
-                        appraisal.context as appraisalcontext, appraisal.contextformat as appraisalcontextformat
+            foreach ($this->appraiserlist as $appraisalid => $appraiserid) {
+                $grade = $DB->get_record_sql(
+                    "SELECT c.criterionid AS criterionid, c.grade AS grade,
+                        c.comment AS comment, c.commentformat,
+                        appraisal.comment AS appraisalcomment, appraisal.commentformat AS appraisalcommentformat,
+                        appraisal.context AS appraisalcontext, appraisal.contextformat AS appraisalcontextformat
                     FROM {local_cveteval_appr_crit} c
                     LEFT JOIN {local_cveteval_criterion} criterion ON criterion.id = c.criterionid
                     LEFT JOIN {local_cveteval_appraisal} appraisal ON appraisal.id = c.appraisalid
                     LEFT JOIN {local_cveteval_evalplan} plan ON plan.id = appraisal.evalplanid
-                    LEFT JOIN {local_cveteval_role} role ON plan.clsituationid = role.clsituationid
-                    WHERE appraisal.appraiserid = :appraiserid AND (c.criterionid = :criterionid
-                    OR criterion.parentid = :parentcritid ) AND $additionalwhere
-                    ",
+                    LEFT JOIN {local_cveteval_role} role ON plan.clsituationid = role.clsituationid  
+                        AND role.userid = appraisal.appraiserid
+                    WHERE appraisal.appraiserid = :appraiserid AND c.appraisalid = :appraisalid
+                    AND c.criterionid = :criterionid
+                    AND $additionalwhere",
                     $params + [
                         'appraiserid' => $appraiserid,
                         'criterionid' => $row->id,
-                        'parentcritid' => $row->id,
+                        'appraisalid' => $appraisalid
                     ]
 
                 );
-                $hassubgrades = false;
-                $maingrade = 0;
-                $comments = null;
-                foreach ($grades as $grade) {
-                    if ($grade->criterionid == $row->id) {
-                        $maingrade = $grade->grade;
-                        $comments = new stdClass();
-                        $comments->criteriacomment = $this->format_text($grade->comment, $grade->commentformat);
-                        $comments->appraisalcontext = $this->format_text($grade->appraisalcontext, $grade->appraisalcontextformat);
-                        $comments->appraisalcomment = $this->format_text($grade->commentformat, $grade->appraisalcommentformat);
-                    } else {
-                        $hassubgrades = true;
-                    }
-                }
-                $row->{'appraisergrade' . $appraiserid} =
-                    $renderer->render(new grade_widget($maingrade, $hassubgrades, $comments));
+                $subgradescount = $DB->count_records_sql('
+                    SELECT COUNT(c.id)
+                    FROM {local_cveteval_appr_crit} c
+                    LEFT JOIN {local_cveteval_criterion} criterion ON criterion.id = c.criterionid
+                    LEFT JOIN {local_cveteval_appraisal} appraisal ON appraisal.id = c.appraisalid
+                    WHERE criterion.parentid = :criterionid AND appraisal.appraiserid = :appraiserid AND c.appraisalid = :appraisalid
+                    ', [
+                    'criterionid' => $row->id,
+                    'appraisalid' => $appraisalid,
+                    'appraiserid' => $appraiserid,
+                ]);
+                $comments = new stdClass();
+                $comments->criteriacomment = $this->format_text($grade->comment, $grade->commentformat);
+                $comments->appraisalcontext = $this->format_text($grade->appraisalcontext, $grade->appraisalcontextformat);
+                $comments->appraisalcomment = $this->format_text($grade->commentformat, $grade->appraisalcommentformat);
+                $row->{$this->get_appraiser_appraisal_columnname($appraiserid, $appraisalid)} =
+                    $renderer->render(new grade_widget($grade->grade, $subgradescount > 0, $comments));
             }
         }
     }
@@ -252,6 +254,7 @@ class appraisals_student extends dynamic_table_sql {
             $fields[] = 'appraisal.appraiserid AS appraiserid';
             $fields[] = 'appraisal.studentid AS studentid';
             $fields[] = 'appraiser.fullname AS appraiserfullname';
+            $fields[] = 'appraisal.timemodified AS appraisaldate';
             $appraisalsraws = $DB->get_records_sql('SELECT DISTINCT '
                 . join(', ', $fields)
                 . ' FROM ' . $from
@@ -259,14 +262,19 @@ class appraisals_student extends dynamic_table_sql {
                 . ' GROUP BY appraisal.id, appraisal.appraiserid, appraisal.studentid',
                 $params);
             $this->appraiserlist = [];
+            $appraiserinfo = [];
             foreach ($appraisalsraws as $appraisal) {
-                if (empty($appraisers[$appraisal->appraiserid])) {
-                    $this->appraiserlist[$appraisal->appraiserid] = $appraisal->appraiserfullname;
+                if (empty($this->appraiserlist[$appraisal->id])) {
+                    $this->appraiserlist[$appraisal->id] = $appraisal->appraiserid;
+                    $date = userdate($appraisal->appraisaldate,
+                        get_string('strftimedatefullshort', 'core_langconfig'));
+                    $appraiserinfo[$appraisal->id] = fullname(\core_user::get_user($appraisal->appraiserid))
+                        . " ({$date})";
                 }
             }
-            foreach ($this->appraiserlist as $appraiserid => $fullname) {
-                $colfields['appraisergrade' . $appraiserid] = [
-                    "fullname" => $fullname,
+            foreach ($this->appraiserlist as $appraisalid => $appraiserid) {
+                $colfields[$this->get_appraiser_appraisal_columnname($appraiserid, $appraisalid)] = [
+                    "fullname" => $appraiserinfo[$appraisalid],
                     "rawtype" => PARAM_RAW,
                     "type" => "html" // List of grades separated by comma (grades and subcriteria grades).
                 ];
@@ -277,6 +285,10 @@ class appraisals_student extends dynamic_table_sql {
             $this->fields[$name] = base::get_instance_from_def($name, $prop);
         }
         $this->setup_other_fields();
+    }
+
+    protected function get_appraiser_appraisal_columnname($appraiserid, $appraisalid) {
+        return 'appraisergrade' . ($appraiserid + $appraisalid);
     }
 }
 

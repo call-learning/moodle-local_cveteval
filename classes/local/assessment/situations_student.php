@@ -151,7 +151,7 @@ class situations_student extends dynamic_table_sql {
         $fields[] = 'eval.grade AS grade';
         $fields[] = 'eval.comment AS comment';
         $fields[] = 'eval.commentformat AS commentformat';
-        $fields[] = 'eval.timemodified AS evaluationdate';
+        $fields[] = 'COALESCE(eval.timemodified,0) AS evaluationdate';
         $fields[] = 'plan.starttime AS startdate';
         $fields[] = 'plan.endtime AS enddate';
         $this->set_sql(join(', ', $fields), $from, '1=1', []);

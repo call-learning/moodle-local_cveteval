@@ -162,8 +162,13 @@ class assessment_utils {
         $filterset->set_join_type(filter::JOINTYPE_ALL);
         $filterset->add_filter_from_params(
             'roletype', // Field name.
-            filter::JOINTYPE_ALL,
-            [json_encode((object) ['direction' => '=', 'value' => role_entity::ROLE_ASSESSOR_ID])]
+            filter::JOINTYPE_ANY,
+            [json_encode((object)
+            ['direction' => '=', 'value' => role_entity::ROLE_ASSESSOR_ID]
+            ),
+            json_encode((object)
+            ['direction' => '=', 'value' => role_entity::ROLE_APPRAISER_ID]
+            )]
         );
         $filterset->add_filter_from_params(
             'planid', // Field name.
