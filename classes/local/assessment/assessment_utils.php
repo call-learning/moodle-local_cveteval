@@ -65,11 +65,7 @@ class assessment_utils {
             ]
         );
         $filterset->set_join_type(filter::JOINTYPE_ALL);
-        $filterset->add_filter_from_params(
-            'roletype', // Field name.
-            filter::JOINTYPE_ALL,
-            [json_encode((object) ['direction' => '=', 'value' => role_entity::ROLE_ASSESSOR_ID])]
-        );
+        self::add_roles_assessor_filterset($filterset);
         $filterset->add_filter_from_params(
             'appraiserid', // Field name.
             filter::JOINTYPE_ALL,
@@ -115,11 +111,7 @@ class assessment_utils {
             filter::JOINTYPE_ALL,
             [json_encode((object) ['direction' => '=', 'value' => $situationid])]
         );
-        $filterset->add_filter_from_params(
-            'roletype', // Field name.
-            filter::JOINTYPE_ALL,
-            [json_encode((object) ['direction' => '=', 'value' => role_entity::ROLE_ASSESSOR_ID])]
-        );
+        self::add_roles_assessor_filterset($filterset);
         $filterset->add_filter_from_params(
             'appraiserid', // Field name.
             filter::JOINTYPE_ALL,
@@ -160,16 +152,7 @@ class assessment_utils {
             ]
         );
         $filterset->set_join_type(filter::JOINTYPE_ALL);
-        $filterset->add_filter_from_params(
-            'roletype', // Field name.
-            filter::JOINTYPE_ANY,
-            [json_encode((object)
-            ['direction' => '=', 'value' => role_entity::ROLE_ASSESSOR_ID]
-            ),
-            json_encode((object)
-            ['direction' => '=', 'value' => role_entity::ROLE_APPRAISER_ID]
-            )]
-        );
+        self::add_roles_evaluation_filterset($filterset);
         $filterset->add_filter_from_params(
             'planid', // Field name.
             filter::JOINTYPE_ALL,
@@ -240,5 +223,26 @@ class assessment_utils {
         );
         $entitylist->set_extended_filterset($filterset);
         return $entitylist;
+    }
+
+    protected static function add_roles_evaluation_filterset($filterset) {
+        $filterset->add_filter_from_params(
+            'roletype', // Field name.
+            filter::JOINTYPE_ANY,
+            [
+                json_encode((object) ['direction' => '=', 'value' => role_entity::ROLE_ASSESSOR_ID]
+                ),
+                json_encode((object) ['direction' => '=', 'value' => role_entity::ROLE_APPRAISER_ID]
+                )]
+        );
+    }
+    protected static function add_roles_assessor_filterset($filterset) {
+        $filterset->add_filter_from_params(
+            'roletype', // Field name.
+            filter::JOINTYPE_ALL,
+            [
+                json_encode((object) ['direction' => '=', 'value' => role_entity::ROLE_ASSESSOR_ID])
+            ]
+        );
     }
 }

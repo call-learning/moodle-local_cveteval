@@ -123,11 +123,11 @@ class import_helper extends base_helper {
                 ),
             'Responsable' =>
                 array(
-                    array('to' => 'assessors', 'concatenate')
+                    array('to' => 'assessors', 'concatenate' => ['order' => 0])
                 ),
             'Evaluateurs' =>
                 array(
-                    array('to' => 'assessors')
+                    array('to' => 'assessors', 'concatenate' => ['order' => 1])
                 ),
             'Observateurs' =>
                 array(
