@@ -26,49 +26,20 @@ define('NO_OUTPUT_BUFFERING', true);
 require_once(__DIR__ . '../../../../../config.php');
 
 use core\plugininfo\dataformat;
-use local_cveteval\local\utils;
+use local_cveteval\utils;
 
 global $CFG, $OUTPUT, $PAGE;
 require_login();
 require_capability('local/cveteval:exportgrades', context_system::instance());
-$dataformat = required_param('dataformat', PARAM_ALPHA);
 $PAGE->set_context(context_system::instance());
-$filename = str_replace(' ', '_', clean_filename('Grades_CVETEVAL-' . userdate(time())));
 
 require_sesskey();
-global $DB;
 
-$rs = $DB->get_recordset(local_cveteval\local\persistent\final_evaluation\entity::TABLE);
+$dataformat = required_param('dataformat', PARAM_ALPHA);
+$filename = \local_cveteval\local\download_helper::generate_filename('Grades_CVETEVAL');
 
-$fields =
-    ['studentname', 'studentemail', 'studentusername', 'assessorname', 'assessoremail', 'assessorusername',
-        'grade', 'comment', 'timemodified', 'timecreated'];
-
-// In 3.9 we could directly use the download_data function.
-
-$transformcsv = function($finaleval) {
-    $student = core_user::get_user($finaleval->studentid);
-    $assessor = core_user::get_user($finaleval->assessorid);
-    return [
-        'studentname' => utils::fast_user_fullname($finaleval->studentid),
-        'studentemail' => $student->email,
-        'studentusername' => $student->username,
-        'assessorname' => utils::fast_user_fullname($finaleval->assessorid),
-        'assessoremail' => $assessor->email,
-        'assessorusername' => $assessor->username,
-        'grade' => $finaleval->grade,
-        'comment' => html_to_text(format_text($finaleval->comment, $finaleval->commentformat)),
-        'timemodified' => userdate($finaleval->timemodified, get_string('strftimedatetime', 'core_langconfig')),
-        'timecreated' => userdate($finaleval->timecreated, get_string('strftimedatetime', 'core_langconfig')),
-    ];
-};
-if (method_exists('dataformat', 'download_data')) {
-    dataformat::download_data($filename, $dataformat, $fields, $rs, $transformcsv);
-} else {
-    require_once($CFG->libdir . '/dataformatlib.php');
-    download_as_dataformat($filename, $dataformat, $fields, $rs, $transformcsv);
-}
-
+// Download all active final evaluation.
+\local_cveteval\local\download_helper::download_userdata_final_evaluation(0, $dataformat, $filename);
 
 
 

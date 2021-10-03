@@ -24,8 +24,14 @@
 
 namespace local_cveteval\local\persistent\situation;
 
-use coding_exception;
 use core\persistent;
+use local_cltools\local\crud\enhanced_persistent;
+use local_cltools\local\crud\enhanced_persistent_impl;
+use local_cltools\local\field\editor;
+use local_cltools\local\field\entity_selector;
+use local_cltools\local\field\text;
+use local_cveteval\local\persistent\model_with_history;
+use local_cveteval\local\persistent\model_with_history_impl;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -36,7 +42,11 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class entity extends persistent {
+class entity extends persistent implements enhanced_persistent, model_with_history {
+
+    use enhanced_persistent_impl;
+    use model_with_history_impl;
+
     const TABLE = 'local_cveteval_clsituation';
 
     /**
@@ -50,42 +60,30 @@ class entity extends persistent {
     const SITUATION_TYPE_STUDENT = 'student';
 
     /**
-     * Usual properties definition for a persistent
+     * Define fields
      *
-     * @return array|array[]
-     * @throws coding_exception
+     * @return array
      */
-    protected static function define_properties() {
-        return array(
-            'title' => array(
-                'type' => PARAM_TEXT,
-                'default' => '',
-            ),
-            'description' => array(
-                'type' => PARAM_RAW,
-            ),
-            'descriptionformat' => array(
-                'type' => PARAM_INT,
-                'default' => ''
-            ),
-            'idnumber' => array(
-                'type' => PARAM_ALPHANUMEXT,
-                'null' => NULL_NOT_ALLOWED
-            ),
-            'expectedevalsnb' => array(
-                'type' => PARAM_INT,
-                'default' => 1
-            ),
-            'evalgridid' => array(
-                'type' => PARAM_INT,
-                'default' => '',
-                'format' => [
-                    'type' => 'entity_selector',
-                    'entityclass' => \local_cveteval\local\persistent\evaluation_grid\entity::class,
-                    'displayfield' => 'name'
-                ]
-            )
-        );
+    public static function define_fields(): array {
+        return [
+            new text('title'),
+            new editor('description'),
+            new text([
+                'fieldname' => 'idnumber',
+                'rawtype' => PARAM_ALPHANUMEXT
+            ]),
+            new text(
+                [
+                    'fieldname' => 'expectedevalsnb',
+                    'rawtype' => PARAM_INT
+                ]),
+            new entity_selector([
+                'fieldname' => 'evalgridid',
+                'entityclass' => \local_cveteval\local\persistent\evaluation_grid\entity::class,
+                'displayfield' => 'name'
+            ])
+        ];
+
     }
 }
 

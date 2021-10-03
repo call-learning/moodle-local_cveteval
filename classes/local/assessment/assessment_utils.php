@@ -26,10 +26,12 @@ namespace local_cveteval\local\assessment;
 defined('MOODLE_INTERNAL') || die();
 
 use coding_exception;
+use core_table\local\filter\filter;
 use html_writer;
-use local_cltools\local\filter\basic_filterset;
-use local_cltools\local\filter\filter;
+use local_cltools\local\filter\enhanced_filterset;
+use local_cltools\local\filter\numeric_comparison_filter;
 use local_cveteval\local\persistent\role\entity as role_entity;
+use local_cveteval\roles;
 
 /**
  * A list of function to build up the assessment pages
@@ -43,81 +45,23 @@ class assessment_utils {
     /**
      * Get my situations
      *
-     * @param $userid
      * @return situations
      * @throws coding_exception
      */
-    public static function get_mysituations_list($userid) {
-        $uniqueid = html_writer::random_id('situationtable');
-        $entitylist = new situations($uniqueid);
-        $filterset = new basic_filterset(
-            [
-                'roletype' => (object)
-                [
-                    'filterclass' => 'local_cltools\\local\filter\\numeric_comparison_filter',
-                    'required' => true
-                ],
-                'appraiserid' => (object)
-                [
-                    'filterclass' => 'local_cltools\\local\filter\\numeric_comparison_filter',
-                    'required' => true
-                ],
-            ]
-        );
-        $filterset->set_join_type(filter::JOINTYPE_ALL);
-        self::add_roles_assessor_filterset($filterset);
-        $filterset->add_filter_from_params(
-            'appraiserid', // Field name.
-            filter::JOINTYPE_ALL,
-            [json_encode((object) ['direction' => '=', 'value' => $userid])]
-        );
-        $entitylist->set_extended_filterset($filterset);
+    public static function get_mysituations_list() {
+        $entitylist = new situations();
         return $entitylist;
     }
 
     /**
      * Get my student list
      *
-     * @param $userid
      * @param $situationid
      * @return mystudents
      * @throws coding_exception
      */
-    public static function get_mystudents_list($userid, $situationid) {
-        $uniqueid = html_writer::random_id('situationtable');
-        $entitylist = new mystudents($uniqueid);
-        $filterset = new basic_filterset(
-            [
-                'situationid' => (object)
-                [
-                    'filterclass' => 'local_cltools\\local\filter\\numeric_comparison_filter',
-                    'required' => true
-                ],
-                'roletype' => (object)
-                [
-                    'filterclass' => 'local_cltools\\local\filter\\numeric_comparison_filter',
-                    'required' => true
-                ],
-                'appraiserid' => (object)
-                [
-                    'filterclass' => 'local_cltools\\local\filter\\numeric_comparison_filter',
-                    'required' => true
-                ],
-            ]
-        );
-        $filterset->set_join_type(filter::JOINTYPE_ALL);
-        $filterset->add_filter_from_params(
-            'situationid', // Field name.
-            filter::JOINTYPE_ALL,
-            [json_encode((object) ['direction' => '=', 'value' => $situationid])]
-        );
-        self::add_roles_assessor_filterset($filterset);
-        $filterset->add_filter_from_params(
-            'appraiserid', // Field name.
-            filter::JOINTYPE_ALL,
-            [json_encode((object) ['direction' => '=', 'value' => $userid])]
-        );
-        $entitylist->set_extended_filterset($filterset);
+    public static function get_mystudents_list($situationid) {
+        $entitylist = new mystudents(null, null, null, $situationid);
         return $entitylist;
     }
 
@@ -130,40 +74,41 @@ class assessment_utils {
      * @throws coding_exception
      */
     public static function get_thissituation_list($studentid, $evalplanid) {
-        $uniqueid = html_writer::random_id('thisituationtable');
-        $entitylist = new appraisals_student($uniqueid);
-        $filterset = new basic_filterset(
+        // This is a special case here. Columns are deduced from the query so we need to build an empty table, then
+        // the real columns when we add the filters.
+
+        $entitylist = new appraisals_student();
+        $filterset = new enhanced_filterset(
             [
-                'roletype' => (object)
-                [
-                    'filterclass' => 'local_cltools\\local\filter\\numeric_comparison_filter',
-                    'required' => true
-                ],
                 'planid' => (object)
                 [
-                    'filterclass' => 'local_cltools\\local\filter\\numeric_comparison_filter',
+                    'filterclass' => numeric_comparison_filter::class,
                     'required' => true,
                 ],
                 'studentid' => (object)
                 [
-                    'filterclass' => 'local_cltools\\local\filter\\numeric_comparison_filter',
+                    'filterclass' => numeric_comparison_filter::class,
                     'required' => true,
                 ]
             ]
         );
-        $filterset->set_join_type(filter::JOINTYPE_ALL);
         self::add_roles_evaluation_filterset($filterset);
-        $filterset->add_filter_from_params(
-            'planid', // Field name.
-            filter::JOINTYPE_ALL,
-            [json_encode((object) ['direction' => '=', 'value' => $evalplanid])]
-        );
-        $filterset->add_filter_from_params(
-            'studentid', // Field name.
-            filter::JOINTYPE_ALL,
-            [json_encode((object) ['direction' => '=', 'value' => $studentid])]
-        );
-        $entitylist->set_extended_filterset($filterset);
+        if ($evalplanid) {
+            $filterset->add_filter_from_params(
+                'planid', // Field name.
+                filter::JOINTYPE_ALL,
+                [['direction' => '=', 'value' => $evalplanid]]
+            );
+        }
+        if ($studentid) {
+            $filterset->add_filter_from_params(
+                'studentid', // Field name.
+                filter::JOINTYPE_ALL,
+                [['direction' => '=', 'value' => $studentid]]
+            );
+        }
+        $filterset->set_join_type(filter::JOINTYPE_ALL);
+        $entitylist->set_filterset($filterset);
         return $entitylist;
     }
 
@@ -177,7 +122,7 @@ class assessment_utils {
     public static function get_assessmentcriteria_list($appraisalid) {
         $uniqueid = html_writer::random_id('apprasailcriteriatable');
         $entitylist = new appraisals_criteria($uniqueid);
-        $filterset = new basic_filterset(
+        $filterset = new enhanced_filterset(
             [
                 'appraisalid' => (object)
                 [
@@ -190,9 +135,9 @@ class assessment_utils {
         $filterset->add_filter_from_params(
             'appraisalid', // Field name.
             filter::JOINTYPE_ALL,
-            [json_encode((object) ['direction' => '=', 'value' => $appraisalid])]
+            [['direction' => '=', 'value' => $appraisalid]]
         );
-        $entitylist->set_extended_filterset($filterset);
+        $entitylist->set_filterset($filterset);
         return $entitylist;
     }
 
@@ -204,44 +149,36 @@ class assessment_utils {
      * @throws coding_exception
      */
     public static function get_situation_student($studentid) {
-        $uniqueid = html_writer::random_id('allsituations');
-        $entitylist = new situations_student($uniqueid);
-        $filterset = new basic_filterset(
-            [
-                'studentid' => (object)
-                [
-                    'filterclass' => 'local_cltools\\local\filter\\numeric_comparison_filter',
-                    'required' => true,
-                ]
-            ]
-        );
-        $filterset->set_join_type(filter::JOINTYPE_ALL);
-        $filterset->add_filter_from_params(
-            'studentid', // Field name.
-            filter::JOINTYPE_ALL,
-            [json_encode((object) ['direction' => '=', 'value' => $studentid])]
-        );
-        $entitylist->set_extended_filterset($filterset);
+        $entitylist = new situations_student(null, null, null, $studentid);
         return $entitylist;
     }
 
-    protected static function add_roles_evaluation_filterset($filterset) {
+    public static function add_roles_evaluation_filterset($filterset) {
+        $filterset->add_filter_definition('roletype', (object)
+        [
+            'filterclass' => numeric_comparison_filter::class,
+            'required' => true
+        ]);
         $filterset->add_filter_from_params(
             'roletype', // Field name.
             filter::JOINTYPE_ANY,
             [
-                json_encode((object) ['direction' => '=', 'value' => role_entity::ROLE_ASSESSOR_ID]
-                ),
-                json_encode((object) ['direction' => '=', 'value' => role_entity::ROLE_APPRAISER_ID]
-                )]
+                ['direction' => '=', 'value' => role_entity::ROLE_ASSESSOR_ID],
+                ['direction' => '=', 'value' => role_entity::ROLE_APPRAISER_ID]]
         );
     }
-    protected static function add_roles_assessor_filterset($filterset) {
+
+    public static function add_roles_assessor_filterset($filterset) {
+        $filterset->add_filter_definition('roletype', (object)
+        [
+            'filterclass' => numeric_comparison_filter::class,
+            'required' => true
+        ]);
         $filterset->add_filter_from_params(
             'roletype', // Field name.
             filter::JOINTYPE_ALL,
             [
-                json_encode((object) ['direction' => '=', 'value' => role_entity::ROLE_ASSESSOR_ID])
+                ['direction' => '=', 'value' => role_entity::ROLE_ASSESSOR_ID]
             ]
         );
     }

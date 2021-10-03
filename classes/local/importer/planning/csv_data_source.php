@@ -24,12 +24,17 @@
 
 namespace local_cveteval\local\importer\planning;
 
+use local_cveteval\local\persistent\group\entity as group_entity;
 use tool_importer\field_types;
-use tool_importer\importer_exception;
+use tool_importer\local\exceptions\importer_exception;
 
 defined('MOODLE_INTERNAL') || die();
 
 class csv_data_source extends \tool_importer\local\source\csv_data_source {
+    /**
+     * @var array $groupcolumns group columns
+     */
+    protected $groupcolumns = [];
 
     /**
      * A bit of a specific implementation for variable number of columns
@@ -42,23 +47,46 @@ class csv_data_source extends \tool_importer\local\source\csv_data_source {
 
         if (!$columns) {
             $additionalcolumns = [
-                'Date début' => field_types::TYPE_TEXT,
-                'Date fin' => field_types::TYPE_TEXT,
+                'Date début' => [
+                    'type' => field_types::TYPE_TEXT,
+                    'required' => true
+                ],
+                'Date fin' => [
+                    'type' => field_types::TYPE_TEXT,
+                    'required' => true
+                ]
             ];
             if (!$this->csvimporter) {
-                throw new importer_exception('nocolumnsdefined', 'tool_importer', null, '');
+                throw new importer_exception('planning:nocolumnsdefined', 0, '', 'local_cveteval');
             }
-            if ($allcolumns = $this->csvimporter) {
-                $allcolumns = $this->csvimporter->get_columns();
-                foreach ($allcolumns as $colname) {
-                    if (preg_match('/groupe.*/', strtolower($colname))) {
-                        $additionalcolumns[$colname] = field_types::TYPE_TEXT;
-                    }
-                }
+
+            $allcolumns = $this->csvimporter->get_columns();
+            if (count($allcolumns) <= 2) {
+                throw new importer_exception('planning:nogroupdefined', 0, '', 'local_cveteval');
+            }
+            $allgroups = array_slice($allcolumns, 2);
+            foreach ($allgroups as $colname) {
+                $additionalcolumns[$colname] =
+                    [
+                        'type' => field_types::TYPE_TEXT,
+                        'required' => true
+                    ];
+                $this->groupcolumns[] = $colname;
             }
             $columns = $additionalcolumns;
         }
         return $columns;
+    }
+
+    /**
+     * Initialise the csv datasource.
+     *
+     * This will initialise the current source. This has to be called before we call current or rewind.
+     * @param mixed|null $options additional importer options
+     * @throws importer_exception
+     */
+    public function init_and_check($options = null) {
+        parent::init_and_check();
     }
 }
 

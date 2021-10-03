@@ -25,13 +25,14 @@
 use local_cltools\output\table\entity_table_renderable;
 use local_cveteval\local\assessment\assessment_utils;
 use local_cveteval\local\persistent\role\entity as role_entity;
-use local_cveteval\local\utils;
+use local_cveteval\utils;
+use local_cveteval\roles;
 
 require_once(__DIR__ . '/../../../../config.php');
 global $CFG, $OUTPUT, $PAGE, $USER;
 
 require_login();
-if (utils::get_user_role_id($USER->id) != role_entity::ROLE_ASSESSOR_ID) {
+if (!roles::can_assess($USER->id)) {
     throw new moodle_exception('cannotaccess', 'local_cveteval');
 }
 $PAGE->set_context(context_system::instance());
@@ -41,6 +42,11 @@ $PAGE->set_title(get_string('assessment', 'local_cveteval')
 $PAGE->set_heading(get_string('assessment', 'local_cveteval'));
 $PAGE->set_url(new moodle_url('/local/cveteval/pages/assessment/mysituations.php'));
 $PAGE->set_pagelayout('standard');
+$situationnode = $PAGE->navigation->add(
+    get_string('mysituations', 'local_cveteval'),
+    new moodle_url('/local/cveteval/pages/assessment/mysituations.php'),
+    navigation_node::TYPE_CONTAINER);
+$situationnode->make_active();
 /* @var core_renderer $OUTPUT */
 if (has_capability('local/cveteval:exportgrades', context_system::instance())) {
     $download = $OUTPUT->download_dataformat_selector(
@@ -53,7 +59,7 @@ if (has_capability('local/cveteval:exportgrades', context_system::instance())) {
 echo $OUTPUT->header();
 
 echo $OUTPUT->box(get_string('mysituations:intro', 'local_cveteval'));
-$entitylist = assessment_utils::get_mysituations_list($USER->id);
+$entitylist = assessment_utils::get_mysituations_list();
 $renderable = new entity_table_renderable($entitylist);
 
 $renderer = $PAGE->get_renderer('local_cltools');

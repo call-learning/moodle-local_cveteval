@@ -23,7 +23,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use local_cveteval\local\utils;
+use local_cveteval\utils;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -36,5 +36,6 @@ defined('MOODLE_INTERNAL') || die();
 function xmldb_local_cveteval_install() {
     utils::create_scale_if_not_present();
     utils::setup_mobile_service(true);
+    utils::create_update_default_criteria_grid();
     return true;
 }

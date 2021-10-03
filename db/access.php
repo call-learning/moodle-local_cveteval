@@ -25,89 +25,101 @@
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = array(
-    'local/cveteval:cleanupdata' => array(
-        'riskbitmask' => RISK_DATALOSS,
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes' => array(
-            'manager' => CAP_ALLOW
+        'local/cveteval:cleanupdata' => array(
+                'riskbitmask' => RISK_DATALOSS,
+                'captype' => 'write',
+                'contextlevel' => CONTEXT_SYSTEM,
+                'archetypes' => array(
+                        'manager' => CAP_ALLOW
+                )
+        ),
+        'local/cveteval:manageentities' => array(
+                'riskbitmask' => RISK_SPAM,
+                'captype' => 'write',
+                'contextlevel' => CONTEXT_SYSTEM,
+                'archetypes' => array(
+                        'manager' => CAP_ALLOW
+                )
+        ),
+        'local/cveteval:manageevaluationtemplate' => array(
+                'riskbitmask' => RISK_SPAM,
+                'captype' => 'write',
+                'contextlevel' => CONTEXT_SYSTEM,
+                'archetypes' => array(
+                        'manager' => CAP_ALLOW
+                )
+        ),
+        'local/cveteval:managecriteriontemplate' => array(
+                'riskbitmask' => RISK_SPAM,
+                'captype' => 'write',
+                'contextlevel' => CONTEXT_SYSTEM,
+                'archetypes' => array(
+                        'manager' => CAP_ALLOW
+                )
+        ),
+        'local/cveteval:viewfiles' => array(
+                'riskbitmask' => RISK_SPAM,
+                'captype' => 'read',
+                'contextlevel' => CONTEXT_SYSTEM,
+                'archetypes' => array(
+                        'manager' => CAP_ALLOW,
+                )
+        ),
+        'local/cveteval:viewallsituations' => array(
+                'riskbitmask' => RISK_SPAM,
+                'captype' => 'read',
+                'contextlevel' => CONTEXT_SYSTEM,
+                'archetypes' => array(
+                        'manager' => CAP_ALLOW,
+                )
+        ),
+        'local/cveteval:viewallcriteria' => array(
+                'riskbitmask' => RISK_SPAM,
+                'captype' => 'read',
+                'contextlevel' => CONTEXT_SYSTEM,
+                'archetypes' => array(
+                        'manager' => CAP_ALLOW,
+                )
+        ),
+        'local/cveteval:manageimport' => array(
+                'riskbitmask' => RISK_SPAM,
+                'captype' => 'read',
+                'contextlevel' => CONTEXT_SYSTEM,
+                'archetypes' => array(
+                        'manager' => CAP_ALLOW,
+                )
+        ),
+        'local/cveteval:exportall' => array(
+                'riskbitmask' => RISK_SPAM,
+                'captype' => 'read',
+                'contextlevel' => CONTEXT_SYSTEM,
+                'archetypes' => array(
+                        'manager' => CAP_ALLOW,
+                )
+        ),
+        'local/cveteval:exportgrades' => array(
+                'riskbitmask' => RISK_SPAM,
+                'captype' => 'read',
+                'contextlevel' => CONTEXT_SYSTEM,
+                'archetypes' => array(
+                        'manager' => CAP_ALLOW
+                )
+        ),
+        'local/cveteval:mobileaccess' => array(
+                'riskbitmask' => RISK_SPAM,
+                'captype' => 'write',
+                'contextlevel' => CONTEXT_SYSTEM,
+                'archetypes' => array(
+                        'user' => CAP_ALLOW
+                )
+        ),
+        'local/cveteval:datamigration' => array(
+                'riskbitmask' => RISK_SPAM,
+                'captype' => 'write',
+                'contextlevel' => CONTEXT_SYSTEM,
+                'archetypes' => array(
+                        'manager' => CAP_ALLOW
+                )
         )
-    ),
-    'local/cveteval:managesituations' => array(
-        'riskbitmask' => RISK_SPAM,
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes' => array(
-            'manager' => CAP_ALLOW
-        )
-    ),
-    'local/cveteval:manageevaluationtemplate' => array(
-        'riskbitmask' => RISK_SPAM,
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes' => array(
-            'manager' => CAP_ALLOW
-        )
-    ),
-    'local/cveteval:managecriteriontemplate' => array(
-        'riskbitmask' => RISK_SPAM,
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes' => array(
-            'manager' => CAP_ALLOW
-        )
-    ),
-    'local/cveteval:viewfiles' => array(
-        'riskbitmask' => RISK_SPAM,
-        'captype' => 'read',
-        'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes' => array(
-            'manager' => CAP_ALLOW,
-            'user' => CAP_ALLOW
-        )
-    ),
-    'local/cveteval:viewallsituations' => array(
-        'riskbitmask' => RISK_SPAM,
-        'captype' => 'read',
-        'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes' => array(
-            'manager' => CAP_ALLOW,
-            'user' => CAP_ALLOW
-        )
-    ),
-    'local/cveteval:viewallcriteria' => array(
-        'riskbitmask' => RISK_SPAM,
-        'captype' => 'read',
-        'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes' => array(
-            'manager' => CAP_ALLOW,
-            'user' => CAP_ALLOW
-        )
-    ),
-    'local/cveteval:import' => array(
-        'riskbitmask' => RISK_SPAM,
-        'captype' => 'read',
-        'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes' => array(
-            'manager' => CAP_ALLOW,
-            'user' => CAP_ALLOW
-        )
-    ),
-    'local/cveteval:exportgrades' => array(
-        'riskbitmask' => RISK_SPAM,
-        'captype' => 'read',
-        'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes' => array(
-            'manager' => CAP_ALLOW
-        )
-    ),
-    'local/cveteval:mobileaccess' => array(
-        'riskbitmask' => RISK_SPAM,
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes' => array(
-            'user' => CAP_ALLOW
-        )
-    ),
 );
 

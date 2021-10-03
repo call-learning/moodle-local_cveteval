@@ -22,7 +22,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use local_cveteval\local\utils;
+use local_cveteval\utils;
 
 defined('MOODLE_INTERNAL') || die();
 $functions = array(
@@ -83,15 +83,6 @@ $functions = array(
     ),
     'local_cveteval_get_criterion' => array(
         'classname' => 'local_cveteval\\local\\external\\criterion',
-        'methodname' => 'get',
-        'description' => 'Get direct access to the entities stored in the db. Control check is made for some entities.',
-        'type' => 'read',
-        'ajax' => true,
-        'capabilities' => 'local/cveteval:mobileaccess',
-        'services' => array(utils::CVETEVAL_MOBILE_SERVICE),
-    ),
-    'local_cveteval_get_cevalgrid' => array(
-        'classname' => 'local_cveteval\\local\\external\\cevalgrid',
         'methodname' => 'get',
         'description' => 'Get direct access to the entities stored in the db. Control check is made for some entities.',
         'type' => 'read',

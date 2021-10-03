@@ -22,7 +22,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use local_cveteval\local\utils;
+use local_cveteval\utils;
 use local_vetagropro\locallib\setup;
 
 define('CLI_SCRIPT', true);
@@ -72,7 +72,8 @@ if (!file_exists($options['input'])) {
     cli_error(get_string('filenotfound', 'error') . ' input:' . $options['input']);
     die();
 }
-$importid = utils::get_next_importid();
+$importidmanager = new \local_cveteval\local\importer\importid_manager();
+$importid = $importidmanager->get_importid();
 $importclass = "\\local_cveteval\\local\\importer\\{$options['type']}\\import_helper";
 if (!class_exists($importclass)) {
     cli_error(get_string('importclassnotfound', 'local_cveteval') . ' class:' . $importclass);

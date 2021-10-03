@@ -25,7 +25,7 @@
 namespace local_cveteval\local\importer\grouping;
 
 use tool_importer\field_types;
-use tool_importer\importer_exception;
+use tool_importer\local\exceptions\importer_exception;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -46,19 +46,31 @@ class csv_data_source extends \tool_importer\local\source\csv_data_source {
      */
     public function get_fields_definition() {
         static $columns = null;
-
         if (!$columns) {
             $additionalcolumns = [
-                'Identifiant' => field_types::TYPE_TEXT
+                'Identifiant' => [
+                    'type'  => field_types::TYPE_TEXT,
+                    'required' => true
+                ],
+                'Nom de l\'étudiant' => [
+                    'type'  => field_types::TYPE_TEXT,
+                    'required' => false
+                ],
+                'Prénom' => [
+                    'type'  => field_types::TYPE_TEXT,
+                    'required' => false
+                ],
             ];
             if (!$this->csvimporter) {
-                throw new importer_exception('nocolumnsdefined', 'tool_importer', null, '');
+                throw new importer_exception('nocolumnsdefined',  0, '', 'local_cveteval');
             }
-            if ($allcolumns = $this->csvimporter) {
-                $allcolumns = $this->csvimporter->get_columns();
+            if ($allcolumns = $this->csvimporter->get_columns()) {
                 foreach ($allcolumns as $colname) {
                     if (preg_match('/groupement.*/', strtolower($colname))) {
-                        $additionalcolumns[$colname] = field_types::TYPE_TEXT;
+                        $additionalcolumns[$colname] = [
+                            'type' => field_types::TYPE_TEXT,
+                            'required' => true
+                        ];
                     }
                 }
             }

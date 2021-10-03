@@ -14,14 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Final evaluation
- *
- * @package   local_cveteval
- * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace local_cveteval\local\persistent\final_evaluation;
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
@@ -30,6 +22,12 @@ require_once($CFG->dirroot . '/lib/grade/grade_scale.php');
 use coding_exception;
 use core\persistent;
 use grade_scale;
+use gradereport_singleview\local\screen\select;
+use local_cltools\local\crud\enhanced_persistent;
+use local_cltools\local\crud\enhanced_persistent_impl;
+use local_cltools\local\field\editor;
+use local_cltools\local\field\hidden;
+use local_cltools\local\field\select_choice;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -40,61 +38,23 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class entity extends persistent {
+class entity extends persistent implements enhanced_persistent {
+
+    use enhanced_persistent_impl;
 
     const TABLE = 'local_cveteval_finalevl';
 
-    /**
-     * Usual properties definition for a persistent
-     *
-     * @return array|array[]
-     * @throws coding_exception
-     */
-    protected static function define_properties() {
+    public static function define_fields(): array {
         $scaleid = get_config('local_cveteval', 'grade_scale');
         $scale = grade_scale::fetch(array('id' => $scaleid));
         $scaleitems = $scale->load_items();
-        return array(
-            'studentid' => array(
-                'type' => PARAM_INT,
-                'default' => 0,
-                'format' => [
-                    'type' => 'hidden',
-                ]
-            ),
-            'assessorid' => array(
-                'type' => PARAM_INT,
-                'default' => 0,
-                'format' => [
-                    'type' => 'hidden',
-                ]
-            ),
-            'evalplanid' => array(
-                'type' => PARAM_INT,
-                'default' => '',
-                'format' => [
-                    'type' => 'hidden',
-                ]
-            ),
-            'comment' => array(
-                'type' => PARAM_RAW,
-                'default' => ''
-            ),
-            'commentformat' => array(
-                'type' => PARAM_INT,
-                'default' => FORMAT_HTML
-            ),
-
-            'grade' => array(
-                'type' => PARAM_INT,
-                'default' => 0,
-                'format' => [
-                    'fullname' => get_string('evaluation:grade', 'local_cveteval'),
-                    'type' => 'select_choice',
-                    'choices' => $scaleitems
-                ]
-            ),
-        );
+        return [
+            new hidden(['fieldname' => 'studentid', 'rawtype' => PARAM_INT]),
+            new hidden(['fieldname' => 'assessorid', 'rawtype' => PARAM_INT]),
+            new hidden(['fieldname' => 'evalplanid', 'rawtype' => PARAM_INT]),
+            new editor('comment'),
+            new select_choice(['fieldname' => 'grade', 'displayname' => get_string('evaluation:grade', 'local_cveteval'), 'choices' => $scaleitems])
+        ];
     }
 }
 

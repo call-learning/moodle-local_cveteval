@@ -31,7 +31,8 @@ use external_function_parameters;
 use external_single_structure;
 use external_value;
 use local_cveteval\local\persistent\role\entity as role_entity;
-use local_cveteval\local\utils;
+use local_cveteval\utils;
+use local_cveteval\roles;
 
 /**
  * Get user type
@@ -61,9 +62,9 @@ class user_type extends external_api {
     public static function execute($userid) {
         self::validate_parameters(self::execute_parameters(), array('userid' => $userid));
         self::validate_context(context_system::instance());
-        $roleid = utils::get_user_role_id($userid);
+        $roleid = roles::get_user_role_id($userid);
         return (object) ['type' =>
-            role_entity::ROLE_SHORTNAMES[$roleid]
+            role_entity::get_type_shortname($roleid)
         ];
     }
 

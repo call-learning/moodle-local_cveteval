@@ -31,8 +31,9 @@ use local_cveteval\local\importer\base_helper;
 use local_cveteval\local\persistent\planning\entity as planning_entity;
 use tool_importer\data_source;
 use tool_importer\data_transformer;
-use tool_importer\importer_exception;
+use tool_importer\local\exceptions\importer_exception;
 use tool_importer\local\transformer\standard;
+use tool_importer\processor;
 
 class import_helper extends base_helper {
     /**
@@ -40,13 +41,15 @@ class import_helper extends base_helper {
      *
      * @param $csvpath
      * @param $importid
+     * @param string $filename
      * @param string $delimiter
      * @param string $encoding
      * @param null $progressbar
      * @throws importer_exception
      */
-    public function __construct($csvpath, $importid, $delimiter = 'semicolon', $encoding = 'utf-8', $progressbar = null) {
-        parent::__construct($csvpath, $importid, $delimiter, $encoding, $progressbar);
+    public function __construct($csvpath, $importid, $filename = '', $delimiter = 'semicolon', $encoding = 'utf-8',
+        $progressbar = null) {
+        parent::__construct($csvpath, $importid, $filename, $delimiter, $encoding, $progressbar);
         $this->importeventclass = planning_imported::class;
     }
 
@@ -66,13 +69,16 @@ class import_helper extends base_helper {
     }
 
     /**
+     * Create the CSV Datasource
+     *
      * @param $csvpath
      * @param $delimiter
      * @param $encoding
+     * @param $filename
      * @return data_source
      */
-    protected function create_csv_datasource($csvpath, $delimiter, $encoding) {
-        return new csv_data_source($csvpath, $delimiter, $encoding);
+    protected function create_csv_datasource($csvpath, $delimiter, $encoding, $filename) {
+        return new csv_data_source($csvpath, $delimiter, $encoding, $filename);
     }
 
     /**
@@ -99,7 +105,37 @@ class import_helper extends base_helper {
      * @return \tool_importer\data_importer
      */
     protected function create_data_importer() {
-        return new data_importer($this->csvimporter->get_fields_definition());
+        return new data_importer();
     }
 
+    /**
+     * Create importer
+     *
+     * @param csv_data_source $csvsource
+     * @param data_transformer $transformer
+     * @param data_importer $dataimporter
+     * @param $progressbar
+     * @param $importid
+     */
+    protected function create_processor($csvsource, $transformer, $dataimporter,
+        $progressbar, $importid) {
+        return new class($csvsource,
+            $transformer,
+            $dataimporter,
+            $progressbar,
+            $importid
+        ) extends processor {
+            /**
+             * Get statistics in a displayable (HTML) format
+             *
+             * @return string
+             */
+            public function get_displayable_stats() {
+                return
+                    get_string('planning:stats', 'local_cveteval',
+                        ['plannings' => $this->importer->planningcount, 'planningevents' => $this->importer->planningeventscount]
+                    );
+            }
+        };
+    }
 }

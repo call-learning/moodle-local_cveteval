@@ -26,6 +26,8 @@ namespace local_cveteval\local\persistent\group_assignment;
 
 use coding_exception;
 use core\persistent;
+use local_cveteval\local\persistent\model_with_history;
+use local_cveteval\local\persistent\model_with_history_impl;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -36,8 +38,9 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class entity extends persistent {
+class entity extends persistent implements model_with_history{
 
+    use model_with_history_impl;
     const TABLE = 'local_cveteval_group_assign';
 
     /**

@@ -51,6 +51,7 @@ class criterion extends base_get_entity {
                     'label' => new external_value(PARAM_TEXT, 'label of the criterion'),
                     'idnumber' => new external_value(PARAM_TEXT, 'idnumber of the criterion'),
                     'parentid' => new external_value(PARAM_INT, 'parentid of the criterion'),
+                    'evalgridid' => new external_value(PARAM_INT, 'evalgrid identifier'),
                     'sort' => new external_value(PARAM_TEXT, 'sortorder of the criterion'),
                     'timemodified' => new external_value(PARAM_INT, 'last modification time'),
                     'timecreated' => new external_value(PARAM_INT, 'last modification time'),

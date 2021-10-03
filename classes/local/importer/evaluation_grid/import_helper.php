@@ -31,8 +31,9 @@ use local_cveteval\local\persistent\criterion\entity as criterion_entity;
 use local_cveteval\local\persistent\evaluation_grid\entity as evaluation_grid_entity;
 use tool_importer\data_source;
 use tool_importer\data_transformer;
-use tool_importer\importer_exception;
+use tool_importer\local\exceptions\importer_exception;
 use tool_importer\local\transformer\standard;
+use tool_importer\processor;
 
 class import_helper extends base_helper {
     /**
@@ -40,13 +41,15 @@ class import_helper extends base_helper {
      *
      * @param $csvpath
      * @param $importid
+     * @param string $filename
      * @param string $delimiter
      * @param string $encoding
      * @param null $progressbar
      * @throws importer_exception
      */
-    public function __construct($csvpath, $importid, $delimiter = 'semicolon', $encoding = 'utf-8', $progressbar = null) {
-        parent::__construct($csvpath, $importid, $delimiter, $encoding, $progressbar);
+    public function __construct($csvpath, $importid, $filename = '', $delimiter = 'semicolon', $encoding = 'utf-8',
+        $progressbar = null) {
+        parent::__construct($csvpath, $importid, $filename, $delimiter, $encoding, $progressbar);
         $this->importeventclass = evaluation_grid_imported::class;
     }
 
@@ -54,22 +57,27 @@ class import_helper extends base_helper {
      * Cleanup previously imported evaluation grid
      */
     public function cleanup() {
-        foreach (criterion_entity::get_records() as $qa) {
-            $qa->delete();
-        }
         foreach (evaluation_grid_entity::get_records() as $ga) {
-            $ga->delete();
+            if ($ga->get('idnumber') != evaluation_grid_entity::DEFAULT_GRID_SHORTNAME) {
+                foreach (criterion_entity::get_records(['evalgridid' => $ga->get('id')]) as $qa) {
+                    $qa->delete();
+                }
+                $ga->delete();
+            }
         }
     }
 
     /**
+     * Create the CSV Datasource
+     *
      * @param $csvpath
      * @param $delimiter
      * @param $encoding
+     * @param $filename
      * @return data_source
      */
-    protected function create_csv_datasource($csvpath, $delimiter, $encoding) {
-        return new csv_data_source($csvpath, $delimiter, $encoding);
+    protected function create_csv_datasource($csvpath, $delimiter, $encoding, $filename) {
+        return new csv_data_source($csvpath, $delimiter, $encoding, $filename);
     }
 
     /**
@@ -103,5 +111,34 @@ class import_helper extends base_helper {
      */
     protected function create_data_importer() {
         return new data_importer();
+    }
+    /**
+     * Create processor
+     *
+     * @param csv_data_source $csvsource
+     * @param data_transformer $transformer
+     * @param data_importer $dataimporter
+     * @param $progressbar
+     * @param $importid
+     */
+    protected function create_processor($csvsource, $transformer, $dataimporter,
+        $progressbar, $importid) {
+        return new class($csvsource,
+            $transformer,
+            $dataimporter,
+            $progressbar,
+            $importid
+        ) extends processor {
+            /**
+             * Get statistics in a displayable (HTML) format
+             * @return string
+             */
+            public function get_displayable_stats() {
+                return
+                    get_string('evaluationgrid:stats', 'local_cveteval',
+                        ['criterions' => $this->importer->criterioncount ]
+                    );
+            }
+        };
     }
 }

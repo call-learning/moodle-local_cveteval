@@ -1,0 +1,4 @@
+Description;Nom;Nom court;ResponsableUE;Responsable;Evaluateurs;Observateurs;Appreciations;
+Clinique des animaux de compagnie : médecine générale – médecine interne – médecine d’urgence et soins intensifs;Consultations de médecine générale;TMG;;resp1@exemple.com;resp1@exemple.com;obs1@exemple.com,obs2@exemple.com;1;
+Clinique des animaux de compagnie : médecine générale – médecine interne – médecine d’urgence et soins intensifs;Médecine interne;TMI;;resp2@exemple.com;resp2@exemple.com;obs2@exemple.com;2;
+Clinique des animaux de compagnie : médecine générale – médecine interne – médecine d’urgence et soins intensifs;Urgences-Soins intensifs;TUS;;resp3@exemple.com,resp1@exemple.com;resp3@exemple.com;obs2@exemple.com,obs3@exemple.com,obs7@exemple.com;2;

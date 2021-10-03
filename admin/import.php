@@ -23,14 +23,14 @@
  */
 
 use local_cveteval\local\forms\cveteval_import_form;
-use local_cveteval\local\utils;
+use local_cveteval\local\importer\importid_manager;
 
 define('NO_OUTPUT_BUFFERING', true);
 require_once(__DIR__ . '../../../../config.php');
 global $CFG, $OUTPUT, $PAGE;
 require_once($CFG->libdir . "/adminlib.php");
 
-admin_externalpage_setup('cvetevalimport');
+admin_externalpage_setup('cvetevalimportindex');
 $PAGE->set_title(get_string('import', 'local_cveteval'));
 $PAGE->set_heading(get_string('import', 'local_cveteval'));
 $PAGE->set_url(new moodle_url('/local/cveteval/pages/import.php'));
@@ -42,54 +42,52 @@ echo $OUTPUT->heading(get_string('import:heading:process', 'local_cveteval'));
 
 /* @var core_renderer $OUTPUT */
 if ($formdata = $form->get_data()) {
-
     global $DB;
     // Just in case.
     require_sesskey();
-    $files = [];
-    foreach (cveteval_import_form::get_files_to_upload() as $filetype => $settings) {
-        $fieldtype = $filetype . 'file';
-        $files[$filetype] = $form->save_temp_file($fieldtype);
-    }
-    $filesbyorder = array_map(function($ft) {
-        return $ft['order'];
-    },
-        cveteval_import_form::get_files_to_upload());
-    $filesbyorder = array_flip($filesbyorder);
-    ksort($filesbyorder);
     $delimiter = $formdata->delimiter;
     $encoding = $formdata->encoding;
-    $cleanupbefore = $formdata->cleanupbefore;
-
-    $importid = utils::get_next_importid();
-    foreach ($filesbyorder as $order => $filetype) {
+    $importidmanager = new importid_manager($formdata->importidnumber, $formdata->importcomment);
+    $importid = $importidmanager->get_importid();
+    $importfailed = false;
+    foreach (cveteval_import_form::get_files_to_upload_by_order() as $order => $filetype) {
+        $fieldname = $filetype . 'file';
+        $file = $form->save_temp_file($fieldname);
         $importclass = "\\local_cveteval\\local\\importer\\{$filetype}\\import_helper";
         if (!class_exists($importclass)) {
             throw new moodle_exception('importclassnotfound', 'local_cveteval', null, ' class:' . $importclass);
         }
-        $fileinput = $files[$filetype];
+
         echo $OUTPUT->box(get_string('import:importing', 'local_cveteval',
             get_string('import:' . $filetype, 'local_cveteval')));
         $progressbar = new progress_bar();
         $progressbar->create();
-        if ($fileinput) {
-            $importhelper = new $importclass($files[$filetype], $importid, $delimiter, $encoding, $progressbar);
-
-            if (!empty($cleanupbefore)) {
-                $importhelper->cleanup();
-            }
+        if ($file) {
+            $fileinfo = $form->get_draft_file_from_elementname($fieldname);
+            $importhelper = new $importclass($file, $importid, $fileinfo->get_filename(), $delimiter, $encoding, $progressbar);
+            $importhelper->validate();
             $importhelper->import();
+            /** @var \tool_importer\processor $processor */
+            $processor = $importhelper->get_processor();
             $info = (object) [
-                'rowcount' => $importhelper->get_row_imported_count(),
-                'totalrows' => $importhelper->get_total_row_count()
+                'rowcount' => $processor->get_row_imported_count(),
+                'totalrows' => $processor->get_total_row_count(),
             ];
+            $logs = $processor->get_logger()->get_logs(['level' => \tool_importer\local\log_levels::LEVEL_ERROR,
+                'importid' => $importid]);
+            if (!empty($logs)) {
+                $importfailed = true;
+            }
             echo $OUTPUT->box(get_string('import:imported', 'local_cveteval', $info));
+            echo $OUTPUT->box($processor->get_displayable_stats());
         }
     }
-    $manageurl = new moodle_url('/local/cveteval/pages/index.php');
+    $manageurl = new moodle_url('/local/cveteval/admin/importindex.php');
+
     $continueurl = new moodle_url('/local/cveteval/admin/importlogs.php',
         array(
             'importid' => $importid,
+            'failed' => $importfailed,
             'returnurl' => $manageurl->out(true)
         )
     );

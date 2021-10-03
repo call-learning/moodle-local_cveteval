@@ -22,35 +22,77 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use local_cveteval\local\utils;
+use local_cveteval\utils;
 
 define('NO_OUTPUT_BUFFERING', true);
 require_once(__DIR__ . '../../../../config.php');
 global $CFG, $OUTPUT, $PAGE;
 require_once($CFG->libdir . "/adminlib.php");
 
-admin_externalpage_setup('cvetevalcleanup');
-$PAGE->set_title(get_string('cleanup', 'local_cveteval'));
-$PAGE->set_heading(get_string('cleanup', 'local_cveteval'));
-$PAGE->set_url(new moodle_url('/local/cveteval/admin/cleanup.php'));
+$cleanuptype = required_param('type', PARAM_ALPHA);
+admin_externalpage_setup('cvetevalcleanup' . $cleanuptype);
+
+$PAGE->set_title(get_string('cleanup:' . $cleanuptype, 'local_cveteval'));
+$PAGE->set_heading(get_string('cleanup:' . $cleanuptype, 'local_cveteval'));
 $confirm = optional_param('confirm', false, PARAM_BOOL);
+$importid = optional_param('importid', 0, PARAM_INT);
+$returnurl = optional_param('returnurl', '/local/cveteval/admin/cleanup.php?type=' . $cleanuptype, PARAM_RAW);
+$currenturl = new moodle_url('/local/cveteval/admin/cleanup.php', ['type' => $cleanuptype,
+        'confirm' => 1,
+        'importid' => $importid,
+        'returnurl' => $returnurl
+]);
+$PAGE->set_url($currenturl);
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('cleanup', 'local_cveteval'));
-if ($confirm) {
-    require_sesskey();
-    utils::cleanup_all_data();
+echo $OUTPUT->heading(get_string('cleanup:' . $cleanuptype, 'local_cveteval'));
+
+if (!$importid) {
+    $histories = local_cveteval\local\persistent\history\entity::get_records();
+    $selection = [];
+    foreach (local_cveteval\local\persistent\history\entity::get_records() as $history) {
+        $selection[$history->get('id')] = $history->get('idnumber');
+    }
+    sesskey();
     /* @var core_renderer $OUTPUT */
-    echo $OUTPUT->continue_button(
-        new moodle_url('/admin/category.php', array('category' => 'cveteval'))
+    $currenturl->remove_all_params();
+    $currenturl->param('type', $cleanuptype);
+    $currenturl->param('type', $returnurl);
+    echo $OUTPUT->single_select(
+            $currenturl,
+            'importid',
+            $selection,
+            '',
+            array('' => 'choosedots'),
+            null,
+            ['label' => get_string('cleanup:selectimportid', 'local_cveteval')]
     );
 } else {
-    sesskey();
-    echo $OUTPUT->confirm(
-        get_string('cleanup:confirm', 'local_cveteval'),
-        new moodle_url($PAGE->url, array('confirm' => 1)),
-        new moodle_url('/admin/category.php', array('category' => 'cveteval'))
-    );
+    $currenthistory = new local_cveteval\local\persistent\history\entity($importid);
+    /* @var core_renderer $OUTPUT */
+    echo $OUTPUT->box(get_string('cleanup:details', 'local_cveteval', $currenthistory->to_record()),
+            'generalboxalert alert-secondary');
+
+    $currenthistory->get('idnumber');
+    if ($confirm) {
+        require_sesskey();
+        $cleanupcb = 'cleanup_' . $cleanuptype;
+        $progressbar = new progress_bar();
+        $progressbar->create();
+
+        utils::$cleanupcb($importid, $progressbar);
+        /* @var core_renderer $OUTPUT */
+        echo $OUTPUT->continue_button(
+                new moodle_url($returnurl)
+        );
+    } else {
+        sesskey();
+        echo $OUTPUT->confirm(
+                get_string('cleanup:confirm:' . $cleanuptype, 'local_cveteval'),
+                $currenturl,
+                new moodle_url('/admin/category.php', array('category' => 'cveteval'))
+        );
+    }
 }
 
 echo $OUTPUT->footer();

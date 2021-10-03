@@ -25,13 +25,12 @@
 namespace local_cveteval\local\importer\evaluation_grid;
 defined('MOODLE_INTERNAL') || die();
 
-use coding_exception;
-use dml_exception;
 use local_cveteval\local\persistent\criterion\entity as criterion_entity;
 use local_cveteval\local\persistent\evaluation_grid\entity as evaluation_grid_entity;
 use stdClass;
-use tool_importer\field_types;
-use tool_importer\importer_exception;
+use tool_importer\local\exceptions\importer_exception;
+use tool_importer\local\exceptions\validation_exception;
+use tool_importer\local\log_levels;
 
 /**
  * Class data_importer
@@ -41,48 +40,45 @@ use tool_importer\importer_exception;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class data_importer extends \tool_importer\data_importer {
+
+    private array $parentcriterionlistid;
+    public $criterioncount = 0;
+
     /**
-     * data_importer constructor.
+     * Called just before importation or validation.
      *
-     * @param null $defaultvals additional default values
-     * @throws dml_exception
+     * Gives a chance to reinit values or local information before a real import.
+     *
+     * @param mixed|null $options additional importer options
      */
-    public function __construct($defaultvals = null) {
-        $this->defaultvalues = [];
-        if ($defaultvals) {
-            $this->defaultvalues = array_merge($this->defaultvalues, $defaultvals);
-        }
+    public function init($options = null) {
+        $this->parentcriterionlistid = [];
+        $this->criterioncount = 0;
     }
 
     /**
-     * Get the field definition array
+     * Check if row is valid after transformation.
      *
-     * The associative array has at least a series of column names
-     * Types are derived from the field_types class
-     * 'fieldname' => [ 'type' => TYPE_XXX, ...]
      *
-     * @return array
-     * @throws coding_exception
+     * @param array $row
+     * @param int $rowindex
+     * @param mixed|null $options import options
+     * @throws validation_exception
      */
-    public function get_fields_definition() {
-        return [
-            'evalgridid' => [
-                'type' => field_types::TYPE_TEXT,
-                'required' => true
-            ],
-            'idnumber' => [
-                'type' => field_types::TYPE_TEXT,
-                'required' => true
-            ],
-            'parentidnumber' => [
-                'type' => field_types::TYPE_TEXT,
-                'required' => false
-            ],
-            'label' => [
-                'type' => field_types::TYPE_TEXT,
-                'required' => true
-            ]
-        ];
+    public function validate_after_transform($row, $rowindex, $options = null) {
+        static $parentidlist = [];
+        if (!in_array($row['idnumber'], $parentidlist)) {
+            $parentidlist[] = $row['idnumber'];
+        }
+        if (!empty($row['parentidnumber']) && !in_array($row['parentidnumber'], $parentidlist)) {
+            throw new validation_exception('wrongparentid',
+                $rowindex,
+                'Criterion Parent Id',
+                $this->module,
+                '',
+                log_levels::LEVEL_WARNING
+            );
+        }
     }
 
     /**
@@ -92,43 +88,44 @@ class data_importer extends \tool_importer\data_importer {
      * the group.
      *
      * @param array $row associative array storing the record
+     * @param mixed|null $options import options
      * @return mixed|void
      * @throws importer_exception
      */
-    protected function raw_import($row, $rowindex) {
+    protected function raw_import($row, $rowindex, $options = null) {
         global $DB;
-        $this->basic_validations($row);
-
         $row = array_merge($this->defaultvalues, $row);
 
-        $evalgrid = evaluation_grid_entity::get_record(array('idnumber' => $row['evalgridid']));
-        // Create one if it does not exist.
-        if (!$evalgrid) {
-            $evalgrid = new evaluation_grid_entity(0, (object) [
-                'name' => get_string('evaluationgrid:default', 'local_cveteval'),
-                'idnumber' => $row['evalgridid']
-            ]);
-            $evalgrid->create();
+        $evalgrid = evaluation_grid_entity::get_default_grid();
+
+        if (!empty($row['evalgridid']) && trim($row['evalgridid']) != evaluation_grid_entity::DEFAULT_GRID_SHORTNAME) {
+            $newevalgrid = evaluation_grid_entity::get_record(array('idnumber' => $row['evalgridid']));
+            // Create one if it does not exist.
+            if (!$newevalgrid) {
+                $evalgrid = new evaluation_grid_entity(0, (object) [
+                    'name' => get_string('evaluationgrid:default', 'local_cveteval'),
+                    'idnumber' => $row['evalgridid']
+                ]);
+                // Create it.
+                $evalgrid->create();
+            } else {
+                $evalgrid = $newevalgrid;
+            }
         }
 
+        $evalgridid = $evalgrid->get('id');
         $criterionrecord = new stdClass();
         $criterionrecord->label = $row['label'];
         $criterionrecord->idnumber = $row['idnumber'];
-        $parentcriterion = criterion_entity::get_record(['idnumber' => $row['parentidnumber']]);
-        $parentid = $parentcriterion ? $parentcriterion->get('id') : 0;
+        $parentid = empty($this->parentcriterionlistid[$row['parentidnumber']]) ?
+            0 : $this->parentcriterionlistid[$row['parentidnumber']];
         $criterionrecord->parentid = $parentid;
-        $criterionrecord->sort = criterion_entity::count_records(['parentid' => $parentid]) + 1;
+        $criterionrecord->evalgridid = $evalgridid;
+        $criterionrecord->sort = criterion_entity::count_records(['parentid' => $parentid, 'evalgridid' => $evalgridid]) + 1;
         $criterion = new criterion_entity(0, $criterionrecord);
         $criterion->create();
-
-        // Here we do without persistent class as it is just a link table.
-        $cevalgridrecord = new stdClass();
-        $cevalgridrecord->criterionid = $criterion->get('id');
-        $cevalgridrecord->evalgridid = $evalgrid->get('id');
-        $cevalgridrecord->sort =
-            $DB->count_records('local_cveteval_cevalgrid', array('evalgridid' => $cevalgridrecord->evalgridid)) + 1;
-        $DB->insert_record('local_cveteval_cevalgrid', $cevalgridrecord);
-
+        $this->criterioncount++;
+        $this->parentcriterionlistid[$criterion->get('idnumber')] = $criterion->get('id');
         return $criterionrecord;
     }
 }

@@ -26,5 +26,14 @@ defined('MOODLE_INTERNAL') || die();
 $definitions = [
     'appraisals' => [
         'mode' => cache_store::MODE_APPLICATION,
-    ]
+    ],
+    // Used to store history for data migration, at session level.
+    'datamigration' => array(
+        'mode' => cache_store::MODE_SESSION,
+        'ttl' => 600,
+    ),
+    // Used to store history for data migration, at session level.
+    'persistenthistory' => array(
+        'mode' => cache_store::MODE_REQUEST
+    ),
 ];

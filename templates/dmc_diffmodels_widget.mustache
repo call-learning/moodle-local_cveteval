@@ -1,0 +1,83 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template local_cveteval/dmc_choose_history_widget
+
+
+    Example context (json):
+    [
+        {
+          "entityname":"Criterion",
+          "entitytype":"criterion",
+          "contexts":[
+             {
+                "contextname":"Matched Entities ...",
+                "contexttype":"matchedentities",
+                "entitiescount" : 50,
+                "contextstatus" : "ok",
+                "contextstatusicon" : "<i class="fa fa-checked"></i>",
+                "entities":[
+                   {
+                      "label":"Savoir \u00eatre(Q001)",
+                   },
+                   {
+                      "label":"Respect des horaires de travail(Q002)",
+                   },
+                   {
+                      "label":"Respect des interlocuteurs (clients, personnels, encadrants, pairs, ...)(Q003)",
+                   },
+                ],
+              }
+           ]
+       }
+    ]
+}}
+
+<div class="dmc-diffmodels-widget">
+    {{#entitieswithcontext}}
+        <h3>{{entityname}}</h3>
+        <div class="accordion" id="entitycontext-{{uniqid}}">
+            {{#contexts}}
+                <div class="card border-0">
+                    <div class="card-header border border-{{contextstatusclass}} m-1" id="heading-{{contexttype}}{{entitytype}}">
+                        <h2 class="mb-0">
+                            <button class="btn btn-link btn-block text-left collapsed "
+                                    type="button"
+                                    data-toggle="collapse"
+                                    data-target="#collapse-{{contexttype}}{{entitytype}}"
+                                    aria-expanded="false"
+                                    aria-controls="collapse-{{contexttype}}{{entitytype}}">
+                                {{contextname}} ({{entitiescount}}) {{{contextstatusicon}}}
+                            </button>
+                        </h2>
+                    </div>
+                    <div id="collapse-{{contexttype}}{{entitytype}}" class="collapse" aria-labelledby="heading-{{contexttype}}{{entitytype}}"
+                         data-parent="#entitycontext-{{uniqid}}">
+                        <div class="card-body">
+                            <ul class="dmc-status-{{contextstatusclass}}">
+                                {{#entities}}
+                                    <li>{{label}}</li>
+                                {{/entities}}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            {{/contexts}}
+        </div>
+    {{/entitieswithcontext}}
+    {{> local_cveteval/dmc_step_navigation }}
+</div>

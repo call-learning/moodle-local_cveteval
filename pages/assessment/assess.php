@@ -25,7 +25,8 @@
 use local_cltools\output\table\entity_table_renderable;
 use local_cveteval\local\assessment\assessment_utils;
 use local_cveteval\local\persistent\role\entity as role_entity;
-use local_cveteval\local\utils;
+use local_cveteval\utils;
+use local_cveteval\roles;
 
 require_once(__DIR__ . '/../../../../config.php');
 global $CFG, $OUTPUT, $PAGE, $USER;
@@ -34,7 +35,7 @@ $evalplanid = required_param('evalplanid', PARAM_INT);
 $studentid = required_param('studentid', PARAM_INT);
 $currenttab = optional_param('tabname', 'thissituation', PARAM_ALPHA);
 require_login();
-if (utils::get_user_role_id($USER->id) != role_entity::ROLE_ASSESSOR_ID) {
+if (!roles::can_assess($USER->id)) {
     throw new moodle_exception('cannotaccess', 'local_cveteval');
 }
 $student = core_user::get_user($studentid);

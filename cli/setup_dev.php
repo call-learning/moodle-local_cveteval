@@ -22,7 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use local_cveteval\local\utils;
+use local_cveteval\test\test_utils;
+use local_cveteval\utils;
 use local_vetagropro\locallib\setup;
 
 define('CLI_SCRIPT', true);
@@ -69,26 +70,25 @@ if ($options['help']) {
 }
 
 $cleanup = !empty($options['cleanup']) && $options['cleanup'];
-require_once($CFG->dirroot . '/local/cveteval/tests/helpers.php');
 
 $basepath = $CFG->dirroot . '/local/cveteval/tests/fixtures/';
 $sampletype = [
     'default' => [
-        'users' => $CFG->dirroot . '/local/cveteval/tests/fixtures/users.csv',
+        'users' => '/local/cveteval/tests/fixtures/users.csv',
         'cveteval' => [
-            'evaluation_grid' => "{$basepath}/Sample_Evalgrid.csv",
-            'situation' => "{$basepath}/Sample_Situations.csv",
-            'planning' => "{$basepath}/Sample_Planning.csv",
-            'grouping' => "{$basepath}/Sample_Grouping.csv"
+            'evaluation_grid' => "/Sample_Evalgrid.csv",
+            'situation' => "/Sample_Situations.csv",
+            'planning' => "/Sample_Planning.csv",
+            'grouping' => "/Sample_Grouping.csv"
         ]
     ],
     'short' => [
-        'users' => $CFG->dirroot . '/local/cveteval/tests/fixtures/ShortSample_Users.csv',
+        'users' => '/local/cveteval/tests/fixtures/ShortSample_Users.csv',
         'cveteval' => [
-            'evaluation_grid' => "{$basepath}/Sample_Evalgrid.csv",
-            'situation' => "{$basepath}/ShortSample_Situations.csv",
-            'planning' => "{$basepath}/ShortSample_Planning.csv",
-            'grouping' => "{$basepath}/ShortSample_Grouping.csv"
+            'evaluation_grid' => "/Sample_Evalgrid.csv",
+            'situation' => "/ShortSample_Situations.csv",
+            'planning' => "/ShortSample_Planning.csv",
+            'grouping' => "/ShortSample_Grouping.csv"
         ]
     ]
 ];
@@ -97,17 +97,17 @@ utils::setup_mobile_service(true);
 
 if (!empty($options['users']) && $options['users']) {
     cli_writeln('Import users...');
-    import_sample_users($sampletype[$options['sampletype']]['users']);
+    test_utils::import_sample_users($CFG->dirroot. $sampletype[$options['sampletype']]['users']);
     cli_writeln('Users imported...');
 }
 if (!empty($options['planning']) && $options['planning']) {
     cli_writeln('Import planning...');
-    import_sample_planning($sampletype[$options['sampletype']]['cveteval'], $cleanup);
+    test_utils::import_sample_planning($sampletype[$options['sampletype']]['cveteval'], $basepath, $cleanup);
     cli_writeln('Planning imported...');
 }
 
 if (!empty($options['appraisals']) && $options['appraisals']) {
     cli_writeln('Import appraisals...');
-    create_random_appraisals($cleanup);
+    test_utils::create_random_appraisals($cleanup);
     cli_writeln('Appraisals created...');
 }

@@ -24,8 +24,14 @@
 
 namespace local_cveteval\local\persistent\role;
 
-use coding_exception;
 use core\persistent;
+use local_cltools\local\crud\enhanced_persistent;
+use local_cltools\local\crud\enhanced_persistent_impl;
+use local_cltools\local\field\entity_selector;
+use local_cltools\local\field\hidden;
+use local_cltools\local\field\select_choice;
+use local_cveteval\local\persistent\model_with_history;
+use local_cveteval\local\persistent\model_with_history_impl;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -36,7 +42,10 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class entity extends persistent {
+class entity extends persistent implements enhanced_persistent, model_with_history {
+
+    use enhanced_persistent_impl;
+    use model_with_history_impl;
 
     const ROLE_STUDENT_ID = 0;
     const ROLE_APPRAISER_ID = 1;
@@ -51,31 +60,41 @@ class entity extends persistent {
     const TABLE = 'local_cveteval_role';
 
     /**
-     * Usual properties definition for a persistent
+     * Get type localised fullname
      *
-     * @return array|array[]
-     * @throws coding_exception
+     * @param $typeid
+     * @return string
      */
-    protected static function define_properties() {
-        return array(
-            'userid' => array(
-                'type' => PARAM_INT,
-                'default' => '',
-            ),
-            'clsituationid' => array(
-                'type' => PARAM_INT,
-                'format' => [
-                    'type' => 'entity_selector',
+    public static function get_type_fullname($typeid) {
+        $shortname = static::get_type_shortname($typeid);
+        return get_string("role:type:$shortname", 'local_cveteval');
+    }
+
+    /**
+     * Get type shortname
+     *
+     * @param $typeid
+     * @return string
+     */
+    public static function get_type_shortname($typeid) {
+        return static::ROLE_SHORTNAMES[$typeid] ?? 'unknown';
+    }
+
+    public static function define_fields(): array {
+        return [
+            new hidden('userid'),
+            new entity_selector([
+                    'fieldname' => 'clsituationid',
                     'entityclass' => \local_cveteval\local\persistent\situation\entity::class,
-                    'displayfield' => 'title'
+                    'displayfield' => 'title',
                 ]
             ),
-            'type' => array(
-                'type' => PARAM_INT,
-                'default' => '',
-                'choice' => array(self::ROLE_APPRAISER_ID, self::ROLE_ASSESSOR_ID)
-            ),
-        );
+            new select_choice([
+                'fieldname' => 'type',
+                'choices' => [self::ROLE_APPRAISER_ID, self::ROLE_ASSESSOR_ID]
+            ])
+        ];
     }
 }
+
 

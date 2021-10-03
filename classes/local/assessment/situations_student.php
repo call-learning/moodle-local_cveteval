@@ -25,7 +25,14 @@
 namespace local_cveteval\local\assessment;
 defined('MOODLE_INTERNAL') || die();
 
-use local_cltools\local\field\base;
+use core_table\local\filter\filter;
+use local_cltools\local\field\date;
+use local_cltools\local\field\datetime;
+use local_cltools\local\field\editor;
+use local_cltools\local\field\hidden;
+use local_cltools\local\field\number;
+use local_cltools\local\field\text;
+use local_cltools\local\filter\enhanced_filterset;
 use local_cltools\local\table\dynamic_table_sql;
 use ReflectionException;
 
@@ -38,13 +45,39 @@ use ReflectionException;
  */
 class situations_student extends dynamic_table_sql {
 
-    public function __construct($uniqueid) {
-        parent::__construct($uniqueid);
+    /**
+     * Sets up the page_table parameters.
+     *
+     * @throws \coding_exception
+     * @see page_list::get_filter_definition() for filter definition
+     */
+    public function __construct($uniqueid = null,
+        $actionsdefs = null,
+        $editable = false,
+        $studentid = null) {
+        $filterset = new enhanced_filterset(
+            [
+                'studentid' => (object)
+                [
+                    'filterclass' => 'local_cltools\\local\filter\\numeric_comparison_filter',
+                    'required' => true,
+                ]
+            ]
+        );
+        $filterset->set_join_type(filter::JOINTYPE_ALL);
+        if ($studentid) {
+            $filterset->add_filter_from_params(
+                'studentid', // Field name.
+                filter::JOINTYPE_ALL,
+                [['direction' => '=', 'value' => $studentid]]
+            );
+        }
         $this->fieldaliases = [
             'studentid' => 'groupa.studentid',
             'studentfullname' => 'student.fullname',
             'assessorfullname' => 'assessor.fullname',
         ];
+        parent::__construct($uniqueid, $actionsdefs, $editable);
     }
 
     /**
@@ -56,72 +89,20 @@ class situations_student extends dynamic_table_sql {
      * @throws ReflectionException
      */
     protected function setup_fields() {
-        $fields = [
-            'id' => [
-                "fullname" => 'planid',
-                "rawtype" => PARAM_INT,
-                "type" => "hidden"
-            ],
-            'studentid' => [
-                "fullname" => 'studentid',
-                "rawtype" => PARAM_INT,
-                "type" => "hidden"
-            ],
-            'assessorid' => [
-                "fullname" => 'assessorid',
-                "rawtype" => PARAM_INT,
-                "type" => "hidden"
-            ],
-            'situationid' => [
-                "fullname" => 'situationid',
-                "rawtype" => PARAM_INT,
-                "type" => "hidden"
-            ],
-            'situationtitle' => [
-                "fullname" => get_string("situation:title", 'local_cveteval'),
-                "rawtype" => PARAM_TEXT,
-                "type" => "text"
-            ],
-            'startdate' => [
-                "fullname" => get_string("planning:starttime", 'local_cveteval'),
-                "rawtype" => PARAM_INT,
-                "type" => "date"
-            ],
-            'enddate' => [
-                "fullname" => get_string("planning:endtime", 'local_cveteval'),
-                "rawtype" => PARAM_INT,
-                "type" => "date"
-            ],
-            'assessorfullname' => [
-                "fullname" => get_string("evaluation:assessor", 'local_cveteval'),
-                "rawtype" => PARAM_TEXT,
-                "type" => "text"
-            ],
-            'grade' => [
-                "fullname" => get_string("evaluation:grade", 'local_cveteval'),
-                "rawtype" => PARAM_INT,
-                "type" => "number"
-            ],
-            'comment' => [
-                "fullname" => get_string("evaluation:comment", 'local_cveteval'),
-                "rawtype" => PARAM_RAW,
-                "type" => "text"
-            ],
-            'commentformat' => [
-                "fullname" => "commentformat",
-                "rawtype" => PARAM_INT,
-                "type" => "hidden"
-            ],
-            'evaluationdate' => [
-                "fullname" => get_string("evaluation:date", 'local_cveteval'),
-                "rawtype" => PARAM_INT,
-                "type" => "datetime"
-            ],
+        $this->fields = [
+            new hidden(['fieldname' => 'id', 'rawtype' => PARAM_INT ]),
+            new hidden(['fieldname' => 'planid', 'rawtype' => PARAM_INT ]),
+            new hidden(['fieldname' => 'studentid', 'rawtype' => PARAM_INT ]),
+            new hidden(['fieldname' => 'assessorid', 'rawtype' => PARAM_INT ]),
+            new hidden(['fieldname' => 'situationid', 'rawtype' => PARAM_INT ]),
+            new text(['fieldname' => 'situationtitle', 'fullname' => get_string("situation:title", 'local_cveteval')]),
+            new date(['fieldname' => 'startdate', 'fullname' => get_string("planning:starttime", 'local_cveteval')]),
+            new date(['fieldname' => 'enddate', 'fullname' => get_string("planning:endtime", 'local_cveteval')]),
+            new text(['fieldname' => 'assessorfullname', 'fullname' => get_string("evaluation:assessor", 'local_cveteval')]),
+            new number(['fieldname' => 'grade', 'fullname' => get_string("evaluation:grade", 'local_cveteval')]),
+            new editor(['fieldname' => 'comment', 'fullname' => get_string("evaluation:comment", 'local_cveteval')]),
+            new datetime(['fieldname' => 'evaluationdate', 'fullname' => get_string("evaluation:date", 'local_cveteval')])
         ];
-        $this->fields = [];
-        foreach ($fields as $name => $prop) {
-            $this->fields[$name] = base::get_instance_from_def($name, $prop);
-        }
         $this->setup_other_fields();
     }
 
@@ -137,12 +118,13 @@ class situations_student extends dynamic_table_sql {
          LEFT JOIN {local_cveteval_evalplan} plan ON plan.groupid = groupa.groupid
          LEFT JOIN {local_cveteval_clsituation} situation ON plan.clsituationid = situation.id
          LEFT JOIN {local_cveteval_finalevl} eval ON eval.evalplanid = plan.id
-         LEFT JOIN (SELECT ' . $DB->sql_concat('u.firstname', 'u.lastname') . ' AS fullname, u.id FROM mdl_user u ) assessor
+         LEFT JOIN (SELECT ' . $DB->sql_concat('u.firstname', 'u.lastname') . ' AS fullname, u.id FROM {user} u ) assessor
             ON assessor.id = eval.assessorid
-         LEFT JOIN (SELECT ' . $DB->sql_concat('u.firstname', 'u.lastname') . ' AS fullname, u.id FROM mdl_user u ) student
+         LEFT JOIN (SELECT ' . $DB->sql_concat('u.firstname', 'u.lastname') . ' AS fullname, u.id FROM {user} u ) student
             ON student.id = groupa.studentid
         ';
-        $fields[] = 'plan.id AS id';
+        $fields[] = $DB->sql_concat('plan.id', 'groupa.studentid'). " AS id";
+        $fields[] = 'plan.id AS planid';
         $fields[] = 'groupa.studentid AS studentid';
         $fields[] = 'eval.assessorid AS assessorid';
         $fields[] = 'situation.id AS situationid';

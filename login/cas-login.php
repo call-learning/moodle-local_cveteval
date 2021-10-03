@@ -25,7 +25,7 @@
  */
 
 use core\session\manager;
-use local_cveteval\local\utils;
+use local_cveteval\utils;
 
 require_once(__DIR__ . '/../../../config.php');
 global $CFG, $SESSION, $USER;

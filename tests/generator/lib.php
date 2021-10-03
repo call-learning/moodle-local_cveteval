@@ -78,29 +78,6 @@ class local_cveteval_generator extends \component_generator_base {
     }
 
     /**
-     * Create eval grid element
-     *
-     * @param array $data
-     * @throws \core\invalid_persistent_exception
-     * @throws coding_exception
-     */
-    public function create_cevalgriditem(array $data) {
-        if (isset($data['criterionidnumber'])) {
-            $data['criterionid'] = local_cveteval\local\persistent\situation\entity::get_record(
-                array('idnumber' => $data['criterionidnumber']))->get('id');
-            unset($data['criterionidnumber']);
-        }
-        if (isset($data['evalgrididnumber'])) {
-            $data['evalgridid'] = local_cveteval\local\persistent\situation\entity::get_record(
-                array('idnumber' => $data['evalgridid']))->get('id');
-            unset($data['evalgrididnumber']);
-        }
-        $cevalgrid = new local_cveteval\local\persistent\cevalgrid\entity(0, (object) $data);
-        $cevalgrid->create();
-        return $cevalgrid;
-    }
-
-    /**
      * Create a criterion in an eval grid (will create a criterion an attach it to an eval grid)
      *
      * @param array $data
@@ -108,14 +85,10 @@ class local_cveteval_generator extends \component_generator_base {
      * @throws coding_exception
      */
     public function create_criterion(array $data) {
-        $cevalgriddata = new stdClass();
         if (isset($data['evalgrididnumber'])) {
-            $cevalgriddata->evalgridid = $data['evalgrididnumber'];
+            $data['evalgridid'] = is_int($data['evalgrididnumber']) ? intval($data['evalgrididnumber']) :
+                local_cveteval\local\persistent\evaluation_grid\entity::get_record(array('idnumber' => $data['evalgrididnumber']))->get('id');
             unset($data['evalgrididnumber']);
-        }
-        if (!is_int($cevalgriddata->evalgridid)) {
-            $cevalgriddata->evalgridid = local_cveteval\local\persistent\evaluation_grid\entity::get_record(
-                array('idnumber' => $cevalgriddata->evalgridid))->get('id');
         }
         if (isset($data['parentidnumber'])) {
             $data['parentid'] = local_cveteval\local\persistent\criterion\entity::get_record(
@@ -124,11 +97,6 @@ class local_cveteval_generator extends \component_generator_base {
         }
         $criterion = new local_cveteval\local\persistent\criterion\entity(0, (object) $data);
         $criterion->create();
-        $cevalgriddata = new stdClass();
-        $cevalgriddata->criterionid = $criterion->get('id');
-        $cevalgriddata->sort = $criterion->get('sort');
-        $evalgrid = new local_cveteval\local\persistent\cevalgrid\entity(0, (object) $cevalgriddata);
-        $evalgrid->create();
         return $criterion;
     }
 

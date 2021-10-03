@@ -14,27 +14,32 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace local_cveteval\local\persistent\planning;
+defined('MOODLE_INTERNAL') || die();
+
+use coding_exception;
+use local_cltools\local\crud\entity_table;
+
 /**
- * Evaluation planning list
+ * Planning table
  *
  * @package   local_cveteval
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-namespace local_cveteval\local\persistent\planning;
-defined('MOODLE_INTERNAL') || die();
-
-use local_cltools\local\crud\entity_table;
-
-/**
- * Evaluation planning list
- *
- * @package   local_cveteval
- * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
- * @license
- */
 class table extends entity_table {
-    /** @var string The fully qualified classname. */
-    protected static $persistentclass = '\\local_cveteval\\local\\persistent\\planning\\entity';
+    protected static $persistentclass = entity::class;
+
+    /**
+     * Sets up the page_table parameters.
+     *
+     * @throws coding_exception
+     * @see page_list::get_filter_definition() for filter definition
+     */
+    public function __construct($uniqueid = null,
+            $actionsdefs = null,
+            $editable = false
+    ) {
+        parent::__construct($uniqueid, $actionsdefs, true);
+    }
 }

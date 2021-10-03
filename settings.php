@@ -50,45 +50,65 @@ if ($hassiteconfig) {
             )
         );
     } else {
+        $defaultid = array_search(get_string('grade:defaultscale', 'local_cveteval'), $scalelist);
         $generalsettings->add(
             new admin_setting_configselect('local_cveteval/grade_scale',
                 new lang_string('settings:grade_scale', 'local_cveteval'),
                 new lang_string('settings:grade_scale', 'local_cveteval'),
-                array_keys($scalelist)[0],
+                $defaultid ? $defaultid : array_keys($scalelist)[0],
                 $scalelist
             )
         );
     }
 
     $settings->add('cveteval',
-        new admin_externalpage('competveteval_manage_entities',
-            new lang_string('settings:manage_entities', 'local_cveteval'),
-            $CFG->wwwroot . '/local/cveteval/pages/index.php',
-            array('local/cveteval:managesituations'),
-            !$enabled
-        )
-    );
-
-    $settings->add('cveteval',
         new admin_externalpage(
             'cvetevalimport',
-            get_string('import', 'local_cveteval'),
+            get_string('import:new', 'local_cveteval'),
             $CFG->wwwroot . '/local/cveteval/admin/import.php',
-            array('local/cveteval:import'),
+            array('local/cveteval:manageimport'),
             !$enabled)
     );
 
     $settings->add('cveteval',
         new admin_externalpage(
-            'cvetevalcleanup',
-            get_string('cleanup', 'local_cveteval'),
-            $CFG->wwwroot . '/local/cveteval/admin/cleanup.php',
-            array('local/cveteval:import'),
+            'cvetevalimportindex',
+            get_string('import:listall', 'local_cveteval'),
+            $CFG->wwwroot . '/local/cveteval/admin/importindex.php',
+            array('local/cveteval:manageimport'),
+            !$enabled)
+    );
+
+
+    $settings->add('cveteval',
+        new admin_externalpage(
+            'cvetevalcleanupmodel',
+            get_string('cleanup:model', 'local_cveteval'),
+            $CFG->wwwroot . '/local/cveteval/admin/cleanup.php?type=model',
+            array('local/cveteval:cleanupdata'),
+            !$enabled)
+    );
+
+    $settings->add('cveteval',
+        new admin_externalpage(
+            'cvetevalcleanupuserdata',
+            get_string('cleanup:userdata', 'local_cveteval'),
+            $CFG->wwwroot . '/local/cveteval/admin/cleanup.php?type=userdata',
+            array('local/cveteval:cleanupdata'),
+            !$enabled)
+    );
+
+    $settings->add('cveteval',
+        new admin_externalpage(
+            'cvetevalmigration',
+            get_string('datamigration', 'local_cveteval'),
+            $CFG->wwwroot . '/local/cveteval/admin/datamigration/index.php',
+            array('local/cveteval:datamigration'),
             !$enabled)
     );
 
     if ($enabled) {
-        $ADMIN->add('root', $settings); // Add it to the main admin men.
+        $ADMIN->add('localplugins', $settings); // Add it to the main admin men.
     }
     // Create a global Advanced Feature Toggle.
     $enableoption = new admin_setting_configcheckbox('enablecompetveteval',

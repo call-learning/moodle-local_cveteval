@@ -26,8 +26,13 @@ namespace local_cveteval\local\assessment;
 defined('MOODLE_INTERNAL') || die();
 
 use coding_exception;
-use local_cltools\local\field\base;
+use local_cltools\local\field\datetime;
+use local_cltools\local\field\editor;
+use local_cltools\local\field\hidden;
+use local_cltools\local\field\number;
+use local_cltools\local\field\text;
 use local_cltools\local\table\dynamic_table_sql;
+use local_cveteval\local\persistent\criterion\entity as criterion_entity;
 use local_cveteval\output\grade_widget;
 use ReflectionException;
 
@@ -52,11 +57,13 @@ class appraisals_criteria extends dynamic_table_sql {
         'COALESCE(critapp.timemodified,0) AS datetime'
     ];
 
-    public function __construct($uniqueid) {
-        parent::__construct($uniqueid);
+    public function __construct($uniqueid = null,
+        $actionsdefs = null,
+        $editable = false) {
         $this->fieldaliases = [
             'appraisalid' => 'critapp.appraisalid'
         ];
+        parent::__construct($uniqueid, $actionsdefs, $editable);
     }
 
     /**
@@ -71,11 +78,11 @@ class appraisals_criteria extends dynamic_table_sql {
         if ($additionalwhere) {
             $where = " AND ($additionalwhere)";
         }
+        $criterionsql = criterion_entity::get_historical_sql_query("criterion");
         $sql = 'SELECT DISTINCT ' . join(', ', static::FIELDS)
-            . ' FROM {local_cveteval_criterion} criterion
-               LEFT JOIN {local_cveteval_appr_crit} critapp ON  criterion.id = critapp.criterionid
+            . " FROM $criterionsql "
+            .  'LEFT JOIN {local_cveteval_appr_crit} critapp ON  criterion.id = critapp.criterionid
                WHERE criterion.parentid = :parentcriterion ' . $where . ' ORDER BY sort';
-        $rows = [];
         $this->setup();
         $this->query_db($pagesize, false);
         $rows = [];
@@ -117,42 +124,16 @@ class appraisals_criteria extends dynamic_table_sql {
      * @throws ReflectionException
      */
     protected function setup_fields() {
-        $fields = [
-            'id' => [
-                "fullname" => 'id',
-                "rawtype" => PARAM_INT,
-                "type" => "hidden"
-            ],
-            'appraisalid' => [
-                "fullname" => 'appraisalid',
-                "rawtype" => PARAM_INT,
-                "type" => "hidden"
-            ],
-            'label' => [
-                "fullname" => get_string("criterion:label", 'local_cveteval'),
-                "rawtype" => PARAM_RAW,
-                "type" => "text"
-            ],
-            'grade' => [
-                "fullname" => get_string("appraisalcriterion:grade", 'local_cveteval'),
-                "rawtype" => PARAM_FLOAT,
-                "type" => "html"
-            ],
-            'comment' => [
-                "fullname" => get_string("appraisal:comment", 'local_cveteval'),
-                "rawtype" => PARAM_RAW,
-                "type" => "text"
-            ],
-            'datetime' => [
-                "fullname" => get_string("appraisal:modificationdate", 'local_cveteval'),
-                "rawtype" => PARAM_INT,
-                "type" => "datetime"
-            ]
+        $this->fields = [
+            new hidden(['fieldname' => 'id', 'rawtype' => PARAM_INT]),
+            new hidden(['fieldname' => 'appraisalid', 'rawtype' => PARAM_INT]),
+            new text(['fieldname' => 'appraisalid', 'rawtype' => PARAM_RAW,
+                'displayname' => get_string("criterion:label", 'local_cveteval')]),
+            new number(['fieldname' => 'appraisalid', 'displayname' => get_string("appraisalcriterion:grade", 'local_cveteval')],
+                true),
+            new editor(['fieldname' => 'comment', 'displayname' => get_string("appraisal:comment", 'local_cveteval')]),
+            new datetime(['fieldname' => 'datetime', 'displayname' => get_string("appraisal:modificationdate", 'local_cveteval')]),
         ];
-        $this->fields = [];
-        foreach ($fields as $name => $prop) {
-            $this->fields[$name] = base::get_instance_from_def($name, $prop);
-        }
         $this->setup_other_fields();
     }
 

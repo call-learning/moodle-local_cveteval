@@ -25,15 +25,16 @@
 namespace local_cveteval\local\importer\situation;
 defined('MOODLE_INTERNAL') || die();
 
-use coding_exception;
 use core_user;
 use dml_exception;
-use local_cltools\local\crud\entity_utils;
-use local_cveteval\event\role_importation_failed;
+use local_cveteval\local\persistent\evaluation_grid\entity as evaluation_grid_entity;
 use local_cveteval\local\persistent\role\entity as role_entity;
 use local_cveteval\local\persistent\situation\entity as situation_entity;
-use tool_importer\field_types;
-use tool_importer\importer_exception;
+use local_cveteval\utils;
+use moodle_exception;
+use tool_importer\local\exceptions\importer_exception;
+use tool_importer\local\exceptions\validation_exception;
+use tool_importer\local\log_levels;
 
 /**
  * Class data_importer
@@ -43,116 +44,166 @@ use tool_importer\importer_exception;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class data_importer extends \tool_importer\data_importer {
+    private $shortnameuniqueids = [];
+
+    private $defaultgridid = 0;
+
+    public $rolescount = 0;
+    public $situationscount = 0;
+
     /**
      * data_importer constructor.
      *
-     * @param null $defaultvals additional default values
-     * @throws dml_exception
+     * @param array $defaultvals additional default values
      */
-    public function __construct($defaultvals = null) {
-        $this->defaultvalues = ['descriptionformat' => FORMAT_HTML, 'evalgridid' => 0];
-        if ($defaultvals) {
-            $this->defaultvalues = array_merge($this->defaultvalues, $defaultvals);
+    public function __construct($defaultvals = []) {
+        parent::__construct(
+            array_merge(
+                ['descriptionformat' => FORMAT_HTML, 'evalgridid' => 0],
+                $defaultvals
+            )
+        );
+        $defaultgrid = evaluation_grid_entity::get_default_grid();
+        $this->defaultgridid = $defaultgrid->get('id');
+    }
+
+    /**
+     * Called just before importation or validation.
+     *
+     * Gives a chance to reinit values or local information before a real import.
+     *
+     * @param mixed|null $options additional importer options
+     */
+    public function init($options = null) {
+        $this->shortnameuniqueids = [];
+        $this->rolescount = 0;
+        $this->situationscount = 0;
+    }
+
+    /**
+     * Check if row is valid before transformation.
+     *
+     * @param array $row
+     * @param int $rowindex
+     * @param mixed|null $options import options
+     * @throws validation_exception
+     */
+    public function validate_before_transform($row, $rowindex, $options = null) {
+        $checkotherentities = empty($options['fastcheck']) ? true : !$options['fastcheck'];
+        parent::validate_before_transform($row, $rowindex);
+        if (!empty($row['GrilleEval'])) {
+            $trimmedval = trim($row['GrilleEval']);
+            $grid = evaluation_grid_entity::get_record(array('idnumber' => $trimmedval));
+            if ($checkotherentities && !$grid) {
+                throw new importer_exception('situation:gridnotfound',
+                    $rowindex,
+                    'GrilleEval',
+                    'local_cveteval',
+                    $trimmedval,
+                    log_levels::LEVEL_ERROR);
+            }
         }
     }
 
     /**
-     * Get the field definition array
+     * Check if row is valid after transformation.
      *
-     * The associative array has at least a series of column names
-     * Types are derived from the field_types class
-     * 'fieldname' => [ 'type' => TYPE_XXX, ...]
      *
-     * @return array
-     * @throws coding_exception
+     * @param array $row
+     * @param int $rowindex
+     * @param mixed|null $options import options
+     * @throws validation_exception
      */
-    public function get_fields_definition() {
-        $propertydef = situation_entity::properties_definition();
-        $fielddef = [];
-        foreach ($propertydef as $propname => $propdef) {
-            $fielddef[$propname] = [
-                'type' => ($propdef['type'] == PARAM_INT) ? field_types::TYPE_INT : field_types::TYPE_TEXT,
-                'required' => entity_utils::is_property_required($propdef)
-            ];
+    public function validate_after_transform($row, $rowindex, $options = null) {
+        $assessorsemails = explode(',', $row['assessors']);
+        $appraisersemails = explode(',', $row['appraisers']);
+
+        foreach ($assessorsemails as $email) {
+            utils::check_user_exists_or_multiple($email, $rowindex, 'situation:multipleuserfound', 'situation:usernotfound',
+                'Evaluateur');
+            try {
+                core_user::get_user_by_email($email, '*', null, MUST_EXIST);
+            } catch (moodle_exception $e) {
+                $message = core_user::get_user_by_email($email) ? 'situation:multipleuserfound' : 'situation:usernotfound';
+                throw new importer_exception($message,
+                    $rowindex,
+                    'Evaluateurs',
+                    'local_cveteval',
+                    $email,
+                    log_levels::LEVEL_ERROR);
+            }
         }
-        $fielddef['assessors'] = [
-            'type' => field_types::TYPE_TEXT,
-            'required' => true
-        ];
-        $fielddef['appraisers'] = [
-            'type' => field_types::TYPE_TEXT,
-            'required' => true
-        ];
-        $fielddef['evalgridid'] = [
-            'type' => field_types::TYPE_INT,
-            'required' => false
-        ];
-        return $fielddef;
+        foreach ($appraisersemails as $email) {
+            utils::check_user_exists_or_multiple($email, $rowindex, 'situation:multipleuserfound', 'situation:usernotfound',
+                'Observateurs');
+        }
+        if (in_array($row['idnumber'], $this->shortnameuniqueids)) {
+            throw new importer_exception('situation:duplicateshortname',
+                $rowindex,
+                'Nom court',
+                'local_cveteval',
+                $row['idnumber'],
+                log_levels::LEVEL_ERROR);
+        }
+        $this->shortnameuniqueids[] = $row['idnumber'];
+
     }
 
     /**
      * Update or create clinical situation entry
      *
      * @param array $row associative array storing the record
+     * @param mixed|null $options import options
      * @return mixed|void
      * @throws importer_exception
      */
-    protected function raw_import($row, $rowindex) {
-        $this->basic_validations($row);
-
-        $row = array_merge($this->defaultvalues, $row);
-
-        $existingsituation = !empty($row['idnumber']) && (
-            situation_entity::count_records(array('idnumber' => $row['idnumber'])));
-        $sitation = null;
+    protected function raw_import($row, $rowindex, $options = null) {
+        $assessors = $row['assessors'];
+        $appraisers = $row['appraisers'];
+        $situationscolumns = array_keys(situation_entity::properties_definition());
+        $row = array_intersect_key(array_merge($this->defaultvalues, $row),
+            array_flip($situationscolumns));
         $record = (object) $row;
-        unset($record->assessors);
-        unset($record->appraisers);
-        if ($existingsituation) {
-            $situation = situation_entity::get_record(array('idnumber' => $row['idnumber']));
-            $situation->from_record($record);
-        } else {
-            $situation = new situation_entity(0, $record);
-        }
-        $situation->save();
+        // Get default evaluation grid.
+        $record->evalgridid = empty($row['evalgridid']) ? $this->defaultgridid : $row['evalgridid'];
+        $situation = new situation_entity(0, $record);
+        $situation->create();
+        $this->situationscount++;
         // Now sync the users.
-        $assessorsemails = explode(',', $row['assessors']);
-        $appraisersemails = explode(',', $row['appraisers']);
+        $assessorsemails = explode(',', $assessors);
+        $appraisersemails = explode(',', $appraisers);
 
         $this->add_roles($appraisersemails, $situation->get('id'), role_entity::ROLE_APPRAISER_ID);
         $this->add_roles($assessorsemails, $situation->get('id'), role_entity::ROLE_ASSESSOR_ID);
         return $situation;
     }
 
+    /**
+     * Add roles for users
+     *
+     * @param $emails
+     * @param $clinicalsituationid
+     * @param $roletype
+     * @throws \coding_exception
+     * @throws dml_exception
+     */
     public function add_roles($emails, $clinicalsituationid, $roletype) {
         foreach ($emails as $email) {
             $email = clean_param(trim($email), PARAM_EMAIL);
             $user = core_user::get_user_by_email($email);
-            if (!$user) {
-                $eventparams = array(
-                    'other' => ['reason' => 1, 'email' => $email]
-                );
 
-                $event = role_importation_failed::create($eventparams);
-                $event->trigger();
-            } else {
-                $existingrecord = role_entity::get_record(
-                    array('userid' => $user->id, 'clsituationid' => $clinicalsituationid, 'type' => $roletype)
+            $roledef = [
+                'userid' => $user->id,
+                'clsituationid' => $clinicalsituationid,
+                'type' => $roletype
+            ];
+            if (!role_entity::record_exists_select("userid = :userid AND clsituationid=:clsituationid AND type=:type", $roledef)) {
+                $record = new role_entity(0,
+                    (object) $roledef
                 );
-                if (!$existingrecord) {
-                    $existingrecord = new role_entity(0,
-                        (object) [
-                            'userid' => $user->id,
-                            'clsituationid' => $clinicalsituationid,
-                            'type' => $roletype
-                        ]
-                    );
-                }
-                $existingrecord->save();
+                $record->save();
+                $this->rolescount++;
             }
         }
     }
 }
-
-
-

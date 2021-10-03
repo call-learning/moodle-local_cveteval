@@ -25,8 +25,14 @@
 namespace local_cveteval\local\assessment;
 defined('MOODLE_INTERNAL') || die();
 
+use core_table\local\filter\filter;
 use local_cltools\local\crud\entity_table;
+use local_cltools\local\filter\enhanced_filterset;
+use local_cltools\local\filter\numeric_comparison_filter;
+use local_cveteval\local\persistent\role\entity as role_entity;
+use local_cveteval\roles;
 use moodle_url;
+use local_cveteval\local\persistent\situation\entity as situation_entity;
 
 /**
  * Persistent list base class
@@ -37,20 +43,43 @@ use moodle_url;
  */
 class situations extends entity_table {
 
-    protected static $persistentclass = '\\local_cveteval\\local\\persistent\\situation\\entity';
+    protected static $persistentclass = situation_entity::class;
 
-    public function __construct($uniqueid, $actionsdefs = null) {
-        global $PAGE;
-        $PAGE->requires->js_call_amd('local_cltools/tabulator-row-action-url', 'init', [
-            $uniqueid,
-            (new moodle_url('/local/cveteval/pages/assessment/mystudents.php'))->out(),
-            (object) array('situationid' => 'id')
-        ]);
-        parent::__construct($uniqueid, $actionsdefs);
+    public function __construct($uniqueid = null,
+        $actionsdefs = null,
+        $editable = false
+    ) {
+        global $PAGE, $USER;
+
+        if (!roles::can_see_all_situations($USER->id)) {
+            $filterset = new enhanced_filterset(
+                [
+                    'appraiserid' => (object)
+                    [
+                        'filterclass' => numeric_comparison_filter::class,
+                        'required' => true
+                    ],
+                ]
+            );
+            $filterset->set_join_type(filter::JOINTYPE_ALL);
+            assessment_utils::add_roles_evaluation_filterset($filterset);
+            $filterset->add_filter_from_params(
+                'appraiserid', // Field name.
+                filter::JOINTYPE_ALL,
+                [['direction' => '=', 'value' => $USER->id]]
+            );
+            $this->filterset = $filterset;
+        }
         $this->fieldaliases = [
             'roletype' => 'role.type',
             'appraiserid' => 'role.userid'
         ];
+        parent::__construct($uniqueid, $actionsdefs, $editable);
+        $PAGE->requires->js_call_amd('local_cltools/tabulator-row-action-url', 'init', [
+            $this->get_unique_id(),
+            (new moodle_url('/local/cveteval/pages/assessment/mystudents.php'))->out(),
+            (object) array('situationid' => 'id')
+        ]);
     }
 
     /**
@@ -60,8 +89,9 @@ class situations extends entity_table {
      */
     protected function set_initial_sql() {
         $sqlfields = forward_static_call([static::$persistentclass, 'get_sql_fields'], 'entity', '');
-        $from = static::$persistentclass::TABLE;
-        $sql = '{' . $from . '} entity  LEFT JOIN {local_cveteval_role} role ON entity.id = role.clsituationid';
+        $from = situation_entity::get_historical_sql_query('entity');
+        $rolesql = role_entity::get_historical_sql_query("role");
+        $sql = "$from  LEFT JOIN  $rolesql ON entity.id = role.clsituationid";
         $this->set_sql($sqlfields, $sql, '', []);
     }
 

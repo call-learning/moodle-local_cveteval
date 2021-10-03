@@ -35,14 +35,38 @@ class csv_data_source extends \tool_importer\local\source\csv_data_source {
      */
     public function get_fields_definition() {
         return array(
-            'Nom' => field_types::TYPE_TEXT,
-            'Description' => field_types::TYPE_TEXT,
-            'Nom court' => field_types::TYPE_TEXT,
-            'Responsable' => field_types::TYPE_TEXT,
-            'Evaluateurs' => field_types::TYPE_TEXT,
-            'Observateurs' => field_types::TYPE_TEXT,
-            'Appreciations' => field_types::TYPE_INT,
-            'GrilleEval' => field_types::TYPE_TEXT
+            'Nom' => [
+                'type' => field_types::TYPE_TEXT,
+                'required' => true,
+            ],
+            'Description' => [
+                'type' => field_types::TYPE_TEXT,
+                'required' => false,
+            ],
+            'Nom court' => [
+                'type' => field_types::TYPE_TEXT,
+                'required' => true,
+            ],
+            'Responsable' => [
+                'type' => field_types::TYPE_TEXT,
+                'required' => true,
+            ],
+            'Evaluateurs' => [
+                'type' => field_types::TYPE_TEXT,
+                'required' => true,
+            ],
+            'Observateurs' => [
+                'type' => field_types::TYPE_TEXT,
+                'required' => true,
+            ],
+            'Appreciations' => [
+                'type' => field_types::TYPE_INT,
+                'required' => true,
+            ],
+            'GrilleEval' => [
+                'type' => field_types::TYPE_TEXT,
+                'required' => false,
+            ],
         );
     }
 }

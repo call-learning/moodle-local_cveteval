@@ -62,11 +62,8 @@ class external_utils {
         if (is_object($query)) {
             $query = (array) $query;
         }
-        list($where, $params, $additionaljoin, $orderby, $additionalcolumns) = static::get_entity_additional_query($entitytype);
+        list($where, $params, $additionaljoin, $orderby, $additionalfields) = static::get_entity_additional_query($entitytype);
         foreach ($query as $key => $value) {
-            if (in_array($key, $additionalcolumns)) {
-                continue; // We have a key we need for this query here.
-            }
             if (!isset($columns[$key])) {
                 $a = new stdClass();
                 $a->fieldname = $key;
@@ -78,12 +75,23 @@ class external_utils {
                 // Ok so the column is a text column. sorry no text columns in the where clause conditions.
                 throw new dml_exception('textconditionsnotallowed', $query);
             }
-            $params[$key] = $value;
             $where .= empty($where) ? '' : ' AND';
-            $where .= " e.$key =:$key";
+            if (is_object($value)) {
+                if (!empty($value->operator) && trim($value->operator) == 'in') {
+                    [$sqlwhere, $additionalparams] = $DB->get_in_or_equal($value->values, SQL_PARAMS_NAMED);
+                    $params = array_merge($params, $additionalparams);
+                    $where .= " e.$key $sqlwhere";
+                }
+            } else {
+                $params[$key] = $value;
+                $where .= " e.$key =:$key";
+            }
         }
         if (empty($select)) {
             $select = $classname::get_sql_fields('e', '');
+            if (!empty($additionalfields)) {
+                $select .= "," . join(",", $additionalfields);
+            }
         }
         if (class_exists($classname)) {
             return $DB->get_records_sql("SELECT DISTINCT $select
@@ -110,7 +118,7 @@ class external_utils {
             // Here we make sure that current user can only see evalplan involving him/her.
             case 'planning':
                 return [
-                    '(ga.studentid = :rolecheckstudentid OR ( role.userid = :rolecheckappraiserid AND'
+                    '( ga.studentid = :rolecheckstudentid OR ( role.userid = :rolecheckappraiserid AND'
                     . ' (role.type = :rolechecktypeappraiser OR role.type = :rolechecktypeassessor )))',
                     $paramscheckrole,
                     'LEFT JOIN {local_cveteval_group_assign} ga ON ga.groupid = e.groupid
@@ -120,7 +128,7 @@ class external_utils {
                 ];
             case 'appraisal':
                 return [
-                    '(ga.studentid = :rolecheckstudentid AND e.studentid = :appraisalcheckstudentid'
+                    '(( ga.studentid = :rolecheckstudentid AND e.studentid = :appraisalcheckstudentid )'
                     . ' OR ( role.userid = :rolecheckappraiserid AND (role.type = :rolechecktypeappraiser OR
                role.type = :rolechecktypeassessor )))',
                     $paramscheckroleappraisal,
@@ -132,7 +140,7 @@ class external_utils {
                 ];
             case 'appraisal_criterion':
                 return [
-                    '(ga.studentid = :rolecheckstudentid AND appr.studentid = :appraisalcheckstudentid'
+                    '(( ga.studentid = :rolecheckstudentid AND appr.studentid = :appraisalcheckstudentid )'
                     . ' OR ( role.userid = :rolecheckappraiserid AND (role.type = :rolechecktypeappraiser OR
                role.type = :rolechecktypeassessor )))',
                     $paramscheckroleappraisal,
@@ -143,8 +151,11 @@ class external_utils {
                     'ORDER BY e.appraisalid, e.timecreated ASC',
                     []
                 ];
+            case 'criterion':
+                return ['1=1', [], '', 'ORDER BY realparent',
+                    ['CASE e.parentid WHEN 0 THEN e.id ELSE e.parentid END AS realparent']];
             default:
-                return ['1=1', [], '', '', '', []];
+                return ['1=1', [], '', '', []];
         }
     }
 

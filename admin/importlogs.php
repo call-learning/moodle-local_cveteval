@@ -22,17 +22,13 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use local_cltools\local\filter\basic_filterset;
-use local_cltools\local\filter\filter;
-use local_cltools\output\table\entity_table_renderable;
-use local_cveteval\local\assessment\assessment_situation;
-
 require_once(__DIR__ . '../../../../config.php');
 global $CFG, $OUTPUT, $PAGE;
 require_login();
-require_capability('local/cveteval:import', context_system::instance());
+require_capability('local/cveteval:manageimport', context_system::instance());
 $importid = required_param('importid', PARAM_INT);
 $returnurl = optional_param('returnurl', null, PARAM_RAW);
+$failed = optional_param('failed', false, PARAM_BOOL);
 $PAGE->set_pagelayout('standard');
 $PAGE->set_context(context_system::instance());
 $PAGE->set_title(get_string('import:logs', 'local_cveteval'));
@@ -40,46 +36,24 @@ $PAGE->set_heading(get_string('import:logs', 'local_cveteval'));
 $PAGE->set_url(new moodle_url('/local/cveteval/pages/import.php'));
 /* @var core_renderer $OUTPUT */
 
-if ($returnurl) {
-    $PAGE->set_button(
-        $OUTPUT->single_button(new moodle_url($returnurl),
-            get_string('continue'))
-    );
+if (!$failed) {
+    if ($returnurl) {
+        $PAGE->set_button(
+            $OUTPUT->single_button(new moodle_url($returnurl),
+                get_string('continue'))
+        );
+    }
 }
 echo $OUTPUT->header();
+if ($failed) {
+    echo $OUTPUT->box_start('alert alert-primary');
+    echo $OUTPUT->box(get_string('import:failed', 'local_cveteval'));
+    echo $OUTPUT->single_button(new moodle_url('/local/cveteval/admin/cleanup.php', ['importid' => $importid]),
+        get_string('import:cleanup', 'local_cveteval'));
+    echo $OUTPUT->box_end();
+}
 
-$tableuniqueid = html_writer::random_id('importtable');
-$entitylist = new local_cveteval\local\persistent\import_log\table($tableuniqueid);
-
-$filterset = new basic_filterset(
-    [
-        'importid' => (object)
-        [
-            'filterclass' => 'local_cltools\\local\filter\\numeric_comparison_filter',
-            'required' => true
-        ],
-        'module' => (object)
-        [
-            'filterclass' => 'local_cltools\\local\filter\\string_filter',
-            'required' => true
-        ],
-    ]
-);
-$filterset->set_join_type(filter::JOINTYPE_ALL);
-$filterset->add_filter_from_params(
-    'importid', // Field name.
-    filter::JOINTYPE_ALL,
-    [json_encode((object) ['direction' => '=', 'value' => $importid])]
-);
-$filterset->add_filter_from_params(
-    'module', // Field name.
-    filter::JOINTYPE_ALL,
-    ["local_envf"]
-);
-$entitylist->set_extended_filterset($filterset);
-
-$renderable = new entity_table_renderable($entitylist);
-
+$renderable = \local_cveteval\local\importer\import_log_utils::get_log_table($importid);
 $renderer = $PAGE->get_renderer('local_cltools');
 echo $renderer->render($renderable);
 

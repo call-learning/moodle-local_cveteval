@@ -43,7 +43,6 @@ abstract class base_get_entity extends external_api {
         'appr_crit' => 'appraisal_criterion',
         'appraisal' => 'appraisal',
         'clsituation' => 'situation',
-        'cevalgrid' => 'cevalgrid',
         'evalplan' => 'planning',
         'criterion' => 'criterion',
         'group_assign' => 'group_assignment',

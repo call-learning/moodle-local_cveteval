@@ -1,0 +1,65 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template local_cveteval/dmc_init_widget
+
+
+    Example context (json):
+    {
+        "previousbutton": {
+            "method" : "get",
+            "url" : "#",
+            "primary" : true,
+            "tooltip" : "This is a tooltip",
+            "label" : "Next",
+            "attributes": [
+              {
+                "name": "data-attribute",
+                "value": "yeah"
+               }
+            ]
+        },
+        "nextbutton": {
+            "method" : "get",
+            "url" : "#",
+            "primary" : true,
+            "tooltip" : "This is a tooltip",
+            "label" : "Previous",
+            "attributes": [
+              {
+                "name": "data-attribute",
+                "value": "yeah"
+               }
+            ]
+        }
+    }
+}}
+
+<div class="dmc-step-navigation-widget">
+    <div class="d-flex justify-content-between">
+        <div class="align-self-start">
+            {{#previousbutton}}
+                {{> core/single_button }}
+            {{/previousbutton}}
+        </div>
+        <div class="align-self-end">
+            {{#nextbutton}}
+                {{> core/single_button }}
+            {{/nextbutton}}
+        </div>
+    </div>
+</div>

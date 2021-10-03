@@ -24,8 +24,14 @@
 
 namespace local_cveteval\local\persistent\evaluation_grid;
 
-use coding_exception;
 use core\persistent;
+use local_cltools\local\field\text;
+use local_cltools\local\crud\enhanced_persistent;
+use local_cltools\local\crud\enhanced_persistent_impl;
+use local_cveteval\local\persistent\evaluation_grid\entity as evaluation_grid_entity;
+use local_cveteval\local\persistent\model_with_history;
+use local_cveteval\local\persistent\model_with_history_impl;
+use local_cveteval\task\upload_default_criteria_grid;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -36,25 +42,50 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class entity extends persistent {
+class entity extends persistent implements enhanced_persistent, model_with_history {
+    use enhanced_persistent_impl;
+    use model_with_history_impl;
+
+    /**
+     * TABLE
+     */
     const TABLE = 'local_cveteval_evalgrid';
 
     /**
-     * Usual properties definition for a persistent
-     *
-     * @return array|array[]
-     * @throws coding_exception
+     * DEFAULT GRID SHORTNAME
      */
-    protected static function define_properties() {
-        return array(
-            'name' => array(
-                'type' => PARAM_TEXT,
-                'default' => ''
-            ),
-            'idnumber' => array(
-                'type' => PARAM_ALPHANUMEXT,
-            )
-        );
+    const DEFAULT_GRID_SHORTNAME = 'DEFAULTGRID';
+
+    public static function define_fields(): array {
+        return [
+            new text(['fieldname' => 'name', 'editable' => true]),
+            new text(['fieldname' => 'idnumber', 'rawtype' => PARAM_ALPHANUMEXT])
+        ];
+    }
+
+    /**
+     * Get default grid and create it if it does not exist.
+     *
+     * @return entity
+     * @throws \coding_exception
+     * @throws \core\invalid_persistent_exception
+     */
+    public static function get_default_grid() {
+        $evalgrid  = self::get_record(['idnumber' => self::DEFAULT_GRID_SHORTNAME]);
+        if (!$evalgrid) {
+            $evalgrid = new evaluation_grid_entity(0, (object) [
+                'name' => get_string('evaluationgrid:default', 'local_cveteval'),
+                'idnumber' => self::DEFAULT_GRID_SHORTNAME
+            ]);
+            // Create it and upload the criteria.
+            $evalgrid->create();
+            $task = new upload_default_criteria_grid();
+            \core\task\manager::queue_adhoc_task($task, true); // Upload default grid.
+            return $evalgrid;
+        } else {
+            return $evalgrid;
+        }
+
     }
 }
 

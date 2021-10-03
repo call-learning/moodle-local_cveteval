@@ -25,15 +25,13 @@
 namespace local_cveteval\local\importer\grouping;
 defined('MOODLE_INTERNAL') || die();
 
-use coding_exception;
 use core_user;
-use dml_exception;
 use local_cveteval\local\persistent\group\entity as group_entity;
 use local_cveteval\local\persistent\group_assignment\entity as group_assignment_entity;
+use local_cveteval\utils;
 use moodle_exception;
-use tool_importer\field_types;
-use tool_importer\importer_exception;
-use tool_importer\local\import_log;
+use tool_importer\local\exceptions\importer_exception;
+use tool_importer\local\exceptions\validation_exception;
 
 /**
  * Class data_importer
@@ -46,48 +44,38 @@ class data_importer extends \tool_importer\data_importer {
 
     private $grouping = [];
 
+    public $groupassignmentcount = 0;
+    public $groupcount = 0;
+
     /**
-     * data_importer constructor.
+     * Called just before importation or validation.
      *
-     * @param null $defaultvals additional default values
-     * @throws dml_exception
+     * Gives a chance to reinit values or local information before a real import.
+     *
+     * @param mixed|null $options additional importer options
      */
-    public function __construct($fielddefinition, $defaultvals = null) {
-        $this->defaultvalues = [];
-        if ($defaultvals) {
-            $this->defaultvalues = array_merge($this->defaultvalues, $defaultvals);
-        }
-        foreach (array_keys($fielddefinition) as $name) {
+    public function init($options = null) {
+        foreach (array_keys($this->get_source()->get_fields_definition()) as $name) {
             if (preg_match('/groupement.*/', strtolower($name))) {
                 $this->grouping[] = $name;
             }
         }
+        $this->get_add_group(null);
+        $this->groupassignmentcount = 0;
+        $this->groupcount = 0;
     }
-
     /**
-     * Get the field definition array
+     * Check if row is valid after transformation.
      *
-     * The associative array has at least a series of column names
-     * Types are derived from the field_types class
-     * 'fieldname' => [ 'type' => TYPE_XXX, ...]
      *
-     * @return array
-     * @throws coding_exception
+     * @param array $row
+     * @param int $rowindex
+     * @param mixed|null $options import options
+     * @throws validation_exception
      */
-    public function get_fields_definition() {
-        $fielddef = [];
-        $fielddef['email'] = [
-            'type' => field_types::TYPE_TEXT,
-            'required' => true
-        ];
-
-        foreach ($this->grouping as $groupingname) {
-            $fielddef[$groupingname] = [
-                'type' => field_types::TYPE_TEXT,
-                'required' => false
-            ];
-        }
-        return $fielddef;
+    public function validate_after_transform($row, $rowindex, $options = null) {
+        utils::check_user_exists_or_multiple($row['email'], $rowindex, 'grouping:multipleuserfound', 'grouping:usernotfound',
+            'email');
     }
 
     /**
@@ -97,73 +85,74 @@ class data_importer extends \tool_importer\data_importer {
      * the group.
      *
      * @param array $row associative array storing the record
+     * @param mixed|null $options import options
      * @return mixed|void
      * @throws importer_exception
      */
-    protected function raw_import($row, $rowindex) {
-        static $groups = null;
+    protected function raw_import($row, $rowindex, $options = null) {
+        $row = array_merge($this->defaultvalues, $row);
+        $gassigments = [];
+        foreach ($this->grouping as $grouping) {
+            try {
+                if (!empty($row[$grouping])) {
+                    $group = $this->get_add_group($row[$grouping]);
+                    $user = core_user::get_user_by_email($row['email']);
+                    $ga = group_assignment_entity::get_record(array(
+                            'studentid' => $user->id,
+                            'groupid' => $group->get('id')
+                        )
+                    );
+                    if (!$ga) {
+                        $ga = new group_assignment_entity(0, (object) array(
+                            'studentid' => $user->id,
+                            'groupid' => $group->get('id')
+                        ));
+                        $ga->create();
+                        $this->groupassignmentcount++;
+                    }
+                    $gassigments[] = $ga;
+                }
 
-        $this->basic_validations($row);
+            } catch (moodle_exception $e) {
+                throw new importer_exception(
+                    'grouping:error', $rowindex, '', 'local_cveteval', $grouping);
+            }
+        }
+        return $gassigments;
+    }
 
-        // Preload groups.
-        if (empty($groups)) {
+    /**
+     * Add group or get the related group from its name.
+     *
+     * @param string|,ull $groupname
+     * @return false|group_entity
+     * @throws \coding_exception
+     * @throws \core\invalid_persistent_exception
+     */
+    protected function get_add_group($groupname = null) {
+        static $groups = [];
+        // Preload groups first.
+        if (is_null($groupname)) {
             $groupsrecords = group_entity::get_records();
             $groups = [];
             foreach ($groupsrecords as $record) {
                 $groups[$record->get('name')] = $record;
             }
+            return false;
         }
-
-        $row = array_merge($this->defaultvalues, $row);
-
-        $gassigments = [];
-
-        $email = clean_param(trim($row['email']), PARAM_EMAIL);
-        $user = core_user::get_user_by_email($email);
-        if (!$user) {
-            import_log::new_log($rowindex,
-                'grouping:usernotfound',
-                $email,
-                import_log::LEVEL_WARNING,
-                'studentid',
-                'local_cveteval',
-                $this->source->get_source_type() . ':' . $this->source->get_source_identifier(),
-                $this->get_import_id());
-        } else {
-            foreach ($this->grouping as $grouping) {
-                try {
-                    if (!empty($row[$grouping])) {
-                        if (!empty($groups[$row[$grouping]])) {
-                            $group = $groups[$row[$grouping]];
-                            $ga = group_assignment_entity::get_record(array(
-                                    'studentid' => $user->id,
-                                    'groupid' => $group->get('id')
-                                )
-                            );
-                            if (!$ga) {
-                                $ga = new group_assignment_entity(0, (object) array(
-                                    'studentid' => $user->id,
-                                    'groupid' => $group->get('id')
-                                ));
-                                $ga->create();
-                            }
-                            $gassigments[] = $ga;
-                        }
-
-                    }
-                } catch (moodle_exception $e) {
-                    import_log::new_log($rowindex,
-                        'grouping:error',
-                        $e->getMessage(),
-                        import_log::LEVEL_ERROR,
-                        '',
-                        'local_cveteval',
-                        $this->source->get_source_type() . ':' . $this->source->get_source_identifier(),
-                        $this->get_import_id());
-                }
-            }
+        // If found.
+        $groupname = clean_param(trim($groupname), PARAM_TEXT);
+        if (!empty($groups[$groupname])) {
+            return $groups[$groupname];
         }
-        return $gassigments;
+        // Get record.
+        $group = group_entity::get_record(['name' => $groupname]);
+        if (!$group) {
+            $group = new group_entity(0, (object) ['name' => $groupname]);
+            $group->create();
+            $this->groupcount++;
+        }
+        return $group;
     }
 }
 

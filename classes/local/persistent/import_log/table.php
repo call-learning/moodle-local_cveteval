@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 use coding_exception;
 use local_cltools\local\crud\entity_table;
-use tool_importer\local\import_log;
+use tool_importer\local\log_levels;
 
 /**
  * Persistent import log
@@ -37,30 +37,7 @@ use tool_importer\local\import_log;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class table extends entity_table {
-    protected static $persistentclass = import_log::class;
-
-    /**
-     * Usual properties definition for a persistent
-     *
-     * @return array|array[]
-     * @throws coding_exception
-     */
-    protected static function define_properties() {
-        return array(
-            'timecreated' => array(
-                'type' => PARAM_INT,
-                'default' => '',
-                'format' => [
-                    'type' => 'datetime'
-                ]
-            ),
-            'importid' => array(
-                'type' => PARAM_INT,
-                'null' => NULL_ALLOWED,
-                'default' => 0
-            )
-        );
-    }
+    protected static $persistentclass = entity::class;
 
     /**
      * @return array
@@ -69,11 +46,52 @@ class table extends entity_table {
         $columns = parent::get_fields_definition();
         // This is a temporary hack so we can set the width or other params
         // for this column.
-        $columns['additionalinfo']->additionalParams = json_encode(
+        $columns['information']->additionalParams = json_encode(
             (object) [
                 'widthGrow' => 6
             ]
         );
         return $columns;
+    }
+
+    /**
+     * Format the origin field
+     *
+     * @param $row
+     * @return string
+     * @throws coding_exception
+     * @throws \moodle_exception
+     */
+    protected function col_origin($row) {
+        return basename($row->origin);
+    }
+
+    /**
+     * Format the origin field
+     *
+     * @param $row
+     * @return string
+     * @throws coding_exception
+     * @throws \moodle_exception
+     */
+    protected function col_information($row) {
+        $addinfo = json_decode($row->additionalinfo);
+        if (is_object($addinfo)) {
+            $addinfo = $addinfo->info ?? '';
+        }
+        $message = get_string($row->messagecode, $row->module, $addinfo);
+        return $message;
+    }
+
+    /**
+     * Format the level field
+     *
+     * @param $row
+     * @return string
+     * @throws coding_exception
+     * @throws \moodle_exception
+     */
+    protected function col_level($row) {
+        return strtoupper(strtoupper(log_levels::to_displayable_string($row->level, 'local_cveteval')));
     }
 }

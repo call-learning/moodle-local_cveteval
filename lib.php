@@ -23,7 +23,8 @@
  */
 
 use local_cveteval\local\persistent\role\entity as role_entity;
-use local_cveteval\local\utils;
+use local_cveteval\utils;
+use local_cveteval\roles;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -100,7 +101,7 @@ function local_cveteval_extend_navigation(global_navigation $nav) {
     global $CFG, $USER;
     $enabled = !empty($CFG->enablecompetveteval) && $CFG->enablecompetveteval;
     if ($enabled) {
-        if (utils::get_user_role_id($USER->id) == role_entity::ROLE_ASSESSOR_ID) {
+        if (roles::can_assess($USER->id)) {
             $node = navigation_node::create(
                 get_string('assessment', 'local_cveteval'),
                 new moodle_url('/local/cveteval/pages/assessment/mysituations.php'),

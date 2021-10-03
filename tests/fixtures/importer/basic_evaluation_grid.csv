@@ -1,0 +1,6 @@
+"Evaluation Grid Id";"Criterion Id";"Criterion Parent Id";"Criterion Label"
+"GRID01";"Q001";;"Savoir être"
+"GRID01";"Q002";"Q001";"Respect des horaires de travail"
+"GRID01";"Q007";;"Motivation et implication personnelle"
+"GRID01";"Q008";"Q007";"Motivation à apprendre (cherche à approfondir et à discuter des cas, à améliorer ses compétences techniques)"
+"GRID01";"Q011";;"Qualités d’organisation et de travail en équipe"
