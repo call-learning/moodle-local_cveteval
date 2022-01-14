@@ -27,29 +27,32 @@ global $CFG, $OUTPUT, $PAGE;
 require_login();
 require_capability('local/cveteval:manageimport', context_system::instance());
 $importid = required_param('importid', PARAM_INT);
-$returnurl = optional_param('returnurl', null, PARAM_RAW);
+$restarturl = optional_param('restarturl', '/local/cveteval/pages/import.php', PARAM_RAW);
+$continueurl = optional_param('continuenurl', '/local/cveteval/admin/importindex.php', PARAM_RAW);
 $failed = optional_param('failed', false, PARAM_BOOL);
 $PAGE->set_pagelayout('standard');
 $PAGE->set_context(context_system::instance());
 $PAGE->set_title(get_string('import:logs', 'local_cveteval'));
 $PAGE->set_heading(get_string('import:logs', 'local_cveteval'));
-$PAGE->set_url(new moodle_url('/local/cveteval/pages/import.php'));
+$PAGE->set_url(new moodle_url('/local/cveteval/admin/importlogs.php'));
 /* @var core_renderer $OUTPUT */
 
 if (!$failed) {
-    if ($returnurl) {
-        $PAGE->set_button(
-            $OUTPUT->single_button(new moodle_url($returnurl),
-                get_string('continue'))
-        );
-    }
+    $PAGE->set_button(
+            $OUTPUT->single_button(new moodle_url($continueurl),
+                    get_string('continue'))
+    );
 }
 echo $OUTPUT->header();
 if ($failed) {
     echo $OUTPUT->box_start('alert alert-primary');
     echo $OUTPUT->box(get_string('import:failed', 'local_cveteval'));
-    echo $OUTPUT->single_button(new moodle_url('/local/cveteval/admin/cleanup.php', ['importid' => $importid]),
-        get_string('import:cleanup', 'local_cveteval'));
+    echo $OUTPUT->single_button(new moodle_url('/local/cveteval/admin/cleanup.php', [
+            'importid' => $importid,
+            'type' => 'model',
+            'returnurl' => $restarturl
+    ]),
+            get_string('import:cleanup', 'local_cveteval'));
     echo $OUTPUT->box_end();
 }
 

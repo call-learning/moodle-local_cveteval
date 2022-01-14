@@ -34,8 +34,8 @@ use local_cveteval\local\persistent\history\entity as history_entity;
 global $CFG, $OUTPUT, $PAGE;
 $importid = required_param('importid', PARAM_INT);
 require_capability('local/cveteval:manageentities', context_system::instance());
-history_entity::set_current_id($importid);
 
+history_entity::set_current_id($importid);
 $action = optional_param('action', crud_list::ACTION, PARAM_TEXT);
 $entityclassname = '\\local_cveteval\\local\\persistent\\planning\\entity';
 $currenturl = new moodle_url('/local/cveteval/manage/planning/index.php', ['importid' => $importid]);

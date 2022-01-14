@@ -98,7 +98,8 @@ class data_importer extends \tool_importer\data_importer {
                     $groupname,
                     log_levels::LEVEL_ERROR);
             }
-            if ($checkotherentities && !situation_entity::record_exists_select("idnumber = :situationsn", ['situationsn' => $situationsn])) {
+            if ($checkotherentities && !empty(trim($situationsn)) &&
+                    !situation_entity::record_exists_select("idnumber = :situationsn", ['situationsn' => $situationsn])) {
                 throw new importer_exception('planning:situationnotfound',
                     $rowindex,
                     $groupname,

@@ -41,7 +41,7 @@ $PAGE->set_pagelayout('standard');
 $PAGE->set_context(context_system::instance());
 $PAGE->set_title(get_string('import:download', 'local_cveteval'));
 $PAGE->set_heading(get_string('import:download', 'local_cveteval'));
-$PAGE->set_url(new moodle_url('/local/cveteval/pages/importdownload.php'));
+$PAGE->set_url(new moodle_url('/local/cveteval/admin/importdownload.php'));
 
 if (!empty($dataformat) && !empty($importid) && !empty($type)) {
     $downloadcb = "download_{$downloadtype}_{$type}";

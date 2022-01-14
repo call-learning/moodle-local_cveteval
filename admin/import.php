@@ -33,7 +33,8 @@ require_once($CFG->libdir . "/adminlib.php");
 admin_externalpage_setup('cvetevalimportindex');
 $PAGE->set_title(get_string('import', 'local_cveteval'));
 $PAGE->set_heading(get_string('import', 'local_cveteval'));
-$PAGE->set_url(new moodle_url('/local/cveteval/pages/import.php'));
+$currenturl = new moodle_url('/local/cveteval/admin/import.php');
+$PAGE->set_url($currenturl);
 $PAGE->set_cacheable(false);    // Progress bar is used here.
 
 $form = new cveteval_import_form();
@@ -59,7 +60,7 @@ if ($formdata = $form->get_data()) {
         }
 
         echo $OUTPUT->box(get_string('import:importing', 'local_cveteval',
-            get_string('import:' . $filetype, 'local_cveteval')));
+                get_string('import:' . $filetype, 'local_cveteval')));
         $progressbar = new progress_bar();
         $progressbar->create();
         if ($file) {
@@ -70,11 +71,11 @@ if ($formdata = $form->get_data()) {
             /** @var \tool_importer\processor $processor */
             $processor = $importhelper->get_processor();
             $info = (object) [
-                'rowcount' => $processor->get_row_imported_count(),
-                'totalrows' => $processor->get_total_row_count(),
+                    'rowcount' => $processor->get_row_imported_count(),
+                    'totalrows' => $processor->get_total_row_count(),
             ];
             $logs = $processor->get_logger()->get_logs(['level' => \tool_importer\local\log_levels::LEVEL_ERROR,
-                'importid' => $importid]);
+                    'importid' => $importid]);
             if (!empty($logs)) {
                 $importfailed = true;
             }
@@ -85,11 +86,13 @@ if ($formdata = $form->get_data()) {
     $manageurl = new moodle_url('/local/cveteval/admin/importindex.php');
 
     $continueurl = new moodle_url('/local/cveteval/admin/importlogs.php',
-        array(
-            'importid' => $importid,
-            'failed' => $importfailed,
-            'returnurl' => $manageurl->out(true)
-        )
+            array(
+                    'importid' => $importid,
+                    'failed' => $importfailed,
+                    'continuenurl' => $manageurl->out(true),
+                    'restarturl' => $currenturl->out(true)
+
+            )
     );
 
     echo $OUTPUT->continue_button($continueurl);
