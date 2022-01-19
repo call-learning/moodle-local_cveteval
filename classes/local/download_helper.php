@@ -193,9 +193,9 @@ class download_helper {
             $shakey = sha1($p->get('starttime') . $p->get('endtime'));
             if (empty($flatplanning[$shakey])) {
                 $flatplanning[$shakey] = (object) [
-                    'starttime' => $p->get_starttime_string(),
-                    'endtime' => $p->get_endtime_string(),
-                    'groups' => []
+                    'starttime' => userdate($p->get('starttime'), get_string('export:dateformat', 'local_cveteval')),
+                    'endtime' => userdate($p->get('endtime'), get_string('export:dateformat', 'local_cveteval')),
+                    'groups' => array_fill_keys($groupidtoname, '')
                 ];
             }
             $sit = situation_entity::get_record(['id' => $p->get('clsituationid')]);

@@ -57,7 +57,7 @@ if (!$importid) {
     /* @var core_renderer $OUTPUT */
     $currenturl->remove_all_params();
     $currenturl->param('type', $cleanuptype);
-    $currenturl->param('type', $returnurl);
+    $currenturl->param('returnurl', $returnurl);
     echo $OUTPUT->single_select(
             $currenturl,
             'importid',

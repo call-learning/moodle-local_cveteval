@@ -25,6 +25,8 @@
 namespace local_cveteval\local\importer\planning;
 defined('MOODLE_INTERNAL') || die();
 
+use core\session\exception;
+use DateTime;
 use local_cveteval\local\persistent\group\entity as group_entity;
 use local_cveteval\local\persistent\planning\entity as planning_entity;
 use local_cveteval\local\persistent\situation\entity as situation_entity;
@@ -32,7 +34,6 @@ use moodle_exception;
 use stdClass;
 use tool_importer\local\exceptions\importer_exception;
 use tool_importer\local\exceptions\validation_exception;
-use tool_importer\local\import_log;
 use tool_importer\local\log_levels;
 
 /**
@@ -74,7 +75,29 @@ class data_importer extends \tool_importer\data_importer {
         $this->planningeventscount = 0;
         $this->planningcount = 0;
     }
-
+    /**
+     * Check if row is valid before transformation.
+     *
+     * @param array $row
+     * @param int $rowindex
+     * @param mixed|null $options import options
+     * @throws validation_exception
+     */
+    public function validate_before_transform($row, $rowindex, $options = null) {
+        $this->validate_from_field_definition($this->get_fields_definition(), $row, $rowindex, $options);
+        foreach(['starttime'=> 'Date début','endtime'=> 'Date fin'] as $datetype => $columname) {
+            $dateraw = $row[$columname] ?? '';
+            $date = DateTime::createFromFormat(get_string('import:dateformat', 'local_cveteval'), trim($dateraw));
+            if (empty($date)) {
+                throw new importer_exception('planning:invalid' . $datetype,
+                        $rowindex,
+                        $columname,
+                        'local_cveteval',
+                        $dateraw,
+                        log_levels::LEVEL_ERROR);
+            }
+        }
+    }
     /**
      * Check if row is valid after transformation.
      *

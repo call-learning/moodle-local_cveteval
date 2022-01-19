@@ -14,14 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Evaluation group
- *
- * @package   local_cveteval
- * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace local_cveteval\local\persistent\import_log;
 
 use local_cltools\local\crud\enhanced_persistent;
@@ -38,7 +30,7 @@ use tool_importer\local\logs\import_log_entity;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Evaluation group entity
+ * Import log entity
  *
  * @package   local_cveteval
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
