@@ -58,7 +58,6 @@ class assessment_utils {
      *
      * @param $situationid
      * @return mystudents
-     * @throws coding_exception
      */
     public static function get_mystudents_list($situationid) {
         $entitylist = new mystudents(null, null, null, $situationid);
@@ -71,7 +70,6 @@ class assessment_utils {
      * @param $studentid
      * @param $evalplanid
      * @return appraisals_student
-     * @throws coding_exception
      */
     public static function get_thissituation_list($studentid, $evalplanid) {
         // This is a special case here. Columns are deduced from the query so we need to build an empty table, then
@@ -145,14 +143,20 @@ class assessment_utils {
      * Get situation for student
      *
      * @param $studentid
-     * @return situations_student
+     * @return situations_for_student
      * @throws coding_exception
      */
-    public static function get_situation_student($studentid) {
-        $entitylist = new situations_student(null, null, null, $studentid);
+    public static function get_situations_for_student($studentid) {
+        $entitylist = new situations_for_student(null, null, null, $studentid);
         return $entitylist;
     }
 
+    /**
+     * Add roles evaluation
+     *
+     * @param enhanced_filterset $filterset
+     * @return void
+     */
     public static function add_roles_evaluation_filterset($filterset) {
         $filterset->add_filter_definition('roletype', (object)
         [
@@ -168,6 +172,12 @@ class assessment_utils {
         );
     }
 
+    /**
+     * Add roles assessor
+     *
+     * @param enhanced_filterset $filterset
+     * @return void
+     */
     public static function add_roles_assessor_filterset($filterset) {
         $filterset->add_filter_definition('roletype', (object)
         [

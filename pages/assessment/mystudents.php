@@ -25,9 +25,6 @@
 use local_cltools\local\crud\entity_exporter;
 use local_cltools\output\table\entity_table_renderable;
 use local_cveteval\local\assessment\assessment_utils;
-use local_cveteval\local\persistent\role\entity as role_entity;
-use local_cveteval\local\persistent\situation\exporter;
-use local_cveteval\utils;
 use local_cveteval\roles;
 
 require_once(__DIR__ . '/../../../../config.php');

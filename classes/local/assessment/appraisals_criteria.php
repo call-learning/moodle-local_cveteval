@@ -71,7 +71,7 @@ class appraisals_criteria extends dynamic_table_sql {
      *
      * @return array
      */
-    public function retrieve_raw_data($pagesize) {
+    public function get_rows($pagesize) {
         global $DB;
         list($additionalwhere, $params) = $this->filterset->get_sql_for_filter();
         $where = '';
@@ -137,18 +137,27 @@ class appraisals_criteria extends dynamic_table_sql {
         $this->setup_other_fields();
     }
 
+    protected function internal_get_sql_from($tablealias = 'e') {
+        return '{local_cveteval_criterion} criterion
+        LEFT JOIN {local_cveteval_appr_crit} critapp ON  criterion.id = critapp.criterionid';
+    }
     /**
-     * Set SQL parameters (where, from,....) from the entity
+     * Get sql fields
      *
-     * This can be overridden when we are looking at linked entities.
+     * Overridable sql query
+     *
+     * @param string $tablealias
      */
-    protected function set_initial_sql() {
-        $from = '
-        {local_cveteval_criterion} criterion
-        LEFT JOIN {local_cveteval_appr_crit} critapp ON  criterion.id = critapp.criterionid
-        ';
-
-        $this->set_sql(join(', ', static::FIELDS), $from, 'criterion.parentid = 0', []);
-        // Just the first set, we will fold the other row in the result.
+    protected function internal_get_sql_fields($tablealias = 'e') {
+        return "DISTINCT " . join(',', static::FIELDS) . " ";
+    }
+    /**
+     * Get where
+     *
+     * @param bool $disablefilters
+     * @return array
+     */
+    protected function internal_get_sql_where($disablefilters = false) {
+        return ['criterion.parentid = 0', []];
     }
 }

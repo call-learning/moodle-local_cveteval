@@ -25,8 +25,6 @@
 define('NO_OUTPUT_BUFFERING', true);
 require_once(__DIR__ . '../../../../../config.php');
 
-use core\plugininfo\dataformat;
-use local_cveteval\utils;
 
 global $CFG, $OUTPUT, $PAGE;
 require_login();

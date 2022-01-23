@@ -24,8 +24,6 @@
 
 use local_cltools\output\table\entity_table_renderable;
 use local_cveteval\local\assessment\assessment_utils;
-use local_cveteval\local\persistent\role\entity as role_entity;
-use local_cveteval\utils;
 use local_cveteval\roles;
 
 require_once(__DIR__ . '/../../../../config.php');
@@ -126,7 +124,7 @@ switch ($currenttab) {
         echo $renderer->render($renderable);
         break;
     case "allsituations":
-        $entitylist = assessment_utils::get_situation_student($studentid);
+        $entitylist = assessment_utils::get_situations_for_student($studentid);
         $renderer = $PAGE->get_renderer('local_cltools');
         /* @var entity_table_renderable entity table */
         $renderable = new entity_table_renderable($entitylist);

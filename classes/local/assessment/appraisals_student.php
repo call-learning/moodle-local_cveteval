@@ -88,38 +88,47 @@ class appraisals_student extends dynamic_table_sql {
         parent::__construct($uniqueid, $actionsdefs, $editable);
     }
 
+    protected function internal_get_sql_from($tablealias = 'e') {
+        return criterion_entity::get_historical_sql_query("criterion");
+    }
+
     /**
-     * Set SQL parameters (where, from,....) from the entity
+     * Get sql fields
      *
-     * We just retrieve the criteria here and we will gather the rest after.
-     * This can be overridden when we are looking at linked entities.
+     * Overridable sql query
+     *
+     * @param string $tablealias
      */
-    protected function set_initial_sql() {
-        $from = criterion_entity::get_historical_sql_query("criterion");
+    protected function internal_get_sql_fields($tablealias = 'e') {
         $fields = static::FIELDS;
-        $where = '1=1';
-        $params = [];
         if ($this->appraiserlist) {
             foreach ($this->appraiserlist as $appraisalid => $appraiserid) {
                 $fields[] = " '' AS " . $this->get_appraiser_appraisal_columnname($appraiserid, $appraisalid);
             }
         }
+        return "DISTINCT " . join(',', $fields) . " ";
+    }
+    /**
+     * Get where
+     *
+     * @param bool $disablefilters
+     * @return array
+     */
+    protected function internal_get_sql_where($disablefilters = false) {
         if ($this->evalgridwhere && $this->evalgridparams) {
-            $where = ' criterion.evalgridid ' . $this->evalgridwhere;
-            $params = $this->evalgridparams;
+            return [' criterion.evalgridid ' . $this->evalgridwhere, $this->evalgridparams];
         }
-        $this->set_sql(join(', ', $fields), $from, $where, $params);
+        return ['1=1', []];
     }
 
     /**
      * Main method to create the underlying query (SQL)
      *
      * @param int $pagesize
-     * @param bool $useinitialsbar
      */
-    public function query_db($pagesize, $useinitialsbar = true, $deactivatefilter = false) {
+    public function query_db($pagesize, $disablefilters = false) {
         // Very specific use here: we do not use the same filters for criteria and for the observations filterings.
-        dynamic_table_sql::query_db($pagesize, true, true);
+        dynamic_table_sql::query_db($pagesize, true);
     }
 
     /**
@@ -129,11 +138,11 @@ class appraisals_student extends dynamic_table_sql {
      *
      * @return array
      */
-    public function retrieve_raw_data($pagesize) {
-        if (empty($this->appraiserlist)) {
+    public function get_rows($pagesize) {
+       if (empty($this->appraiserlist)) {
             return []; // Nothing if we have no appraisers.
         }
-        $rows = parent::retrieve_raw_data($pagesize);
+        $rows = parent::get_rows($pagesize);
         $rootcriteria = [];
         foreach ($rows as $rcriteria) {
             if (empty($rcriteria->criterionparentid)) {
@@ -161,7 +170,6 @@ class appraisals_student extends dynamic_table_sql {
         list($cols, $headers) = $this->get_table_columns_definitions();
         $this->define_columns($cols);
         $this->define_headers($headers);
-        $this->set_initial_sql();
     }
 
     /**

@@ -128,18 +128,13 @@ class mystudents extends dynamic_table_sql {
         $this->setup_other_fields();
     }
 
-    /**
-     * Set SQL parameters (where, from,....) from the entity
-     *
-     * This can be overridden when we are looking at linked entities.
-     */
-    protected function set_initial_sql() {
+    protected function internal_get_sql_from($tablealias = 'e') {
         global $DB;
         $planningsql = planning_entity::get_historical_sql_query("plan");
         $situationsql = situation_entity::get_historical_sql_query("situation");
         $groupassignmentsql = group_assignment_entity::get_historical_sql_query("groupa");
         $groupsql = group_entity::get_historical_sql_query("grp");
-        $from = "$planningsql LEFT JOIN {local_cveteval_role} role ON plan.clsituationid = role.clsituationid
+        return  "$planningsql LEFT JOIN {local_cveteval_role} role ON plan.clsituationid = role.clsituationid
         LEFT JOIN $groupassignmentsql ON groupa.groupid = plan.groupid
         LEFT JOIN $groupsql ON groupa.groupid = grp.id
         LEFT JOIN $situationsql ON situation.id =  plan.clsituationid
@@ -149,7 +144,18 @@ class mystudents extends dynamic_table_sql {
             FROM {local_cveteval_appraisal} a GROUP BY a.studentid, a.evalplanid) apc
             ON apc.studentid = student.id AND apc.planid = plan.id
         LEFT JOIN {local_cveteval_finalevl} eval ON eval.studentid = student.id AND eval.evalplanid = plan.id";
+    }
 
+    /**
+     * Get sql fields
+     *
+     * Overridable sql query
+     *
+     * @param string $tablealias
+     */
+    protected function internal_get_sql_fields($tablealias = 'e') {
+        global $DB;
+        $fields = [];
         $fields[] = $DB->sql_concat('plan.id', 'student.id') . ' AS id';
         $fields[] = 'plan.id AS planid';
         $fields[] = 'student.id AS studentid';
@@ -161,7 +167,7 @@ class mystudents extends dynamic_table_sql {
         $fields[] = 'COALESCE(apc.count,0) AS appraisalcount';
         $fields[] = 'situation.expectedevalsnb as appraisalrequired';
         $fields[] = '(eval.id IS NOT NULL) as hasgrade';
-        $this->set_sql(join(', ', $fields), $from, '');
+        return "DISTINCT " . join(', ', $fields);
     }
 }
 

@@ -54,8 +54,7 @@ class model_with_history_advanced_test extends \advanced_testcase {
             return strstr($keyname, 'appraisergrade');
         };
         $assessment = assessment_utils::get_thissituation_list($this->students[0]->id, $this->evalplans[0]->get('id'));
-        $assessment->define_baseurl(new \moodle_url(''));
-        $data = $assessment->retrieve_raw_data(10);
+        $data = $assessment->get_rows(10);
         // Check that we have one row.
         $this->assertCount(1, $data);
         $this->assertCount(3, array_filter((array) $data[0], $filterfunction, ARRAY_FILTER_USE_KEY));
@@ -72,8 +71,7 @@ class model_with_history_advanced_test extends \advanced_testcase {
         $newstudents = array_values($newstudents);
         $newevalplans = array_values($newevalplans);
         $assessment = assessment_utils::get_thissituation_list($newstudents[0]->id, $newevalplans[0]->get('id'));
-        $assessment->define_baseurl(new \moodle_url(''));
-        $data = $assessment->retrieve_raw_data(10);
+        $data = $assessment->get_rows(10);
         $this->assertCount(1, $data);
         // Two assessments.
         $this->assertCount(2, array_filter((array) $data[0], $filterfunction, ARRAY_FILTER_USE_KEY));
@@ -85,8 +83,7 @@ class model_with_history_advanced_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->setUser($this->assessors[0]);
         $studentlist = assessment_utils::get_mystudents_list($this->situations[0]->get('id'));
-        $studentlist->define_baseurl(new \moodle_url(''));
-        $data = $studentlist->retrieve_raw_data(10);
+        $data = $studentlist->get_rows(10);
         // Check that we have two row.
         $this->assertCount(2, $data);
         // Check student info
@@ -107,8 +104,7 @@ class model_with_history_advanced_test extends \advanced_testcase {
         $newstudents = array_values($newstudents);
 
         $studentlist = assessment_utils::get_mystudents_list($newsituations[0]->get('id'));
-        $studentlist->define_baseurl(new \moodle_url(''));
-        $data = $studentlist->retrieve_raw_data(10);
+        $data = $studentlist->get_rows(10);
         // Check that we have two row.
         $this->assertCount(1, $data);
         // Check student info
@@ -123,13 +119,11 @@ class model_with_history_advanced_test extends \advanced_testcase {
         history_entity::reset_current_id();
 
         $studentlist = assessment_utils::get_mystudents_list($this->situations[0]->get('id'));
-        $studentlist->define_baseurl(new \moodle_url(''));
-        $data = $studentlist->retrieve_raw_data(10);
+        $data = $studentlist->get_rows(10);
         // Check that we have two row.
         $this->assertCount(2, $data); // Still two as we just look at one situation.
         $studentlist = assessment_utils::get_mystudents_list($newsituations[0]->get('id'));
-        $studentlist->define_baseurl(new \moodle_url(''));
-        $data = $studentlist->retrieve_raw_data(10);
+        $data = $studentlist->get_rows(10);
         // Check that we have two row.
         $this->assertCount(1, $data); // Still two as we just look at one situation.
     }
@@ -138,19 +132,17 @@ class model_with_history_advanced_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->setUser($this->assessors[0]);
         $criterialist = assessment_utils::get_assessmentcriteria_list($this->appraisals[0]->get('id'));
-        $criterialist->define_baseurl(new \moodle_url(''));
-        $data = $criterialist->retrieve_raw_data(10);
+        $data = $criterialist->get_rows(10);
         // Check that we have two rows.
         $this->assertCount(1, $data);
         $this->assertCount(2, $data[0]->_children);
     }
 
-    public function test_get_situation_student() {
+    public function test_get_situations_for_student() {
         $this->resetAfterTest();
         $this->setUser($this->assessors[0]);
-        $criterialist = assessment_utils::get_situation_student($this->appraisals[0]->get('id'));
-        $criterialist->define_baseurl(new \moodle_url(''));
-        $data = $criterialist->retrieve_raw_data(10);
+        $criterialist = assessment_utils::get_situations_for_student($this->appraisals[0]->get('id'));
+        $data = $criterialist->get_rows(10);
         // Check that we have two rows.
         $this->assertCount(4, $data);
     }

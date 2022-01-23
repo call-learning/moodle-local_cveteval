@@ -78,8 +78,7 @@ class assessment_test extends advanced_testcase {
         $obs1 = core_user::get_user_by_username('obs1');
         $this->setUser($obs1);
         $entitylist = assessment_utils::get_mysituations_list();
-        $entitylist->define_baseurl(new moodle_url('/'));
-        $rows = $entitylist->retrieve_raw_data(100);
+        $rows = $entitylist->get_rows(100);
         $this->assertCount(1, $rows);
         $this->assertEquals($rows[0]->idnumber, "TMG");
     }
@@ -92,8 +91,7 @@ class assessment_test extends advanced_testcase {
         $this->setUser($resp1);
         $tmgsituation = situation_entity::get_record(array('idnumber' => 'TMG'));
         $entitylist = assessment_utils::get_mystudents_list( $tmgsituation->get('id'));
-        $entitylist->define_baseurl(new moodle_url('/'));
-        $rows = $entitylist->retrieve_raw_data(100);
+        $rows = $entitylist->get_rows(100);
         $this->assertCount(10, $rows);
         $this->assertEquals($rows[0]->studentfullname, "Adéla Veselá");
         $this->assertEquals($rows[0]->groupname, "Groupe A");
@@ -115,8 +113,7 @@ class assessment_test extends advanced_testcase {
         $evalplans = planning_entity::get_records(array('clsituationid' => $tmgsituation->get('id')));
         $evalplan = reset($evalplans);
         $entitylist = assessment_utils::get_thissituation_list($student->id, $evalplan->get('id'));
-        $entitylist->define_baseurl(new moodle_url('/'));
-        $rows = $entitylist->retrieve_raw_data(100);
+        $rows = $entitylist->get_rows(100);
         $this->assertCount(7, $rows);
         $this->assertEquals($rows[0]->criterionname, "Savoir être");
         $this->assertEquals($rows[0]->_children[0]->criterionname, "Respect des horaires de travail");
@@ -137,8 +134,7 @@ class assessment_test extends advanced_testcase {
         $appraisal = appraisal_entity::get_record(array('studentid' => $student->id, 'appraiserid' => $obs1->id,
             'evalplanid' => $evalplan->get('id')));
         $entitylist = assessment_utils::get_assessmentcriteria_list($appraisal->get('id'));
-        $entitylist->define_baseurl(new moodle_url('/'));
-        $rows = $entitylist->retrieve_raw_data(100);
+        $rows = $entitylist->get_rows(100);
         $this->assertCount(7, $rows);
         $this->assertCount(5, $rows[0]->_children);
     }

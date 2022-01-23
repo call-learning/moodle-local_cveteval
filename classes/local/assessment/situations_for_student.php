@@ -43,7 +43,7 @@ use ReflectionException;
  * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class situations_student extends dynamic_table_sql {
+class situations_for_student extends dynamic_table_sql {
 
     /**
      * Sets up the page_table parameters.
@@ -106,23 +106,19 @@ class situations_student extends dynamic_table_sql {
         $this->setup_other_fields();
     }
 
+    protected function col_comment($row) {
+        return $this->format_text($row->comment, $row->commentformat);
+    }
+
     /**
-     * Set SQL parameters (where, from,....) from the entity
+     * Get sql fields
      *
-     * This can be overridden when we are looking at linked entities.
+     * Overridable sql query
+     *
+     * @param string $tablealias
      */
-    protected function set_initial_sql() {
+    protected function internal_get_sql_fields($tablealias = 'e') {
         global $DB;
-        $from = '
-         {local_cveteval_group_assign} groupa
-         LEFT JOIN {local_cveteval_evalplan} plan ON plan.groupid = groupa.groupid
-         LEFT JOIN {local_cveteval_clsituation} situation ON plan.clsituationid = situation.id
-         LEFT JOIN {local_cveteval_finalevl} eval ON eval.evalplanid = plan.id
-         LEFT JOIN (SELECT ' . $DB->sql_concat('u.firstname', 'u.lastname') . ' AS fullname, u.id FROM {user} u ) assessor
-            ON assessor.id = eval.assessorid
-         LEFT JOIN (SELECT ' . $DB->sql_concat('u.firstname', 'u.lastname') . ' AS fullname, u.id FROM {user} u ) student
-            ON student.id = groupa.studentid
-        ';
         $fields[] = $DB->sql_concat('plan.id', 'groupa.studentid'). " AS id";
         $fields[] = 'plan.id AS planid';
         $fields[] = 'groupa.studentid AS studentid';
@@ -136,11 +132,21 @@ class situations_student extends dynamic_table_sql {
         $fields[] = 'COALESCE(eval.timemodified,0) AS evaluationdate';
         $fields[] = 'plan.starttime AS startdate';
         $fields[] = 'plan.endtime AS enddate';
-        $this->set_sql(join(', ', $fields), $from, '1=1', []);
+        return "DISTINCT " . join(',', $fields) . " ";
     }
 
-    protected function col_comment($row) {
-        return $this->format_text($row->comment, $row->commentformat);
+    protected function internal_get_sql_from($tablealias = 'e') {
+        global $DB;
+        return '
+         {local_cveteval_group_assign} groupa
+         LEFT JOIN {local_cveteval_evalplan} plan ON plan.groupid = groupa.groupid
+         LEFT JOIN {local_cveteval_clsituation} situation ON plan.clsituationid = situation.id
+         LEFT JOIN {local_cveteval_finalevl} eval ON eval.evalplanid = plan.id AND groupa.studentid = eval.studentid
+         LEFT JOIN (SELECT ' . $DB->sql_concat('u.firstname', 'u.lastname') . ' AS fullname, u.id FROM {user} u ) assessor
+            ON assessor.id = eval.assessorid
+         LEFT JOIN (SELECT ' . $DB->sql_concat('u.firstname', 'u.lastname') . ' AS fullname, u.id FROM {user} u ) student
+            ON student.id = groupa.studentid
+        ';
     }
 }
 

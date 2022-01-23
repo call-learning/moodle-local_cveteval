@@ -82,17 +82,11 @@ class situations extends entity_table {
         ]);
     }
 
-    /**
-     * Set SQL parameters (where, from,....) from the entity
-     *
-     * This can be overridden when we are looking at linked entities.
-     */
-    protected function set_initial_sql() {
-        $sqlfields = forward_static_call([static::$persistentclass, 'get_sql_fields'], 'entity', '');
+    protected function internal_get_sql_from($tablealias = 'e') {
+        global $DB;
         $from = situation_entity::get_historical_sql_query('entity');
         $rolesql = role_entity::get_historical_sql_query("role");
-        $sql = "$from  LEFT JOIN  $rolesql ON entity.id = role.clsituationid";
-        $this->set_sql($sqlfields, $sql, '', []);
+        return "$from  LEFT JOIN  $rolesql ON entity.id = role.clsituationid";
     }
 
     protected function col_description($row) {
