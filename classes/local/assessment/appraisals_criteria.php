@@ -158,6 +158,7 @@ class appraisals_criteria extends dynamic_table_sql {
      * @return array
      */
     protected function internal_get_sql_where($disablefilters = false) {
-        return ['criterion.parentid = 0', []];
+        [$where, $params] = parent::internal_get_sql_where($disablefilters);
+        return ["{$where} AND criterion.parentid = 0 AND critapp.id IS NOT NULL", $params];
     }
 }
