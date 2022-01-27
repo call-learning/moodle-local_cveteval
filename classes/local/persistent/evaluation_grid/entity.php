@@ -25,6 +25,7 @@
 namespace local_cveteval\local\persistent\evaluation_grid;
 
 use core\persistent;
+use core\task\manager;
 use local_cltools\local\field\text;
 use local_cltools\local\crud\enhanced_persistent;
 use local_cltools\local\crud\enhanced_persistent_impl;

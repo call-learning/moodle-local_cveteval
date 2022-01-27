@@ -134,15 +134,7 @@ class utils {
      */
     public static function create_update_default_criteria_grid() {
         $task = new upload_default_criteria_grid();
-        // Run it immediately if we are setting up a phpunit or behat test.
-        if ((defined('PHPUNIT_TEST') && PHPUNIT_TEST)
-                || defined('BEHAT_TEST')
-                || defined('CLI_SCRIPT')
-        ) {
-            $task->execute();
-        } else {
-            \core\task\manager::queue_adhoc_task($task, true);
-        }
+        \core\task\manager::queue_adhoc_task($task, true);
     }
 
     /**

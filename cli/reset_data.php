@@ -61,3 +61,5 @@ if (!$options['yes']) {
 
 utils::reset_all_data();
 utils::create_update_default_criteria_grid();
+
+cli_write('Do not forget to run cron to create default grid.');

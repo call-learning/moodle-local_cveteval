@@ -32,11 +32,14 @@ defined('MOODLE_INTERNAL') || die();
 
 class upload_default_criteria_grid extends adhoc_task {
     public function execute() {
+        static::create_default_grid();
+    }
+    public static function create_default_grid() {
         global $CFG;
         history_entity::reset_current_id();
         $importhelperclass = "\\local_cveteval\\local\\importer\\evaluation_grid\\import_helper";
         $importhelper = new $importhelperclass(
-            $CFG->dirroot . '/local/cveteval/docs/default_evaluation_grid.csv', 0, 'semicolon');
+                $CFG->dirroot . '/local/cveteval/docs/default_evaluation_grid.csv', 0, 'semicolon');
         $importhelper->import();
     }
 }
