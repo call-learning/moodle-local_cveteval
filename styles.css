@@ -10,7 +10,14 @@
 
 
 .ceveteval-eval-form #fitem_id_comment_editor {
-    flex-grow: 4;
+    flex-grow: 1;
+}
+
+.ceveteval-eval-form #fitem_id_comment_editor label {
+    visibility: hidden;
+}
+.ceveteval-eval-form #fitem_id_comment_editor .col-form-label {
+    display: none!important;
 }
 
 .ceveteval-eval-form #fitem_id_grade {

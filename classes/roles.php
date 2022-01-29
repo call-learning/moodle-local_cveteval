@@ -96,6 +96,11 @@ class roles {
         return (self::get_user_role_id($userid) == role_entity::ROLE_ASSESSOR_ID) || is_primary_admin($userid);
     }
 
+    /**
+     * Can see all situations
+     * @param $userid
+     * @return bool
+     */
     public static function can_see_all_situations($userid) {
         return is_primary_admin($userid);
     }

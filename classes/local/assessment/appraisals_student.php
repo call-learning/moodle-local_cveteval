@@ -219,7 +219,8 @@ class appraisals_student extends dynamic_table_sql {
                     FROM {local_cveteval_appr_crit} c
                     LEFT JOIN $criterionsql ON criterion.id = c.criterionid
                     LEFT JOIN {local_cveteval_appraisal} appraisal ON appraisal.id = c.appraisalid
-                    WHERE criterion.parentid = :criterionid AND appraisal.appraiserid = :appraiserid AND c.appraisalid = :appraisalid
+                    WHERE criterion.parentid = :criterionid AND appraisal.appraiserid = :appraiserid 
+                        AND c.appraisalid = :appraisalid AND c.grade <> 0
                     ", [
                     'criterionid' => $row->id,
                     'appraisalid' => $appraisalid,
@@ -230,7 +231,9 @@ class appraisals_student extends dynamic_table_sql {
                     $comments = new stdClass();
                     $comments->criteriacomment = $this->format_text($grade->comment, $grade->commentformat);
                     $comments->appraisalcontext = $this->format_text($grade->appraisalcontext, $grade->appraisalcontextformat);
-                    $comments->appraisalcomment = $this->format_text($grade->commentformat, $grade->appraisalcommentformat);
+                    $comments->appraisalcomment = $this->format_text($grade->appraisalcomment, $grade->appraisalcommentformat);
+                    $comments->appraisalid = $appraisalid;
+                    $comments->appraiserid = $appraiserid;
                     $commentstext =
                         $renderer->render(new grade_widget($grade->grade, $subgradescount > 0, $comments));
                 }
@@ -290,7 +293,9 @@ class appraisals_student extends dynamic_table_sql {
                     $this->appraiserlist[$appraisal->id] = $appraisal->appraiserid;
                     $date = userdate($appraisal->appraisaldate,
                         get_string('strftimedatefullshort', 'core_langconfig'));
-                    $appraiserinfo[$appraisal->id] = fullname(\core_user::get_user($appraisal->appraiserid))
+                    $username = $appraisal->appraiserid ?
+                            fullname(\core_user::get_user($appraisal->appraiserid)) : get_string('evaluation:waiting', 'local_cveteval');
+                    $appraiserinfo[$appraisal->id] = $username
                         . " ({$date})";
                 }
             }

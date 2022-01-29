@@ -50,17 +50,17 @@ class grade_widget implements renderable, templatable {
      */
     protected $hassubgrades;
 
-    protected $comments = null;
+    protected $comment = null;
 
     /**
      * Constructor
      *
      * @param int $grade
      */
-    public function __construct($grade, $hassubgrades = false, $comments = "") {
+    public function __construct($grade, $hassubgrades = false, $comment = null) {
         $this->grade = $grade;
         $this->hassubgrades = $hassubgrades;
-        $this->comments = $comments;
+        $this->comment = $comment;
     }
 
     /**
@@ -76,8 +76,10 @@ class grade_widget implements renderable, templatable {
             'gradetext' => get_string('grade:value', 'local_cveteval', $this->grade),
             'hassubgrades' => $this->hassubgrades,
         ];
-        if ($this->comments) {
-            $context->comments = $this->comments;
+        if ($this->comment) {
+            $context->comment = $this->comment;
+        } else {
+            $context->comment = false;
         }
         return $context;
     }

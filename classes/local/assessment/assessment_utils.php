@@ -49,7 +49,27 @@ class assessment_utils {
      * @throws coding_exception
      */
     public static function get_mysituations_list() {
+        global $USER;
         $entitylist = new situations();
+        if (!roles::can_see_all_situations($USER->id)) {
+            $filterset = new enhanced_filterset(
+                    [
+                            'appraiserid' => (object)
+                            [
+                                    'filterclass' => numeric_comparison_filter::class,
+                                    'required' => true
+                            ],
+                    ]
+            );
+            $filterset->set_join_type(filter::JOINTYPE_ALL);
+            assessment_utils::add_roles_evaluation_filterset($filterset);
+            $filterset->add_filter_from_params(
+                    'appraiserid', // Field name.
+                    filter::JOINTYPE_ALL,
+                    [['direction' => '=', 'value' => $USER->id]]
+            );
+            $entitylist->set_filterset($filterset);
+        }
         return $entitylist;
     }
 
@@ -60,7 +80,27 @@ class assessment_utils {
      * @return mystudents
      */
     public static function get_mystudents_list($situationid) {
+        global $USER;
         $entitylist = new mystudents(null, null, null, $situationid);
+        if (!roles::can_see_all_situations($USER->id)) {
+            $filterset = new enhanced_filterset(
+                    [
+                            'appraiserid' => (object)
+                            [
+                                    'filterclass' => numeric_comparison_filter::class,
+                                    'required' => true
+                            ],
+                    ]
+            );
+            $filterset->set_join_type(filter::JOINTYPE_ALL);
+            assessment_utils::add_roles_evaluation_filterset($filterset);
+            $filterset->add_filter_from_params(
+                    'appraiserid', // Field name.
+                    filter::JOINTYPE_ALL,
+                    [['direction' => '=', 'value' => $USER->id]]
+            );
+            $entitylist->set_filterset($filterset);
+        }
         return $entitylist;
     }
 
@@ -147,7 +187,25 @@ class assessment_utils {
      * @throws coding_exception
      */
     public static function get_situations_for_student($studentid) {
-        $entitylist = new situations_for_student(null, null, null, $studentid);
+        $entitylist = new situations_for_student(null, null, null);
+        $filterset = new enhanced_filterset(
+                [
+                        'studentid' => (object)
+                        [
+                                'filterclass' => 'local_cltools\\local\filter\\numeric_comparison_filter',
+                                'required' => true,
+                        ]
+                ]
+        );
+        $filterset->set_join_type(filter::JOINTYPE_ALL);
+        if ($studentid) {
+            $filterset->add_filter_from_params(
+                    'studentid', // Field name.
+                    filter::JOINTYPE_ALL,
+                    [['direction' => '=', 'value' => $studentid]]
+            );
+        }
+        $entitylist->set_filterset($filterset);
         return $entitylist;
     }
 

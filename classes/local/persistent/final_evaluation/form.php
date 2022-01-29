@@ -52,25 +52,6 @@ class form extends entity_form {
     /**
      * @param MoodleQuickForm $mform
      * Additional definitions for the form
-     * @throws dml_exception
-     */
-    protected function pre_field_definitions(&$mform) {
-        global $OUTPUT;
-        if ($studentid = $this->get_persistent()->get('studentid')) {
-            $studentuser = core_user::get_user($studentid);
-            $fullname = fullname($studentuser);
-            $userpicture = $OUTPUT->user_picture($studentuser);
-            $mform->addElement('html',
-                html_writer::div(
-                    html_writer::div($userpicture)
-                    . html_writer::div($fullname), 'f-item'));
-        }
-
-    }
-
-    /**
-     * @param MoodleQuickForm $mform
-     * Additional definitions for the form
      */
     protected function post_field_definitions(&$mform) {
         global $OUTPUT;

@@ -98,6 +98,13 @@ if ($data = $evaluationform->get_data()) {
     }
 }
 
+$studentuser = core_user::get_user($studentid);
+$fullname = fullname($studentuser);
+$userpicture = $OUTPUT->user_picture($studentuser);
+
+echo html_writer::div(
+        html_writer::div($userpicture)
+        . html_writer::div($fullname));
 $evaluationform->display();
 
 $tabs = array();

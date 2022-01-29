@@ -24,6 +24,7 @@
 
 namespace local_cveteval\local\persistent\evaluation_grid;
 
+use context;
 use core\persistent;
 use core\task\manager;
 use local_cltools\local\field\text;
@@ -32,6 +33,7 @@ use local_cltools\local\crud\enhanced_persistent_impl;
 use local_cveteval\local\persistent\evaluation_grid\entity as evaluation_grid_entity;
 use local_cveteval\local\persistent\model_with_history;
 use local_cveteval\local\persistent\model_with_history_impl;
+use local_cveteval\roles;
 use local_cveteval\task\upload_default_criteria_grid;
 
 defined('MOODLE_INTERNAL') || die();
@@ -87,6 +89,18 @@ class entity extends persistent implements enhanced_persistent, model_with_histo
             return $evalgrid;
         }
 
+    }
+
+    /**
+     * Validate entity context
+     *
+     * @param $entityclass
+     * @param $context
+     * @return false|mixed
+     */
+    public function validate_access(context $context) {
+        global $USER;
+        return roles::can_assess($USER->id);
     }
 }
 

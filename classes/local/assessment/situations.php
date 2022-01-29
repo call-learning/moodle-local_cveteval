@@ -25,6 +25,7 @@
 namespace local_cveteval\local\assessment;
 defined('MOODLE_INTERNAL') || die();
 
+use context;
 use core_table\local\filter\filter;
 use local_cltools\local\crud\entity_table;
 use local_cltools\local\filter\enhanced_filterset;
@@ -49,30 +50,10 @@ class situations extends entity_table {
         $actionsdefs = null,
         $editable = false
     ) {
-        global $PAGE, $USER;
-
-        if (!roles::can_see_all_situations($USER->id)) {
-            $filterset = new enhanced_filterset(
-                [
-                    'appraiserid' => (object)
-                    [
-                        'filterclass' => numeric_comparison_filter::class,
-                        'required' => true
-                    ],
-                ]
-            );
-            $filterset->set_join_type(filter::JOINTYPE_ALL);
-            assessment_utils::add_roles_evaluation_filterset($filterset);
-            $filterset->add_filter_from_params(
-                'appraiserid', // Field name.
-                filter::JOINTYPE_ALL,
-                [['direction' => '=', 'value' => $USER->id]]
-            );
-            $this->filterset = $filterset;
-        }
+        global $PAGE;
         $this->fieldaliases = [
-            'roletype' => 'role.type',
-            'appraiserid' => 'role.userid'
+                'roletype' => 'role.type',
+                'appraiserid' => 'role.userid'
         ];
         parent::__construct($uniqueid, $actionsdefs, $editable);
         $PAGE->requires->js_call_amd('local_cltools/tabulator-row-action-url', 'init', [
@@ -83,7 +64,6 @@ class situations extends entity_table {
     }
 
     protected function internal_get_sql_from($tablealias = 'e') {
-        global $DB;
         $from = situation_entity::get_historical_sql_query('entity');
         $rolesql = role_entity::get_historical_sql_query("role");
         return "$from  LEFT JOIN  $rolesql ON entity.id = role.clsituationid";
@@ -108,5 +88,22 @@ class situations extends entity_table {
             }
         }
         return [array_values($cols), array_values($headers)];
+    }
+    /**
+     * Validate current user has access to the table instance
+     *
+     * Note: this can involve a more complicated check if needed and requires filters and all
+     * setup to be done in order to make sure we validated against the right information
+     * (such as for example a filter needs to be set in order not to return data a user should not see).
+     *
+     * @param context $context
+     * @param bool $writeaccess
+     * @throws \restricted_context_exception
+     */
+    public function validate_access(context $context, $writeaccess = false) {
+        global $USER;
+        if (!roles::can_assess($USER->id)) {
+            throw new \restricted_context_exception();
+        }
     }
 }

@@ -55,23 +55,6 @@ class situations_for_student extends dynamic_table_sql {
         $actionsdefs = null,
         $editable = false,
         $studentid = null) {
-        $filterset = new enhanced_filterset(
-            [
-                'studentid' => (object)
-                [
-                    'filterclass' => 'local_cltools\\local\filter\\numeric_comparison_filter',
-                    'required' => true,
-                ]
-            ]
-        );
-        $filterset->set_join_type(filter::JOINTYPE_ALL);
-        if ($studentid) {
-            $filterset->add_filter_from_params(
-                'studentid', // Field name.
-                filter::JOINTYPE_ALL,
-                [['direction' => '=', 'value' => $studentid]]
-            );
-        }
         $this->fieldaliases = [
             'studentid' => 'groupa.studentid',
             'studentfullname' => 'student.fullname',

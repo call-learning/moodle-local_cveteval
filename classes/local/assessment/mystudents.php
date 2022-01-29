@@ -56,7 +56,7 @@ class mystudents extends dynamic_table_sql {
         $editable = false,
         $situationid = null
     ) {
-        global $PAGE, $USER;
+        global $PAGE;
         $filterset = new enhanced_filterset([
             'situationid' => (object)
             [
@@ -72,20 +72,7 @@ class mystudents extends dynamic_table_sql {
                 [['direction' => '=', 'value' => $situationid]]
             );
         }
-        if (!roles::can_see_all_situations($USER->id)) {
-            $filterset->add_filter_definition('appraiserid', (object)
-            [
-                'filterclass' => numeric_comparison_filter::class,
-                'required' => true
-            ]);
-            $filterset->set_join_type(filter::JOINTYPE_ALL);
-            assessment_utils::add_roles_assessor_filterset($filterset);
-            $filterset->add_filter_from_params(
-                'appraiserid', // Field name.
-                filter::JOINTYPE_ALL,
-                [['direction' => '=', 'value' => $USER->id]]
-            );
-        }
+        $filterset->set_join_type(filter::JOINTYPE_ALL);
         $this->filterset = $filterset;
         $this->fieldaliases = [
             'roletype' => 'role.type',

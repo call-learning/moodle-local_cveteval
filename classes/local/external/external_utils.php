@@ -26,6 +26,7 @@ namespace local_cveteval\local\external;
 defined('MOODLE_INTERNAL') || die();
 
 use dml_exception;
+use local_cveteval\local\persistent\model_with_history;
 use local_cveteval\local\persistent\role\entity as role_entity;
 use moodle_exception;
 use moodle_url;
@@ -94,8 +95,12 @@ class external_utils {
             }
         }
         if (class_exists($classname)) {
+            $entitytable = "{". $classname::TABLE. "} AS e";
+            if (in_array(model_with_history::class, class_implements($classname))) {
+                $entitytable = $classname::get_historical_sql_query_for_id();
+            }
             return $DB->get_records_sql("SELECT DISTINCT $select
-                    FROM {" . $classname::TABLE . "} e $additionaljoin WHERE $where $orderby", $params);
+                    FROM $entitytable $additionaljoin WHERE $where $orderby", $params);
         }
         return false;
     }
