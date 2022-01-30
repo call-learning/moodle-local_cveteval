@@ -29,6 +29,7 @@ use local_cveteval\local\datamigration\data_migration_utils;
 use local_cveteval\local\datamigration\data_model_matcher;
 use local_cveteval\local\persistent\history\entity as history_entity;
 use local_cveteval\output\dmc_entity_renderer_base;
+use local_cveteval\output\helpers\output_helper;
 use moodleform;
 
 defined('MOODLE_INTERNAL') || die();
@@ -112,7 +113,7 @@ class dmc_diffmodelsmodifications_form extends moodleform implements dmc_form_in
                     history_entity::disable_history();
                     $exportentitymethod = "export_entity_" . $model;
                     foreach ($currentmatchs as $originid => $targetentityid) {
-                        $entitydata = $renderable->$exportentitymethod($targetentityid);
+                        $entitydata = output_helper::$exportentitymethod($targetentityid);
                         $fieldname = $this->get_field_name($context, $entityclass, $originid);
                         $mform->addElement('select', $fieldname, $entitydata['label'], $alldestentitiesoptions,
                                 $targetentityid);
@@ -184,7 +185,7 @@ class dmc_diffmodelsmodifications_form extends moodleform implements dmc_form_in
         $alldestentitiesoptions = [];
         foreach ($alldestentities as $e) {
             $id = $e->get('id');
-            $alldestentitiesoptions[$id] = $renderable->$exportentitymethod($id)['label'];
+            $alldestentitiesoptions[$id] = output_helper::$exportentitymethod($id)['label'];
         }
         $lastmodel = $model;
         $lastalldestentitiesoptions = $alldestentitiesoptions;

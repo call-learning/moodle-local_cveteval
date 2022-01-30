@@ -24,10 +24,7 @@
 
 namespace local_cveteval\local\assessment;
 
-use core_table\local\filter\string_filter;
-use local_cveteval\local\datamigration\data_migration_controller;
 use local_cveteval\local\datamigration\data_model_matcher;
-use local_cveteval\local\datamigration\helpers\user_data_migration_helper;
 use local_cveteval\local\datamigration\matchers\criterion as criterion_matcher;
 use local_cveteval\local\datamigration\matchers\evaluation_grid as evaluation_grid_matcher;
 use local_cveteval\local\datamigration\matchers\group as group_matcher;
@@ -39,14 +36,11 @@ use local_cveteval\local\persistent\criterion\entity as criterion_entity;
 use local_cveteval\local\persistent\evaluation_grid\entity as evaluation_grid_entity;
 use local_cveteval\local\persistent\group\entity as group_entity;
 use local_cveteval\local\persistent\group_assignment\entity as group_assignment_entity;
-use local_cveteval\local\persistent\history\entity;
 use local_cveteval\local\persistent\history\entity as history_entity;
 use local_cveteval\local\persistent\situation\entity as situation_entity;
 use local_cveteval\local\persistent\planning\entity as planning_entity;
 use local_cveteval\local\persistent\role\entity as role_entity;
-use local_cveteval\output\dmc_entity_renderer_base;
 use local_cveteval\test\assessment_test_trait;
-use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -339,20 +333,162 @@ class data_migration_matching_test extends \advanced_testcase {
     }
 
     /**
-    * Test general migration of data
+     * Test that situation 1 and 2 are matched but situation 3 is not. There is not orphaned entities (all situation
+     * from the origin are also in the new dest).
+     * Note that situation 2 has more evalnumber so we might need to alert manager / user on that.
      */
-    public function test_migration() {
-        $data = new stdClass();
-        $data->matchedentities = $this->dm->get_matched_entities_list();
-        $data->unmatchedentities = $this->dm->get_unmatched_entities_list();
-        $data->orphanedentities = $this->dm->get_orphaned_entities_list();
-        entity::disable_history();
-        $convertedappraisalsinfo =
-                user_data_migration_helper::convert_origin_appraisals(dmc_entity_renderer_base::ALL_CONTEXTS, $data);
-        $convertedfinalevalsinfo =
-                user_data_migration_helper::convert_origin_finaleval(dmc_entity_renderer_base::ALL_CONTEXTS, $data);
-        $this->assertNotEmpty($convertedappraisalsinfo);
+    public function test_match_situations() {
+        $smatcher = new situation_matcher($this->dm);
+        $matchedsituations = $smatcher->get_matched_origin_entities();
+        $unmatchedsituations = $smatcher->get_unmatched_dest_entities();
+        $orphanedentities = $smatcher->get_orphaned_origin_entities();
+        $this->assert_entities_name_matches(['SIT1', 'SIT2'], $matchedsituations, situation_entity::class);
+        $this->assert_entities_name_matches(['SIT3'], $unmatchedsituations, situation_entity::class);
+        // Situation 3 is not in the old model.
+        $this->assertEmpty($orphanedentities);
     }
 
+    /**
+     * criterion1bis is orphaned as it is not the same in the new dest (parent is different)
+     */
+    public function test_match_criterion() {
+        $smatcher = new criterion_matcher($this->dm);
+        $matchedcriterion = $smatcher->get_matched_origin_entities();
+        $unmatchedcriterion = $smatcher->get_unmatched_dest_entities();
+        $orphanedcriterion = $smatcher->get_orphaned_origin_entities();
+        $generator = function() {
+            for ($i = 1; $i < 41; $i++) {
+                yield sprintf("Q%'.03d", $i);
+            }
+        };
+        $fourtycriterion = iterator_to_array($generator()); // The common criteria are a match.
+        $this->assert_entities_name_matches(array_merge($fourtycriterion, ['criterion1', 'criterion2']), $matchedcriterion,
+            criterion_entity::class);
+        $this->assert_entities_name_matches(['criterion1bis'], $unmatchedcriterion, criterion_entity::class);
+        $this->assert_entities_name_matches(['criterion1bis'], $orphanedcriterion, criterion_entity::class); // Not the same parent.
+    }
 
+    /**
+     * The new and old eval grid.
+     */
+    public function test_match_evaluation_grid() {
+        $smatcher = new evaluation_grid_matcher($this->dm);
+        $matchedegrid = $smatcher->get_matched_origin_entities();
+        $unmatchedegrid = $smatcher->get_unmatched_dest_entities();
+        $orphanedegrid = $smatcher->get_orphaned_origin_entities();
+        $this->assert_entities_name_matches(['DEFAULTGRID', 'evalgrid'], $matchedegrid, evaluation_grid_entity::class);
+        $this->assertEmpty($unmatchedegrid);
+        $this->assertEmpty($orphanedegrid);
+    }
+
+    /**
+     * Except Group2bis which is not in the new list, and Group3 that appears in the new dest, Group 1 and 2 are matched.
+     */
+    public function test_match_group() {
+        $smatcher = new group_matcher($this->dm);
+        $matchedgroup = $smatcher->get_matched_origin_entities();
+        $unmatchedgroup = $smatcher->get_unmatched_dest_entities();
+        $orphanedgroup = $smatcher->get_orphaned_origin_entities();
+        $this->assert_entities_name_matches(['Group 1', 'Group 2'], $matchedgroup, group_entity::class, "name");
+        $this->assert_entities_name_matches(['Group 3'], $unmatchedgroup, group_entity::class, "name");
+        $this->assert_entities_name_matches(['Group 2bis'], $orphanedgroup, group_entity::class, "name");
+    }
+
+    public function test_match_group_assignment() {
+        $smatcher = new group_assignment_matcher($this->dm);
+        $matchedgroupa = $smatcher->get_matched_origin_entities();
+        $unmatchedgroupa = $smatcher->get_unmatched_dest_entities();
+        $orphanedgroupa = $smatcher->get_orphaned_origin_entities();
+
+        $this->assert_entities_name_matches(['Group 1', 'Group 1', 'Group 2'],
+                $this->get_field_from_entities_id($matchedgroupa, group_assignment_entity::class, "groupid"),
+            group_entity::class,
+                "name"
+            );
+        $this->assert_entities_name_matches(['Group 3'],
+            $this->get_field_from_entities_id($unmatchedgroupa, group_assignment_entity::class, "groupid"),
+            group_entity::class,
+            "name"
+        );
+        $this->assertEmpty($orphanedgroupa);
+    }
+
+    public function test_match_planning() {
+        $smatcher = new planning_matcher($this->dm);
+        $matchedplanning = $smatcher->get_matched_origin_entities();
+        $unmatchedplanning = $smatcher->get_unmatched_dest_entities();
+        $orphanedplanning = $smatcher->get_orphaned_origin_entities();
+
+        $this->assert_entities_name_matches(['SIT1', 'SIT2'],
+            $this->get_field_from_entities_id($matchedplanning, planning_entity::class, "clsituationid"),
+            situation_entity::class,
+            "idnumber"
+        );
+        $this->assert_entities_name_matches(['SIT2'],
+            $this->get_field_from_entities_id($unmatchedplanning, planning_entity::class, "clsituationid"),
+            situation_entity::class,
+            "idnumber"
+        );
+        $this->assert_entities_name_matches(['SIT2'],
+            $this->get_field_from_entities_id($orphanedplanning, planning_entity::class, "clsituationid"),
+            situation_entity::class,
+            "idnumber"
+        );
+    }
+
+    public function test_match_role() {
+        $smatcher = new role_matcher($this->dm);
+        $matchedroles = $smatcher->get_matched_origin_entities();
+        $unmatchedroles = $smatcher->get_unmatched_dest_entities();
+        $orphanedroles = $smatcher->get_orphaned_origin_entities();
+        $this->assert_entities_name_matches(['SIT1', 'SIT1', 'SIT1', 'SIT2', 'SIT2', 'SIT2'],
+            $this->get_field_from_entities_id($matchedroles, role_entity::class, "clsituationid"),
+            situation_entity::class,
+            "idnumber"
+        );
+        $this->assert_entities_name_matches(['SIT1', 'SIT2'],
+            $this->get_field_from_entities_id($unmatchedroles, role_entity::class, "clsituationid"),
+            situation_entity::class,
+            "idnumber"
+        );
+        $this->assertEmpty($orphanedroles);
+    }
+    /**
+     * Get ID array
+     *
+     * @param $entityarray
+     * @return array
+     */
+    protected function get_field_from_entities($entityarray, $fieldname = 'idnumber') {
+        return array_values(
+            array_map(
+                function($e) use ($fieldname) {
+                    return $e->get($fieldname);
+                }, $entityarray)
+        );
+    }
+
+    /**
+     * Get ID array
+     *
+     * @param $entityarray
+     * @return array
+     */
+    protected function get_field_from_entities_id($entityidarray, $entityclass, $fieldname = 'idnumber') {
+        return array_values(
+            array_map(
+                function($id) use ($entityclass, $fieldname) {
+                    $e = new $entityclass($id);
+                    return $e->get($fieldname);
+                },
+                $entityidarray
+            )
+        );
+    }
+
+    public function assert_entities_name_matches($matchedname, $entitiesidarray, $entityclassname, $fieldname = 'idnumber') {
+        $this->assertEquals($matchedname,
+            $this->get_field_from_entities_id($entitiesidarray, $entityclassname, $fieldname)
+        );
+    }
 }

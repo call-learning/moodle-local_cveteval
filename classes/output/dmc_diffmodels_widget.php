@@ -15,17 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace local_cveteval\output;
 
-use local_cveteval\local\datamigration\data_migration_controller;
 use local_cveteval\local\datamigration\data_migration_utils;
-use local_cveteval\local\persistent\criterion\entity as criterion_entity;
-use local_cveteval\local\persistent\evaluation_grid\entity as evaluation_grid_entity;
-use local_cveteval\local\persistent\group\entity as group_entity;
-use local_cveteval\local\persistent\group_assignment\entity as group_assignment_entity;
 use local_cveteval\local\persistent\history;
-use local_cveteval\local\persistent\planning\entity as planning_entity;
-use local_cveteval\local\persistent\role\entity as role_entity;
-use local_cveteval\local\persistent\situation\entity as situation_entity;
-use renderable;
+use local_cveteval\output\helpers\output_helper;
 use renderer_base;
 
 defined('MOODLE_INTERNAL') || die();
@@ -75,8 +67,8 @@ class dmc_diffmodels_widget extends dmc_entity_renderer_base {
                 }
                 foreach ($matchs as $entityid) {
                     $exportentitymethod = "export_entity_" . $baseclassname;
-                    if (method_exists($this, $exportentitymethod)) {
-                        $currententity->contexts[$context]->entities[] = $this->$exportentitymethod($entityid);
+                    if (method_exists(output_helper::class, $exportentitymethod)) {
+                        $currententity->contexts[$context]->entities[] = output_helper::$exportentitymethod($entityid);
                         $currententity->contexts[$context]->entitiescount = count($currententity->contexts[$context]->entities);
                     }
                 }

@@ -40,13 +40,26 @@ class criterion extends base {
         history_entity::set_current_id($this->dm->get_dest_id());
         $parentidnumber = null;
         if (!empty($newentity->get('parentid'))) {
-            $parententity = entity::get_record(['id' => $newentity->get('parentid')]);
+            $parententity = entity::get_records(['id' => $newentity->get('parentid')]);
+            // If the default grid has the same parentid, we take the one from the grid used in the upload.
+            if (count($parententity) >= 2) {
+                history_entity::set_current_id($this->dm->get_dest_id(), true);
+                $parententity = entity::get_record(['id' => $newentity->get('parentid')]);
+            } else {
+                $parententity = array_shift($parententity);
+            }
             $parentidnumber = $parententity->get('idnumber');
         }
         history_entity::set_current_id($this->dm->get_origin_id());
         $params = ['idnumber' => $newentity->get('idnumber')];
         if ($parentidnumber) {
-            $oldparententity = entity::get_record(['idnumber' => $parentidnumber]);
+            $oldparententity = entity::get_records(['idnumber' => $parentidnumber]);
+            if (count($oldparententity) >= 2) {
+                history_entity::set_current_id($this->dm->get_origin_id(), true);
+                $oldparententity = entity::get_record(['idnumber' => $parentidnumber]);
+            } else {
+                $oldparententity = array_shift($oldparententity);
+            }
             $params['parentid'] = $oldparententity->get('id');
         }
         return entity::get_records($params);
