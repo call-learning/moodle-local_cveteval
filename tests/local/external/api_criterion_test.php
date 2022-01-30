@@ -28,6 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 use advanced_testcase;
 use core_user;
 use local_cveteval\local\persistent\appraisal\entity as appraisal_entity;
+use local_cveteval\local\persistent\history_model\entity;
 use local_cveteval\local\persistent\role\entity as role_entity;
 use local_cveteval\test\test_utils;
 

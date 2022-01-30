@@ -68,6 +68,7 @@ class test_utils {
                 throw new moodle_exception('importerror', 'local_cveteval', '', json_encode($errors));
             }
         }
+        return $importid;
     }
 
     public static function get_import_helper($type, $filename, $importid) {
@@ -139,30 +140,30 @@ class test_utils {
      * Create appraisal for students
      *
      * @param int|null $studentid if null, all student
-     * @param bool|null $skip
+     * @param bool $skip
      * @param bool $verbose
      * @param int|null $forcedappraiserid
-     * @param int|null $evalationgridid
+     * @param int|null $evaluationgrid
      * @throws coding_exception
      * @throws dml_exception
      * @throws invalid_persistent_exception
      */
     public static function create_appraisal_for_students(?int $studentid = 0, ?bool $skip = false, ?bool $verbose = true,
         ?int $forcedappraiserid = 0,
-        ?int $evalationgridid = 0) {
+        ?int $evaluationgrid = 0) {
         global $DB;
         $studentidparam = [];
         if ($studentid) {
             $studentidparam = array('studentid' => $studentid);
         }
-        if (empty($evalationgridid)) {
+        if (empty($evaluationgrid)) {
             $defaultgrid = local_cveteval\local\persistent\evaluation_grid\entity::get_default_grid();
-            $evalationgridid = $defaultgrid->get('id');
+            $evaluationgrid = $defaultgrid->get('id');
         }
         $allcriterias = $DB->get_records_sql("SELECT crit.id as id, crit.label, crit.evalgridid
             FROM {local_cveteval_criterion} crit
             WHERE crit.evalgridid = :evalgridid",
-            ['evalgridid' => $evalationgridid]
+            ['evalgridid' => $evaluationgrid]
         );
         if (empty($allcriterias)) {
             throw new moodle_exception('No criteria');
@@ -254,7 +255,7 @@ class test_utils {
      * @throws dml_exception
      * @throws moodle_exception
      */
-    public static function setup_from_shortsample($historydisabled = true) {
+    public static function setup_from_shortsample($historydisabled = false) {
         global $CFG;
         global $DB;
         if ($historydisabled) {
@@ -263,7 +264,12 @@ class test_utils {
         $transaction = $DB->start_delegated_transaction();
         $basepath = $CFG->dirroot . '/local/cveteval/tests/fixtures/';
         static::import_sample_users($CFG->dirroot . self::SHORT_SAMPLE_FILES['users']);
-        static::import_sample_planning(self::SHORT_SAMPLE_FILES['cveteval'], $basepath, false);
+        $importid = static::import_sample_planning(self::SHORT_SAMPLE_FILES['cveteval'], $basepath, false);
+        if (!$historydisabled) {
+            $currenthistory = history_entity::get_record(['id' => $importid]);
+            $currenthistory->set('isactive', true);
+            $currenthistory->save();
+        }
         $transaction->allow_commit();
     }
 

@@ -141,9 +141,13 @@ class model_with_history_advanced_test extends \advanced_testcase {
     public function test_get_situations_for_student() {
         $this->resetAfterTest();
         $this->setUser($this->assessors[0]);
-        $criterialist = assessment_utils::get_situations_for_student($this->appraisals[0]->get('id'));
+        $criterialist = assessment_utils::get_situations_for_student($this->students[0]->id);
         $data = $criterialist->get_rows(10);
         // Check that we have two rows.
-        $this->assertCount(4, $data);
+        $this->assertCount(1, $data);
+        $criterialist = assessment_utils::get_situations_for_student($this->students[1]->id);
+        $data = $criterialist->get_rows(10);
+        // Check that we have two rows.
+        $this->assertCount(3, $data);
     }
 }
