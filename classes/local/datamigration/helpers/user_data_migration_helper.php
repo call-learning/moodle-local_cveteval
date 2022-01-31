@@ -50,6 +50,9 @@ class user_data_migration_helper {
             $currentcontext = $stepdata->$context;
             $evalplanmatches = $currentcontext[planning::get_entity()];
             foreach ($evalplanmatches as $evalplanoriginid => $evalplantargetid) {
+                if (!$evalplantargetid) {
+                    continue; // No chosen target.
+                }
                 $appraisals = appraisal_entity::get_records(['evalplanid' => $evalplanoriginid]);
                 foreach ($appraisals as $appr) {
                     $newapprdata = $appr->to_record();
@@ -67,13 +70,15 @@ class user_data_migration_helper {
                         unset($newappraisalcritdata->id);
                         unset($newappraisalcritdata->timemodified);
                         $newappraisalcritdata->evalplanid = $evalplantargetid;
-                        $newcriterionid = $stepdata->matchedentities[criterion::get_entity()][$appraisalcrit->get('criterionid')];
-                        $newappraisalcritdata->criterionid = $newcriterionid;
-                        $newappraisal = new appraisal_entity(0, $newapprdata);
-                        $newappraisal->save();
-                        $evalinfo->criteria[] =
-                                static::get_eval_info($newapprdata->studentid, $newapprdata->appraiserid,
-                                        $newappraisalcritdata->evalplanid, $newcriterionid, $newappraisalcritdata->grade);
+                        $newcriterionid = $stepdata->$context[criterion::get_entity()][$appraisalcrit->get('criterionid')] ?? 0;
+                        if ($newcriterionid) {
+                            $newappraisalcritdata->criterionid = $newcriterionid;
+                            $newappraisal = new appraisal_entity(0, $newapprdata);
+                            $newappraisal->save();
+                            $evalinfo->criteria[] =
+                                    static::get_eval_info($newapprdata->studentid, $newapprdata->appraiserid,
+                                            $newappraisalcritdata->evalplanid, $newcriterionid, $newappraisalcritdata->grade);
+                        }
                     }
                     $newappraisalinfo[] = $evalinfo;
                 }
@@ -96,13 +101,16 @@ class user_data_migration_helper {
         foreach ($contexts as $context) {
             $currentcontext = $stepdata->$context;
             $evalplanmatches = $currentcontext[planning::get_entity()];
-            foreach ($evalplanmatches as $finalevaloriginid => $finalevaltargetid) {
-                $finalevals = final_evaluation_entity::get_records(['evalplanid' => $finalevaloriginid]);
+            foreach ($evalplanmatches as $planoriginid => $plantargetid) {
+                if (!$plantargetid) {
+                    continue; // No chosen target.
+                }
+                $finalevals = final_evaluation_entity::get_records(['evalplanid' => $planoriginid]);
                 foreach ($finalevals as $appr) {
                     $newfinalevaldata = $appr->to_record();
                     unset($newfinalevaldata->id);
                     unset($newfinalevaldata->timemodified);
-                    $newfinalevaldata->evalplanid = $finalevaltargetid;
+                    $newfinalevaldata->evalplanid = $plantargetid;
                     $newfinaleval = new final_evaluation_entity(0, $newfinalevaldata);
                     $newfinaleval->save();
                     $newfinalevalinfo[] = static::get_final_eval_info($newfinalevaldata->studentid, $newfinalevaldata->assessorid,

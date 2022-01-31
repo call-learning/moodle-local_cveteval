@@ -382,7 +382,10 @@ trait assessment_test_trait {
         foreach ($students as $studentname => $groupsname) {
             $currenstudent = \core_user::get_user_by_username($studentname);
             if (!$currenstudent) {
-                $currenstudent = $genericgenerator->create_user(['username' => $studentname]);
+                $currenstudent = $genericgenerator->create_user(['username' => $studentname,
+                        'firstname' => $studentname,
+                        'lastname'=>$studentname
+                ]);
             }
             $cstudents[$currenstudent->id] = $currenstudent;
             foreach ($groupsname as $groupname) {
@@ -404,7 +407,10 @@ trait assessment_test_trait {
         foreach ($assessors as $assessorname => $situationname) {
             $currentassessor = \core_user::get_user_by_username($assessorname);
             if (!$currentassessor) {
-                $currentassessor = $genericgenerator->create_user(['username' => $assessorname]);
+                $currentassessor = $genericgenerator->create_user(['username' => $assessorname,
+                        'firstname' => $assessorname,
+                        'lastname'=>$assessorname
+                ]);
             }
             $cassessors[$currentassessor->id] = $currentassessor;
             $cevetevalgenerator->create_role([

@@ -62,7 +62,12 @@ class criterion extends base {
             }
             $params['parentid'] = $oldparententity->get('id');
         }
-        return entity::get_records($params);
+        $criterion = entity::get_records($params);
+        if(count($criterion) >= 2) {
+            history_entity::set_current_id($this->dm->get_origin_id(), true);
+            $criterion = entity::get_records($params);
+        }
+        return $criterion;
     }
 
     public static function get_entity() {

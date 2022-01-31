@@ -65,10 +65,10 @@ class dmc_diffmodels_widget extends dmc_entity_renderer_base {
                     $contextinfo->entitiescount = 0;
                     $currententity->contexts[$context] = $contextinfo;
                 }
-                foreach ($matchs as $entityid) {
+                foreach ($matchs as $entityoriginid => $entitydestid) {
                     $exportentitymethod = "export_entity_" . $baseclassname;
                     if (method_exists(output_helper::class, $exportentitymethod)) {
-                        $currententity->contexts[$context]->entities[] = output_helper::$exportentitymethod($entityid);
+                        $currententity->contexts[$context]->entities[] = output_helper::$exportentitymethod($entitydestid ? $entitydestid : $entityoriginid);
                         $currententity->contexts[$context]->entitiescount = count($currententity->contexts[$context]->entities);
                     }
                 }

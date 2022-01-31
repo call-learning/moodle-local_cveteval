@@ -71,7 +71,7 @@ abstract class base {
             $newentities = [];
         }
 
-        $this->orphanedentities = $oldentitiesid;
+        $this->orphanedentities = array_fill_keys($oldentitiesid, 0);
         foreach ($newentities as $entity) {
             $oldentities = $this->match($entity);
             $id = $entity->get('id');
@@ -81,9 +81,9 @@ abstract class base {
                 $oldentity = reset($oldentities);
                 $oldentityid = $oldentity->get('id');
                 $this->matchedentities[$oldentityid] = $id;
-                $this->orphanedentities = array_filter($this->orphanedentities, function($entityid) use ($oldentityid) {
-                    return $entityid != $oldentityid;
-                });
+                if(isset($this->orphanedentities[$oldentityid])) {
+                    unset($this->orphanedentities[$oldentityid]);
+                }
             }
         }
     }

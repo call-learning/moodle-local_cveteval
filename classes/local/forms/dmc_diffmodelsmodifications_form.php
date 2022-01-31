@@ -113,7 +113,7 @@ class dmc_diffmodelsmodifications_form extends moodleform implements dmc_form_in
                     history_entity::disable_history();
                     $exportentitymethod = "export_entity_" . $model;
                     foreach ($currentmatchs as $originid => $targetentityid) {
-                        $entitydata = output_helper::$exportentitymethod($targetentityid);
+                        $entitydata = output_helper::$exportentitymethod($originid);
                         $fieldname = $this->get_field_name($context, $entityclass, $originid);
                         $mform->addElement('select', $fieldname, $entitydata['label'], $alldestentitiesoptions,
                                 $targetentityid);
