@@ -127,6 +127,7 @@ class entity extends persistent implements enhanced_persistent {
     public static function reset_current_id() {
         $cache = cache::make('local_cveteval', 'persistenthistory');
         $cache->set(self::CACHE_REQUEST_CURRENT_HISTORY_ID_NAME, 0);
+        $cache->set(self::CACHE_REQUEST_CURRENT_HISTORY_STRICT_NAME, false);
     }
 
     const HISTORY_DISABLED_ID = -1;
@@ -137,6 +138,7 @@ class entity extends persistent implements enhanced_persistent {
     public static function disable_history() {
         $cache = cache::make('local_cveteval', 'persistenthistory');
         $cache->set(self::CACHE_REQUEST_CURRENT_HISTORY_ID_NAME, self::HISTORY_DISABLED_ID);
+        $cache->set(self::CACHE_REQUEST_CURRENT_HISTORY_STRICT_NAME, false);
     }
 
     /**

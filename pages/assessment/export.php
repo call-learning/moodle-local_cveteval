@@ -37,7 +37,7 @@ $dataformat = required_param('dataformat', PARAM_ALPHA);
 $filename = \local_cveteval\local\download_helper::generate_filename('Grades_CVETEVAL');
 
 // Download all active final evaluation.
-\local_cveteval\local\download_helper::download_userdata_final_evaluation(0, $dataformat, $filename);
+\local_cveteval\local\download_helper::download_userdata_final_evaluation($dataformat, $filename);
 
 
 

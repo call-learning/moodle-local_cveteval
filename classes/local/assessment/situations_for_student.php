@@ -34,6 +34,7 @@ use local_cltools\local\field\number;
 use local_cltools\local\field\text;
 use local_cltools\local\filter\enhanced_filterset;
 use local_cltools\local\table\dynamic_table_sql;
+use moodle_url;
 use ReflectionException;
 
 /**
@@ -55,12 +56,18 @@ class situations_for_student extends dynamic_table_sql {
         $actionsdefs = null,
         $editable = false,
         $studentid = null) {
+        global $PAGE;
         $this->fieldaliases = [
             'studentid' => 'groupa.studentid',
             'studentfullname' => 'student.fullname',
             'assessorfullname' => 'assessor.fullname',
         ];
         parent::__construct($uniqueid, $actionsdefs, $editable);
+        $PAGE->requires->js_call_amd('local_cltools/tabulator-row-action-url', 'init', [
+                $this->get_unique_id(),
+                (new moodle_url('/local/cveteval/pages/assessment/assess.php'))->out(),
+                (object) array('evalplanid' => 'planid', 'studentid'=>'studentid')
+        ]);
     }
 
     /**

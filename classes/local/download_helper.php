@@ -18,17 +18,15 @@ namespace local_cveteval\local;
 
 use core\dataformat;
 use core_user;
-use local_cveteval\local\persistent\final_evaluation\entity as final_evaluation_entity;
 use local_cveteval\local\persistent\appraisal\entity as appraisal_entity;
-use local_cveteval\local\persistent\appraisal_comment\entity as appraisal_comment_entity;
 use local_cveteval\local\persistent\appraisal_criterion\entity as appraisal_criterion_entity;
-use local_cveteval\local\persistent\appraisal_criterion_comment\entity as appraisal_criterion_comment_entity;
-use local_cveteval\local\persistent\group\entity as group_entity;
 use local_cveteval\local\persistent\criterion\entity as criterion_entity;
+use local_cveteval\local\persistent\evaluation_grid\entity as evaluation_grid;
+use local_cveteval\local\persistent\final_evaluation\entity as final_evaluation_entity;
+use local_cveteval\local\persistent\group\entity as group_entity;
 use local_cveteval\local\persistent\group_assignment\entity as group_assignment_entity;
 use local_cveteval\local\persistent\planning\entity as planning_entity;
 use local_cveteval\local\persistent\situation\entity as situation_entity;
-use local_cveteval\local\persistent\evaluation_grid\entity as evaluation_grid;
 use local_cveteval\utils;
 
 /**
@@ -55,29 +53,43 @@ class download_helper {
      * @param string $dataformat
      * @param string $filename
      */
-    public static function download_userdata_final_evaluation($importid, string $dataformat, $filename = null) {
+    public static function download_userdata_final_evaluation(string $dataformat, $filename = null) {
         global $DB;
-        $sql = planning_entity::get_historical_sql_query('plan');
-        $rs = $DB->get_recordset_sql("SELECT fe.*  FROM {" . final_evaluation_entity::TABLE
-            . "} AS fe LEFT JOIN $sql ON plan.id = fe.evalplanid WHERE plan.id IS NOT NULL");
+        $plansql = planning_entity::get_historical_sql_query('plan');
+        $rs = $DB->get_recordset_sql("SELECT fe.*,situation.title AS situationtitle, 
+                situation.idnumber AS situationidnumber, 
+                plan.starttime AS starttime, 
+                plan.endtime AS endtime,   
+                grp.name AS groupname
+            FROM {" . final_evaluation_entity::TABLE . "} AS fe"
+                . " LEFT JOIN $plansql ON plan.id = fe.evalplanid"
+                . " LEFT JOIN {" . situation_entity::TABLE . "} situation ON situation.id = plan.clsituationid "
+                . " LEFT JOIN {" . group_entity::TABLE . "} grp ON grp.id = plan.groupid "
+                . " WHERE plan.id IS NOT NULL");
 
         $fields =
-            ['studentname', 'studentemail', 'studentusername', 'assessorname', 'assessoremail', 'assessorusername',
-                'grade', 'comment', 'timemodified', 'timecreated'];
+                ['studentname', 'studentemail', 'studentusername', 'situation', 'planning', 'assessorname', 'assessoremail',
+                        'assessorusername',
+                        'grade', 'comment', 'timemodified', 'timecreated'];
         $transformcsv = function($finaleval) {
             $student = core_user::get_user($finaleval->studentid);
             $assessor = core_user::get_user($finaleval->assessorid);
             return [
-                'studentname' => utils::fast_user_fullname($finaleval->studentid),
-                'studentemail' => $student->email,
-                'studentusername' => $student->username,
-                'assessorname' => utils::fast_user_fullname($finaleval->assessorid),
-                'assessoremail' => $assessor->email,
-                'assessorusername' => $assessor->username,
-                'grade' => $finaleval->grade,
-                'comment' => html_to_text(format_text($finaleval->comment, $finaleval->commentformat)),
-                'timemodified' => userdate($finaleval->timemodified, get_string('strftimedatetime', 'core_langconfig')),
-                'timecreated' => userdate($finaleval->timecreated, get_string('strftimedatetime', 'core_langconfig')),
+                    'studentname' => utils::fast_user_fullname($finaleval->studentid),
+                    'studentemail' => $student->email,
+                    'studentusername' => $student->username,
+                    'situation' => "$finaleval->situationtitle ({$finaleval->situationidnumber})",
+                    'planning' => userdate($finaleval->starttime, get_string('strftimedate', 'core_langconfig'))
+                            . '-'
+                            . userdate($finaleval->endtime, get_string('strftimedate', 'core_langconfig')) .
+                            "({$finaleval->groupname})",
+                    'assessorname' => utils::fast_user_fullname($finaleval->assessorid),
+                    'assessoremail' => $assessor->email,
+                    'assessorusername' => $assessor->username,
+                    'grade' => $finaleval->grade,
+                    'comment' => html_to_text(format_text($finaleval->comment, $finaleval->commentformat)),
+                    'timemodified' => userdate($finaleval->timemodified, get_string('strftimedatetime', 'core_langconfig')),
+                    'timecreated' => userdate($finaleval->timecreated, get_string('strftimedatetime', 'core_langconfig')),
             ];
         };
         if (empty($filename)) {
@@ -99,13 +111,14 @@ class download_helper {
                     ac.grade AS grade, ac.comment AS gradecomment, ac.commentformat AS gradecommentformat, 
                     ac.timemodified AS criteriatimemodified, ac.timecreated AS criteriatimecreated FROM {"
                 . appraisal_entity::TABLE . "} AS a LEFT JOIN $sql ON plan.id = a.evalplanid"
-                ." LEFT JOIN {".appraisal_criterion_entity::TABLE."} ac ON ac.appraisalid = a.id"
-                ." LEFT JOIN {".criterion_entity::TABLE."} c ON c.id = ac.criterionid"
+                . " LEFT JOIN {" . appraisal_criterion_entity::TABLE . "} ac ON ac.appraisalid = a.id"
+                . " LEFT JOIN {" . criterion_entity::TABLE . "} c ON c.id = ac.criterionid"
                 . " WHERE plan.id IS NOT NULL");
 
         $fields =
                 ['studentname', 'studentemail', 'studentusername', 'appraisername', 'appraiseremail', 'appraiserusername',
-                        'comment', 'criterionidnumber', 'grade', 'gradecomment','timemodified', 'timecreated', 'criteriatimemodified', 'criteriatimecreated'];
+                        'comment', 'criterionidnumber', 'grade', 'gradecomment', 'timemodified', 'timecreated',
+                        'criteriatimemodified', 'criteriatimecreated'];
         $transformcsv = function($eval) {
             $student = core_user::get_user($eval->studentid);
             $appraiser = core_user::get_user($eval->appraiserid);
@@ -122,19 +135,22 @@ class download_helper {
                     'gradecomment' => html_to_text(format_text($eval->gradecomment, $eval->gradecommentformat)),
                     'timemodified' => userdate($eval->timemodified, get_string('strftimedatetime', 'core_langconfig')),
                     'timecreated' => userdate($eval->timecreated, get_string('strftimedatetime', 'core_langconfig')),
-                    'criteriatimemodified' => userdate($eval->criteriatimemodified, get_string('strftimedatetime', 'core_langconfig')),
-                    'criteriatimecreated' => userdate($eval->criteriatimecreated, get_string('strftimedatetime', 'core_langconfig')),
+                    'criteriatimemodified' => userdate($eval->criteriatimemodified,
+                            get_string('strftimedatetime', 'core_langconfig')),
+                    'criteriatimecreated' => userdate($eval->criteriatimecreated,
+                            get_string('strftimedatetime', 'core_langconfig')),
             ];
         };
         $filename = static::generate_filename('appraisal');
         dataformat::download_data($filename, $dataformat, $fields, $rs, $transformcsv);
     }
+
     public static function download_model_situation($importid, $dataformat) {
         persistent\history\entity::set_current_id($importid);
         $records = situation_entity::get_records();
         $fields =
-            ['Description', 'Nom', 'Nom court', 'ResponsableUE', 'Responsable', 'Evaluateurs',
-                'Observateurs', 'Appreciations', 'GrilleEval'];
+                ['Description', 'Nom', 'Nom court', 'ResponsableUE', 'Responsable', 'Evaluateurs',
+                        'Observateurs', 'Appreciations', 'GrilleEval'];
         $transformcsv = function($situation) {
             $roles = persistent\role\entity::get_records(['clsituationid' => $situation->get('id')]);
             $eval = [];
@@ -153,15 +169,15 @@ class download_helper {
             }
             $evalgrid = persistent\evaluation_grid\entity::get_record(['id' => $situation->get('evalgridid')]);
             return [
-                'Description' => $situation->get('description'),
-                'Nom' => $situation->get('title'),
-                'Nom court' => $situation->get('idnumber'),
-                'ResponsableUE' => '',
-                'Responsable' => '',
-                'Evaluateurs' => implode(',', $eval),
-                'Observateurs' => implode(',', $obs),
-                'Appreciations' => $situation->get('expectedevalsnb'),
-                'GrilleEval' => $evalgrid->get('idnumber')
+                    'Description' => $situation->get('description'),
+                    'Nom' => $situation->get('title'),
+                    'Nom court' => $situation->get('idnumber'),
+                    'ResponsableUE' => '',
+                    'Responsable' => '',
+                    'Evaluateurs' => implode(',', $eval),
+                    'Observateurs' => implode(',', $obs),
+                    'Appreciations' => $situation->get('expectedevalsnb'),
+                    'GrilleEval' => $evalgrid->get('idnumber')
             ];
         };
         $filename = static::generate_filename('situations');
@@ -193,9 +209,9 @@ class download_helper {
             $shakey = sha1($p->get('starttime') . $p->get('endtime'));
             if (empty($flatplanning[$shakey])) {
                 $flatplanning[$shakey] = (object) [
-                    'starttime' => userdate($p->get('starttime'), get_string('export:dateformat', 'local_cveteval')),
-                    'endtime' => userdate($p->get('endtime'), get_string('export:dateformat', 'local_cveteval')),
-                    'groups' => array_fill_keys($groupidtoname, '')
+                        'starttime' => userdate($p->get('starttime'), get_string('export:dateformat', 'local_cveteval')),
+                        'endtime' => userdate($p->get('endtime'), get_string('export:dateformat', 'local_cveteval')),
+                        'groups' => array_fill_keys($groupidtoname, '')
                 ];
             }
             $sit = situation_entity::get_record(['id' => $p->get('clsituationid')]);
@@ -205,8 +221,8 @@ class download_helper {
 
         $transformcsv = function($planning) {
             $planningdata = [
-                'Date début' => $planning->starttime,
-                'Date fin' => $planning->endtime
+                    'Date début' => $planning->starttime,
+                    'Date fin' => $planning->endtime
             ];
             foreach ($planning->groups as $groupname => $situationname) {
                 $planningdata[$groupname] = $situationname;
@@ -240,8 +256,8 @@ class download_helper {
             $studentid = $ga->get('studentid');
             if (empty($usergroups[$ga->get('studentid')])) {
                 $usergroups[$studentid] = (object) [
-                    'studentid' => $ga->get('studentid'),
-                    'groups' => []
+                        'studentid' => $ga->get('studentid'),
+                        'groups' => []
                 ];
             }
             $usergroups[$studentid]->groups[] = $groupidtoname[$ga->get('groupid')];
@@ -254,15 +270,15 @@ class download_helper {
         }
         $groupingfields = [];
         for ($i = 0; $i < $maxlength; $i++) {
-            $groupingfields[] = 'Groupement ' . ($i+1);
+            $groupingfields[] = 'Groupement ' . ($i + 1);
         }
         $fields = array_merge($fields, $groupingfields);
         $transformcsv = function($usergroup) use ($groupingfields) {
             $user = core_user::get_user($usergroup->studentid);
             $groupassignmentdata = [
-                'Nom de l\'étudiant' => $user->lastname,
-                'Prénom' => $user->firstname,
-                'Identifiant' => $user->email,
+                    'Nom de l\'étudiant' => $user->lastname,
+                    'Prénom' => $user->firstname,
+                    'Identifiant' => $user->email,
             ];
             foreach ($usergroup->groups as $index => $groupname) {
                 $groupassignmentdata[$groupingfields[$index]] = $groupname;
@@ -272,6 +288,7 @@ class download_helper {
         $filename = static::generate_filename('group');
         dataformat::download_data($filename, $dataformat, $fields, $usergroups, $transformcsv);
     }
+
     /**
      * Download group
      *
@@ -284,22 +301,23 @@ class download_helper {
     public static function download_model_evaluation_grid($importid, $dataformat) {
         persistent\history\entity::set_current_id($importid);
         $evaluationgrids = evaluation_grid::get_records();
-        $evaluationgridsbyid  = [];
-        foreach($evaluationgrids as $evalgrid) {
+        $evaluationgridsbyid = [];
+        foreach ($evaluationgrids as $evalgrid) {
             $evaluationgridsbyid[$evalgrid->get('id')] = $evalgrid;
         }
         $criteria = criterion_entity::get_records();
         $criteriabyid = [];
-        foreach($criteria as $criterion) {
+        foreach ($criteria as $criterion) {
             $criteriabyid[$criterion->get('id')] = $criterion;
         }
-        $fields = ["Evaluation Grid Id","Criterion Id","Criterion Parent Id","Criterion Label"];
+        $fields = ["Evaluation Grid Id", "Criterion Id", "Criterion Parent Id", "Criterion Label"];
         $transformcsv = function($criterion) use ($evaluationgridsbyid, $criteriabyid) {
             return [
                     'Evaluation Grid Id' => $evaluationgridsbyid[$criterion->get('evalgridid')]->get('idnumber'),
                     'Criterion Id' => $criterion->get('idnumber'),
-                    'Criterion Parent Id' => !empty($criterion->get('parentid')) ? $criteriabyid[$criterion->get('parentid')]->get('idnumber'): '',
-                    'Criterion Label' =>  $criterion->get('label'),
+                    'Criterion Parent Id' => !empty($criterion->get('parentid')) ?
+                            $criteriabyid[$criterion->get('parentid')]->get('idnumber') : '',
+                    'Criterion Label' => $criterion->get('label'),
             ];
         };
         $filename = static::generate_filename('grid');

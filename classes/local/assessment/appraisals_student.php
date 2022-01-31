@@ -319,6 +319,6 @@ class appraisals_student extends dynamic_table_sql {
     }
 
     protected function get_appraiser_appraisal_columnname($appraiserid, $appraisalid) {
-        return 'appraisergrade' . ($appraiserid + $appraisalid);
+        return "appraisergrade{$appraiserid}{$appraisalid}";
     }
 }

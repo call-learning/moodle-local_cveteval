@@ -156,22 +156,24 @@ class test_utils {
         if ($studentid) {
             $studentidparam = array('studentid' => $studentid);
         }
-        if (empty($evaluationgrid)) {
-            $defaultgrid = local_cveteval\local\persistent\evaluation_grid\entity::get_default_grid();
-            $evaluationgrid = $defaultgrid->get('id');
-        }
-        $allcriterias = $DB->get_records_sql("SELECT crit.id as id, crit.label, crit.evalgridid
-            FROM {local_cveteval_criterion} crit
-            WHERE crit.evalgridid = :evalgridid",
-            ['evalgridid' => $evaluationgrid]
-        );
-        if (empty($allcriterias)) {
-            throw new moodle_exception('No criteria');
-        }
+
         $studentsga = $DB->get_records('local_cveteval_group_assign', $studentidparam);
 
         foreach (situation_entity::get_records() as $clsituation) {
             $appraisersroles = $DB->get_records('local_cveteval_role', array('clsituationid' => $clsituation->get('id')));
+            $evaluationgrid = $clsituation->get('evalgridid');
+            if (empty($evaluationgrid)) {
+                $defaultgrid = local_cveteval\local\persistent\evaluation_grid\entity::get_default_grid();
+                $evaluationgrid = $defaultgrid->get('id');
+            }
+            $allcriterias = $DB->get_records_sql("SELECT crit.id as id, crit.label, crit.evalgridid
+            FROM {local_cveteval_criterion} crit
+            WHERE crit.evalgridid = :evalgridid",
+                    ['evalgridid' => $evaluationgrid]
+            );
+            if (empty($allcriterias)) {
+                throw new moodle_exception('No criteria');
+            }
             foreach ($studentsga as $studentga) {
                 $evalplansid = $DB->get_fieldset_select('local_cveteval_evalplan', 'id',
                     'groupid = :groupid AND clsituationid = :clsituationid',
