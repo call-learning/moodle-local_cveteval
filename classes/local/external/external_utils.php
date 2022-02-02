@@ -27,6 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 use dml_exception;
 use local_cveteval\local\persistent\model_with_history;
+use local_cveteval\local\persistent\planning\entity as planning_entity;
 use local_cveteval\local\persistent\role\entity as role_entity;
 use moodle_exception;
 use moodle_url;
@@ -133,26 +134,30 @@ class external_utils {
                 ];
             case 'appraisal':
                 return [
-                    '(( ga.studentid = :rolecheckstudentid AND e.studentid = :appraisalcheckstudentid )'
-                    . ' OR ( role.userid = :rolecheckappraiserid AND (role.type = :rolechecktypeappraiser OR
-               role.type = :rolechecktypeassessor )))',
-                    $paramscheckroleappraisal,
-                    'LEFT JOIN {local_cveteval_evalplan} eplan ON eplan.id = e.evalplanid
+                        '( eplan.id IS NOT NULL AND (( ga.studentid = :rolecheckstudentid AND e.studentid = :appraisalcheckstudentid )'
+                        . ' OR ( role.userid = :rolecheckappraiserid AND (role.type = :rolechecktypeappraiser OR
+               role.type = :rolechecktypeassessor ))))',
+                        $paramscheckroleappraisal,
+                        "LEFT JOIN "
+                        . planning_entity::get_historical_sql_query_for_id("eplan")
+                        . " ON eplan.id = e.evalplanid
                         LEFT JOIN {local_cveteval_group_assign} ga ON ga.groupid = eplan.groupid
-                        LEFT JOIN {local_cveteval_role} role ON role.clsituationid = eplan.clsituationid',
-                    'ORDER BY e.evalplanid, e.timecreated ASC',
-                    []
+                        LEFT JOIN {local_cveteval_role} role ON role.clsituationid = eplan.clsituationid",
+                        'ORDER BY e.evalplanid, e.timecreated ASC',
+                        []
                 ];
             case 'appraisal_criterion':
                 return [
-                    '(( ga.studentid = :rolecheckstudentid AND appr.studentid = :appraisalcheckstudentid )'
+                    '( eplan.id IS NOT NULL AND (( ga.studentid = :rolecheckstudentid AND appr.studentid = :appraisalcheckstudentid )'
                     . ' OR ( role.userid = :rolecheckappraiserid AND (role.type = :rolechecktypeappraiser OR
-               role.type = :rolechecktypeassessor )))',
+               role.type = :rolechecktypeassessor ))))',
                     $paramscheckroleappraisal,
-                    'LEFT JOIN {local_cveteval_appraisal} appr ON appr.id = e.appraisalid
-                        LEFT JOIN {local_cveteval_evalplan} eplan ON eplan.id = appr.evalplanid
-                        LEFT JOIN {local_cveteval_group_assign} ga ON ga.groupid = eplan.groupid
-                        LEFT JOIN {local_cveteval_role} role ON role.clsituationid = eplan.clsituationid',
+                    'LEFT JOIN {local_cveteval_appraisal} appr ON appr.id = e.appraisalid '
+                        . "LEFT JOIN "
+                        . planning_entity::get_historical_sql_query_for_id("eplan")
+                        . " ON eplan.id = appr.evalplanid "
+                        . "LEFT JOIN {local_cveteval_group_assign} ga ON ga.groupid = eplan.groupid
+                        LEFT JOIN {local_cveteval_role} role ON role.clsituationid = eplan.clsituationid",
                     'ORDER BY e.appraisalid, e.timecreated ASC',
                     []
                 ];

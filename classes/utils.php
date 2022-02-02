@@ -133,8 +133,12 @@ class utils {
      * @throws coding_exception
      */
     public static function create_update_default_criteria_grid() {
-        $task = new upload_default_criteria_grid();
-        \core\task\manager::queue_adhoc_task($task, true);
+        if (defined('PHPUNIT_TEST') && PHPUNIT_TEST) {
+            upload_default_criteria_grid::create_default_grid();
+        } else {
+            $task = new upload_default_criteria_grid();
+            \core\task\manager::queue_adhoc_task($task, true);
+        }
     }
 
     /**
