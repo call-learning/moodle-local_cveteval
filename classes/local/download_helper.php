@@ -27,6 +27,7 @@ use local_cveteval\local\persistent\group\entity as group_entity;
 use local_cveteval\local\persistent\group_assignment\entity as group_assignment_entity;
 use local_cveteval\local\persistent\planning\entity as planning_entity;
 use local_cveteval\local\persistent\situation\entity as situation_entity;
+use local_cveteval\local\persistent\history\entity as history_entity;
 use local_cveteval\utils;
 
 /**
@@ -50,11 +51,15 @@ class download_helper {
     /**
      * Download final grades
      *
+     * @param int $importid
      * @param string $dataformat
      * @param string $filename
      */
-    public static function download_userdata_final_evaluation(string $dataformat, $filename = null) {
+    public static function download_userdata_final_evaluation($importid, string $dataformat, $filename = null) {
         global $DB;
+        if ($importid) {
+            history_entity::set_current_id($importid);
+        }
         $plansql = planning_entity::get_historical_sql_query('plan');
         $rs = $DB->get_recordset_sql("SELECT fe.*,situation.title AS situationtitle, 
                 situation.idnumber AS situationidnumber, 
@@ -68,24 +73,24 @@ class download_helper {
                 . " WHERE plan.id IS NOT NULL");
 
         $fields =
-                ['studentname', 'studentemail', 'studentusername', 'situation', 'planning', 'assessorname', 'assessoremail',
+                ['studentname', 'studentemail', 'studentusername', 'situation', 'planning', 'group', 'assessorname', 'assessoremail',
                         'assessorusername',
                         'grade', 'comment', 'timemodified', 'timecreated'];
         $transformcsv = function($finaleval) {
-            $student = core_user::get_user($finaleval->studentid);
-            $assessor = core_user::get_user($finaleval->assessorid);
+            $studentinfo = static::get_user_info($finaleval->studentid);
+            $assessorinfo = static::get_user_info($finaleval->assessorid);
             return [
-                    'studentname' => utils::fast_user_fullname($finaleval->studentid),
-                    'studentemail' => $student->email,
-                    'studentusername' => $student->username,
+                    'studentname' => $studentinfo->fullname,
+                    'studentemail' => $studentinfo->email,
+                    'studentusername' => $studentinfo->username,
                     'situation' => "$finaleval->situationtitle ({$finaleval->situationidnumber})",
                     'planning' => userdate($finaleval->starttime, get_string('strftimedate', 'core_langconfig'))
                             . '-'
-                            . userdate($finaleval->endtime, get_string('strftimedate', 'core_langconfig')) .
-                            "({$finaleval->groupname})",
-                    'assessorname' => utils::fast_user_fullname($finaleval->assessorid),
-                    'assessoremail' => $assessor->email,
-                    'assessorusername' => $assessor->username,
+                            . userdate($finaleval->endtime, get_string('strftimedate', 'core_langconfig')),
+                    'group' => $finaleval->groupname,
+                    'assessorname' => $assessorinfo->fullname,
+                    'assessoremail' => $assessorinfo->email,
+                    'assessorusername' => $assessorinfo->username,
                     'grade' => $finaleval->grade,
                     'comment' => html_to_text(format_text($finaleval->comment, $finaleval->commentformat)),
                     'timemodified' => userdate($finaleval->timemodified, get_string('strftimedatetime', 'core_langconfig')),
@@ -120,15 +125,15 @@ class download_helper {
                         'comment', 'criterionidnumber', 'grade', 'gradecomment', 'timemodified', 'timecreated',
                         'criteriatimemodified', 'criteriatimecreated'];
         $transformcsv = function($eval) {
-            $student = core_user::get_user($eval->studentid);
-            $appraiser = core_user::get_user($eval->appraiserid);
+            $studentinfo = static::get_user_info($eval->studentid);
+            $appraiserinfo = static::get_user_info($eval->appraiserid);
             return [
-                    'studentname' => utils::fast_user_fullname($eval->studentid),
-                    'studentemail' => $student->email,
-                    'studentusername' => $student->username,
-                    'appraisername' => utils::fast_user_fullname($eval->appraiserid),
-                    'appraiseremail' => $appraiser->email,
-                    'appraiserusername' => $appraiser->username,
+                    'studentname' => $studentinfo->fullname,
+                    'studentemail' => $studentinfo->email,
+                    'studentusername' => $studentinfo->username,
+                    'appraisername' => $appraiserinfo->fullname,
+                    'appraiseremail' => $appraiserinfo->email,
+                    'appraiserusername' => $appraiserinfo->username,
                     'comment' => html_to_text(format_text($eval->comment, $eval->commentformat)),
                     'criterionidnumber' => $eval->critidnumber,
                     'grade' => $eval->grade,
@@ -156,16 +161,15 @@ class download_helper {
             $eval = [];
             $obs = [];
             foreach ($roles as $role) {
-                $user = core_user::get_user($role->get('userid'));
+                $userinfo = static::get_user_info($role->get('userid'));
                 switch ($role->get('type')) {
                     case persistent\role\entity::ROLE_APPRAISER_ID:
-                        $obs[] = $user->email;
+                        $obs[] = $userinfo->email;
                         break;
                     case persistent\role\entity::ROLE_ASSESSOR_ID:
-                        $eval[] = $user->email;
+                        $eval[] = $userinfo->email;
                         break;
                 }
-
             }
             $evalgrid = persistent\evaluation_grid\entity::get_record(['id' => $situation->get('evalgridid')]);
             return [
@@ -322,5 +326,22 @@ class download_helper {
         };
         $filename = static::generate_filename('grid');
         dataformat::download_data($filename, $dataformat, $fields, $criteria, $transformcsv);
+    }
+
+    protected static function get_user_info($userid) {
+        if ($userid) {
+            $user = core_user::get_user($userid);
+            return (object) [
+                    'fullname' => utils::fast_user_fullname($user->id),
+                    'email' => $user->email,
+                    'username' => $user->username
+            ];
+        } else
+            return (object) [
+                    'fullname' => get_string('evaluation:waiting', 'local_cveteval'),
+                    'email' => '',
+                    'username' => ''
+            ];
+
     }
 }
