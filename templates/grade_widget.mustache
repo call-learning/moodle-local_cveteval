@@ -31,9 +31,9 @@
         <span>{{#pix}}grade/multi, local_cveteval{{/pix}}</span>
     {{/hassubgrades}}
     {{#comment}}
-        <button type="button" class="btn btn-light" data-toggle="modal" data-target="#modal-{{appraisalid}}-{{appraiserid}}-{{uniqid}}">{{#pix}}t/viewdetails{{/pix}}</button>
+        <button type="button" class="btn btn-light" data-toggle="modal" data-target="#modal-{{criteriaid}}-{{appraisalid}}-{{appraiserid}}-{{uniqid}}">{{#pix}}t/viewdetails{{/pix}}</button>
 
-        <div class="modal fade" data-backdrop="false" data-region="modal-container" id="modal-{{appraisalid}}-{{appraiserid}}-{{uniqid}}" tabindex="-1" role="dialog" aria-labelledby="modallabel-{{uniqid}}"
+        <div class="modal fade" data-backdrop="false" data-region="modal-container" id="modal-{{criteriaid}}-{{appraisalid}}-{{appraiserid}}-{{uniqid}}" tabindex="-1" role="dialog" aria-labelledby="modallabel-{{uniqid}}"
              aria-hidden="true">
             <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document" data-region="modal" tabindex="0">
                 <div class="modal-content">
@@ -46,9 +46,8 @@
                     <div class="modal-body">
                         <table  class="table">
                             <tbody>
-                                <tr>
-                                    <th scope="col">{{#str}}criterion:comment, local_cveteval{{/str}}</th>
-                                    <td>{{{criteriacomment}}}</td>
+                                <tr class="table-primary">
+                                    <td colspan="2" class="text-center">{{#str}}appraisal:comment:header, local_cveteval{{/str}}</td>
                                 </tr>
                                 <tr class="table-secondary">
                                     <th scope="col">{{#str}}context, local_cveteval{{/str}}</th>
@@ -57,6 +56,13 @@
                                 <tr class="table-secondary">
                                     <th scope="col">{{#str}}comment, local_cveteval{{/str}}</th>
                                     <td>{{{appraisalcomment}}}</td>
+                                </tr>
+                                <tr class="table-primary">
+                                    <td colspan="2" class="text-center">{{#str}}criterion:comment:header, local_cveteval{{/str}}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="col">{{#str}}criterion:comment, local_cveteval{{/str}}</th>
+                                    <td>{{{criteriacomment}}}</td>
                                 </tr>
                             </tbody>
                         </table>

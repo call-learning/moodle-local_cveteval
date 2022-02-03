@@ -234,6 +234,7 @@ class appraisals_student extends dynamic_table_sql {
                     $comments->appraisalcomment = $this->format_text($grade->appraisalcomment, $grade->appraisalcommentformat);
                     $comments->appraisalid = $appraisalid;
                     $comments->appraiserid = $appraiserid;
+                    $comments->criteriaid = $row->id;
                     $commentstext =
                         $renderer->render(new grade_widget($grade->grade, $subgradescount > 0, $comments));
                 }
