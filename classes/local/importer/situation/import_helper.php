@@ -25,6 +25,8 @@
 namespace local_cveteval\local\importer\situation;
 defined('MOODLE_INTERNAL') || die();
 
+use cache;
+use cache_store;
 use coding_exception;
 use local_cveteval\event\situation_imported;
 use local_cveteval\local\importer\base_helper;
@@ -51,7 +53,7 @@ class import_helper extends base_helper {
      * @throws importer_exception
      */
     public function __construct($csvpath, $importid, $filename = '', $delimiter = 'semicolon', $encoding = 'utf-8',
-        $progressbar = null) {
+            $progressbar = null) {
         parent::__construct($csvpath, $importid, $filename, $delimiter, $encoding, $progressbar);
         $this->importeventclass = situation_imported::class;
     }
@@ -65,20 +67,21 @@ class import_helper extends base_helper {
      * @throws coding_exception
      */
     public static function toevalgridid($value, $columnname) {
-        static $gridmatch = [];
-        $trimmedval = trim($value);
         if (empty($value)) {
             return 0;
         }
-        if (!empty($gridmatch[$trimmedval])) {
-            return $gridmatch[$trimmedval];
+        $gridcache = cache::make_from_params(cache_store::MODE_REQUEST, 'local_cveteval', 'toevalgridcache');
+        $trimmedval = trim($value);
+        if ($gridcache->has($trimmedval)) {
+            return $gridcache->get($trimmedval);
         } else {
             $grid = evaluation_grid_entity::get_record(array('idnumber' => $trimmedval));
             if (!$grid) {
                 return 0;
             }
-            $gridmatch[$value] = (int) $grid->get('id');
-            return $gridmatch[$value];
+            $id = (int) $grid->get('id');
+            $gridcache->set($trimmedval, $id);
+            return $id;
         }
     }
 
@@ -115,38 +118,38 @@ class import_helper extends base_helper {
      */
     protected function create_transformer() {
         $transformdef = array(
-            'Nom' =>
-                array(
-                    array('to' => 'title', 'transformcallback' => base_helper::class . '::trimmed')
-                ),
-            'Nom court' =>
-                array(
-                    array('to' => 'idnumber', 'transformcallback' => base_helper::class . '::trimmeduppercase')
-                ),
-            'Description' =>
-                array(
-                    array('to' => 'description')
-                ),
-            'Responsable' =>
-                array(
-                    array('to' => 'assessors', 'concatenate' => ['order' => 0])
-                ),
-            'Evaluateurs' =>
-                array(
-                    array('to' => 'assessors', 'concatenate' => ['order' => 1])
-                ),
-            'Observateurs' =>
-                array(
-                    array('to' => 'appraisers')
-                ),
-            'Appreciations' =>
-                array(
-                    array('to' => 'expectedevalsnb', 'transformcallback' => base_helper::class . '::toint')
-                ),
-            'GrilleEval' =>
-                array(
-                    array('to' => 'evalgridid', 'transformcallback' => self::class . '::toevalgridid')
-                ),
+                'Nom' =>
+                        array(
+                                array('to' => 'title', 'transformcallback' => base_helper::class . '::trimmed')
+                        ),
+                'Nom court' =>
+                        array(
+                                array('to' => 'idnumber', 'transformcallback' => base_helper::class . '::trimmeduppercase')
+                        ),
+                'Description' =>
+                        array(
+                                array('to' => 'description')
+                        ),
+                'Responsable' =>
+                        array(
+                                array('to' => 'assessors', 'concatenate' => ['order' => 0])
+                        ),
+                'Evaluateurs' =>
+                        array(
+                                array('to' => 'assessors', 'concatenate' => ['order' => 1])
+                        ),
+                'Observateurs' =>
+                        array(
+                                array('to' => 'appraisers')
+                        ),
+                'Appreciations' =>
+                        array(
+                                array('to' => 'expectedevalsnb', 'transformcallback' => base_helper::class . '::toint')
+                        ),
+                'GrilleEval' =>
+                        array(
+                                array('to' => 'evalgridid', 'transformcallback' => self::class . '::toevalgridid')
+                        ),
         );
 
         $transformer = new standard($transformdef, ',');
@@ -170,22 +173,23 @@ class import_helper extends base_helper {
      * @param $importid
      */
     protected function create_processor($csvsource, $transformer, $dataimporter,
-        $progressbar, $importid) {
+            $progressbar, $importid) {
         return new class($csvsource,
-            $transformer,
-            $dataimporter,
-            $progressbar,
-            $importid
+                $transformer,
+                $dataimporter,
+                $progressbar,
+                $importid
         ) extends processor {
             /**
              * Get statistics in a displayable (HTML) format
+             *
              * @return string
              */
             public function get_displayable_stats() {
                 return
-                    get_string('situation:stats', 'local_cveteval',
-                        ['roles' => $this->importer->rolescount, 'situations' => $this->importer->situationscount ]
-                    );
+                        get_string('situation:stats', 'local_cveteval',
+                                ['roles' => $this->importer->rolescount, 'situations' => $this->importer->situationscount]
+                        );
             }
         };
     }

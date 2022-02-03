@@ -119,6 +119,7 @@ function xmldb_local_cveteval_upgrade($oldversion) {
         }
 
         utils::migrate_current_entity_to_history();
+        utils::create_update_default_criteria_grid();
         // Cveteval savepoint reached.
         upgrade_plugin_savepoint(true, 2021092009, 'local', 'cveteval');
     }

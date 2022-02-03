@@ -133,7 +133,7 @@ class utils {
      * @throws coding_exception
      */
     public static function create_update_default_criteria_grid() {
-        if (defined('PHPUNIT_TEST') && PHPUNIT_TEST) {
+        if (\phpunit_util::is_test_site() || \behat_util::is_test_site()) {
             upload_default_criteria_grid::create_default_grid();
         } else {
             $task = new upload_default_criteria_grid();
