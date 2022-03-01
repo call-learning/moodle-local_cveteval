@@ -198,6 +198,7 @@ $string['role:entity'] = 'Roles';
 $string['role:type:appraiser'] = 'Appraiser';
 $string['role:type:assessor'] = 'Assessor';
 $string['role:type:student'] = 'Student';
+$string['reset:confirm'] = 'Confirm that you want all data will be reset ?';
 $string['saved'] = 'Saved';
 $string['settings:general'] = 'Paramètres généraux';
 $string['settings:grade_scale'] = 'Grade Scales';

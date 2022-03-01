@@ -114,7 +114,7 @@ class appraisals_student extends dynamic_table_sql {
      * @param bool $disablefilters
      * @return array
      */
-    protected function internal_get_sql_where($disablefilters = false) {
+    protected function internal_get_sql_where($disablefilters = false, $tablealias = 'e') {
         if ($this->evalgridwhere && $this->evalgridparams) {
             return [' criterion.evalgridid ' . $this->evalgridwhere, $this->evalgridparams];
         }

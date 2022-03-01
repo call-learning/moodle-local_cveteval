@@ -24,6 +24,7 @@
 
 namespace local_cveteval;
 
+use behat_util;
 use coding_exception;
 use context_system;
 use core\event\webservice_token_created;
@@ -37,6 +38,7 @@ use local_cveteval\local\persistent\model_with_history_util;
 use local_cveteval\task\upload_default_criteria_grid;
 use moodle_exception;
 use moodle_url;
+use phpunit_util;
 use progress_bar;
 use stdClass;
 use tool_importer\local\exceptions\importer_exception;
@@ -133,7 +135,8 @@ class utils {
      * @throws coding_exception
      */
     public static function create_update_default_criteria_grid() {
-        if (\phpunit_util::is_test_site() || \behat_util::is_test_site()) {
+        if ((class_exists('phpunit_util') && phpunit_util::is_test_site())||
+                (class_exists('behat_util') && behat_util::is_test_site())) {
             upload_default_criteria_grid::create_default_grid();
         } else {
             $task = new upload_default_criteria_grid();

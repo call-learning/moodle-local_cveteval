@@ -194,6 +194,7 @@ $string['planning:stats'] = 'Plans importés: {$a->plannings}, évènement de pl
 $string['planning:studentid'] = 'Identifiant étudiant';
 $string['planning:title'] = 'Titre';
 $string['pluginname'] = 'Plugin CompetVetEval';
+$string['reset:confirm'] = 'Confirmez que vous souhaitez que toutes les données soit réinitialisées ?';
 $string['role:entity'] = 'Roles';
 $string['role:type:appraiser'] = 'Appraiser';
 $string['role:type:assessor'] = 'Assessor';
