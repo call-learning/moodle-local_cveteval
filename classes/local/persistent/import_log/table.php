@@ -21,12 +21,11 @@
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 namespace local_cveteval\local\persistent\import_log;
-defined('MOODLE_INTERNAL') || die();
 
 use coding_exception;
 use local_cltools\local\crud\entity_table;
+use moodle_exception;
 use tool_importer\local\log_levels;
 
 /**
@@ -47,9 +46,9 @@ class table extends entity_table {
         // This is a temporary hack so we can set the width or other params
         // for this column.
         $columns['information']->additionalParams = json_encode(
-            (object) [
-                'widthGrow' => 6
-            ]
+                (object) [
+                        'widthGrow' => 6
+                ]
         );
         return $columns;
     }
@@ -60,7 +59,7 @@ class table extends entity_table {
      * @param $row
      * @return string
      * @throws coding_exception
-     * @throws \moodle_exception
+     * @throws moodle_exception
      */
     protected function col_origin($row) {
         return basename($row->origin);
@@ -72,7 +71,7 @@ class table extends entity_table {
      * @param $row
      * @return string
      * @throws coding_exception
-     * @throws \moodle_exception
+     * @throws moodle_exception
      */
     protected function col_information($row) {
         $addinfo = json_decode($row->additionalinfo);
@@ -89,7 +88,7 @@ class table extends entity_table {
      * @param $row
      * @return string
      * @throws coding_exception
-     * @throws \moodle_exception
+     * @throws moodle_exception
      */
     protected function col_level($row) {
         return strtoupper(strtoupper(log_levels::to_displayable_string($row->level, 'local_cveteval')));

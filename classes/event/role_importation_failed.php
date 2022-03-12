@@ -30,8 +30,6 @@ use core\event\base;
 use dml_exception;
 use moodle_url;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Role importation failure
  *

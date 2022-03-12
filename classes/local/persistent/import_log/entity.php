@@ -16,9 +16,9 @@
 
 namespace local_cveteval\local\persistent\import_log;
 
+use coding_exception;
 use local_cltools\local\crud\enhanced_persistent;
 use local_cltools\local\crud\enhanced_persistent_impl;
-use local_cltools\local\field\boolean;
 use local_cltools\local\field\blank_field;
 use local_cltools\local\field\hidden;
 use local_cltools\local\field\number;
@@ -26,8 +26,6 @@ use local_cltools\local\field\select_choice;
 use local_cltools\local\field\text;
 use tool_importer\local\log_levels;
 use tool_importer\local\logs\import_log_entity;
-
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * Import log entity
@@ -43,27 +41,27 @@ class entity extends import_log_entity implements enhanced_persistent {
      * Usual properties definition for a persistent
      *
      * @return array|array[]
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public static function define_fields(): array {
         return [
-            new number(['fieldname' => 'linenumber', 'fullname' => get_string('log:linenumber', 'local_cveteval')]),
-            new text(['fieldname' => 'fieldname', 'fullname' => get_string('log:fieldname', 'local_cveteval')]),
-            new select_choice(['fieldname' => 'level', 'choices' =>
-                [
-                    log_levels::LEVEL_INFO,
-                    log_levels::LEVEL_WARNING,
-                    log_levels::LEVEL_ERROR,
-                ],
-                'fullname' => get_string('log:level', 'local_cveteval')
-            ]),
-            new text(['fieldname' => 'origin', 'fullname' => get_string('log:origin', 'local_cveteval')]),
-            new hidden('messagecode'),
-            new hidden('module'),
-            new blank_field(['fieldname' => 'information', 'fullname' => get_string('log:information', 'local_cveteval')]),
-            new number(['fieldname' => 'importid', 'fullname' => get_string('log:importid', 'local_cveteval')]),
-            new hidden('validationstep'),
-            new hidden('additionalinfo'),
+                new number(['fieldname' => 'linenumber', 'fullname' => get_string('log:linenumber', 'local_cveteval')]),
+                new text(['fieldname' => 'fieldname', 'fullname' => get_string('log:fieldname', 'local_cveteval')]),
+                new select_choice(['fieldname' => 'level', 'choices' =>
+                        [
+                                log_levels::LEVEL_INFO,
+                                log_levels::LEVEL_WARNING,
+                                log_levels::LEVEL_ERROR,
+                        ],
+                        'fullname' => get_string('log:level', 'local_cveteval')
+                ]),
+                new text(['fieldname' => 'origin', 'fullname' => get_string('log:origin', 'local_cveteval')]),
+                new hidden('messagecode'),
+                new hidden('module'),
+                new blank_field(['fieldname' => 'information', 'fullname' => get_string('log:information', 'local_cveteval')]),
+                new number(['fieldname' => 'importid', 'fullname' => get_string('log:importid', 'local_cveteval')]),
+                new hidden('validationstep'),
+                new hidden('additionalinfo'),
         ];
     }
 }

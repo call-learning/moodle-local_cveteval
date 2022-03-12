@@ -23,7 +23,6 @@
  */
 
 namespace local_cveteval\local\external;
-defined('MOODLE_INTERNAL') || die();
 
 use external_multiple_structure;
 use external_single_structure;
@@ -44,20 +43,21 @@ class clsituation extends base_get_entity {
      */
     public static function get_returns() {
         return new external_multiple_structure(
-            new external_single_structure(
-                array(
-                    'id' => new external_value(PARAM_INT, 'id of the appraisal situation'),
-                    'title' => new external_value(PARAM_TEXT, 'title'),
-                    'description' => new external_value(PARAM_TEXT, 'description'),
-                    'descriptionformat' => new external_value(PARAM_INT, 'description format', VALUE_DEFAULT, FORMAT_PLAIN),
-                    'idnumber' => new external_value(PARAM_TEXT, 'idnumber'),
-                    'expectedevalsnb' => new external_value(PARAM_INT, 'nb of expected evals'),
-                    'evalgridid' => new external_value(PARAM_INT, 'id of the evalgrid'),
-                    'timemodified' => new external_value(PARAM_INT, 'last modification time'),
-                    'timecreated' => new external_value(PARAM_INT, 'last modification time'),
-                    'usermodified' => new external_value(PARAM_INT, 'user modified'),
+                new external_single_structure(
+                        array(
+                                'id' => new external_value(PARAM_INT, 'id of the appraisal situation'),
+                                'title' => new external_value(PARAM_TEXT, 'title'),
+                                'description' => new external_value(PARAM_TEXT, 'description'),
+                                'descriptionformat' => new external_value(PARAM_INT, 'description format', VALUE_DEFAULT,
+                                        FORMAT_PLAIN),
+                                'idnumber' => new external_value(PARAM_TEXT, 'idnumber'),
+                                'expectedevalsnb' => new external_value(PARAM_INT, 'nb of expected evals'),
+                                'evalgridid' => new external_value(PARAM_INT, 'id of the evalgrid'),
+                                'timemodified' => new external_value(PARAM_INT, 'last modification time'),
+                                'timecreated' => new external_value(PARAM_INT, 'last modification time'),
+                                'usermodified' => new external_value(PARAM_INT, 'user modified'),
+                        )
                 )
-            )
         );
     }
 

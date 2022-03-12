@@ -23,7 +23,6 @@
  */
 
 namespace local_cveteval\local\external;
-defined('MOODLE_INTERNAL') || die();
 
 use external_multiple_structure;
 use external_single_structure;
@@ -44,17 +43,17 @@ class role extends base_get_entity {
      */
     public static function get_returns() {
         return new external_multiple_structure(
-            new external_single_structure(
-                array(
-                    'id' => new external_value(PARAM_INT, 'id of the appraisal criterion'),
-                    'userid' => new external_value(PARAM_INT, 'id user'),
-                    'clsituationid' => new external_value(PARAM_INT, 'id of the clinical situation'),
-                    'type' => new external_value(PARAM_TEXT, 'role type (student/appraiser)'),
-                    'timemodified' => new external_value(PARAM_INT, 'last modification time'),
-                    'timecreated' => new external_value(PARAM_INT, 'last modification time'),
-                    'usermodified' => new external_value(PARAM_INT, 'user modified'),
+                new external_single_structure(
+                        array(
+                                'id' => new external_value(PARAM_INT, 'id of the appraisal criterion'),
+                                'userid' => new external_value(PARAM_INT, 'id user'),
+                                'clsituationid' => new external_value(PARAM_INT, 'id of the clinical situation'),
+                                'type' => new external_value(PARAM_TEXT, 'role type (student/appraiser)'),
+                                'timemodified' => new external_value(PARAM_INT, 'last modification time'),
+                                'timecreated' => new external_value(PARAM_INT, 'last modification time'),
+                                'usermodified' => new external_value(PARAM_INT, 'user modified'),
+                        )
                 )
-            )
         );
     }
 }

@@ -24,13 +24,9 @@
 
 namespace local_cveteval\output;
 
-use coding_exception;
 use renderable;
 use renderer_base;
-use stdClass;
 use templatable;
-
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * Renderable for dynamic table
@@ -40,7 +36,6 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class data_migration_wizard implements renderable, templatable {
-
 
     public function __construct($step) {
         $this->step = $step;

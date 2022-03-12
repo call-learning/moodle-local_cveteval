@@ -33,8 +33,6 @@ use local_cltools\local\field\text;
 use local_cveteval\local\persistent\model_with_history;
 use local_cveteval\local\persistent\model_with_history_impl;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Clinical situation entity
  *
@@ -66,22 +64,22 @@ class entity extends persistent implements enhanced_persistent, model_with_histo
      */
     public static function define_fields(): array {
         return [
-            new text('title'),
-            new editor('description'),
-            new text([
-                'fieldname' => 'idnumber',
-                'rawtype' => PARAM_ALPHANUMEXT
-            ]),
-            new text(
-                [
-                    'fieldname' => 'expectedevalsnb',
-                    'rawtype' => PARAM_INT
+                new text('title'),
+                new editor('description'),
+                new text([
+                        'fieldname' => 'idnumber',
+                        'rawtype' => PARAM_ALPHANUMEXT
                 ]),
-            new entity_selector([
-                'fieldname' => 'evalgridid',
-                'entityclass' => \local_cveteval\local\persistent\evaluation_grid\entity::class,
-                'displayfield' => 'name'
-            ])
+                new text(
+                        [
+                                'fieldname' => 'expectedevalsnb',
+                                'rawtype' => PARAM_INT
+                        ]),
+                new entity_selector([
+                        'fieldname' => 'evalgridid',
+                        'entityclass' => \local_cveteval\local\persistent\evaluation_grid\entity::class,
+                        'displayfield' => 'name'
+                ])
         ];
 
     }

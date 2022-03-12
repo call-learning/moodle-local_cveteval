@@ -28,13 +28,9 @@ use coding_exception;
 use core\persistent;
 use local_cltools\local\crud\enhanced_persistent;
 use local_cltools\local\crud\enhanced_persistent_impl;
-use local_cltools\local\field\datetime;
-use local_cltools\local\field\entity_selector;
 use local_cltools\local\field\text;
 use local_cveteval\local\persistent\model_with_history;
 use local_cveteval\local\persistent\model_with_history_impl;
-
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * Evaluation group entity
@@ -43,9 +39,10 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class entity extends persistent implements enhanced_persistent, model_with_history{
+class entity extends persistent implements enhanced_persistent, model_with_history {
     use model_with_history_impl;
     use enhanced_persistent_impl;
+
     const TABLE = 'local_cveteval_group';
 
     /**
@@ -59,12 +56,13 @@ class entity extends persistent implements enhanced_persistent, model_with_histo
                 new text('name')
         ];
     }
+
     protected static function define_properties() {
         return array(
-            'name' => array(
-                'type' => PARAM_TEXT,
-                'default' => ''
-            ),
+                'name' => array(
+                        'type' => PARAM_TEXT,
+                        'default' => ''
+                ),
         );
     }
 }

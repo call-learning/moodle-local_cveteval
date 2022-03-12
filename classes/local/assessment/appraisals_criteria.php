@@ -23,7 +23,6 @@
  */
 
 namespace local_cveteval\local\assessment;
-defined('MOODLE_INTERNAL') || die();
 
 use coding_exception;
 use local_cltools\local\field\datetime;
@@ -46,22 +45,22 @@ use ReflectionException;
 class appraisals_criteria extends dynamic_table_sql {
 
     protected const FIELDS = [
-        'critapp.id AS id',
-        'critapp.appraisalid AS appraisalid',
-        'COALESCE(critapp.grade, 0) AS grade',
-        'critapp.comment AS comment',
-        'criterion.sort AS sort',
-        'criterion.label AS label',
-        'criterion.parentid AS criterionparentid',
-        'criterion.id AS criterionid',
-        'COALESCE(critapp.timemodified,0) AS datetime'
+            'critapp.id AS id',
+            'critapp.appraisalid AS appraisalid',
+            'COALESCE(critapp.grade, 0) AS grade',
+            'critapp.comment AS comment',
+            'criterion.sort AS sort',
+            'criterion.label AS label',
+            'criterion.parentid AS criterionparentid',
+            'criterion.id AS criterionid',
+            'COALESCE(critapp.timemodified,0) AS datetime'
     ];
 
     public function __construct($uniqueid = null,
-        $actionsdefs = null,
-        $editable = false) {
+            $actionsdefs = null,
+            $editable = false) {
         $this->fieldaliases = [
-            'appraisalid' => 'critapp.appraisalid'
+                'appraisalid' => 'critapp.appraisalid'
         ];
         parent::__construct($uniqueid, $actionsdefs, $editable);
     }
@@ -80,8 +79,8 @@ class appraisals_criteria extends dynamic_table_sql {
         }
         $criterionsql = criterion_entity::get_historical_sql_query("criterion");
         $sql = 'SELECT DISTINCT ' . join(', ', static::FIELDS)
-            . " FROM $criterionsql "
-            .  'LEFT JOIN {local_cveteval_appr_crit} critapp ON  criterion.id = critapp.criterionid
+                . " FROM $criterionsql "
+                . 'LEFT JOIN {local_cveteval_appr_crit} critapp ON  criterion.id = critapp.criterionid
                WHERE criterion.parentid = :parentcriterion ' . $where . ' ORDER BY sort';
         $this->setup();
         $this->query_db($pagesize, false);
@@ -125,14 +124,16 @@ class appraisals_criteria extends dynamic_table_sql {
      */
     protected function setup_fields() {
         $this->fields = [
-            new hidden(['fieldname' => 'id', 'rawtype' => PARAM_INT]),
-            new hidden(['fieldname' => 'appraisalid', 'rawtype' => PARAM_INT]),
-            new text(['fieldname' => 'appraisalid', 'rawtype' => PARAM_RAW,
-                'displayname' => get_string("criterion:label", 'local_cveteval')]),
-            new number(['fieldname' => 'appraisalid', 'displayname' => get_string("appraisalcriterion:grade", 'local_cveteval')],
-                true),
-            new editor(['fieldname' => 'comment', 'displayname' => get_string("appraisal:comment", 'local_cveteval')]),
-            new datetime(['fieldname' => 'datetime', 'displayname' => get_string("appraisal:modificationdate", 'local_cveteval')]),
+                new hidden(['fieldname' => 'id', 'rawtype' => PARAM_INT]),
+                new hidden(['fieldname' => 'appraisalid', 'rawtype' => PARAM_INT]),
+                new text(['fieldname' => 'appraisalid', 'rawtype' => PARAM_RAW,
+                        'displayname' => get_string("criterion:label", 'local_cveteval')]),
+                new number(['fieldname' => 'appraisalid',
+                        'displayname' => get_string("appraisalcriterion:grade", 'local_cveteval')],
+                        true),
+                new editor(['fieldname' => 'comment', 'displayname' => get_string("appraisal:comment", 'local_cveteval')]),
+                new datetime(['fieldname' => 'datetime',
+                        'displayname' => get_string("appraisal:modificationdate", 'local_cveteval')]),
         ];
         $this->setup_other_fields();
     }
@@ -141,6 +142,7 @@ class appraisals_criteria extends dynamic_table_sql {
         return '{local_cveteval_criterion} criterion
         LEFT JOIN {local_cveteval_appr_crit} critapp ON  criterion.id = critapp.criterionid';
     }
+
     /**
      * Get sql fields
      *
@@ -151,6 +153,7 @@ class appraisals_criteria extends dynamic_table_sql {
     protected function internal_get_sql_fields($tablealias = 'e') {
         return "DISTINCT " . join(',', static::FIELDS) . " ";
     }
+
     /**
      * Get where
      *
@@ -162,3 +165,4 @@ class appraisals_criteria extends dynamic_table_sql {
         return ["{$where} AND criterion.parentid = 0 AND critapp.id IS NOT NULL", $params];
     }
 }
+

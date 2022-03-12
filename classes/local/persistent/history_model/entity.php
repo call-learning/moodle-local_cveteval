@@ -23,8 +23,6 @@ use local_cltools\local\field\entity_selector;
 use local_cltools\local\field\number;
 use local_cltools\local\field\text;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Model history entity
  *
@@ -45,10 +43,10 @@ class entity extends persistent implements enhanced_persistent {
      */
     public static function define_fields(): array {
         return [
-            new text('tablename'),
-            new number('tableid'),
-            new entity_selector(['fieldname' => 'historyid',
-                'entityclass' => \local_cveteval\local\persistent\history\entity::class, 'displayfield' => 'idnumber']),
+                new text('tablename'),
+                new number('tableid'),
+                new entity_selector(['fieldname' => 'historyid',
+                        'entityclass' => \local_cveteval\local\persistent\history\entity::class, 'displayfield' => 'idnumber']),
         ];
     }
 }

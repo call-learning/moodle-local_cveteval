@@ -23,7 +23,6 @@
  */
 
 namespace local_cveteval\local\importer\evaluation_grid;
-defined('MOODLE_INTERNAL') || die();
 
 use local_cveteval\local\persistent\criterion\entity as criterion_entity;
 use local_cveteval\local\persistent\evaluation_grid\entity as evaluation_grid_entity;
@@ -41,8 +40,8 @@ use tool_importer\local\log_levels;
  */
 class data_importer extends \tool_importer\data_importer {
 
-    private array $parentcriterionlistid;
     public $criterioncount = 0;
+    private array $parentcriterionlistid;
 
     /**
      * Called just before importation or validation.
@@ -72,11 +71,11 @@ class data_importer extends \tool_importer\data_importer {
         }
         if (!empty($row['parentidnumber']) && !in_array($row['parentidnumber'], $parentidlist)) {
             throw new validation_exception('wrongparentid',
-                $rowindex,
-                'Criterion Parent Id',
-                $this->module,
-                '',
-                log_levels::LEVEL_WARNING
+                    $rowindex,
+                    'Criterion Parent Id',
+                    $this->module,
+                    '',
+                    log_levels::LEVEL_WARNING
             );
         }
     }
@@ -103,8 +102,8 @@ class data_importer extends \tool_importer\data_importer {
             // Create one if it does not exist.
             if (!$newevalgrid) {
                 $evalgrid = new evaluation_grid_entity(0, (object) [
-                    'name' => get_string('evaluationgrid:default', 'local_cveteval'),
-                    'idnumber' => $row['evalgridid']
+                        'name' => get_string('evaluationgrid:default', 'local_cveteval'),
+                        'idnumber' => $row['evalgridid']
                 ]);
                 // Create it.
                 $evalgrid->create();
@@ -118,7 +117,7 @@ class data_importer extends \tool_importer\data_importer {
         $criterionrecord->label = $row['label'];
         $criterionrecord->idnumber = $row['idnumber'];
         $parentid = empty($this->parentcriterionlistid[$row['parentidnumber']]) ?
-            0 : $this->parentcriterionlistid[$row['parentidnumber']];
+                0 : $this->parentcriterionlistid[$row['parentidnumber']];
         $criterionrecord->parentid = $parentid;
         $criterionrecord->evalgridid = $evalgridid;
         $criterionrecord->sort = criterion_entity::count_records(['parentid' => $parentid, 'evalgridid' => $evalgridid]) + 1;

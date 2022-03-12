@@ -23,7 +23,6 @@
  */
 
 namespace local_cveteval\local\assessment;
-defined('MOODLE_INTERNAL') || die();
 
 use core_table\local\filter\filter;
 use local_cltools\local\field\boolean;
@@ -33,12 +32,10 @@ use local_cltools\local\field\text;
 use local_cltools\local\filter\enhanced_filterset;
 use local_cltools\local\filter\numeric_comparison_filter;
 use local_cltools\local\table\dynamic_table_sql;
+use local_cveteval\local\persistent\group\entity as group_entity;
 use local_cveteval\local\persistent\group_assignment\entity as group_assignment_entity;
 use local_cveteval\local\persistent\planning\entity as planning_entity;
-use local_cveteval\local\persistent\role\entity as role_entity;
 use local_cveteval\local\persistent\situation\entity as situation_entity;
-use local_cveteval\local\persistent\group\entity as group_entity;
-use local_cveteval\roles;
 use moodle_url;
 use ReflectionException;
 
@@ -52,42 +49,43 @@ use ReflectionException;
 class mystudents extends dynamic_table_sql {
 
     public function __construct($uniqueid = null,
-        $actionsdefs = null,
-        $editable = false,
-        $situationid = null
+            $actionsdefs = null,
+            $editable = false,
+            $situationid = null
     ) {
         global $PAGE;
         $filterset = new enhanced_filterset([
-            'situationid' => (object)
-            [
-                'filterclass' => numeric_comparison_filter::class,
-                'required' => true
-            ],
+                'situationid' => (object)
+                [
+                        'filterclass' => numeric_comparison_filter::class,
+                        'required' => true
+                ],
         ]);
         if ($situationid) {
             // Either given by value in the constructor or passed by parameter later in the dynamic table.
             $filterset->add_filter_from_params(
-                'situationid', // Field name.
-                filter::JOINTYPE_ALL,
-                [['direction' => '=', 'value' => $situationid]]
+                    'situationid', // Field name.
+                    filter::JOINTYPE_ALL,
+                    [['direction' => '=', 'value' => $situationid]]
             );
         }
         $filterset->set_join_type(filter::JOINTYPE_ALL);
         $this->filterset = $filterset;
         $this->fieldaliases = [
-            'roletype' => 'role.type',
-            'appraiserid' => 'role.userid',
-            'situationid' => 'situation.id',
-            'appraisalcount' => 'apc.count',
-            'appraisalrequired' => 'situation.expectedevalsnb',
-            'studentfullname' => 'student.fullname',
-            'groupname' => 'grp.name'
+                'roletype' => 'role.type',
+                'appraiserid' => 'role.userid',
+                'situationid' => 'situation.id',
+                'appraisalcount' => 'apc.count',
+                'appraisalrequired' => 'situation.expectedevalsnb',
+                'studentfullname' => 'student.fullname',
+                'groupname' => 'grp.name',
+                'hasgrade' => '(eval.id IS NOT NULL)'
         ];
         parent::__construct($uniqueid, $actionsdefs, $editable);
         $PAGE->requires->js_call_amd('local_cltools/tabulator-row-action-url', 'init', [
-            $this->get_unique_id(),
-            (new moodle_url('/local/cveteval/pages/assessment/assess.php'))->out(),
-            (object) array('evalplanid' => 'planid', 'studentid' => 'studentid')
+                $this->get_unique_id(),
+                (new moodle_url('/local/cveteval/pages/assessment/assess.php'))->out(),
+                (object) array('evalplanid' => 'planid', 'studentid' => 'studentid')
         ]);
     }
 
@@ -101,16 +99,17 @@ class mystudents extends dynamic_table_sql {
      */
     protected function setup_fields() {
         $this->fields = [
-            new hidden(['fieldname' => 'planid', 'rawtype' => PARAM_INT]),
-            new hidden(['fieldname' => 'studentid', 'rawtype' => PARAM_INT]),
-            new hidden(['fieldname' => 'situationid', 'rawtype' => PARAM_INT]),
-            new text(['fieldname' => 'studentfullname', 'fullname' => get_string("appraisal:student", 'local_cveteval')]),
-            new text(['fieldname' => 'groupname', 'fullname' => get_string("planning:groupname", 'local_cveteval')]),
-            new date(['fieldname' => 'starttime', 'fullname' => get_string("planning:starttime", 'local_cveteval')]),
-            new date(['fieldname' => 'endtime', 'fullname' => get_string("planning:endtime", 'local_cveteval')]),
-            new text(['fieldname' => 'appraisalcount', 'fullname' => get_string("appraisal:count", 'local_cveteval')]),
-            new text(['fieldname' => 'appraisalrequired', 'fullname' => get_string("planning:requiredappraisals", 'local_cveteval')]),
-            new boolean(['fieldname' => 'hasgrade', 'fullname' => get_string("evaluation:hasgrade", 'local_cveteval')]),
+                new hidden(['fieldname' => 'planid', 'rawtype' => PARAM_INT]),
+                new hidden(['fieldname' => 'studentid', 'rawtype' => PARAM_INT]),
+                new hidden(['fieldname' => 'situationid', 'rawtype' => PARAM_INT]),
+                new text(['fieldname' => 'studentfullname', 'fullname' => get_string("appraisal:student", 'local_cveteval')]),
+                new text(['fieldname' => 'groupname', 'fullname' => get_string("planning:groupname", 'local_cveteval')]),
+                new date(['fieldname' => 'starttime', 'fullname' => get_string("planning:starttime", 'local_cveteval')]),
+                new date(['fieldname' => 'endtime', 'fullname' => get_string("planning:endtime", 'local_cveteval')]),
+                new text(['fieldname' => 'appraisalcount', 'fullname' => get_string("appraisal:count", 'local_cveteval')]),
+                new text(['fieldname' => 'appraisalrequired',
+                        'fullname' => get_string("planning:requiredappraisals", 'local_cveteval')]),
+                new boolean(['fieldname' => 'hasgrade', 'fullname' => get_string("evaluation:hasgrade", 'local_cveteval')]),
         ];
         $this->setup_other_fields();
     }
@@ -121,7 +120,7 @@ class mystudents extends dynamic_table_sql {
         $situationsql = situation_entity::get_historical_sql_query("situation");
         $groupassignmentsql = group_assignment_entity::get_historical_sql_query("groupa");
         $groupsql = group_entity::get_historical_sql_query("grp");
-        return  "$planningsql LEFT JOIN {local_cveteval_role} role ON plan.clsituationid = role.clsituationid
+        return "$planningsql LEFT JOIN {local_cveteval_role} role ON plan.clsituationid = role.clsituationid
         LEFT JOIN $groupassignmentsql ON groupa.groupid = plan.groupid
         LEFT JOIN $groupsql ON groupa.groupid = grp.id
         LEFT JOIN $situationsql ON situation.id =  plan.clsituationid

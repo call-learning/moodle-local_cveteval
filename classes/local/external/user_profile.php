@@ -23,7 +23,6 @@
  */
 
 namespace local_cveteval\local\external;
-defined('MOODLE_INTERNAL') || die();
 
 use context_system;
 use context_user;
@@ -51,15 +50,15 @@ class user_profile extends external_api {
      */
     public static function execute_returns() {
         return new external_single_structure(
-            array(
-                'userid' => new external_value(PARAM_INT, 'id type of user'),
-                'fullname' => new external_value(PARAM_TEXT, 'user fullname'),
-                'firstname' => new external_value(PARAM_TEXT, 'user fullname'),
-                'lastname' => new external_value(PARAM_TEXT, 'user fullname'),
-                'username' => new external_value(PARAM_RAW_TRIMMED, 'username'),
-                'userpictureurl' => new external_value(PARAM_URL, 'user picture (avatar)',
-                    VALUE_OPTIONAL),
-            )
+                array(
+                        'userid' => new external_value(PARAM_INT, 'id type of user'),
+                        'fullname' => new external_value(PARAM_TEXT, 'user fullname'),
+                        'firstname' => new external_value(PARAM_TEXT, 'user fullname'),
+                        'lastname' => new external_value(PARAM_TEXT, 'user fullname'),
+                        'username' => new external_value(PARAM_RAW_TRIMMED, 'username'),
+                        'userpictureurl' => new external_value(PARAM_URL, 'user picture (avatar)',
+                                VALUE_OPTIONAL),
+                )
         );
     }
 
@@ -90,12 +89,12 @@ class user_profile extends external_api {
 
         $userinfo->studentpictureurl = $userpicture->get_url($PAGE)->out(false);
         return (object) [
-            'userid' => intval($user->id),
-            'fullname' => fullname($user),
-            'firstname' => $canseeadvanced ? $user->firstname : '',
-            'lastname' => $canseeadvanced ? $user->lastname : '',
-            'username' => $canseeadvanced ? $user->username : 'anonymous',
-            'userpictureurl' => $userpicture->get_url($PAGE)->out(false)
+                'userid' => intval($user->id),
+                'fullname' => fullname($user),
+                'firstname' => $canseeadvanced ? $user->firstname : '',
+                'lastname' => $canseeadvanced ? $user->lastname : '',
+                'username' => $canseeadvanced ? $user->username : 'anonymous',
+                'userpictureurl' => $userpicture->get_url($PAGE)->out(false)
         ];
     }
 
@@ -106,9 +105,9 @@ class user_profile extends external_api {
      */
     public static function execute_parameters() {
         return new external_function_parameters(
-            array(
-                'userid' => new external_value(PARAM_INT, 'id of the user', VALUE_DEFAULT, 0)
-            )
+                array(
+                        'userid' => new external_value(PARAM_INT, 'id of the user', VALUE_DEFAULT, 0)
+                )
         );
     }
 }

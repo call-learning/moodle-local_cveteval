@@ -16,6 +16,9 @@
 
 namespace local_cveteval\local\datamigration\helpers;
 
+use coding_exception;
+use core_user;
+use dml_exception;
 use local_cveteval\local\datamigration\matchers\criterion;
 use local_cveteval\local\datamigration\matchers\planning;
 use local_cveteval\local\persistent\appraisal\entity as appraisal_entity;
@@ -23,8 +26,7 @@ use local_cveteval\local\persistent\appraisal_criterion\entity as appraisal_crit
 use local_cveteval\local\persistent\final_evaluation\entity as final_evaluation_entity;
 use local_cveteval\local\persistent\history\entity;
 use local_cveteval\output\helpers\output_helper;
-
-defined('MOODLE_INTERNAL') || die();
+use stdClass;
 
 /**
  * User data migration helper
@@ -39,7 +41,7 @@ class user_data_migration_helper {
      * @param $stepdata
      * @param $output
      * @return array
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public static function convert_origin_appraisals($contexts, $stepdata) {
         $newappraisalinfo = [];
@@ -70,7 +72,7 @@ class user_data_migration_helper {
                         unset($newappraisalcritdata->id);
                         unset($newappraisalcritdata->timemodified);
                         $newappraisalcritdata->evalplanid = $evalplantargetid;
-                        $newcriterionid = $stepdata->$context[criterion::get_entity()][$appraisalcrit->get('criterionid')] ?? 0;
+                        $newcriterionid = $stepdata->{$context}[criterion::get_entity()][$appraisalcrit->get('criterionid')] ?? 0;
                         if ($newcriterionid) {
                             $newappraisalcritdata->criterionid = $newcriterionid;
                             $newappraisal = new appraisal_entity(0, $newapprdata);
@@ -85,6 +87,31 @@ class user_data_migration_helper {
             }
         }
         return $newappraisalinfo;
+    }
+
+    /**
+     * Export final eval info
+     *
+     * @param int $studentid
+     * @param int $appraiserid
+     * @param int $evalplanid
+     * @param int|null $criterionid
+     * @param int|null $grade
+     * @return stdClass
+     * @throws dml_exception
+     */
+    public static function get_eval_info($studentid, $appraiserid, $evalplanid, $criterionid = null, $grade = null) {
+        $evalinfo = new stdClass();
+        $evalinfo->student = fullname(core_user::get_user($studentid));
+        $evalinfo->appraiser = fullname(core_user::get_user($appraiserid));
+        $evalinfo->planning = output_helper::export_entity_planning($evalplanid);
+        if (!empty($criterionid)) {
+            $evalinfo->criterion = output_helper::export_entity_criterion($criterionid);
+        }
+        if (!empty($grade)) {
+            $evalinfo->grade = $grade;
+        }
+        return $evalinfo;
     }
 
     /**
@@ -125,41 +152,16 @@ class user_data_migration_helper {
      * Export final eval info
      *
      * @param int $studentid
-     * @param int $appraiserid
-     * @param int $evalplanid
-     * @param int|null $criterionid
-     * @param int|null $grade
-     * @return \stdClass
-     * @throws \dml_exception
-     */
-    public static function get_eval_info($studentid, $appraiserid, $evalplanid , $criterionid = null, $grade = null) {
-        $evalinfo = new \stdClass();
-        $evalinfo->student = fullname(\core_user::get_user($studentid));
-        $evalinfo->appraiser = fullname(\core_user::get_user($appraiserid));
-        $evalinfo->planning = output_helper::export_entity_planning($evalplanid);
-        if (!empty($criterionid)) {
-            $evalinfo->criterion = output_helper::export_entity_criterion($criterionid);
-        }
-        if (!empty($grade)) {
-            $evalinfo->grade = $grade;
-        }
-        return $evalinfo;
-    }
-
-    /**
-     * Export final eval info
-     *
-     * @param int $studentid
      * @param int $assessorid
      * @param int $evalplanid
      * @param int $grade
-     * @return \stdClass
-     * @throws \dml_exception
+     * @return stdClass
+     * @throws dml_exception
      */
-    public static function get_final_eval_info($studentid, $assessorid, $evalplanid , $grade) {
-        $evalinfo = new \stdClass();
-        $evalinfo->student = fullname(\core_user::get_user($studentid));
-        $evalinfo->assessor = fullname(\core_user::get_user($assessorid));
+    public static function get_final_eval_info($studentid, $assessorid, $evalplanid, $grade) {
+        $evalinfo = new stdClass();
+        $evalinfo->student = fullname(core_user::get_user($studentid));
+        $evalinfo->assessor = fullname(core_user::get_user($assessorid));
         $evalinfo->planning = output_helper::export_entity_planning($evalplanid);
         $evalinfo->grade = $grade;
         return $evalinfo;

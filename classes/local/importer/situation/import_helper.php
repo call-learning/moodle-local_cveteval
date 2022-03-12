@@ -23,7 +23,6 @@
  */
 
 namespace local_cveteval\local\importer\situation;
-defined('MOODLE_INTERNAL') || die();
 
 use cache;
 use cache_store;

@@ -18,8 +18,7 @@ namespace local_cveteval\output;
 use local_cveteval\local\datamigration\data_migration_controller;
 use renderable;
 use renderer_base;
-
-defined('MOODLE_INTERNAL') || die();
+use templatable;
 
 /**
  * Renderable for userdatamigration controller
@@ -28,12 +27,12 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2020 CALL Learning - Laurent David laurent@call-learning.fr
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class dmc_entity_renderer_base implements renderable, \templatable {
+abstract class dmc_entity_renderer_base implements renderable, templatable {
+    const ALL_CONTEXTS = ['orphanedentities', 'unmatchedentities', 'matchedentities'];
+    const ACTIONABLE_CONTEXTS = ['orphanedentities', 'matchedentities'];
     protected $dmc;
     protected $navigation = null;
 
-    const ALL_CONTEXTS = [ 'orphanedentities', 'unmatchedentities', 'matchedentities' ];
-    const ACTIONABLE_CONTEXTS = [ 'orphanedentities', 'matchedentities' ];
     public function __construct(data_migration_controller $dmc) {
         $this->navigation = new dmc_step_navigation($dmc);
         $this->dmc = $dmc;

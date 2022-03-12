@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace local_cveteval\local\datamigration\matchers;
+
 use core\persistent;
 use local_cveteval\local\persistent\evaluation_grid\entity;
 
-defined('MOODLE_INTERNAL') || die();
 /**
  * Matcher implementation for criterion
  *
@@ -28,6 +28,10 @@ defined('MOODLE_INTERNAL') || die();
  */
 class evaluation_grid extends base {
 
+    public static function get_entity() {
+        return entity::class;
+    }
+
     /**
      * Try to match a given model/entity type
      *
@@ -35,9 +39,5 @@ class evaluation_grid extends base {
      */
     public function do_match(persistent $newentity) {
         return entity::get_records(['idnumber' => $newentity->get('idnumber')]);
-    }
-
-    public static function get_entity() {
-        return entity::class;
     }
 }

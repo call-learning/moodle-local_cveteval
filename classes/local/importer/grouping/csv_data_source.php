@@ -27,8 +27,6 @@ namespace local_cveteval\local\importer\grouping;
 use tool_importer\field_types;
 use tool_importer\local\exceptions\importer_exception;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Class csv_data_source
  *
@@ -48,28 +46,28 @@ class csv_data_source extends \tool_importer\local\source\csv_data_source {
         static $columns = null;
         if (!$columns) {
             $additionalcolumns = [
-                'Identifiant' => [
-                    'type'  => field_types::TYPE_TEXT,
-                    'required' => true
-                ],
-                'Nom de l\'étudiant' => [
-                    'type'  => field_types::TYPE_TEXT,
-                    'required' => false
-                ],
-                'Prénom' => [
-                    'type'  => field_types::TYPE_TEXT,
-                    'required' => false
-                ],
+                    'Identifiant' => [
+                            'type' => field_types::TYPE_TEXT,
+                            'required' => true
+                    ],
+                    'Nom de l\'étudiant' => [
+                            'type' => field_types::TYPE_TEXT,
+                            'required' => false
+                    ],
+                    'Prénom' => [
+                            'type' => field_types::TYPE_TEXT,
+                            'required' => false
+                    ],
             ];
             if (!$this->csvimporter) {
-                throw new importer_exception('nocolumnsdefined',  0, '', 'local_cveteval');
+                throw new importer_exception('nocolumnsdefined', 0, '', 'local_cveteval');
             }
             if ($allcolumns = $this->csvimporter->get_columns()) {
                 foreach ($allcolumns as $colname) {
                     if (preg_match('/groupement.*/', strtolower($colname))) {
                         $additionalcolumns[$colname] = [
-                            'type' => field_types::TYPE_TEXT,
-                            'required' => true
+                                'type' => field_types::TYPE_TEXT,
+                                'required' => true
                         ];
                     }
                 }

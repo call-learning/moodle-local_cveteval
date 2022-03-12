@@ -33,8 +33,6 @@ use local_cltools\local\field\select_choice;
 use local_cveteval\local\persistent\model_with_history;
 use local_cveteval\local\persistent\model_with_history_impl;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Evaluation role entity
  *
@@ -52,9 +50,9 @@ class entity extends persistent implements enhanced_persistent, model_with_histo
     const ROLE_ASSESSOR_ID = 2;
 
     const ROLE_SHORTNAMES = [
-        self::ROLE_STUDENT_ID => 'student',
-        self::ROLE_APPRAISER_ID => 'appraiser',
-        self::ROLE_ASSESSOR_ID => 'assessor',
+            self::ROLE_STUDENT_ID => 'student',
+            self::ROLE_APPRAISER_ID => 'appraiser',
+            self::ROLE_ASSESSOR_ID => 'assessor',
     ];
 
     const TABLE = 'local_cveteval_role';
@@ -82,17 +80,17 @@ class entity extends persistent implements enhanced_persistent, model_with_histo
 
     public static function define_fields(): array {
         return [
-            new hidden('userid'),
-            new entity_selector([
-                    'fieldname' => 'clsituationid',
-                    'entityclass' => \local_cveteval\local\persistent\situation\entity::class,
-                    'displayfield' => 'title',
-                ]
-            ),
-            new select_choice([
-                'fieldname' => 'type',
-                'choices' => [self::ROLE_APPRAISER_ID, self::ROLE_ASSESSOR_ID]
-            ])
+                new hidden('userid'),
+                new entity_selector([
+                                'fieldname' => 'clsituationid',
+                                'entityclass' => \local_cveteval\local\persistent\situation\entity::class,
+                                'displayfield' => 'title',
+                        ]
+                ),
+                new select_choice([
+                        'fieldname' => 'type',
+                        'choices' => [self::ROLE_APPRAISER_ID, self::ROLE_ASSESSOR_ID]
+                ])
         ];
     }
 }

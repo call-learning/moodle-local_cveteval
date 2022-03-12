@@ -24,7 +24,6 @@
 
 namespace local_cveteval\local\persistent\planning;
 
-use coding_exception;
 use core\persistent;
 use local_cltools\local\crud\enhanced_persistent;
 use local_cltools\local\crud\enhanced_persistent_impl;
@@ -32,8 +31,6 @@ use local_cltools\local\field\datetime;
 use local_cltools\local\field\entity_selector;
 use local_cveteval\local\persistent\model_with_history;
 use local_cveteval\local\persistent\model_with_history_impl;
-
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * Evaluation planning entity
@@ -47,24 +44,6 @@ class entity extends persistent implements enhanced_persistent, model_with_histo
     use enhanced_persistent_impl;
 
     const TABLE = 'local_cveteval_evalplan';
-
-    /**
-     * Get printable version of start time
-     *
-     * @return string
-     */
-    public function get_starttime_string() {
-        return userdate($this->raw_get('starttime'), get_string('strftimedate', 'core_langconfig'));
-    }
-
-    /**
-     * Get printable version of end time
-     *
-     * @return string
-     */
-    public function get_endtime_string() {
-        return userdate($this->raw_get('endtime'), get_string('strftimedate', 'core_langconfig'));
-    }
 
     public static function define_fields(): array {
         return [
@@ -85,6 +64,24 @@ class entity extends persistent implements enhanced_persistent, model_with_histo
                 new datetime('starttime'),
                 new datetime('endtime'),
         ];
+    }
+
+    /**
+     * Get printable version of start time
+     *
+     * @return string
+     */
+    public function get_starttime_string() {
+        return userdate($this->raw_get('starttime'), get_string('strftimedate', 'core_langconfig'));
+    }
+
+    /**
+     * Get printable version of end time
+     *
+     * @return string
+     */
+    public function get_endtime_string() {
+        return userdate($this->raw_get('endtime'), get_string('strftimedate', 'core_langconfig'));
     }
 
     public function get_context() {

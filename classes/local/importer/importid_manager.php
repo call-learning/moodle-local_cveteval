@@ -15,10 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace local_cveteval\local\importer;
+
+use coding_exception;
 use local_cveteval\local\persistent\history\entity as history_entity;
-
-defined('MOODLE_INTERNAL') || die();
-
 
 /**
  * Import id manager
@@ -39,18 +38,18 @@ class importid_manager {
      *
      * @param string $idnumber
      * @param string $comments
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function __construct($idnumber = "", $comments = "") {
-            if (empty($idnumber)) {
-                $dateandrandom = userdate(time(), get_string('strftimedatetimeshort')) . '-' . random_string(5);
-                $idnumber = get_string('defaulthistoryidnumber', 'local_cveteval', $dateandrandom);
-            }
-            $history = new history_entity(0,
+        if (empty($idnumber)) {
+            $dateandrandom = userdate(time(), get_string('strftimedatetimeshort')) . '-' . random_string(5);
+            $idnumber = get_string('defaulthistoryidnumber', 'local_cveteval', $dateandrandom);
+        }
+        $history = new history_entity(0,
                 (object) ['idnumber' => $idnumber, 'comments' => $comments, 'isactive' => false]);
-            $history->create();
-            $this->importid = $history->get('id');
-            history_entity::set_current_id($this->importid);
+        $history->create();
+        $this->importid = $history->get('id');
+        history_entity::set_current_id($this->importid);
     }
 
     /**

@@ -23,7 +23,6 @@
  */
 
 namespace local_cveteval\local\external;
-defined('MOODLE_INTERNAL') || die();
 
 use context_system;
 use external_function_parameters;
@@ -48,24 +47,30 @@ class appr_crit extends base_get_entity {
      */
     public static function submit_parameters() {
         return new external_function_parameters(
-            array(
-                'appraisalcriteriamodels' =>
-                    new external_multiple_structure(
-                        new external_single_structure(
-                            array(
-                                'id' => new external_value(PARAM_INT, 'id of the appraisal criterion', VALUE_DEFAULT),
-                                'criterionid' => new external_value(PARAM_INT, 'id of the criterion'),
-                                'appraisalid' => new external_value(PARAM_INT, 'id of the appraisal'),
-                                'grade' => new external_value(PARAM_INT, 'grade for appraisal', VALUE_DEFAULT, 0),
-                                'comment' => new external_value(PARAM_TEXT, 'comment', VALUE_DEFAULT, ""),
-                                'commentformat' => new external_value(PARAM_INT, 'comment format', VALUE_DEFAULT, FORMAT_PLAIN),
-                                'timemodified' => new external_value(PARAM_INT, 'last modification time', VALUE_DEFAULT, 0),
-                                'timecreated' => new external_value(PARAM_INT, 'last modification time', VALUE_DEFAULT, 0),
-                                'usermodified' => new external_value(PARAM_INT, 'user modified', VALUE_DEFAULT, 0),
-                            )
-                        ), VALUE_DEFAULT
-                    )
-            )
+                array(
+                        'appraisalcriteriamodels' =>
+                                new external_multiple_structure(
+                                        new external_single_structure(
+                                                array(
+                                                        'id' => new external_value(PARAM_INT, 'id of the appraisal criterion',
+                                                                VALUE_DEFAULT),
+                                                        'criterionid' => new external_value(PARAM_INT, 'id of the criterion'),
+                                                        'appraisalid' => new external_value(PARAM_INT, 'id of the appraisal'),
+                                                        'grade' => new external_value(PARAM_INT, 'grade for appraisal',
+                                                                VALUE_DEFAULT, 0),
+                                                        'comment' => new external_value(PARAM_TEXT, 'comment', VALUE_DEFAULT, ""),
+                                                        'commentformat' => new external_value(PARAM_INT, 'comment format',
+                                                                VALUE_DEFAULT, FORMAT_PLAIN),
+                                                        'timemodified' => new external_value(PARAM_INT, 'last modification time',
+                                                                VALUE_DEFAULT, 0),
+                                                        'timecreated' => new external_value(PARAM_INT, 'last modification time',
+                                                                VALUE_DEFAULT, 0),
+                                                        'usermodified' => new external_value(PARAM_INT, 'user modified',
+                                                                VALUE_DEFAULT, 0),
+                                                )
+                                        ), VALUE_DEFAULT
+                                )
+                )
         );
     }
 
@@ -85,19 +90,19 @@ class appr_crit extends base_get_entity {
      */
     public static function get_returns() {
         return new external_multiple_structure(
-            new external_single_structure(
-                array(
-                    'id' => new external_value(PARAM_INT, 'id of the appraisal criterion'),
-                    'criterionid' => new external_value(PARAM_INT, 'id of the criterion'),
-                    'appraisalid' => new external_value(PARAM_INT, 'id of the appraisal'),
-                    'grade' => new external_value(PARAM_INT, 'grade for appraisal'),
-                    'comment' => new external_value(PARAM_TEXT, 'comment'),
-                    'commentformat' => new external_value(PARAM_INT, 'comment format', VALUE_DEFAULT, FORMAT_PLAIN),
-                    'timemodified' => new external_value(PARAM_INT, 'last modification time'),
-                    'timecreated' => new external_value(PARAM_INT, 'last modification time'),
-                    'usermodified' => new external_value(PARAM_INT, 'user modified'),
+                new external_single_structure(
+                        array(
+                                'id' => new external_value(PARAM_INT, 'id of the appraisal criterion'),
+                                'criterionid' => new external_value(PARAM_INT, 'id of the criterion'),
+                                'appraisalid' => new external_value(PARAM_INT, 'id of the appraisal'),
+                                'grade' => new external_value(PARAM_INT, 'grade for appraisal'),
+                                'comment' => new external_value(PARAM_TEXT, 'comment'),
+                                'commentformat' => new external_value(PARAM_INT, 'comment format', VALUE_DEFAULT, FORMAT_PLAIN),
+                                'timemodified' => new external_value(PARAM_INT, 'last modification time'),
+                                'timecreated' => new external_value(PARAM_INT, 'last modification time'),
+                                'usermodified' => new external_value(PARAM_INT, 'user modified'),
+                        )
                 )
-            )
         );
     }
 

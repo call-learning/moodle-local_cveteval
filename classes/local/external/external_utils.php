@@ -23,7 +23,6 @@
  */
 
 namespace local_cveteval\local\external;
-defined('MOODLE_INTERNAL') || die();
 
 use dml_exception;
 use local_cveteval\local\persistent\model_with_history;
@@ -96,7 +95,7 @@ class external_utils {
             }
         }
         if (class_exists($classname)) {
-            $entitytable = "{". $classname::TABLE. "} AS e";
+            $entitytable = "{" . $classname::TABLE . "} AS e";
             if (in_array(model_with_history::class, class_implements($classname))) {
                 $entitytable = $classname::get_historical_sql_query_for_id();
             }
@@ -116,21 +115,21 @@ class external_utils {
     protected static function get_entity_additional_query($entitytype) {
         global $USER;
         $paramscheckrole = ['rolecheckstudentid' => $USER->id, 'rolecheckappraiserid' => $USER->id,
-            'rolechecktypeappraiser' => role_entity::ROLE_APPRAISER_ID,
-            'rolechecktypeassessor' => role_entity::ROLE_ASSESSOR_ID];
+                'rolechecktypeappraiser' => role_entity::ROLE_APPRAISER_ID,
+                'rolechecktypeassessor' => role_entity::ROLE_ASSESSOR_ID];
         $paramscheckroleappraisal = $paramscheckrole;
         $paramscheckroleappraisal['appraisalcheckstudentid'] = $USER->id;
         switch ($entitytype) {
             // Here we make sure that current user can only see evalplan involving him/her.
             case 'planning':
                 return [
-                    '( ga.studentid = :rolecheckstudentid OR ( role.userid = :rolecheckappraiserid AND'
-                    . ' (role.type = :rolechecktypeappraiser OR role.type = :rolechecktypeassessor )))',
-                    $paramscheckrole,
-                    'LEFT JOIN {local_cveteval_group_assign} ga ON ga.groupid = e.groupid
+                        '( ga.studentid = :rolecheckstudentid OR ( role.userid = :rolecheckappraiserid AND'
+                        . ' (role.type = :rolechecktypeappraiser OR role.type = :rolechecktypeassessor )))',
+                        $paramscheckrole,
+                        'LEFT JOIN {local_cveteval_group_assign} ga ON ga.groupid = e.groupid
                         LEFT JOIN {local_cveteval_role} role ON role.clsituationid = e.clsituationid',
-                    'ORDER BY e.starttime ASC',
-                    []
+                        'ORDER BY e.starttime ASC',
+                        []
                 ];
             case 'appraisal':
                 return [
@@ -148,22 +147,22 @@ class external_utils {
                 ];
             case 'appraisal_criterion':
                 return [
-                    '( eplan.id IS NOT NULL AND (( ga.studentid = :rolecheckstudentid AND appr.studentid = :appraisalcheckstudentid )'
-                    . ' OR ( role.userid = :rolecheckappraiserid AND (role.type = :rolechecktypeappraiser OR
+                        '( eplan.id IS NOT NULL AND (( ga.studentid = :rolecheckstudentid AND appr.studentid = :appraisalcheckstudentid )'
+                        . ' OR ( role.userid = :rolecheckappraiserid AND (role.type = :rolechecktypeappraiser OR
                role.type = :rolechecktypeassessor ))))',
-                    $paramscheckroleappraisal,
-                    'LEFT JOIN {local_cveteval_appraisal} appr ON appr.id = e.appraisalid '
+                        $paramscheckroleappraisal,
+                        'LEFT JOIN {local_cveteval_appraisal} appr ON appr.id = e.appraisalid '
                         . "LEFT JOIN "
                         . planning_entity::get_historical_sql_query_for_id("eplan")
                         . " ON eplan.id = appr.evalplanid "
                         . "LEFT JOIN {local_cveteval_group_assign} ga ON ga.groupid = eplan.groupid
                         LEFT JOIN {local_cveteval_role} role ON role.clsituationid = eplan.clsituationid",
-                    'ORDER BY e.appraisalid, e.timecreated ASC',
-                    []
+                        'ORDER BY e.appraisalid, e.timecreated ASC',
+                        []
                 ];
             case 'criterion':
                 return ['1=1', [], '', 'ORDER BY realparent',
-                    ['CASE e.parentid WHEN 0 THEN e.id ELSE e.parentid END AS realparent']];
+                        ['CASE e.parentid WHEN 0 THEN e.id ELSE e.parentid END AS realparent']];
             default:
                 return ['1=1', [], '', '', []];
         }

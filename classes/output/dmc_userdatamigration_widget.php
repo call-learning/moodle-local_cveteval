@@ -19,8 +19,6 @@ use local_cveteval\local\datamigration\helpers\user_data_migration_helper;
 use local_cveteval\local\persistent\history;
 use renderer_base;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Renderable for userdatamigration controller
  *

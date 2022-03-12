@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace local_cveteval\local\datamigration\matchers;
+
 use core\persistent;
 use local_cveteval\local\persistent\group\entity;
 
-defined('MOODLE_INTERNAL') || die();
 /**
  * Matcher implementation for group
  *
@@ -28,6 +28,10 @@ defined('MOODLE_INTERNAL') || die();
  */
 class group extends base {
 
+    public static function get_entity() {
+        return entity::class;
+    }
+
     /**
      * Try to match a given model/entity type
      *
@@ -36,10 +40,6 @@ class group extends base {
     public function do_match(persistent $newentity) {
         global $DB;
         return entity::get_records_select($DB->sql_equal('name', ':name', false, false),
-                ['name'=> trim($newentity->get('name'))]);
-    }
-
-    public static function get_entity() {
-        return entity::class;
+                ['name' => trim($newentity->get('name'))]);
     }
 }

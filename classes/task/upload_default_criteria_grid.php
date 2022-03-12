@@ -15,12 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace local_cveteval\task;
+
 use core\task\adhoc_task;
 use local_cveteval\local\persistent\history\entity as history_entity;
-use local_cveteval\utils;
 use tool_importer\local\validation_log;
-
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * Import default grid task
@@ -29,11 +27,11 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 class upload_default_criteria_grid extends adhoc_task {
     public function execute() {
         static::create_default_grid();
     }
+
     public static function create_default_grid() {
         global $CFG;
         history_entity::reset_current_id();

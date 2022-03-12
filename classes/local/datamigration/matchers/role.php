@@ -21,8 +21,6 @@ use local_cveteval\local\persistent\history\entity as history_entity;
 use local_cveteval\local\persistent\role\entity;
 use local_cveteval\local\persistent\situation\entity as situation_entity;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Matcher implementation for group_assignment
  *
@@ -31,6 +29,10 @@ defined('MOODLE_INTERNAL') || die();
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class role extends base {
+
+    public static function get_entity() {
+        return entity::class;
+    }
 
     /**
      * Try to match a given model/entity type
@@ -45,18 +47,18 @@ class role extends base {
         }
         $params = [];
         $params['situationsn'] = $this->get_entity_field_name(
-            $newentity->get('clsituationid'), $this->dm->get_dest_id(), "idnumber", situation_entity::class);
+                $newentity->get('clsituationid'), $this->dm->get_dest_id(), "idnumber", situation_entity::class);
         $params['userid'] = $userid;
         $params['type'] = $newentity->get('type');
 
         $oldrolessql = entity::get_historical_sql_query_for_id("e", $this->dm->get_origin_id());
         $oldsituationssql = situation_entity::get_historical_sql_query_for_id("oldsituations", $this->dm->get_origin_id());
         $oldrolesid = $DB->get_fieldset_sql(
-            "SELECT DISTINCT e.id 
-                FROM $oldrolessql LEFT JOIN $oldsituationssql ON e.clsituationid = oldsituations.id 
+                "SELECT DISTINCT e.id
+                FROM $oldrolessql LEFT JOIN $oldsituationssql ON e.clsituationid = oldsituations.id
                 WHERE e.userid = :userid AND e.type = :type AND " .
-            $DB->sql_equal('oldsituations.idnumber', ':situationsn', false, false),
-            $params);
+                $DB->sql_equal('oldsituations.idnumber', ':situationsn', false, false),
+                $params);
 
         $oldroles = [];
         if ($oldrolesid) {
@@ -66,9 +68,5 @@ class role extends base {
             }, $oldrolesid);
         }
         return $oldroles;
-    }
-
-    public static function get_entity() {
-        return entity::class;
     }
 }

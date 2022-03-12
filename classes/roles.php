@@ -29,8 +29,6 @@ use dml_exception;
 use local_cveteval\local\persistent\group_assignment\entity as group_assignment_entity;
 use local_cveteval\local\persistent\role\entity as role_entity;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Class roles
  *
@@ -39,6 +37,17 @@ defined('MOODLE_INTERNAL') || die();
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class roles {
+    /**
+     * Can assess ?
+     *
+     * @param int $userid
+     * @return bool
+     * @throws dml_exception
+     */
+    public static function can_assess($userid) {
+        return (self::get_user_role_id($userid) == role_entity::ROLE_ASSESSOR_ID) || is_primary_admin($userid);
+    }
+
     /**
      * Get role identifier
      *
@@ -53,12 +62,12 @@ class roles {
         // Check that user exists first, if not it will be a student role.
         if ($user = core_user::get_user($userid)) {
             $roles = role_entity::get_records_select(
-                "userid = :userid AND type IN (:appraisertype, :assessortype)",
-                array(
-                    'userid' => $userid,
-                    'appraisertype' => role_entity::ROLE_APPRAISER_ID,
-                    'assessortype' => role_entity::ROLE_ASSESSOR_ID,
-                ));
+                    "userid = :userid AND type IN (:appraisertype, :assessortype)",
+                    array(
+                            'userid' => $userid,
+                            'appraisertype' => role_entity::ROLE_APPRAISER_ID,
+                            'assessortype' => role_entity::ROLE_ASSESSOR_ID,
+                    ));
             $isappraiser = false;
             $isassessor = false;
             foreach ($roles as $role) {
@@ -86,18 +95,8 @@ class roles {
     }
 
     /**
-     * Can assess ?
-     *
-     * @param int $userid
-     * @return bool
-     * @throws dml_exception
-     */
-    public static function can_assess($userid) {
-        return (self::get_user_role_id($userid) == role_entity::ROLE_ASSESSOR_ID) || is_primary_admin($userid);
-    }
-
-    /**
      * Can see all situations
+     *
      * @param $userid
      * @return bool
      */

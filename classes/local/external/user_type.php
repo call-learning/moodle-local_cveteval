@@ -23,7 +23,6 @@
  */
 
 namespace local_cveteval\local\external;
-defined('MOODLE_INTERNAL') || die();
 
 use context_system;
 use external_api;
@@ -31,7 +30,6 @@ use external_function_parameters;
 use external_single_structure;
 use external_value;
 use local_cveteval\local\persistent\role\entity as role_entity;
-use local_cveteval\utils;
 use local_cveteval\roles;
 
 /**
@@ -50,9 +48,9 @@ class user_type extends external_api {
      */
     public static function execute_returns() {
         return new external_single_structure(
-            array(
-                'type' => new external_value(PARAM_TEXT, 'the type of user'),
-            )
+                array(
+                        'type' => new external_value(PARAM_TEXT, 'the type of user'),
+                )
         );
     }
 
@@ -64,7 +62,7 @@ class user_type extends external_api {
         self::validate_context(context_system::instance());
         $roleid = roles::get_user_role_id($userid);
         return (object) ['type' =>
-            role_entity::get_type_shortname($roleid)
+                role_entity::get_type_shortname($roleid)
         ];
     }
 
@@ -75,9 +73,9 @@ class user_type extends external_api {
      */
     public static function execute_parameters() {
         return new external_function_parameters(
-            array(
-                'userid' => new external_value(PARAM_INT, 'id of the user', null, NULL_NOT_ALLOWED)
-            )
+                array(
+                        'userid' => new external_value(PARAM_INT, 'id of the user', null, NULL_NOT_ALLOWED)
+                )
         );
     }
 }

@@ -25,8 +25,6 @@
 
 use local_cveteval\utils;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Execute local_cveteval upgrade from the given old version.
  *

@@ -23,8 +23,8 @@
  */
 
 namespace local_cveteval\local\importer\situation;
-defined('MOODLE_INTERNAL') || die();
 
+use coding_exception;
 use core_user;
 use dml_exception;
 use local_cveteval\local\persistent\evaluation_grid\entity as evaluation_grid_entity;
@@ -44,12 +44,10 @@ use tool_importer\local\log_levels;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class data_importer extends \tool_importer\data_importer {
-    private $shortnameuniqueids = [];
-
-    private $defaultgridid = 0;
-
     public $rolescount = 0;
     public $situationscount = 0;
+    private $shortnameuniqueids = [];
+    private $defaultgridid = 0;
 
     /**
      * data_importer constructor.
@@ -58,10 +56,10 @@ class data_importer extends \tool_importer\data_importer {
      */
     public function __construct($defaultvals = []) {
         parent::__construct(
-            array_merge(
-                ['descriptionformat' => FORMAT_HTML, 'evalgridid' => 0],
-                $defaultvals
-            )
+                array_merge(
+                        ['descriptionformat' => FORMAT_HTML, 'evalgridid' => 0],
+                        $defaultvals
+                )
         );
         $defaultgrid = evaluation_grid_entity::get_default_grid();
         $this->defaultgridid = $defaultgrid->get('id');
@@ -96,11 +94,11 @@ class data_importer extends \tool_importer\data_importer {
             $grid = evaluation_grid_entity::get_record(array('idnumber' => $trimmedval));
             if ($checkotherentities && !$grid) {
                 throw new importer_exception('situation:gridnotfound',
-                    $rowindex,
-                    'GrilleEval',
-                    'local_cveteval',
-                    $trimmedval,
-                    log_levels::LEVEL_ERROR);
+                        $rowindex,
+                        'GrilleEval',
+                        'local_cveteval',
+                        $trimmedval,
+                        log_levels::LEVEL_ERROR);
             }
         }
     }
@@ -120,30 +118,30 @@ class data_importer extends \tool_importer\data_importer {
 
         foreach ($assessorsemails as $email) {
             utils::check_user_exists_or_multiple($email, $rowindex, 'situation:multipleuserfound', 'situation:usernotfound',
-                'Evaluateur');
+                    'Evaluateur');
             try {
                 core_user::get_user_by_email($email, '*', null, MUST_EXIST);
             } catch (moodle_exception $e) {
                 $message = core_user::get_user_by_email($email) ? 'situation:multipleuserfound' : 'situation:usernotfound';
                 throw new importer_exception($message,
-                    $rowindex,
-                    'Evaluateurs',
-                    'local_cveteval',
-                    $email,
-                    log_levels::LEVEL_ERROR);
+                        $rowindex,
+                        'Evaluateurs',
+                        'local_cveteval',
+                        $email,
+                        log_levels::LEVEL_ERROR);
             }
         }
         foreach ($appraisersemails as $email) {
             utils::check_user_exists_or_multiple($email, $rowindex, 'situation:multipleuserfound', 'situation:usernotfound',
-                'Observateurs');
+                    'Observateurs');
         }
         if (in_array($row['idnumber'], $this->shortnameuniqueids)) {
             throw new importer_exception('situation:duplicateshortname',
-                $rowindex,
-                'Nom court',
-                'local_cveteval',
-                $row['idnumber'],
-                log_levels::LEVEL_ERROR);
+                    $rowindex,
+                    'Nom court',
+                    'local_cveteval',
+                    $row['idnumber'],
+                    log_levels::LEVEL_ERROR);
         }
         $this->shortnameuniqueids[] = $row['idnumber'];
 
@@ -162,7 +160,7 @@ class data_importer extends \tool_importer\data_importer {
         $appraisers = $row['appraisers'];
         $situationscolumns = array_keys(situation_entity::properties_definition());
         $row = array_intersect_key(array_merge($this->defaultvalues, $row),
-            array_flip($situationscolumns));
+                array_flip($situationscolumns));
         $record = (object) $row;
         // Get default evaluation grid.
         $record->evalgridid = empty($row['evalgridid']) ? $this->defaultgridid : $row['evalgridid'];
@@ -184,7 +182,7 @@ class data_importer extends \tool_importer\data_importer {
      * @param $emails
      * @param $clinicalsituationid
      * @param $roletype
-     * @throws \coding_exception
+     * @throws coding_exception
      * @throws dml_exception
      */
     public function add_roles($emails, $clinicalsituationid, $roletype) {
@@ -193,13 +191,13 @@ class data_importer extends \tool_importer\data_importer {
             $user = core_user::get_user_by_email($email);
 
             $roledef = [
-                'userid' => $user->id,
-                'clsituationid' => $clinicalsituationid,
-                'type' => $roletype
+                    'userid' => $user->id,
+                    'clsituationid' => $clinicalsituationid,
+                    'type' => $roletype
             ];
             if (!role_entity::record_exists_select("userid = :userid AND clsituationid=:clsituationid AND type=:type", $roledef)) {
                 $record = new role_entity(0,
-                    (object) $roledef
+                        (object) $roledef
                 );
                 $record->save();
                 $this->rolescount++;

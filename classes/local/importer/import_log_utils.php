@@ -20,9 +20,7 @@ use core_table\local\filter\filter;
 use local_cltools\local\filter\enhanced_filterset;
 use local_cltools\local\filter\numeric_comparison_filter;
 use local_cltools\output\table\entity_table_renderable;
-
-defined('MOODLE_INTERNAL') || die();
-
+use local_cveteval\local\persistent\import_log\table;
 
 /**
  * Import log utils
@@ -34,22 +32,22 @@ defined('MOODLE_INTERNAL') || die();
 class import_log_utils {
 
     public static function get_log_table($importid) {
-        $entitylist = new \local_cveteval\local\persistent\import_log\table();
+        $entitylist = new table();
 
         $filterset = new enhanced_filterset(
-            [
-                'importid' => (object)
                 [
-                    'filterclass' => numeric_comparison_filter::class,
-                    'required' => true
+                        'importid' => (object)
+                        [
+                                'filterclass' => numeric_comparison_filter::class,
+                                'required' => true
+                        ]
                 ]
-            ]
         );
         $filterset->set_join_type(filter::JOINTYPE_ALL);
         $filterset->add_filter_from_params(
-            'importid', // Field name.
-            filter::JOINTYPE_ALL,
-            [['direction' => '=', 'value' => $importid]]
+                'importid', // Field name.
+                filter::JOINTYPE_ALL,
+                [['direction' => '=', 'value' => $importid]]
         );
         $entitylist->set_filterset($filterset);
 

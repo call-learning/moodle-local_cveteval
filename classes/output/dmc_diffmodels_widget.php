@@ -18,9 +18,9 @@ namespace local_cveteval\output;
 use local_cveteval\local\datamigration\data_migration_utils;
 use local_cveteval\local\persistent\history;
 use local_cveteval\output\helpers\output_helper;
+use pix_icon;
 use renderer_base;
-
-defined('MOODLE_INTERNAL') || die();
+use stdClass;
 
 /**
  * Renderable for datamigration controller
@@ -36,7 +36,7 @@ class dmc_diffmodels_widget extends dmc_entity_renderer_base {
         $stepdata = $this->dmc->get_step_data();
         history\entity::disable_history();
         $context->entitieswithcontext =
-            $this->get_entity_step_by_context(self::ALL_CONTEXTS, $stepdata, $output);
+                $this->get_entity_step_by_context(self::ALL_CONTEXTS, $stepdata, $output);
         return $context;
     }
 
@@ -47,18 +47,18 @@ class dmc_diffmodels_widget extends dmc_entity_renderer_base {
                 $baseclassname = data_migration_utils::get_base_class($entityclass);
                 $currententity = $entitiescontext[$baseclassname] ?? null;
                 if (empty($currententity)) {
-                    $currententity = new \stdClass();
+                    $currententity = new stdClass();
                     $currententity->entityname = get_string("$baseclassname:entity", 'local_cveteval');
                     $currententity->entitytype = $baseclassname;
                     $currententity->contexts = array_fill_keys($contexts, null);
                 }
                 if (empty($currententity->contexts[$context])) {
-                    $contextinfo = new \stdClass();
+                    $contextinfo = new stdClass();
                     $contextinfo->contextname = get_string("dmc:$context", "local_cveteval");
                     $contextinfo->contexttype = $context;
                     $contextinfo->contextstatus = $context == 'matchedentities' ? 'matched' : 'unmatched';
-                    $icon = new \pix_icon($contextinfo->contextstatus == 'matched' ? 'e/tick' : 'i/ne_red_mark',
-                        get_string('dmc:' . $contextinfo->contextstatus, 'local_cveteval'));
+                    $icon = new pix_icon($contextinfo->contextstatus == 'matched' ? 'e/tick' : 'i/ne_red_mark',
+                            get_string('dmc:' . $contextinfo->contextstatus, 'local_cveteval'));
                     $contextinfo->contextstatusicon = $output->render($icon);
                     $contextinfo->contextstatusclass = ($context == 'matchedentities') ? 'success' : 'warning';
                     $contextinfo->entities = [];
@@ -68,7 +68,8 @@ class dmc_diffmodels_widget extends dmc_entity_renderer_base {
                 foreach ($matchs as $entityoriginid => $entitydestid) {
                     $exportentitymethod = "export_entity_" . $baseclassname;
                     if (method_exists(output_helper::class, $exportentitymethod)) {
-                        $currententity->contexts[$context]->entities[] = output_helper::$exportentitymethod($entitydestid ? $entitydestid : $entityoriginid);
+                        $currententity->contexts[$context]->entities[] =
+                                output_helper::$exportentitymethod($entitydestid ? $entitydestid : $entityoriginid);
                         $currententity->contexts[$context]->entitiescount = count($currententity->contexts[$context]->entities);
                     }
                 }

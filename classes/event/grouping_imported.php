@@ -26,8 +26,6 @@ namespace local_cveteval\event;
 
 use core\event\base;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Class Grouping imported
  *
@@ -75,9 +73,9 @@ class grouping_imported extends base {
         $filename = s($this->other['filename']);
         $error = s($this->other['error']);
         return "CSV User data has been imported ({$filename})" . ($error ?
-                " and the following error occured: ($error)" :
-                ""
-            );
+                        " and the following error occured: ($error)" :
+                        ""
+                );
     }
 
     /**

@@ -26,6 +26,7 @@
 require_once(__DIR__ . '/../../../config.php');
 global $CFG, $OUTPUT, $PAGE;
 $importid = required_param('importid', PARAM_INT);
+require_login();
 require_capability('local/cveteval:manageentities', context_system::instance());
 
 $PAGE->set_url('/local/cveteval/manage/index.php', ['importid' => $importid]);

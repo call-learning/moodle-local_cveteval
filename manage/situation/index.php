@@ -33,6 +33,7 @@ use local_cveteval\local\persistent\history\entity as history_entity;
 
 global $CFG, $OUTPUT, $PAGE;
 $importid = required_param('importid', PARAM_INT);
+require_login();
 require_capability('local/cveteval:manageentities', context_system::instance());
 
 history_entity::set_current_id($importid);

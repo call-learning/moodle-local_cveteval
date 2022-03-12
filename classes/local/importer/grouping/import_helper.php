@@ -23,7 +23,6 @@
  */
 
 namespace local_cveteval\local\importer\grouping;
-defined('MOODLE_INTERNAL') || die();
 
 use local_cveteval\event\grouping_imported;
 use local_cveteval\local\importer\base_helper;
@@ -49,9 +48,20 @@ class import_helper extends base_helper {
      * @throws importer_exception
      */
     public function __construct($csvpath, $importid, $filename = '', $delimiter = 'semicolon', $encoding = 'utf-8',
-        $progressbar = null) {
+            $progressbar = null) {
         parent::__construct($csvpath, $importid, $filename, $delimiter, $encoding, $progressbar);
         $this->importeventclass = grouping_imported::class;
+    }
+
+    /**
+     * To email
+     *
+     * @param $value
+     * @param $columnname
+     * @return string
+     */
+    public static function to_email($value, $columnname) {
+        return clean_param(trim($value), PARAM_EMAIL);
     }
 
     /**
@@ -87,10 +97,10 @@ class import_helper extends base_helper {
      */
     protected function create_transformer() {
         $transformdef = array(
-            'Identifiant' =>
-                array(
-                    array('to' => 'email', 'transformcallback' => self::class . '::to_email')
-                ),
+                'Identifiant' =>
+                        array(
+                                array('to' => 'email', 'transformcallback' => self::class . '::to_email')
+                        ),
         );
 
         $transformer = new standard($transformdef);
@@ -105,16 +115,6 @@ class import_helper extends base_helper {
     }
 
     /**
-     * To email
-     *
-     * @param $value
-     * @param $columnname
-     * @return string
-     */
-    public static function to_email($value, $columnname) {
-        return clean_param(trim($value), PARAM_EMAIL);
-    }
-    /**
      * Create processor
      *
      * @param csv_data_source $csvsource
@@ -124,22 +124,24 @@ class import_helper extends base_helper {
      * @param $importid
      */
     protected function create_processor($csvsource, $transformer, $dataimporter,
-        $progressbar, $importid) {
+            $progressbar, $importid) {
         return new class($csvsource,
-            $transformer,
-            $dataimporter,
-            $progressbar,
-            $importid
+                $transformer,
+                $dataimporter,
+                $progressbar,
+                $importid
         ) extends processor {
             /**
              * Get statistics in a displayable (HTML) format
+             *
              * @return string
              */
             public function get_displayable_stats() {
                 return
-                    get_string('grouping:stats', 'local_cveteval',
-                        ['groups' => $this->importer->groupcount, 'groupassignments' => $this->importer->groupassignmentcount ]
-                    );
+                        get_string('grouping:stats', 'local_cveteval',
+                                ['groups' => $this->importer->groupcount,
+                                        'groupassignments' => $this->importer->groupassignmentcount]
+                        );
             }
         };
     }

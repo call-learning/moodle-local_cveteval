@@ -17,11 +17,11 @@
 namespace local_cveteval\output;
 
 use local_cveteval\local\datamigration\data_migration_controller;
+use moodle_url;
 use renderable;
 use renderer_base;
-use stdClass;
-
-defined('MOODLE_INTERNAL') || die();
+use single_button;
+use templatable;
 
 /**
  * Renderable for datamigration controller
@@ -30,15 +30,17 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2020 CALL Learning - Laurent David laurent@call-learning.fr
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class dmc_final_widget implements renderable, \templatable {
+class dmc_final_widget implements renderable, templatable {
     private $navigation = null;
+
     public function __construct(data_migration_controller $dmc) {
         $this->navigation = new dmc_step_navigation($dmc);
     }
+
     public function export_for_template(renderer_base $output) {
         $context = $this->navigation->export_for_template($output);
-        $sb = new \single_button(new \moodle_url('/local/cveteval/admin/datamigration/index.php'), get_string('continue'));
-        $context->continuebutton  = $sb->export_for_template($output);
+        $sb = new single_button(new moodle_url('/local/cveteval/admin/datamigration/index.php'), get_string('continue'));
+        $context->continuebutton = $sb->export_for_template($output);
         return $context;
     }
 }

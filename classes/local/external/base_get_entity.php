@@ -23,7 +23,6 @@
  */
 
 namespace local_cveteval\local\external;
-defined('MOODLE_INTERNAL') || die();
 
 use context_system;
 use external_api;
@@ -40,13 +39,13 @@ use external_value;
  */
 abstract class base_get_entity extends external_api {
     const MOBILE_ENTITY_MATCHER = [
-        'appr_crit' => 'appraisal_criterion',
-        'appraisal' => 'appraisal',
-        'clsituation' => 'situation',
-        'evalplan' => 'planning',
-        'criterion' => 'criterion',
-        'group_assign' => 'group_assignment',
-        'role' => 'role'
+            'appr_crit' => 'appraisal_criterion',
+            'appraisal' => 'appraisal',
+            'clsituation' => 'situation',
+            'evalplan' => 'planning',
+            'criterion' => 'criterion',
+            'group_assign' => 'group_assignment',
+            'role' => 'role'
     ];
 
     /**
@@ -88,11 +87,11 @@ abstract class base_get_entity extends external_api {
      */
     public static function get_parameters() {
         return new external_function_parameters(
-            array(
-                'query' => new external_value(PARAM_NOTAGS, 'query as json {field:value, field:value}',
-                    VALUE_DEFAULT,
-                    '{}'),
-            )
+                array(
+                        'query' => new external_value(PARAM_NOTAGS, 'query as json {field:value, field:value}',
+                                VALUE_DEFAULT,
+                                '{}'),
+                )
         );
     }
 

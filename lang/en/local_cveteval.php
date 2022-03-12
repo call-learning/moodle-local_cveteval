@@ -39,11 +39,13 @@ $string['appraiser'] = 'Appraiser';
 $string['assess'] = 'Assess "{$a}"';
 $string['assessment'] = 'Assessment';
 $string['cachedef_appraisals'] = 'Cache for appraisal retrieval';
-$string['cleanup:confirm:model'] = 'This will cleanup all table for CompetVetEval, like situations list but also all apppraisal done so far and data will not be recoverable. Are you sure ?';
-$string['cleanup:confirm:userdata'] = 'This will cleanup all apppraisals done so far (user data) but keep the model. Data will not be recoverable. Are you sure ?';
-$string['cleanup:details']  = 'Cleanup the import {$a->idnumber} : {$a->comments}';
+$string['cleanup:confirm:model'] =
+        'This will cleanup all table for CompetVetEval, like situations list but also all apppraisal done so far and data will not be recoverable. Are you sure ?';
+$string['cleanup:confirm:userdata'] =
+        'This will cleanup all apppraisals done so far (user data) but keep the model. Data will not be recoverable. Are you sure ?';
+$string['cleanup:details'] = 'Cleanup the import {$a->idnumber} : {$a->comments}';
 $string['cleanup:model'] = 'Remove a specific model';
-$string['cleanup:selectimportid']  = 'Select Import to cleanup';
+$string['cleanup:selectimportid'] = 'Select Import to cleanup';
 $string['cleanup:userdata'] = 'Cleanup user data from a specific import';
 $string['comment'] = 'Comment';
 $string['commentformat'] = 'Comment Format';
@@ -88,7 +90,8 @@ $string['dmcstep:diffmodels'] = 'Show differences';
 $string['dmcstep:userdatamigration'] = 'Migration of user data';
 $string['dmc:unmatchedentities'] = 'Entities present only in the new model';
 $string['dmc:unmatched'] = 'Unmatched';
-$string['dmc:welcomemessage'] = 'Welcome to the data migration wizard. This will help you to copy user data from one model (or importation) to the other. Some data will be easily matched but some will need you to decide what to do.';
+$string['dmc:welcomemessage'] =
+        'Welcome to the data migration wizard. This will help you to copy user data from one model (or importation) to the other. Some data will be easily matched but some will need you to decide what to do.';
 $string['dmc:congratsmessage'] = 'The migration is finished. Click on continue to start another one.';
 $string['download:model'] = 'Download Model';
 $string['download:userdata'] = 'Download User data';
@@ -102,7 +105,8 @@ $string['evaluation:grade'] = 'Grade';
 $string['evaluationgrid:default'] = 'Default Evaluation Grid';
 $string['evaluation_grid:entity'] = 'Evaluation Grid';
 $string['evaluation_gridfile'] = 'Evaluation grid';
-$string['evaluation_gridfile_help'] = '(Optional)A list of evaluation criteria in CSV format. The file must contain the following headers <pre>"Evaluation Grid Id";"Criterion Id";"Criterion Parent Id";"Criterion Label"</pre>';
+$string['evaluation_gridfile_help'] =
+        '(Optional)A list of evaluation criteria in CSV format. The file must contain the following headers <pre>"Evaluation Grid Id";"Criterion Id";"Criterion Parent Id";"Criterion Label"</pre>';
 $string['evaluation_grid:idnumber'] = 'Evaluation Identifier';
 $string['evaluation_grid:name'] = 'Evaluation Name';
 $string['evaluation_grid:plural'] = 'Evaluation Grids';
@@ -119,11 +123,13 @@ $string['grades:export'] = 'Export Grades';
 $string['grade:value'] = 'Grade: {$a}';
 $string['group_assignment:entity'] = 'Group Assignment';
 $string['group:entity'] = 'Group';
-$string['groupingfile_help'] = 'A list of grouping in CSV format. The file must contain the following headers <pre>"Nom de l\'étudiant";"Prénom";"Identifiant";"Groupement 1"</pre>';
+$string['groupingfile_help'] =
+        'A list of grouping in CSV format. The file must contain the following headers <pre>"Nom de l\'étudiant";"Prénom";"Identifiant";"Groupement 1"</pre>';
 $string['groupingfile'] = 'List of student grouping';
 $string['grouping:stats'] = 'Imported group : {$a->groups}, group assignments: {$a->groupassignments}';
 $string['grouping:usernotfound'] = 'Grouping user not found {$a}';
-$string['headingfile_help'] = 'You can import situation, plannning and groups here. All files except the evaluation grid are manadatory here .<br>Beware all files must match. For example: <ul> <li>(Situation) - GrilleEval => (Grille Evaluation) - Evaluation Grid Id</li> <li>(Planning) - Groupe XXX => (Groupes) - Un des groupes dans les colonnes de Groupement</li> <li>(Planning) - Situation (nom court) => (Situation) - Nom court</li> </ul> Any mismatch in the files can lead to malfunctionning applications.';
+$string['headingfile_help'] =
+        'You can import situation, plannning and groups here. All files except the evaluation grid are manadatory here .<br>Beware all files must match. For example: <ul> <li>(Situation) - GrilleEval => (Grille Evaluation) - Evaluation Grid Id</li> <li>(Planning) - Groupe XXX => (Groupes) - Un des groupes dans les colonnes de Groupement</li> <li>(Planning) - Situation (nom court) => (Situation) - Nom court</li> </ul> Any mismatch in the files can lead to malfunctionning applications.';
 $string['headingfile'] = 'Import files';
 $string['headingfile_link'] = "http://pedagogie.vetagro-sup.fr/Pages/CompetVet/co/App_Moodle.html";
 $string['history:tools'] = 'Tools';
@@ -160,25 +166,28 @@ $string['import:selectimport'] = 'Select and import';
 $string['import:situation'] = 'Situation';
 $string['import:start'] = 'Start import';
 $string['list'] = 'List';
-$string['log:fieldname'] =  'Field';
-$string['log:importid'] =  'ID';
-$string['log:information'] =  'Information';
+$string['log:fieldname'] = 'Field';
+$string['log:importid'] = 'ID';
+$string['log:information'] = 'Information';
 $string['log:level:error'] = 'Error';
 $string['log:level:info'] = 'Info';
-$string['log:level'] =  'Severity';
+$string['log:level'] = 'Severity';
 $string['log:level:warning'] = 'Warning';
-$string['log:linenumber'] =  'Line';
-$string['log:origin'] =  'File';
-$string['mysituations:intro'] = 'This is the list of situations you should be able to evaluate. Please click on a row to see a list of appraisals / students to assess/evaluate.';
+$string['log:linenumber'] = 'Line';
+$string['log:origin'] = 'File';
+$string['mysituations:intro'] =
+        'This is the list of situations you should be able to evaluate. Please click on a row to see a list of appraisals / students to assess/evaluate.';
 $string['mysituations'] = 'My situations';
 $string['mystudents'] = 'My students';
 $string['name'] = 'Full Name';
 $string['otherstudents'] = 'Other students';
 $string['planning:clsituationid'] = 'Clinical situation';
-$string['planning:dateoverlaps'] = 'Planning date overlaps : on line ({$a->prevrowindex}) the range {$a->previousstartdate} - {$a->previousenddate} matches current {$a->currentstartdate} - {$a->currentenddate}.';
+$string['planning:dateoverlaps'] =
+        'Planning date overlaps : on line ({$a->prevrowindex}) the range {$a->previousstartdate} - {$a->previousenddate} matches current {$a->currentstartdate} - {$a->currentenddate}.';
 $string['planning:endtime'] = 'End time';
 $string['planning:entity'] = 'Evaluation Planning';
-$string['planningfile_help'] = 'A list of planning in CSV format. The file must contain the following headers <pre>"Date début";"Date fin";"Groupe XX";"Groupe YY"</pre>';
+$string['planningfile_help'] =
+        'A list of planning in CSV format. The file must contain the following headers <pre>"Date début";"Date fin";"Groupe XX";"Groupe YY"</pre>';
 $string['planningfile'] = 'List of planning';
 $string['planning:groupdoesnotexist'] = 'Group {$a} does not exist.';
 $string['planning:groupid'] = 'Group ID';
@@ -207,7 +216,8 @@ $string['settings:manage_situations'] = 'Manage situations';
 $string['situation:entity'] = 'Clinical situation';
 $string['situation:evalgridid'] = 'Linked Evaluation Grid';
 $string['situation:expectedevalsnb'] = '#Eval';
-$string['situationfile_help'] = 'A list of situation in CSV format. The file must contain the following headers <pre>"Description";"Nom";"Nom court";"ResponsableUE";"Responsable";"Evaluateurs";"Observateurs";"Appreciations"; "GrilleEval";"Etiquettes"</pre>';
+$string['situationfile_help'] =
+        'A list of situation in CSV format. The file must contain the following headers <pre>"Description";"Nom";"Nom court";"ResponsableUE";"Responsable";"Evaluateurs";"Observateurs";"Appreciations"; "GrilleEval";"Etiquettes"</pre>';
 $string['situationfile'] = 'List of situations';
 $string['situation:gridnotfound'] = 'Grid not found {$a}.';
 $string['situation:groupname'] = 'Group name';

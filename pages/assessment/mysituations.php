@@ -45,7 +45,7 @@ $situationnode = $PAGE->navigation->add(
     new moodle_url('/local/cveteval/pages/assessment/mysituations.php'),
     navigation_node::TYPE_CONTAINER);
 $situationnode->make_active();
-/* @var core_renderer $OUTPUT */
+/* @var core_renderer $OUTPUT .*/
 if (has_capability('local/cveteval:exportgrades', context_system::instance())) {
     $download = $OUTPUT->download_dataformat_selector(
         get_string('grades:export', 'local_cveteval'),
@@ -61,7 +61,7 @@ $entitylist = assessment_utils::get_mysituations_list();
 $renderable = new entity_table_renderable($entitylist);
 
 $renderer = $PAGE->get_renderer('local_cltools');
-/* @var entity_table_renderable entity table */
+/* @var entity_table_renderable entity table .*/
 echo $renderer->render($renderable);
 
 echo $OUTPUT->footer();

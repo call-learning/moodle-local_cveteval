@@ -24,11 +24,8 @@
 
 namespace local_cveteval\local\importer\planning;
 
-use local_cveteval\local\persistent\group\entity as group_entity;
 use tool_importer\field_types;
 use tool_importer\local\exceptions\importer_exception;
-
-defined('MOODLE_INTERNAL') || die();
 
 class csv_data_source extends \tool_importer\local\source\csv_data_source {
     /**
@@ -47,14 +44,14 @@ class csv_data_source extends \tool_importer\local\source\csv_data_source {
 
         if (!$columns) {
             $additionalcolumns = [
-                'Date début' => [
-                    'type' => field_types::TYPE_TEXT,
-                    'required' => true
-                ],
-                'Date fin' => [
-                    'type' => field_types::TYPE_TEXT,
-                    'required' => true
-                ]
+                    'Date début' => [
+                            'type' => field_types::TYPE_TEXT,
+                            'required' => true
+                    ],
+                    'Date fin' => [
+                            'type' => field_types::TYPE_TEXT,
+                            'required' => true
+                    ]
             ];
             if (!$this->csvimporter) {
                 throw new importer_exception('planning:nocolumnsdefined', 0, '', 'local_cveteval');
@@ -67,10 +64,10 @@ class csv_data_source extends \tool_importer\local\source\csv_data_source {
             $allgroups = array_slice($allcolumns, 2);
             foreach ($allgroups as $colname) {
                 $additionalcolumns[$colname] =
-                    [
-                        'type' => field_types::TYPE_TEXT,
-                        'required' => true
-                    ];
+                        [
+                                'type' => field_types::TYPE_TEXT,
+                                'required' => true
+                        ];
                 $this->groupcolumns[] = $colname;
             }
             $columns = $additionalcolumns;
@@ -82,6 +79,7 @@ class csv_data_source extends \tool_importer\local\source\csv_data_source {
      * Initialise the csv datasource.
      *
      * This will initialise the current source. This has to be called before we call current or rewind.
+     *
      * @param mixed|null $options additional importer options
      * @throws importer_exception
      */

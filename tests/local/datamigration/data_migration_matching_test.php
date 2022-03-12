@@ -369,7 +369,7 @@ class data_migration_matching_test extends \advanced_testcase {
     }
 
     /**
-     * The new and old eval grid.
+     * The new and old eval grid matched.
      */
     public function test_match_evaluation_grid() {
         $smatcher = new evaluation_grid_matcher($this->dm);
@@ -382,6 +382,8 @@ class data_migration_matching_test extends \advanced_testcase {
     }
 
     /**
+     * Test that group is matched
+     *
      * Except Group2bis which is not in the new list, and Group3 that appears in the new dest, Group 1 and 2 are matched.
      */
     public function test_match_group() {
@@ -394,6 +396,11 @@ class data_migration_matching_test extends \advanced_testcase {
         $this->assert_entities_name_matches(['Group 2bis'], $orphanedgroup, group_entity::class, "name");
     }
 
+    /**
+     * Test that group assignment matched
+     *
+     * @return void
+     */
     public function test_match_group_assignment() {
         $smatcher = new group_assignment_matcher($this->dm);
         $matchedgroupa = $smatcher->get_matched_origin_entities();
@@ -413,6 +420,11 @@ class data_migration_matching_test extends \advanced_testcase {
         $this->assertEmpty($orphanedgroupa);
     }
 
+    /**
+     * Test that planning matched
+     *
+     * @return void
+     */
     public function test_match_planning() {
         $smatcher = new planning_matcher($this->dm);
         $matchedplanning = $smatcher->get_matched_origin_entities();
@@ -436,6 +448,11 @@ class data_migration_matching_test extends \advanced_testcase {
         );
     }
 
+    /**
+     * Test that role matched
+     *
+     * @return void
+     */
     public function test_match_role() {
         $smatcher = new role_matcher($this->dm);
         $matchedroles = $smatcher->get_matched_origin_entities();
@@ -456,7 +473,7 @@ class data_migration_matching_test extends \advanced_testcase {
     /**
      * Get ID array
      *
-     * @param $entityarray
+     * @param array $entityarray
      * @return array
      */
     protected function get_field_from_entities($entityarray, $fieldname = 'idnumber') {
@@ -471,7 +488,7 @@ class data_migration_matching_test extends \advanced_testcase {
     /**
      * Get ID array
      *
-     * @param $entityarray
+     * @param array $entityarray
      * @return array
      */
     protected function get_field_from_entities_id($entityidarray, $entityclass, $fieldname = 'idnumber') {
@@ -486,6 +503,15 @@ class data_migration_matching_test extends \advanced_testcase {
         );
     }
 
+    /**
+     * Get matched name
+     *
+     * @param string $matchedname
+     * @param array $entitiesidarray
+     * @param string $entityclassname
+     * @param string $fieldname
+     * @return void
+     */
     public function assert_entities_name_matches($matchedname, $entitiesidarray, $entityclassname, $fieldname = 'idnumber') {
         $this->assertEquals($matchedname,
             $this->get_field_from_entities_id($entitiesidarray, $entityclassname, $fieldname)

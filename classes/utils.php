@@ -24,7 +24,6 @@
 
 namespace local_cveteval;
 
-use behat_util;
 use coding_exception;
 use context_system;
 use core\event\webservice_token_created;
@@ -34,18 +33,17 @@ use dml_exception;
 use grade_scale;
 use html_writer;
 use lang_string;
+use local_cveteval\local\persistent\history\entity;
 use local_cveteval\local\persistent\model_with_history_util;
 use local_cveteval\task\upload_default_criteria_grid;
 use moodle_exception;
 use moodle_url;
-use phpunit_util;
 use progress_bar;
 use stdClass;
+use testing_util;
 use tool_importer\local\exceptions\importer_exception;
 use tool_importer\local\log_levels;
 use webservice;
-
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * Class utils
@@ -135,8 +133,7 @@ class utils {
      * @throws coding_exception
      */
     public static function create_update_default_criteria_grid() {
-        if ((class_exists('phpunit_util') && phpunit_util::is_test_site())||
-                (class_exists('behat_util') && behat_util::is_test_site())) {
+        if (testing_util::is_test_site()) {
             upload_default_criteria_grid::create_default_grid();
         } else {
             $task = new upload_default_criteria_grid();
@@ -470,6 +467,44 @@ class utils {
     }
 
     /**
+     * Cleanup all models
+     *
+     * @param int $importid
+     * @param progress_bar|null $progressbar
+     */
+    public static function cleanup_model($importid, $progressbar = null) {
+        local\persistent\history\entity::set_current_id($importid, true);
+        // Cleanup user data.
+        self::cleanup_userdata($importid, $progressbar);
+        // Cleanup model.
+        foreach (model_with_history_util::get_all_entity_class_with_history() as $persistent) {
+            $persistencount = $persistent::count_records();
+            foreach ($persistent::get_records() as $record) {
+                $table = $persistent::TABLE;
+                $message = "Deleting records from {$table}...";
+                $currentcount++;
+                if (defined('CLI_SCRIPT') && CLI_SCRIPT == true) {
+                    cli_writeln($message);
+                } else {
+                    if ($progressbar) {
+                        $progressbar->update($currentcount++, $persistencount, $persistent::TABLE);
+                    }
+                }
+                $record->delete();
+            }
+            $currentcount = 0;
+        }
+        local\persistent\history\entity::reset_current_id();
+        $history = new local\persistent\history\entity($importid);
+        $history->delete();
+        // Cleanup logs.
+        foreach (local\persistent\import_log\entity::get_records(['importid' => $importid]) as $ilog) {
+            $ilog->delete();
+        }
+
+    }
+
+    /**
      * Cleanup all user data
      *
      * @param int $importid
@@ -512,44 +547,6 @@ class utils {
                 $appraisal->delete();
             }
         }
-    }
-
-    /**
-     * Cleanup all models
-     *
-     * @param int $importid
-     * @param progress_bar|null $progressbar
-     */
-    public static function cleanup_model($importid, $progressbar = null) {
-        local\persistent\history\entity::set_current_id($importid, true);
-        // Cleanup user data.
-        self::cleanup_userdata($importid, $progressbar);
-        // Cleanup model.
-        foreach (model_with_history_util::get_all_entity_class_with_history() as $persistent) {
-            $persistencount = $persistent::count_records();
-            foreach ($persistent::get_records() as $record) {
-                $table = $persistent::TABLE;
-                $message = "Deleting records from {$table}...";
-                $currentcount++;
-                if (defined('CLI_SCRIPT') && CLI_SCRIPT == true) {
-                    cli_writeln($message);
-                } else {
-                    if ($progressbar) {
-                        $progressbar->update($currentcount++, $persistencount, $persistent::TABLE);
-                    }
-                }
-                $record->delete();
-            }
-            $currentcount = 0;
-        }
-        local\persistent\history\entity::reset_current_id();
-        $history = new local\persistent\history\entity($importid);
-        $history->delete();
-        // Cleanup logs.
-        foreach (\local_cveteval\local\persistent\import_log\entity::get_records(['importid' => $importid]) as $ilog) {
-            $ilog->delete();
-        }
-
     }
 
     /**
@@ -606,6 +603,7 @@ class utils {
 
     /**
      * Setup page navigation for entity managaement
+     *
      * @param $importid
      * @return void
      * @throws coding_exception
@@ -615,7 +613,7 @@ class utils {
         $PAGE->navbar->add(
                 get_string('import:list', 'local_cveteval'),
                 new moodle_url('/local/cveteval/admin/importindex.php'));
-        $import = new \local_cveteval\local\persistent\history\entity($importid);
+        $import = new entity($importid);
         $PAGE->navbar->add(
                 $import->get('idnumber'),
                 new moodle_url('/local/cveteval/manage/index.php', ['importid' => $importid]));

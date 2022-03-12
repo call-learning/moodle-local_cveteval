@@ -23,7 +23,6 @@
  */
 
 namespace local_cveteval\local\importer\planning;
-defined('MOODLE_INTERNAL') || die();
 
 use DateTime;
 use local_cveteval\event\planning_imported;
@@ -48,7 +47,7 @@ class import_helper extends base_helper {
      * @throws importer_exception
      */
     public function __construct($csvpath, $importid, $filename = '', $delimiter = 'semicolon', $encoding = 'utf-8',
-        $progressbar = null) {
+            $progressbar = null) {
         parent::__construct($csvpath, $importid, $filename, $delimiter, $encoding, $progressbar);
         $this->importeventclass = planning_imported::class;
     }
@@ -87,14 +86,14 @@ class import_helper extends base_helper {
     protected function create_transformer() {
 
         $transformdef = array(
-            'Date début' =>
-                array(
-                    array('to' => 'starttime', 'transformcallback' => self::class . '::totimestamp')
-                ),
-            'Date fin' =>
-                array(
-                    array('to' => 'endtime', 'transformcallback' => self::class . '::totimestamp')
-                ),
+                'Date début' =>
+                        array(
+                                array('to' => 'starttime', 'transformcallback' => self::class . '::totimestamp')
+                        ),
+                'Date fin' =>
+                        array(
+                                array('to' => 'endtime', 'transformcallback' => self::class . '::totimestamp')
+                        ),
         );
 
         $transformer = new standard($transformdef);
@@ -118,12 +117,12 @@ class import_helper extends base_helper {
      * @param $importid
      */
     protected function create_processor($csvsource, $transformer, $dataimporter,
-        $progressbar, $importid) {
+            $progressbar, $importid) {
         return new class($csvsource,
-            $transformer,
-            $dataimporter,
-            $progressbar,
-            $importid
+                $transformer,
+                $dataimporter,
+                $progressbar,
+                $importid
         ) extends processor {
             /**
              * Get statistics in a displayable (HTML) format
@@ -132,9 +131,10 @@ class import_helper extends base_helper {
              */
             public function get_displayable_stats() {
                 return
-                    get_string('planning:stats', 'local_cveteval',
-                        ['plannings' => $this->importer->planningcount, 'planningevents' => $this->importer->planningeventscount]
-                    );
+                        get_string('planning:stats', 'local_cveteval',
+                                ['plannings' => $this->importer->planningcount,
+                                        'planningevents' => $this->importer->planningeventscount]
+                        );
             }
         };
     }

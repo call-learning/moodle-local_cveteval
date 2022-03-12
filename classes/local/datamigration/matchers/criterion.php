@@ -20,8 +20,6 @@ use core\persistent;
 use local_cveteval\local\persistent\criterion\entity;
 use local_cveteval\local\persistent\history\entity as history_entity;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Matcher implementation for evaluation_grid
  *
@@ -30,6 +28,10 @@ defined('MOODLE_INTERNAL') || die();
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class criterion extends base {
+
+    public static function get_entity() {
+        return entity::class;
+    }
 
     /**
      * Try to match a given model/entity type
@@ -63,14 +65,10 @@ class criterion extends base {
             $params['parentid'] = $oldparententity->get('id');
         }
         $criterion = entity::get_records($params);
-        if(count($criterion) >= 2) {
+        if (count($criterion) >= 2) {
             history_entity::set_current_id($this->dm->get_origin_id(), true);
             $criterion = entity::get_records($params);
         }
         return $criterion;
-    }
-
-    public static function get_entity() {
-        return entity::class;
     }
 }

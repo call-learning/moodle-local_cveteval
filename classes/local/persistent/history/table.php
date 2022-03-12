@@ -23,11 +23,12 @@
  */
 
 namespace local_cveteval\local\persistent\history;
-defined('MOODLE_INTERNAL') || die();
 
 use coding_exception;
 use local_cltools\local\crud\entity_table;
+use moodle_exception;
 use moodle_url;
+use pix_icon;
 
 /**
  * Persistent import log
@@ -58,22 +59,24 @@ class table extends entity_table {
      * @param $row
      * @return string
      * @throws coding_exception
-     * @throws \moodle_exception
+     * @throws moodle_exception
      */
     protected function col_tools($row) {
         global $OUTPUT, $CFG, $PAGE;
         $returnurl = new moodle_url('/local/cveteval/admin/importindex.php');
-        $url = new moodle_url($CFG->wwwroot . '/local/cveteval/admin/importdownload.php', ['importid' => $row->id, 'returnurl' => $returnurl]);
-        $buttons = $OUTPUT->action_icon($url, new \pix_icon('t/download', get_string('download:model', 'local_cveteval')));
-        $url = new moodle_url($CFG->wwwroot . '/local/cveteval/manage/index.php', ['importid' => $row->id, 'returnurl' => $returnurl]);
-        $buttons .= $OUTPUT->action_icon($url, new \pix_icon('t/edit', get_string('cveteval:manageentities', 'local_cveteval')));
+        $url = new moodle_url($CFG->wwwroot . '/local/cveteval/admin/importdownload.php',
+                ['importid' => $row->id, 'returnurl' => $returnurl]);
+        $buttons = $OUTPUT->action_icon($url, new pix_icon('t/download', get_string('download:model', 'local_cveteval')));
+        $url = new moodle_url($CFG->wwwroot . '/local/cveteval/manage/index.php',
+                ['importid' => $row->id, 'returnurl' => $returnurl]);
+        $buttons .= $OUTPUT->action_icon($url, new pix_icon('t/edit', get_string('cveteval:manageentities', 'local_cveteval')));
 
         $url = new moodle_url($CFG->wwwroot . '/local/cveteval/admin/cleanup.php',
                 ['importid' => $row->id, 'type' => 'model', 'returnurl' => $returnurl]);
-        $buttons .= $OUTPUT->action_icon($url, new \pix_icon('t/delete', get_string('cleanup:model', 'local_cveteval')));
+        $buttons .= $OUTPUT->action_icon($url, new pix_icon('t/delete', get_string('cleanup:model', 'local_cveteval')));
         $url = new moodle_url($CFG->wwwroot . '/local/cveteval/admin/cleanup.php',
                 ['importid' => $row->id, 'type' => 'userdata', 'returnurl' => $returnurl]);
-        $buttons .= $OUTPUT->action_icon($url, new \pix_icon('t/reset', get_string('cleanup:userdata', 'local_cveteval')));
+        $buttons .= $OUTPUT->action_icon($url, new pix_icon('t/reset', get_string('cleanup:userdata', 'local_cveteval')));
         return $buttons;
     }
 }

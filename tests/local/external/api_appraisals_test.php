@@ -131,7 +131,7 @@ class api_appraisals_test extends advanced_testcase {
         // Now, I am user 1, I should only get appraisal involving me (either as a student or appraiser).
         $this->setUser($user1);
         $appraisalscrit = appr_crit::get();
-        $this->assertNotEmpty($appraisalscrit, print_r($DB->get_records(appraisal_criteria_entity::TABLE), true));
+        $this->assertNotEmpty($appraisalscrit, json_encode($DB->get_records(appraisal_criteria_entity::TABLE), true));
         // Group A: 6 appraisals, 40 criteria => 240 criteria
         $this->assertCount(6 * 40, $appraisalscrit); // 6 situations for this user in his planning.
         // Now I am an appraiser, I should see my appraisals.

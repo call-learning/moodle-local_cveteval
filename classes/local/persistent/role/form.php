@@ -23,7 +23,6 @@
  */
 
 namespace local_cveteval\local\persistent\role;
-defined('MOODLE_INTERNAL') || die();
 
 use coding_exception;
 use local_cltools\local\crud\form\entity_form;
@@ -47,26 +46,26 @@ class form extends entity_form {
      */
     protected static function get_fields_definition() {
         return array(
-            'userid' => (object) [
-                'type' => 'user_selector',
-                'selector_info' => (object) [
-                    'rolesn' => 'manager'
-                ]
-            ],
-            'clsituationid' => [
-                'type' => 'entity_selector',
-                'selector_info' => (object) [
-                    'entity_type' => '\\local_cveteval\\local\\persistent\\situation\\entity',
-                    'display_field' => 'title'
-                ]
-            ],
-            'type' => [
-                'type' => 'select_choice',
-                'choices' => [
-                    entity::ROLE_APPRAISER_ID => get_string('role:appraiser', 'local_cveteval'),
-                    entity::ROLE_ASSESSOR_ID => get_string('role:assessor', 'local_cveteval'),
+                'userid' => (object) [
+                        'type' => 'user_selector',
+                        'selector_info' => (object) [
+                                'rolesn' => 'manager'
+                        ]
                 ],
-            ]
+                'clsituationid' => [
+                        'type' => 'entity_selector',
+                        'selector_info' => (object) [
+                                'entity_type' => '\\local_cveteval\\local\\persistent\\situation\\entity',
+                                'display_field' => 'title'
+                        ]
+                ],
+                'type' => [
+                        'type' => 'select_choice',
+                        'choices' => [
+                                entity::ROLE_APPRAISER_ID => get_string('role:appraiser', 'local_cveteval'),
+                                entity::ROLE_ASSESSOR_ID => get_string('role:assessor', 'local_cveteval'),
+                        ],
+                ]
         );
     }
 }

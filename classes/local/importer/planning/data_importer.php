@@ -23,9 +23,7 @@
  */
 
 namespace local_cveteval\local\importer\planning;
-defined('MOODLE_INTERNAL') || die();
 
-use core\session\exception;
 use DateTime;
 use local_cveteval\local\persistent\group\entity as group_entity;
 use local_cveteval\local\persistent\planning\entity as planning_entity;
@@ -45,16 +43,12 @@ use tool_importer\local\log_levels;
  */
 class data_importer extends \tool_importer\data_importer {
 
-    protected $grouping = [];
-
-    protected $existingdates = [];
-
-    protected $groups = [];
-
-    protected $situations = [];
-
     public $planningeventscount = 0;
     public $planningcount = 0;
+    protected $grouping = [];
+    protected $existingdates = [];
+    protected $groups = [];
+    protected $situations = [];
 
     /**
      * Called just before importation or validation.
@@ -75,6 +69,7 @@ class data_importer extends \tool_importer\data_importer {
         $this->planningeventscount = 0;
         $this->planningcount = 0;
     }
+
     /**
      * Check if row is valid before transformation.
      *
@@ -85,7 +80,7 @@ class data_importer extends \tool_importer\data_importer {
      */
     public function validate_before_transform($row, $rowindex, $options = null) {
         $this->validate_from_field_definition($this->get_fields_definition(), $row, $rowindex, $options);
-        foreach(['starttime'=> 'Date début','endtime'=> 'Date fin'] as $datetype => $columname) {
+        foreach (['starttime' => 'Date début', 'endtime' => 'Date fin'] as $datetype => $columname) {
             $dateraw = $row[$columname] ?? '';
             $date = DateTime::createFromFormat(get_string('import:dateformat', 'local_cveteval'), trim($dateraw));
             if (empty($date)) {
@@ -98,6 +93,7 @@ class data_importer extends \tool_importer\data_importer {
             }
         }
     }
+
     /**
      * Check if row is valid after transformation.
      *
@@ -113,57 +109,59 @@ class data_importer extends \tool_importer\data_importer {
         foreach ($this->grouping as $groupname) {
             $situationsn = $row[$groupname] ?? '';
             $group = group_entity::get_record(['name' => $groupname]);
-            if ($checkotherentities  && empty($group)) {
+            if ($checkotherentities && empty($group)) {
                 throw new importer_exception('planning:groupdoesnotexist',
-                    $rowindex,
-                    $groupname,
-                    'local_cveteval',
-                    $groupname,
-                    log_levels::LEVEL_ERROR);
+                        $rowindex,
+                        $groupname,
+                        'local_cveteval',
+                        $groupname,
+                        log_levels::LEVEL_ERROR);
             }
             if ($checkotherentities && !empty(trim($situationsn)) &&
                     !situation_entity::record_exists_select("idnumber = :situationsn", ['situationsn' => $situationsn])) {
                 throw new importer_exception('planning:situationnotfound',
-                    $rowindex,
-                    $groupname,
-                    'local_cveteval',
-                    $situationsn,
-                    log_levels::LEVEL_ERROR);
+                        $rowindex,
+                        $groupname,
+                        'local_cveteval',
+                        $situationsn,
+                        log_levels::LEVEL_ERROR);
             }
         }
         foreach ($this->existingdates as $prevrowindex => $existingdate) {
             $issameintervalstart =
-                $row['starttime'] >= $existingdate[0] && $row['starttime'] <= $existingdate[1]
-                ||  $existingdate[0] >= $row['starttime']  && $existingdate[1] <= $row['starttime'];
+                    $row['starttime'] >= $existingdate[0] && $row['starttime'] <= $existingdate[1]
+                    || $existingdate[0] >= $row['starttime'] && $existingdate[1] <= $row['starttime'];
             $issameintervalend = $row['endtime'] >= $existingdate[0] && $row['endtime'] <= $existingdate[1];
             if ($issameintervalstart) {
-                $this->throw_same_date_interval_exception($rowindex, 'Date début', $prevrowindex, $existingdate[0], $existingdate[1], $row['starttime'], $row['endtime']);
+                $this->throw_same_date_interval_exception($rowindex, 'Date début', $prevrowindex, $existingdate[0],
+                        $existingdate[1], $row['starttime'], $row['endtime']);
             }
             if ($issameintervalend) {
                 $this->throw_same_date_interval_exception($rowindex, 'Date fin', $prevrowindex, $existingdate[0],
-                    $existingdate[1], $row['starttime'], $row['endtime']);
+                        $existingdate[1], $row['starttime'], $row['endtime']);
             }
         }
         $this->existingdates[$rowindex] = [$row['starttime'], $row['endtime']];
     }
 
-
-    private function throw_same_date_interval_exception($rowindex, $fieldname, $prevrowindex, $existingdatestart, $existingdateend, $currentdatestart, $currendateend) {
+    private function throw_same_date_interval_exception($rowindex, $fieldname, $prevrowindex, $existingdatestart, $existingdateend,
+            $currentdatestart, $currendateend) {
         throw new importer_exception(
-            'planning:dateoverlaps',
-            $rowindex,
-            $fieldname,
-            'local_cveteval',
-            [
-                'prevrowindex' => $prevrowindex + 2,
-                'previousstartdate' => userdate($existingdatestart, get_string('strftimedatefullshort', 'core_langconfig')),
-                'previousenddate' => userdate($existingdateend, get_string('strftimedatefullshort', 'core_langconfig')),
-                'currentstartdate' => userdate($currentdatestart, get_string('strftimedatefullshort', 'core_langconfig')),
-                'currentenddate' => userdate($currendateend, get_string('strftimedatefullshort', 'core_langconfig')),
-            ],
-            log_levels::LEVEL_ERROR
+                'planning:dateoverlaps',
+                $rowindex,
+                $fieldname,
+                'local_cveteval',
+                [
+                        'prevrowindex' => $prevrowindex + 2,
+                        'previousstartdate' => userdate($existingdatestart, get_string('strftimedatefullshort', 'core_langconfig')),
+                        'previousenddate' => userdate($existingdateend, get_string('strftimedatefullshort', 'core_langconfig')),
+                        'currentstartdate' => userdate($currentdatestart, get_string('strftimedatefullshort', 'core_langconfig')),
+                        'currentenddate' => userdate($currendateend, get_string('strftimedatefullshort', 'core_langconfig')),
+                ],
+                log_levels::LEVEL_ERROR
         );
     }
+
     /**
      * Update or create planning entry.
      *
@@ -202,19 +200,19 @@ class data_importer extends \tool_importer\data_importer {
                     $record->clsituationid = $this->situations[$row[$groupname]]->get('id');
                     $planning = new planning_entity(0, $record);
                     $planning->create();
-                    $this->planningeventscount ++;
+                    $this->planningeventscount++;
                     $plannings[] = $planning;
                 }
             } catch (moodle_exception $e) {
                 $this->get_logger()->log_from_exception($e, [
-                    'linenumber' => $rowindex,
-                    'module' => $this->module,
-                    'origin' => $this->get_source()->get_origin(),
-                    'importid' => $this->get_import_id()
+                        'linenumber' => $rowindex,
+                        'module' => $this->module,
+                        'origin' => $this->get_source()->get_origin(),
+                        'importid' => $this->get_import_id()
                 ]);
             }
         }
-        $this->planningcount ++;
+        $this->planningcount++;
         return $plannings;
     }
 }

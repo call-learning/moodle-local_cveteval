@@ -19,8 +19,9 @@ namespace local_cveteval\local\datamigration;
 use cache;
 use core\notification;
 use core_php_time_limit;
-
-defined('MOODLE_INTERNAL') || die();
+use core_renderer;
+use moodle_url;
+use stdClass;
 
 /**
  * Data migration controller
@@ -30,13 +31,10 @@ defined('MOODLE_INTERNAL') || die();
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class data_migration_controller {
-    protected $currentstep = 0;
-
     const INIT_STEP = 0;
     const CHOOSE_HISTORY_STEP = 1;
     const DIFF_MODEL_STEP = 2;
     const USER_DATA_MIGRATION = 3;
-
     const STEPS = [
             'init',
             'choosehistory',
@@ -45,9 +43,9 @@ class data_migration_controller {
             'userdatamigration',
             'final'
     ];
-
     const CACHE_SESSION_MIGRATION_VAR_ID = 'cveteval_migration';
     const CACHE_DATA_MIGRATION_NAME = 'datamigration';
+    protected $currentstep = 0;
 
     public function __construct($stepname) {
         $stepnametoid = array_flip(self::STEPS);
@@ -55,6 +53,11 @@ class data_migration_controller {
         if ($this->currentstep == 0) {
             $this->reset_step_data();
         }
+    }
+
+    public function reset_step_data() {
+        $cache = cache::make('local_cveteval', self::CACHE_DATA_MIGRATION_NAME);
+        $cache->purge_current_user();
     }
 
     public function get_step() {
@@ -74,15 +77,10 @@ class data_migration_controller {
         }
     }
 
-    public function reset_step_data() {
-        $cache = cache::make('local_cveteval', self::CACHE_DATA_MIGRATION_NAME);
-        $cache->purge_current_user();
-    }
-
     public function get_step_data() {
         $cache = cache::make('local_cveteval', self::CACHE_DATA_MIGRATION_NAME);
         $data = $cache->get(self::CACHE_SESSION_MIGRATION_VAR_ID);
-        return !empty($data) ? $data : new \stdClass();
+        return !empty($data) ? $data : new stdClass();
     }
 
     private function raw_set_step_data($data) {
@@ -99,13 +97,6 @@ class data_migration_controller {
         }
     }
 
-    public function prepare_page() {
-        global $PAGE;
-        $PAGE->set_cacheable(false);    // Progress bar might be used here.
-        core_php_time_limit::raise(HOURSECS);
-        raise_memory_limit(MEMORY_EXTRA);
-    }
-
     protected function process_standard($renderer, $renderable, $form) {
         $result = $renderer->render($renderable);
         if ($form) {
@@ -114,42 +105,12 @@ class data_migration_controller {
         return $result;
     }
 
-
-    protected function process_diffmodels($renderer, $renderable, $form) {
-        $data = $this->get_step_data();
-        $dm = new data_model_matcher($data->originimportid,
-                $data->destimportid);
-        $data->matchedentities = $dm->get_matched_entities_list();
-        $data->unmatchedentities = $dm->get_unmatched_entities_list();
-        $data->orphanedentities = $dm->get_orphaned_entities_list();
-        $this->raw_set_step_data($data);
-        $result = $renderer->render($renderable);
-        if ($form) {
-            $result .= $form->render();
-        }
-        return $result;
+    public function prepare_page() {
+        global $PAGE;
+        $PAGE->set_cacheable(false);    // Progress bar might be used here.
+        core_php_time_limit::raise(HOURSECS);
+        raise_memory_limit(MEMORY_EXTRA);
     }
-
-    protected function process_diffmodelsmodifications($renderer, $renderable, $form) {
-        global $OUTPUT;
-        $result = $renderer->render($renderable);
-        if (empty($this->get_step_data())) {
-            /* @var \core_renderer $OUTPUT */
-            $message = $result . $OUTPUT->notification(get_string('dmc:expired', 'local_cveteval'), notification::ERROR);
-            return $OUTPUT->single_button(get_string('continue'), new \moodle_url('/local/cveteval/admin/datamigration/index.php'));
-        }
-        if ($form) {
-            $result .= $form->render();
-        }
-        return $result;
-    }
-
-    protected function process_userdatamigration($renderer, $renderable, $form) {
-        // For each appraisal, appraisal criteria and final eval attached to the old model,create a copy.
-        $result = $renderer->render($renderable);
-        return $result;
-    }
-
 
     public function get_widget() {
         $widgetclass = '\local_cveteval\output\\dmc_' . self::STEPS[$this->currentstep] . '_widget';
@@ -171,6 +132,16 @@ class data_migration_controller {
         return $step;
     }
 
+    private function is_next_step_allowed() {
+        $data = $this->get_step_data();
+        switch ($this->currentstep) {
+            case self::CHOOSE_HISTORY_STEP:
+                return !empty($data->originimportid)
+                        && !empty($data->destimportid);
+        }
+        return true;
+    }
+
     public function get_previous_step() {
         $step = self::STEPS[$this->currentstep - 1] ?? '';
         $step = $this->is_previous_step_allowed() ? $step : '';
@@ -185,14 +156,39 @@ class data_migration_controller {
         return true;
     }
 
-    private function is_next_step_allowed() {
+    protected function process_diffmodels($renderer, $renderable, $form) {
         $data = $this->get_step_data();
-        switch ($this->currentstep) {
-            case self::CHOOSE_HISTORY_STEP:
-                return !empty($data->originimportid)
-                        && !empty($data->destimportid);
+        $dm = new data_model_matcher($data->originimportid,
+                $data->destimportid);
+        $data->matchedentities = $dm->get_matched_entities_list();
+        $data->unmatchedentities = $dm->get_unmatched_entities_list();
+        $data->orphanedentities = $dm->get_orphaned_entities_list();
+        $this->raw_set_step_data($data);
+        $result = $renderer->render($renderable);
+        if ($form) {
+            $result .= $form->render();
         }
-        return true;
+        return $result;
+    }
+
+    protected function process_diffmodelsmodifications($renderer, $renderable, $form) {
+        global $OUTPUT;
+        $result = $renderer->render($renderable);
+        if (empty($this->get_step_data())) {
+            $message = $result . $OUTPUT->notification(get_string('dmc:expired', 'local_cveteval'), notification::ERROR);
+            return $message . $OUTPUT->single_button(
+                    get_string('continue'), new moodle_url('/local/cveteval/admin/datamigration/index.php'));
+        }
+        if ($form) {
+            $result .= $form->render();
+        }
+        return $result;
+    }
+
+    protected function process_userdatamigration($renderer, $renderable, $form) {
+        // For each appraisal, appraisal criteria and final eval attached to the old model,create a copy.
+        $result = $renderer->render($renderable);
+        return $result;
     }
 
 }

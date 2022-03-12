@@ -23,7 +23,6 @@
  */
 
 namespace local_cveteval\local\external;
-defined('MOODLE_INTERNAL') || die();
 
 use context_system;
 use dml_exception;
@@ -49,10 +48,10 @@ class latest_modifications extends external_api {
      */
     public static function execute_returns() {
         return new external_single_structure(
-            array(
-                'latestmodifications' => new external_value(PARAM_INT, 'latest modification time'),
-                'warnings' => new external_warnings(),
-            )
+                array(
+                        'latestmodifications' => new external_value(PARAM_INT, 'latest modification time'),
+                        'warnings' => new external_warnings(),
+                )
         );
     }
 
@@ -61,7 +60,7 @@ class latest_modifications extends external_api {
      */
     public static function execute($entitytype, $query = null) {
         static::validate_parameters(static::execute_parameters(), array(
-            'entitytype' => $entitytype, 'query' => $query));
+                'entitytype' => $entitytype, 'query' => $query));
         $latestmodifications = 0;
         $warnings = [];
         try {
@@ -69,23 +68,23 @@ class latest_modifications extends external_api {
             $latestmodifications = static::get_entity_latest_modifications($entitytype, $query);
             if ($latestmodifications < 0) {
                 $warnings[] = [
-                    'item' => $entitytype,
-                    'warningcode' => 'nolatestmodifs',
-                    'message' => get_string('api:nolatestmodifs', 'local_cveteval')
+                        'item' => $entitytype,
+                        'warningcode' => 'nolatestmodifs',
+                        'message' => get_string('api:nolatestmodifs', 'local_cveteval')
                 ];
             }
         } catch (moodle_exception $e) {
             $warnings[] = [
-                'item' => $entitytype,
-                'warningcode' => 'generalerror',
-                'message' => get_string('api:generalerror', 'local_cveteval', $e->getMessage())
+                    'item' => $entitytype,
+                    'warningcode' => 'generalerror',
+                    'message' => get_string('api:generalerror', 'local_cveteval', $e->getMessage())
             ];
         }
         return
-            [
-                'latestmodifications' => $latestmodifications,
-                'warnings' => $warnings
-            ];
+                [
+                        'latestmodifications' => $latestmodifications,
+                        'warnings' => $warnings
+                ];
     }
 
     /**
@@ -95,12 +94,12 @@ class latest_modifications extends external_api {
      */
     public static function execute_parameters() {
         return new external_function_parameters(
-            array(
-                'entitytype' => new external_value(PARAM_ALPHAEXT, 'the entity to look for'),
-                'query' => new external_value(PARAM_NOTAGS, 'query as json {field:value, field:value}',
-                    VALUE_DEFAULT,
-                    '{}'),
-            )
+                array(
+                        'entitytype' => new external_value(PARAM_ALPHAEXT, 'the entity to look for'),
+                        'query' => new external_value(PARAM_NOTAGS, 'query as json {field:value, field:value}',
+                                VALUE_DEFAULT,
+                                '{}'),
+                )
         );
     }
 
@@ -116,7 +115,7 @@ class latest_modifications extends external_api {
             $query = json_decode($queryjson);
         }
         $latestmodifs = external_utils::query_entities(base_get_entity::MOBILE_ENTITY_MATCHER[$entitytype],
-            $query, "MAX(e.timemodified) AS time");
+                $query, "MAX(e.timemodified) AS time");
         if ($latestmodifs && count($latestmodifs) > 0) {
             $latestmodif = reset($latestmodifs);
             return intval($latestmodif->time);

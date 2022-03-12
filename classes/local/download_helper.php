@@ -16,6 +16,7 @@
 
 namespace local_cveteval\local;
 
+use coding_exception;
 use core\dataformat;
 use core_user;
 use local_cveteval\local\persistent\appraisal\entity as appraisal_entity;
@@ -25,10 +26,11 @@ use local_cveteval\local\persistent\evaluation_grid\entity as evaluation_grid;
 use local_cveteval\local\persistent\final_evaluation\entity as final_evaluation_entity;
 use local_cveteval\local\persistent\group\entity as group_entity;
 use local_cveteval\local\persistent\group_assignment\entity as group_assignment_entity;
+use local_cveteval\local\persistent\history\entity as history_entity;
 use local_cveteval\local\persistent\planning\entity as planning_entity;
 use local_cveteval\local\persistent\situation\entity as situation_entity;
-use local_cveteval\local\persistent\history\entity as history_entity;
 use local_cveteval\utils;
+use moodle_exception;
 
 /**
  * Download helper
@@ -38,16 +40,6 @@ use local_cveteval\utils;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class download_helper {
-    /**
-     * Generate filename
-     *
-     * @param string $seed
-     * @return string
-     */
-    public static function generate_filename($seed) {
-        return str_replace(' ', '_', clean_filename($seed . '-' . userdate(time())));
-    }
-
     /**
      * Download final grades
      *
@@ -73,7 +65,8 @@ class download_helper {
                 . " WHERE plan.id IS NOT NULL");
 
         $fields =
-                ['studentname', 'studentemail', 'studentusername', 'situation', 'planning', 'group', 'assessorname', 'assessoremail',
+                ['studentname', 'studentemail', 'studentusername', 'situation', 'planning', 'group', 'assessorname',
+                        'assessoremail',
                         'assessorusername',
                         'grade', 'comment', 'timemodified', 'timecreated'];
         $transformcsv = function($finaleval) {
@@ -101,6 +94,34 @@ class download_helper {
             $filename = static::generate_filename('final_evaluation');
         }
         dataformat::download_data($filename, $dataformat, $fields, $rs, $transformcsv);
+    }
+
+    protected static function get_user_info($userid) {
+        if ($userid) {
+            $user = core_user::get_user($userid);
+            return (object) [
+                    'fullname' => utils::fast_user_fullname($user->id),
+                    'email' => $user->email,
+                    'username' => $user->username
+            ];
+        } else {
+            return (object) [
+                    'fullname' => get_string('evaluation:waiting', 'local_cveteval'),
+                    'email' => '',
+                    'username' => ''
+            ];
+        }
+
+    }
+
+    /**
+     * Generate filename
+     *
+     * @param string $seed
+     * @return string
+     */
+    public static function generate_filename($seed) {
+        return str_replace(' ', '_', clean_filename($seed . '-' . userdate(time())));
     }
 
     /**
@@ -194,8 +215,8 @@ class download_helper {
      * @param $importid
      * @param $dataformat
      * @return void
-     * @throws \coding_exception
-     * @throws \moodle_exception
+     * @throws coding_exception
+     * @throws moodle_exception
      */
     public static function download_model_planning($importid, $dataformat) {
         persistent\history\entity::set_current_id($importid);
@@ -243,8 +264,8 @@ class download_helper {
      * @param $importid
      * @param $dataformat
      * @return void
-     * @throws \coding_exception
-     * @throws \moodle_exception
+     * @throws coding_exception
+     * @throws moodle_exception
      */
     public static function download_model_group($importid, $dataformat) {
         persistent\history\entity::set_current_id($importid);
@@ -299,8 +320,8 @@ class download_helper {
      * @param $importid
      * @param $dataformat
      * @return void
-     * @throws \coding_exception
-     * @throws \moodle_exception
+     * @throws coding_exception
+     * @throws moodle_exception
      */
     public static function download_model_evaluation_grid($importid, $dataformat) {
         persistent\history\entity::set_current_id($importid);
@@ -326,22 +347,5 @@ class download_helper {
         };
         $filename = static::generate_filename('grid');
         dataformat::download_data($filename, $dataformat, $fields, $criteria, $transformcsv);
-    }
-
-    protected static function get_user_info($userid) {
-        if ($userid) {
-            $user = core_user::get_user($userid);
-            return (object) [
-                    'fullname' => utils::fast_user_fullname($user->id),
-                    'email' => $user->email,
-                    'username' => $user->username
-            ];
-        } else
-            return (object) [
-                    'fullname' => get_string('evaluation:waiting', 'local_cveteval'),
-                    'email' => '',
-                    'username' => ''
-            ];
-
     }
 }

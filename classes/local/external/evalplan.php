@@ -23,7 +23,6 @@
  */
 
 namespace local_cveteval\local\external;
-defined('MOODLE_INTERNAL') || die();
 
 use external_multiple_structure;
 use external_single_structure;
@@ -45,18 +44,18 @@ class evalplan extends base_get_entity {
      */
     public static function get_returns() {
         return new external_multiple_structure(
-            new external_single_structure(
-                array(
-                    'id' => new external_value(PARAM_INT, 'id of the criteria'),
-                    'groupid' => new external_value(PARAM_INT, 'id of the group for this planning'),
-                    'clsituationid' => new external_value(PARAM_INT, 'clsituationid of the planning'),
-                    'starttime' => new external_value(PARAM_INT, 'start time'),
-                    'endtime' => new external_value(PARAM_INT, 'end time'),
-                    'timemodified' => new external_value(PARAM_INT, 'last modification time'),
-                    'timecreated' => new external_value(PARAM_INT, 'last modification time'),
-                    'usermodified' => new external_value(PARAM_INT, 'user modified'),
+                new external_single_structure(
+                        array(
+                                'id' => new external_value(PARAM_INT, 'id of the criteria'),
+                                'groupid' => new external_value(PARAM_INT, 'id of the group for this planning'),
+                                'clsituationid' => new external_value(PARAM_INT, 'clsituationid of the planning'),
+                                'starttime' => new external_value(PARAM_INT, 'start time'),
+                                'endtime' => new external_value(PARAM_INT, 'end time'),
+                                'timemodified' => new external_value(PARAM_INT, 'last modification time'),
+                                'timecreated' => new external_value(PARAM_INT, 'last modification time'),
+                                'usermodified' => new external_value(PARAM_INT, 'user modified'),
+                        )
                 )
-            )
         );
     }
 

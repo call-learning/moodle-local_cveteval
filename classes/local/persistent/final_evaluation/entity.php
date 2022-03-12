@@ -19,10 +19,8 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/lib/grade/grade_scale.php');
 
-use coding_exception;
 use core\persistent;
 use grade_scale;
-use gradereport_singleview\local\screen\select;
 use local_cltools\local\crud\enhanced_persistent;
 use local_cltools\local\crud\enhanced_persistent_impl;
 use local_cltools\local\field\editor;
@@ -49,11 +47,12 @@ class entity extends persistent implements enhanced_persistent {
         $scale = grade_scale::fetch(array('id' => $scaleid));
         $scaleitems = $scale->load_items();
         return [
-            new hidden(['fieldname' => 'studentid', 'rawtype' => PARAM_INT]),
-            new hidden(['fieldname' => 'assessorid', 'rawtype' => PARAM_INT]),
-            new hidden(['fieldname' => 'evalplanid', 'rawtype' => PARAM_INT]),
-            new editor('comment'),
-            new select_choice(['fieldname' => 'grade', 'displayname' => get_string('evaluation:grade', 'local_cveteval'), 'choices' => $scaleitems])
+                new hidden(['fieldname' => 'studentid', 'rawtype' => PARAM_INT]),
+                new hidden(['fieldname' => 'assessorid', 'rawtype' => PARAM_INT]),
+                new hidden(['fieldname' => 'evalplanid', 'rawtype' => PARAM_INT]),
+                new editor('comment'),
+                new select_choice(['fieldname' => 'grade', 'displayname' => get_string('evaluation:grade', 'local_cveteval'),
+                        'choices' => $scaleitems])
         ];
     }
 }

@@ -26,8 +26,6 @@ namespace local_cveteval\local\importer\situation;
 
 use tool_importer\field_types;
 
-defined('MOODLE_INTERNAL') || die();
-
 class csv_data_source extends \tool_importer\local\source\csv_data_source {
     /**
      *
@@ -35,38 +33,38 @@ class csv_data_source extends \tool_importer\local\source\csv_data_source {
      */
     public function get_fields_definition() {
         return array(
-            'Nom' => [
-                'type' => field_types::TYPE_TEXT,
-                'required' => true,
-            ],
-            'Description' => [
-                'type' => field_types::TYPE_TEXT,
-                'required' => false,
-            ],
-            'Nom court' => [
-                'type' => field_types::TYPE_TEXT,
-                'required' => true,
-            ],
-            'Responsable' => [
-                'type' => field_types::TYPE_TEXT,
-                'required' => true,
-            ],
-            'Evaluateurs' => [
-                'type' => field_types::TYPE_TEXT,
-                'required' => true,
-            ],
-            'Observateurs' => [
-                'type' => field_types::TYPE_TEXT,
-                'required' => true,
-            ],
-            'Appreciations' => [
-                'type' => field_types::TYPE_INT,
-                'required' => true,
-            ],
-            'GrilleEval' => [
-                'type' => field_types::TYPE_TEXT,
-                'required' => false,
-            ],
+                'Nom' => [
+                        'type' => field_types::TYPE_TEXT,
+                        'required' => true,
+                ],
+                'Description' => [
+                        'type' => field_types::TYPE_TEXT,
+                        'required' => false,
+                ],
+                'Nom court' => [
+                        'type' => field_types::TYPE_TEXT,
+                        'required' => true,
+                ],
+                'Responsable' => [
+                        'type' => field_types::TYPE_TEXT,
+                        'required' => true,
+                ],
+                'Evaluateurs' => [
+                        'type' => field_types::TYPE_TEXT,
+                        'required' => true,
+                ],
+                'Observateurs' => [
+                        'type' => field_types::TYPE_TEXT,
+                        'required' => true,
+                ],
+                'Appreciations' => [
+                        'type' => field_types::TYPE_INT,
+                        'required' => true,
+                ],
+                'GrilleEval' => [
+                        'type' => field_types::TYPE_TEXT,
+                        'required' => false,
+                ],
         );
     }
 }

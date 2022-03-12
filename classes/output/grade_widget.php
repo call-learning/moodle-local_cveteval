@@ -29,8 +29,6 @@ use renderable;
 use renderer_base;
 use templatable;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Renderable for dynamic table
  *
@@ -72,9 +70,9 @@ class grade_widget implements renderable, templatable {
      */
     public function export_for_template(renderer_base $output) {
         $context = (object) [
-            'gradeiconurl' => $output->image_url('grade/' . $this->grade, 'local_cveteval')->out(false),
-            'gradetext' => get_string('grade:value', 'local_cveteval', $this->grade),
-            'hassubgrades' => $this->hassubgrades,
+                'gradeiconurl' => $output->image_url('grade/' . $this->grade, 'local_cveteval')->out(false),
+                'gradetext' => get_string('grade:value', 'local_cveteval', $this->grade),
+                'hassubgrades' => $this->hassubgrades,
         ];
         if ($this->comment) {
             $context->comment = $this->comment;
@@ -84,6 +82,3 @@ class grade_widget implements renderable, templatable {
         return $context;
     }
 }
-
-
-

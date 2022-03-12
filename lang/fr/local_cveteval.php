@@ -39,11 +39,13 @@ $string['appraiser'] = 'Appraiser';
 $string['assess'] = 'Evaluation de "{$a}"';
 $string['assessment'] = 'Evaluation';
 $string['cachedef_appraisals'] = 'Cache pour la récupération d\'observations';
-$string['cleanup:confirm:model'] = 'Cette opération va vider toutes les tables de CompetVetEval, les situations mais aussi les observations faites jusqu\'à présent. Les données ne sont pas récupérables. Etes vous sûr ?';
-$string['cleanup:confirm:userdata'] = 'Cette opération va vider toutes les observations faites jusqu\'à présent. Les données ne sont pas récupérables. Etes vous sûr ?';
-$string['cleanup:details']  = 'Effacer l\'importation {$a->idnumber} : {$a->comments}';
+$string['cleanup:confirm:model'] =
+        'Cette opération va vider toutes les tables de CompetVetEval, les situations mais aussi les observations faites jusqu\'à présent. Les données ne sont pas récupérables. Etes vous sûr ?';
+$string['cleanup:confirm:userdata'] =
+        'Cette opération va vider toutes les observations faites jusqu\'à présent. Les données ne sont pas récupérables. Etes vous sûr ?';
+$string['cleanup:details'] = 'Effacer l\'importation {$a->idnumber} : {$a->comments}';
 $string['cleanup:model'] = 'Effacer un modèle importé';
-$string['cleanup:selectimportid']  = 'Selectionnez l\'importation a effacer';
+$string['cleanup:selectimportid'] = 'Selectionnez l\'importation a effacer';
 $string['cleanup:userdata'] = 'Effacer les données utilisateurs d\'un modèle importé';
 $string['comment'] = 'Commentaire';
 $string['commentformat'] = 'Format du texte';
@@ -89,7 +91,8 @@ $string['dmc:unmatchedentities'] = 'Entités présentes seulement dans le nouvea
 $string['dmc:unmatched'] = 'Unmatched';
 $string['dmc:expired'] = 'La session contenant les données de migration a expiré. Vous devez recommencer le processus.';
 $string['dmc:congratsmessage'] = 'La migration est terminée. Cliquez sur "Continuer" pour en redémarrer une autre.';
-$string['dmc:welcomemessage'] = 'Bienvenue à l\'outil de migration des données. Cela vous aidera à copier les données utilisateurs d\'un modèle (ou historique) vers un autre. Certaines données vont être automatiquement reconcilées, pour d\'autre vous devrer décider de l\'action à effectuer.';
+$string['dmc:welcomemessage'] =
+        'Bienvenue à l\'outil de migration des données. Cela vous aidera à copier les données utilisateurs d\'un modèle (ou historique) vers un autre. Certaines données vont être automatiquement reconcilées, pour d\'autre vous devrer décider de l\'action à effectuer.';
 $string['download:model'] = 'Télécharger le modèle';
 $string['download:userdata'] = 'Télécharger les données utilisateur';
 $string['edit'] = 'Editer';
@@ -102,7 +105,8 @@ $string['evaluation:grade'] = 'Note';
 $string['evaluationgrid:default'] = 'Grille d\'évaluation par défaut';
 $string['evaluation_grid:entity'] = 'Grille d\'évaluation';
 $string['evaluation_gridfile'] = 'Critères de la grille d\'évaluation';
-$string['evaluation_gridfile_help'] = '(Optional)Une liste de critères d\'évaluation en format CSV. Le fichier doit contenir les entêtes suivants: <pre>"Evaluation Grid Id";"Criterion Id";"Criterion Parent Id";"Criterion Label"</pre>';
+$string['evaluation_gridfile_help'] =
+        '(Optional)Une liste de critères d\'évaluation en format CSV. Le fichier doit contenir les entêtes suivants: <pre>"Evaluation Grid Id";"Criterion Id";"Criterion Parent Id";"Criterion Label"</pre>';
 $string['evaluation_grid:idnumber'] = 'Identifiant de l\'évaluation';
 $string['evaluation_grid:name'] = 'Nom de l\'évaluation';
 $string['evaluation_grid:plural'] = 'Grilles d\'évaluation';
@@ -119,11 +123,13 @@ $string['grades:export'] = 'Exporter les notes';
 $string['grade:value'] = 'Note: {$a}';
 $string['group_assignment:entity'] = 'Affectation au groupe';
 $string['group:entity'] = 'Groupe';
-$string['groupingfile_help'] = 'Une liste de groupes en format CSV. Le fichier doit contenir les entêtes suivants: <pre>"Nom de l\'étudiant";"Prénom";"Identifiant";"Groupement 1"</pre>';
+$string['groupingfile_help'] =
+        'Une liste de groupes en format CSV. Le fichier doit contenir les entêtes suivants: <pre>"Nom de l\'étudiant";"Prénom";"Identifiant";"Groupement 1"</pre>';
 $string['groupingfile'] = 'Liste de groupe d\'étudiants';
 $string['grouping:stats'] = 'Group importés : {$a->groups}, group assignés: {$a->groupassignments}';
 $string['grouping:usernotfound'] = 'Grouping user not found {$a}';
-$string['headingfile_help'] = 'Vous pouvez importer des situation, planning and groups ici. Les fichiers de situation, planning et groupes sont obligatoires, le fichier de critères d\'évaluation.<br> Attention les fichiers doivent bien correspondre les uns avec les autres. Par exemple: <ul> <li>(Situation) - GrilleEval => (Grille Evaluation) - Evaluation Grid Id</li> <li>(Planning) - Groupe XXX => (Groupes) - Un des groupes dans les colonnes de Groupement</li> <li>(Planning) - Situation (nom court) => (Situation) - Nom court</li> </ul> Des problèmes de correspondance peuvent se traduirent plus tard par des dysfonctionnements.';
+$string['headingfile_help'] =
+        'Vous pouvez importer des situation, planning and groups ici. Les fichiers de situation, planning et groupes sont obligatoires, le fichier de critères d\'évaluation.<br> Attention les fichiers doivent bien correspondre les uns avec les autres. Par exemple: <ul> <li>(Situation) - GrilleEval => (Grille Evaluation) - Evaluation Grid Id</li> <li>(Planning) - Groupe XXX => (Groupes) - Un des groupes dans les colonnes de Groupement</li> <li>(Planning) - Situation (nom court) => (Situation) - Nom court</li> </ul> Des problèmes de correspondance peuvent se traduirent plus tard par des dysfonctionnements.';
 $string['headingfile'] = 'Importer les fichiers';
 $string['headingfile_link'] = "http://pedagogie.vetagro-sup.fr/Pages/CompetVet/co/App_Moodle.html";
 $string['history:tools'] = 'Outils';
@@ -139,7 +145,8 @@ $string['import:downloadfile'] = 'Télécharger {$a}';
 $string['import:download'] = 'Téléchargement d\'importation précédentes';
 $string['import:error:idnumberexists'] = 'L\'identifiant d\'importation existe déjà {$a}';
 $string['import:evaluation_grid'] = 'Grille d\'évaluation';
-$string['import:failed'] = 'L\'importation a échoué, veuillez cliquer sur le bouton ci-dessous pour effacer les données erronées et recommencer.';
+$string['import:failed'] =
+        'L\'importation a échoué, veuillez cliquer sur le bouton ci-dessous pour effacer les données erronées et recommencer.';
 $string['import:grouping'] = 'Grouping';
 $string['import:heading:parameters'] = 'Paramètres importation';
 $string['import:heading:process'] = 'Importation des fichiers';
@@ -160,25 +167,28 @@ $string['import:selectimport'] = 'Sélectionne et continue';
 $string['import:situation'] = 'Situation';
 $string['import:start'] = 'Démarrer l\'import';
 $string['list'] = 'Liste';
-$string['log:fieldname'] =  'Colonne';
-$string['log:importid'] =  'ID';
-$string['log:information'] =  'Information';
+$string['log:fieldname'] = 'Colonne';
+$string['log:importid'] = 'ID';
+$string['log:information'] = 'Information';
 $string['log:level:error'] = 'Erreur';
 $string['log:level:info'] = 'Info';
-$string['log:level'] =  'Sévérité';
+$string['log:level'] = 'Sévérité';
 $string['log:level:warning'] = 'Attention';
-$string['log:linenumber'] =  'Ligne';
-$string['log:origin'] =  'Fichier';
-$string['mysituations:intro'] = 'Ceci est la liste des situation que vous êtes en mesure d\'évaluer. Cliquez sur une ligne pour voir la liste des observations/étudiant students à évaluer.';
+$string['log:linenumber'] = 'Ligne';
+$string['log:origin'] = 'Fichier';
+$string['mysituations:intro'] =
+        'Ceci est la liste des situation que vous êtes en mesure d\'évaluer. Cliquez sur une ligne pour voir la liste des observations/étudiant students à évaluer.';
 $string['mysituations'] = 'Mes situations';
 $string['mystudents'] = 'Mes étudiants';
 $string['name'] = 'Nom complet';
 $string['otherstudents'] = 'Autres étudiants';
 $string['planning:clsituationid'] = 'Situation clinique';
-$string['planning:dateoverlaps'] = 'Les dates se recouvrent : ligne ({$a->prevrowindex}) les dates {$a->previousstartdate} - {$a->previousenddate} correspondent à {$a->currentstartdate} - {$a->currentenddate}.';
+$string['planning:dateoverlaps'] =
+        'Les dates se recouvrent : ligne ({$a->prevrowindex}) les dates {$a->previousstartdate} - {$a->previousenddate} correspondent à {$a->currentstartdate} - {$a->currentenddate}.';
 $string['planning:endtime'] = 'Date fin';
 $string['planning:entity'] = 'Planning des évaluations';
-$string['planningfile_help'] = 'Une liste de planning en format CSV. Le fichier doit contenir les entêtes suivants:<pre>"Date début";"Date fin";"Groupe XX";"Groupe YY"</pre>';
+$string['planningfile_help'] =
+        'Une liste de planning en format CSV. Le fichier doit contenir les entêtes suivants:<pre>"Date début";"Date fin";"Groupe XX";"Groupe YY"</pre>';
 $string['planningfile'] = 'Liste des plannings';
 $string['planning:groupdoesnotexist'] = 'Le groupe {$a} \'existe pas.';
 $string['planning:groupid'] = 'Identifiant de groupe';
@@ -207,7 +217,8 @@ $string['settings:manage_situations'] = 'Gère les situations';
 $string['situation:entity'] = 'Situation clinique';
 $string['situation:evalgridid'] = 'Grille d\'évaluation liée';
 $string['situation:expectedevalsnb'] = '#Nb Evaluations';
-$string['situationfile_help'] = 'Une liste de situations en format CSV. Le fichier doit contenir les entêtes suivants: <pre>"Description";"Nom";"Nom court";"ResponsableUE";"Responsable";"Evaluateurs";"Observateurs";"Appreciations"; "GrilleEval";"Etiquettes"</pre>';
+$string['situationfile_help'] =
+        'Une liste de situations en format CSV. Le fichier doit contenir les entêtes suivants: <pre>"Description";"Nom";"Nom court";"ResponsableUE";"Responsable";"Evaluateurs";"Observateurs";"Appreciations"; "GrilleEval";"Etiquettes"</pre>';
 $string['situationfile'] = 'Liste des situations';
 $string['situation:gridnotfound'] = 'Grille non trouvée {$a}.';
 $string['situation:groupname'] = 'Nom du groupe';

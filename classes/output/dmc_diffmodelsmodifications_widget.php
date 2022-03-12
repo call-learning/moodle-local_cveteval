@@ -16,12 +16,7 @@
 
 namespace local_cveteval\output;
 
-use local_cveteval\local\datamigration\data_migration_controller;
-use renderable;
 use renderer_base;
-
-
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * Renderable for datamigration controller

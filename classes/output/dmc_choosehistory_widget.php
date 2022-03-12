@@ -19,8 +19,7 @@ namespace local_cveteval\output;
 use local_cveteval\local\datamigration\data_migration_controller;
 use renderable;
 use renderer_base;
-
-defined('MOODLE_INTERNAL') || die();
+use templatable;
 
 /**
  * Renderable for datamigration controller
@@ -29,7 +28,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2020 CALL Learning - Laurent David laurent@call-learning.fr
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class dmc_choosehistory_widget implements renderable, \templatable {
+class dmc_choosehistory_widget implements renderable, templatable {
 
     private data_migration_controller $dmc;
 

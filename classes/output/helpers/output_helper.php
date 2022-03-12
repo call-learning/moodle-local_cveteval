@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace local_cveteval\output\helpers;
 
+use core_user;
 use local_cveteval\local\persistent\criterion\entity as criterion_entity;
 use local_cveteval\local\persistent\evaluation_grid\entity as evaluation_grid_entity;
 use local_cveteval\local\persistent\group\entity as group_entity;
@@ -22,8 +23,6 @@ use local_cveteval\local\persistent\group_assignment\entity as group_assignment_
 use local_cveteval\local\persistent\planning\entity as planning_entity;
 use local_cveteval\local\persistent\role\entity as role_entity;
 use local_cveteval\local\persistent\situation\entity as situation_entity;
-
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * Renderable for userdatamigration controller
@@ -42,7 +41,7 @@ class output_helper {
 
     public static function export_entity_role($entityid) {
         $newentity = new role_entity($entityid);
-        $user = \core_user::get_user($newentity->get('userid'));
+        $user = core_user::get_user($newentity->get('userid'));
         $situation = new situation_entity($newentity->get('clsituationid'));
         $role = ['label' => fullname($user) . ' (' . role_entity::get_type_fullname($newentity->get('type')) . ') - '
                 . $situation->get('idnumber')];
@@ -60,7 +59,7 @@ class output_helper {
 
     public static function export_entity_group_assignment($entityid) {
         $newentity = new group_assignment_entity($entityid);
-        $student = \core_user::get_user($newentity->get('studentid'));
+        $student = core_user::get_user($newentity->get('studentid'));
         $group = new group_entity($newentity->get('groupid'));
         $groupa = ['label' => fullname($student) . ' - ' . $group->get('name')];
         return $groupa;

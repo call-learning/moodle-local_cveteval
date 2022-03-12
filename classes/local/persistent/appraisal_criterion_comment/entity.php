@@ -17,8 +17,6 @@ namespace local_cveteval\local\persistent\appraisal_criterion_comment;
 
 use core\persistent;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Appraisal criterion comment
  *
@@ -37,22 +35,22 @@ class entity extends persistent {
      */
     protected static function define_properties() {
         return array(
-            'appraisalqtemplateid' => array(
-                'type' => PARAM_INT,
-                'default' => ''
-            ),
-            'userid' => array(
-                'type' => PARAM_INT,
-                'default' => ''
-            ),
-            'comment' => array(
-                'type' => PARAM_TEXT,
-                'default' => ''
-            ),
-            'commentformat' => array(
-                'type' => PARAM_INT,
-                'default' => FORMAT_PLAIN
-            )
+                'appraisalqtemplateid' => array(
+                        'type' => PARAM_INT,
+                        'default' => ''
+                ),
+                'userid' => array(
+                        'type' => PARAM_INT,
+                        'default' => ''
+                ),
+                'comment' => array(
+                        'type' => PARAM_TEXT,
+                        'default' => ''
+                ),
+                'commentformat' => array(
+                        'type' => PARAM_INT,
+                        'default' => FORMAT_PLAIN
+                )
         );
     }
 }

@@ -27,8 +27,6 @@ namespace local_cveteval\local\persistent\appraisal_criterion;
 use coding_exception;
 use core\persistent;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Appraisal Criterion
  *
@@ -48,26 +46,26 @@ class entity extends persistent {
      */
     protected static function define_properties() {
         return array(
-            'criterionid' => array(
-                'type' => PARAM_INT,
-                'default' => ''
-            ),
-            'appraisalid' => array(
-                'type' => PARAM_INT,
-                'default' => ''
-            ),
-            'grade' => array(
-                'type' => PARAM_INT,
-                'default' => ''
-            ),
-            'comment' => array(
-                'type' => PARAM_TEXT,
-                'default' => ''
-            ),
-            'commentformat' => array(
-                'type' => PARAM_INT,
-                'default' => FORMAT_PLAIN
-            ),
+                'criterionid' => array(
+                        'type' => PARAM_INT,
+                        'default' => ''
+                ),
+                'appraisalid' => array(
+                        'type' => PARAM_INT,
+                        'default' => ''
+                ),
+                'grade' => array(
+                        'type' => PARAM_INT,
+                        'default' => ''
+                ),
+                'comment' => array(
+                        'type' => PARAM_TEXT,
+                        'default' => ''
+                ),
+                'commentformat' => array(
+                        'type' => PARAM_INT,
+                        'default' => FORMAT_PLAIN
+                ),
         );
     }
 }

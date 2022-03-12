@@ -23,17 +23,14 @@
  */
 
 namespace local_cveteval\local\assessment;
-defined('MOODLE_INTERNAL') || die();
 
 use context;
-use core_table\local\filter\filter;
 use local_cltools\local\crud\entity_table;
-use local_cltools\local\filter\enhanced_filterset;
-use local_cltools\local\filter\numeric_comparison_filter;
 use local_cveteval\local\persistent\role\entity as role_entity;
+use local_cveteval\local\persistent\situation\entity as situation_entity;
 use local_cveteval\roles;
 use moodle_url;
-use local_cveteval\local\persistent\situation\entity as situation_entity;
+use restricted_context_exception;
 
 /**
  * Persistent list base class
@@ -47,8 +44,8 @@ class situations extends entity_table {
     protected static $persistentclass = situation_entity::class;
 
     public function __construct($uniqueid = null,
-        $actionsdefs = null,
-        $editable = false
+            $actionsdefs = null,
+            $editable = false
     ) {
         global $PAGE;
         $this->fieldaliases = [
@@ -57,10 +54,28 @@ class situations extends entity_table {
         ];
         parent::__construct($uniqueid, $actionsdefs, $editable);
         $PAGE->requires->js_call_amd('local_cltools/tabulator-row-action-url', 'init', [
-            $this->get_unique_id(),
-            (new moodle_url('/local/cveteval/pages/assessment/mystudents.php'))->out(),
-            (object) array('situationid' => 'id')
+                $this->get_unique_id(),
+                (new moodle_url('/local/cveteval/pages/assessment/mystudents.php'))->out(),
+                (object) array('situationid' => 'id')
         ]);
+    }
+
+    /**
+     * Validate current user has access to the table instance
+     *
+     * Note: this can involve a more complicated check if needed and requires filters and all
+     * setup to be done in order to make sure we validated against the right information
+     * (such as for example a filter needs to be set in order not to return data a user should not see).
+     *
+     * @param context $context
+     * @param bool $writeaccess
+     * @throws restricted_context_exception
+     */
+    public function validate_access(context $context, $writeaccess = false) {
+        global $USER;
+        if (!roles::can_assess($USER->id)) {
+            throw new restricted_context_exception();
+        }
     }
 
     protected function internal_get_sql_from($tablealias = 'e') {
@@ -88,22 +103,5 @@ class situations extends entity_table {
             }
         }
         return [array_values($cols), array_values($headers)];
-    }
-    /**
-     * Validate current user has access to the table instance
-     *
-     * Note: this can involve a more complicated check if needed and requires filters and all
-     * setup to be done in order to make sure we validated against the right information
-     * (such as for example a filter needs to be set in order not to return data a user should not see).
-     *
-     * @param context $context
-     * @param bool $writeaccess
-     * @throws \restricted_context_exception
-     */
-    public function validate_access(context $context, $writeaccess = false) {
-        global $USER;
-        if (!roles::can_assess($USER->id)) {
-            throw new \restricted_context_exception();
-        }
     }
 }

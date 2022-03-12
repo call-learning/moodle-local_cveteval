@@ -25,13 +25,8 @@
 namespace local_cveteval\local\persistent\final_evaluation;
 
 use coding_exception;
-use core_user;
-use dml_exception;
-use html_writer;
 use local_cltools\local\crud\form\entity_form;
 use MoodleQuickForm;
-
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * Final evaluation entity

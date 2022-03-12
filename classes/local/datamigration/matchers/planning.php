@@ -22,8 +22,6 @@ use local_cveteval\local\persistent\history\entity as history_entity;
 use local_cveteval\local\persistent\planning\entity;
 use local_cveteval\local\persistent\situation\entity as situation_entity;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Matcher implementation for planning
  *
@@ -33,9 +31,14 @@ defined('MOODLE_INTERNAL') || die();
  */
 class planning extends base {
 
+    public static function get_entity() {
+        return entity::class;
+    }
+
     /**
      * Try to match a given model/entity type
      *
+     * @param persistent $newentity
      * @return persistent|persistent[]|false
      */
     public function do_match(persistent $newentity) {
@@ -43,9 +46,9 @@ class planning extends base {
 
         $params = [];
         $params['situationsn'] = $this->get_entity_field_name(
-            $newentity->get('clsituationid'), $this->dm->get_dest_id(), "idnumber", situation_entity::class);
+                $newentity->get('clsituationid'), $this->dm->get_dest_id(), "idnumber", situation_entity::class);
         $params['groupname'] = $this->get_entity_field_name(
-            $newentity->get('groupid'), $this->dm->get_dest_id(), "name", group_entity::class);
+                $newentity->get('groupid'), $this->dm->get_dest_id(), "name", group_entity::class);
         $params['starttime'] = $newentity->get('starttime');
         $params['endtime'] = $newentity->get('endtime');
 
@@ -53,45 +56,24 @@ class planning extends base {
         $oldgroupsql = group_entity::get_historical_sql_query_for_id("oldgroup", $this->dm->get_origin_id());
         $oldplanningsql = entity::get_historical_sql_query_for_id("e", $this->dm->get_origin_id());
         $oldplanningsid = $DB->get_fieldset_sql(
-            "SELECT DISTINCT e.id 
-                  FROM $oldplanningsql 
-                    LEFT JOIN $oldgroupsql ON e.groupid = oldgroup.id 
+                "SELECT DISTINCT e.id
+                  FROM $oldplanningsql
+                    LEFT JOIN $oldgroupsql ON e.groupid = oldgroup.id
                     LEFT JOIN $oldsituationsql ON e.clsituationid = oldsituation.id
                 WHERE "
-            . $DB->sql_equal('oldsituation.idnumber', ':situationsn', false, false)
-            . " AND "
-            . $DB->sql_equal('oldgroup.name', ':groupname', false, false)
-            . " AND ( e.starttime >= :starttime AND e.endtime <= :endtime ) ",
-            $params
+                . $DB->sql_equal('oldsituation.idnumber', ':situationsn', false, false)
+                . " AND "
+                . $DB->sql_equal('oldgroup.name', ':groupname', false, false)
+                . " AND ( e.starttime >= :starttime AND e.endtime <= :endtime ) ",
+                $params
         );
         $oldplannings = [];
         if ($oldplanningsid) {
             history_entity::set_current_id($this->dm->get_origin_id());
-            $oldplannings =  array_map(function($gid) {
+            $oldplannings = array_map(function($gid) {
                 return new entity($gid);
             }, $oldplanningsid);
         }
         return $oldplannings;
     }
-    public static function get_entity() {
-        return entity::class;
-    }
 }
-
-// SELECT ctable.id, groupid, clsituationid, starttime, endtime, historyid FROM mdl_local_cveteval_evalplan ctable LEFT JOIN mdl_local_cveteval_history_mdl AS hmtable ON hmtable.tablename = 'local_cveteval_evalplan' AND ctable.id = hmtable.tableid AND (hmtable.historyid = 1 OR hmtable.historyid = 0) WHERE hmtable.id IS NOT NULL ORDER by clsituationid,groupid, starttime, endtime;
-
-//SELECT DISTINCT e.id, e.starttime, e.endtime, oldsituation.idnumber, oldgroup.name         FROM (SELECT ctable.*
-//                FROM mdl_local_cveteval_evalplan ctable
-//                LEFT JOIN mdl_local_cveteval_history_mdl AS hmtable
-//                ON hmtable.tablename = 'local_cveteval_evalplan' AND ctable.id = hmtable.tableid AND (hmtable.historyid = 1 OR hmtable.historyid = 0)
-//                WHERE hmtable.id IS NOT NULL) AS e
-//                    LEFT JOIN (SELECT ctable.*
-//                FROM mdl_local_cveteval_group ctable
-//                LEFT JOIN mdl_local_cveteval_history_mdl AS hmtable
-//                ON hmtable.tablename = 'local_cveteval_group' AND ctable.id = hmtable.tableid AND (hmtable.historyid = 1 OR hmtable.historyid = 0)
-//                WHERE hmtable.id IS NOT NULL) AS oldgroup ON e.groupid = oldgroup.id
-//                    LEFT JOIN (SELECT ctable.*
-//                FROM mdl_local_cveteval_clsituation ctable
-//                LEFT JOIN mdl_local_cveteval_history_mdl AS hmtable
-//                ON hmtable.tablename = 'local_cveteval_clsituation' AND ctable.id = hmtable.tableid AND (hmtable.historyid = 1 OR hmtable.historyid = 0)
-//                WHERE hmtable.id IS NOT NULL) AS oldsituation ON e.clsituationid = oldsituation.id ORDER by oldsituation.idnumber, oldgroup.name, e.starttime, e.endtime;

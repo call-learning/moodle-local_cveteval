@@ -15,7 +15,6 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace local_cveteval\local\persistent\role;
-defined('MOODLE_INTERNAL') || die();
 
 use coding_exception;
 use local_cltools\local\crud\entity_table;

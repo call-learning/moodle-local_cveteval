@@ -19,8 +19,7 @@ namespace local_cveteval\local\datamigration\matchers;
 use core\persistent;
 use local_cveteval\local\datamigration\data_model_matcher;
 use local_cveteval\local\persistent\history\entity as history_entity;
-
-defined('MOODLE_INTERNAL') || die();
+use moodle_exception;
 
 /**
  * Entity matcher.
@@ -54,16 +53,16 @@ abstract class base {
      * * The entities that have been matched
      * * The other ones
      *
-     * @throws \moodle_exception
+     * @throws moodle_exception
      */
     protected function prepare_entities() {
         $entityclass = static::get_entity();
         history_entity::set_current_id($this->dm->get_origin_id());
         $oldentities = $entityclass::get_records();
         $oldentitiesid = array_map(
-            function($e) {
-                return $e->get('id');
-            }, $oldentities);
+                function($e) {
+                    return $e->get('id');
+                }, $oldentities);
 
         history_entity::set_current_id($this->dm->get_dest_id());
         $newentities = $entityclass::get_records();
@@ -81,7 +80,7 @@ abstract class base {
                 $oldentity = reset($oldentities);
                 $oldentityid = $oldentity->get('id');
                 $this->matchedentities[$oldentityid] = $id;
-                if(isset($this->orphanedentities[$oldentityid])) {
+                if (isset($this->orphanedentities[$oldentityid])) {
                     unset($this->orphanedentities[$oldentityid]);
                 }
             }
@@ -89,32 +88,11 @@ abstract class base {
     }
 
     /**
-     * Retrieve a list of matched entities' id (which are both in old and new model)
+     * Related entity class
      *
-     *
-     * @return int[]|false associative array with oldentityid => newentityid
+     * @return mixed
      */
-    public function get_matched_origin_entities() {
-        return $this->matchedentities;
-    }
-
-    /**
-     * Retrieve a list of unmatched entities'  id (which are only in the new model)
-     *
-     * @return int[]|false array composed of unmatched entity id
-     */
-    public function get_unmatched_dest_entities() {
-        return $this->unmatchedentities;
-    }
-
-    /**
-     * Retrieve a list of orphaned entities'  id (which are only in the old model)
-     *
-     * @return int[]|false array composed of orphaned entity id
-     */
-    public function get_orphaned_origin_entities() {
-        return $this->orphanedentities;
-    }
+    abstract public static function get_entity();
 
     /**
      * Try to match a given model/entity type
@@ -143,11 +121,32 @@ abstract class base {
     abstract protected function do_match(persistent $newentity);
 
     /**
-     * Related entity class
+     * Retrieve a list of matched entities' id (which are both in old and new model)
      *
-     * @return mixed
+     *
+     * @return int[]|false associative array with oldentityid => newentityid
      */
-    abstract static public function get_entity();
+    public function get_matched_origin_entities() {
+        return $this->matchedentities;
+    }
+
+    /**
+     * Retrieve a list of unmatched entities'  id (which are only in the new model)
+     *
+     * @return int[]|false array composed of unmatched entity id
+     */
+    public function get_unmatched_dest_entities() {
+        return $this->unmatchedentities;
+    }
+
+    /**
+     * Retrieve a list of orphaned entities'  id (which are only in the old model)
+     *
+     * @return int[]|false array composed of orphaned entity id
+     */
+    public function get_orphaned_origin_entities() {
+        return $this->orphanedentities;
+    }
 
     protected function get_entity_field_name($entityid, $historyid, $field, $entityclass) {
         global $DB;

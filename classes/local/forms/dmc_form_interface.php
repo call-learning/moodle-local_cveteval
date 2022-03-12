@@ -23,7 +23,7 @@
  */
 
 namespace local_cveteval\local\forms;
-defined('MOODLE_INTERNAL') || die();
+
 global $CFG;
 
 /**
@@ -42,7 +42,6 @@ interface dmc_form_interface {
      * @return mixed
      */
     public function execute_action($data);
-
 
     /**
      * Execute cancel with submitted data

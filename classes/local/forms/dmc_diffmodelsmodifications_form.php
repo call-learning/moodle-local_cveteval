@@ -24,12 +24,15 @@
 
 namespace local_cveteval\local\forms;
 
+use html_writer;
 use local_cveteval\local\datamigration\data_migration_controller;
 use local_cveteval\local\datamigration\data_migration_utils;
 use local_cveteval\local\datamigration\data_model_matcher;
 use local_cveteval\local\persistent\history\entity as history_entity;
 use local_cveteval\output\dmc_entity_renderer_base;
 use local_cveteval\output\helpers\output_helper;
+use moodle_exception;
+use moodle_url;
 use moodleform;
 
 defined('MOODLE_INTERNAL') || die();
@@ -70,7 +73,7 @@ class dmc_diffmodelsmodifications_form extends moodleform implements dmc_form_in
      * @param array $ajaxformdata Forms submitted via ajax, must pass their data here, instead of relying on _GET and _POST.
      */
     public function __construct($action = null, $customdata = null, $method = 'post', $target = '', $attributes = null,
-        $editable = true, $ajaxformdata = null) {
+            $editable = true, $ajaxformdata = null) {
         $classes = data_model_matcher::get_model_matchers_class();
         foreach ($classes as $entitymatcher) {
             $entityclass = $entitymatcher::get_entity();
@@ -82,6 +85,110 @@ class dmc_diffmodelsmodifications_form extends moodleform implements dmc_form_in
     }
 
     /**
+     * Definition after form data gathered.
+     *
+     * @return void
+     */
+    public function definition_after_data() {
+        $dmc = $this->_customdata['dmc'];
+        $stepdata = $dmc->get_step_data();
+        $data = $this->get_submitted_data();
+        foreach (dmc_entity_renderer_base::ALL_CONTEXTS as $context) {
+            foreach ($stepdata->$context as $entityclass => $matchs) {
+                foreach ($matchs as $originid => $targetentityid) {
+                    $fieldname = $this->get_field_name($context, $entityclass, $originid);
+                    if (empty($data->$context[$entityclass][$originid])) {
+                        //$mform->setDefault($fieldname, $stepdata->$context[$entityclass][$originid]);
+                    }
+                }
+            }
+        }
+
+    }
+
+    protected function get_field_name($context, $entityclass, $id) {
+        // There is a bug in the way moodle transfer this info in HTML_Element.
+        // The \\ is replaced by \\\\ and it does not match anymore. See  HTML_QuickForm_utils::recursiveValue.
+        return $context . "[" . str_replace('\\', '__', $entityclass) . "][" . $id . "]";
+    }
+
+    /**
+     * @param $data
+     * @return mixed|void
+     * @throws moodle_exception
+     */
+    public function execute_action($data) {
+        global $PAGE;
+        $dmc = $this->_customdata['dmc'] ?? null;
+        $nextmodel = null;
+        /* @var data_migration_controller|null $dmc */
+        if ($dmc) {
+            $stepdata = $this->convert_form_data_into_stepdata($data);
+            $dmc->set_step_data($stepdata);
+            $nextmodel = $this->get_next_model();
+        }
+        if ($nextmodel) {
+            redirect(new moodle_url($PAGE->url, ['step' => $dmc->get_step(), 'model' => $nextmodel]));
+        } else {
+            redirect(new moodle_url($PAGE->url, ['step' => $dmc->get_next_step()]));
+        }
+    }
+
+    /**
+     * @param $formdata
+     * @return object
+     */
+    protected function convert_form_data_into_stepdata($formdata) {
+        $stepdata = (object) [
+                'originimportid' => $formdata->originimportid,
+                'destimportid' => $formdata->destimportid,
+        ];
+        foreach (dmc_entity_renderer_base::ALL_CONTEXTS as $context) {
+            $stepdata->$context = [];
+            if (!empty($formdata->$context)) {
+                foreach ($formdata->$context as $key => $value) {
+                    $newkey = str_replace('__', '\\', $key);
+                    $stepdata->$context[$newkey] = $value;
+                }
+            }
+        }
+        return $stepdata;
+    }
+
+    protected function get_next_model() {
+        $currentmodel = $this->optional_param('model', null, PARAM_RAW);
+        if ($currentmodel) {
+            $entitiesname = array_keys($this->entities);
+            $nextindex = array_search($currentmodel, $entitiesname);
+            return ($nextindex !== false && $nextindex < (count($entitiesname) - 1)) ? $entitiesname[$nextindex + 1] : null;
+        } else {
+            return array_key_first($this->entities);
+        }
+    }
+
+    public function execute_cancel() {
+        global $PAGE;
+        $dmc = $this->_customdata['dmc'] ?? null;
+        $prevmodel = $this->get_prev_model();
+        if ($prevmodel) {
+            redirect(new moodle_url($PAGE->url, ['step' => $dmc->get_step(), 'model' => $prevmodel]));
+        } else {
+            redirect(new moodle_url($PAGE->url, ['step' => $dmc->get_previous_step()]));
+        }
+    }
+
+    protected function get_prev_model() {
+        $currentmodel = $this->optional_param('model', null, PARAM_RAW);
+        if ($currentmodel) {
+            $entitiesname = array_keys($this->entities);
+            $previndex = array_search($currentmodel, $entitiesname);
+            return ($previndex !== false && $previndex > 0) ? $entitiesname[$previndex - 1] : null;
+        } else {
+            return array_key_first($this->entities);
+        }
+    }
+
+    /**
      * Definition
      */
     protected function definition() {
@@ -89,7 +196,7 @@ class dmc_diffmodelsmodifications_form extends moodleform implements dmc_form_in
         $dmc = $this->_customdata['dmc'];
         $renderable = $this->_customdata['renderable'];
         $mform = $this->_form;
-        $title = \html_writer::start_span('h3') . $this->entities[$model] . \html_writer::end_span();
+        $title = html_writer::start_span('h3') . $this->entities[$model] . html_writer::end_span();
         $mform->addElement('html', $title);
         if ($dmc) {
             $stepdata = $dmc->get_step_data();
@@ -98,15 +205,15 @@ class dmc_diffmodelsmodifications_form extends moodleform implements dmc_form_in
                 $currentmatchs = [];
                 foreach ($stepdata->$context as $entityclass => $matchs) {
                     $baseclassname = data_migration_utils::get_base_class($entityclass);
-                    if ($baseclassname == $model && !empty($matchs))  {
+                    if ($baseclassname == $model && !empty($matchs)) {
                         $currententityclass = str_replace('\\\\', '\\', $entityclass);
                         $currentmatchs = $matchs;
                         break;
                     }
                 }
                 if ($currententityclass && $currentmatchs) {
-                    $title = \html_writer::start_span('h3') . get_string("dmc:$context", "local_cveteval") .
-                            \html_writer::end_span();
+                    $title = html_writer::start_span('h3') . get_string("dmc:$context", "local_cveteval") .
+                            html_writer::end_span();
                     $headerelement = 'context' . $context;
                     $mform->addElement('header', $headerelement, $title);
                     $alldestentitiesoptions = $this->get_all_dest_entities($dmc, $entityclass, $model, $renderable);
@@ -133,35 +240,18 @@ class dmc_diffmodelsmodifications_form extends moodleform implements dmc_form_in
         $mform->setType('destimportid', PARAM_INT);
         $mform->addElement('hidden', 'model', $this->get_current_model());
         $mform->setType('model', PARAM_TEXT);
-        $buttonarray=array();
+        $buttonarray = array();
         $buttonarray[] = &$mform->createElement('cancel', 'cancel', get_string('previous'));
         $buttonarray[] = &$mform->createElement('submit', 'submitbutton', get_string('next'));
         $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
         $mform->closeHeaderBefore('buttonar');
     }
 
-    protected function get_field_name($context, $entityclass, $id)  {
-        // There is a bug in the way moodle transfer this info in HTML_Element.
-        // The \\ is replaced by \\\\ and it does not match anymore. See  HTML_QuickForm_utils::recursiveValue.
-        return $context . "[" . str_replace('\\', '__', $entityclass) . "][" . $id . "]";
+    protected function get_current_model() {
+        $currentmodel = $this->optional_param('model', null, PARAM_RAW);
+        return empty($currentmodel) ? array_key_first($this->entities) : $currentmodel;
     }
 
-    function definition_after_data(){
-        $dmc = $this->_customdata['dmc'];
-        $stepdata = $dmc->get_step_data();
-        $data = $this->get_submitted_data();
-        foreach (dmc_entity_renderer_base::ALL_CONTEXTS as $context) {
-            foreach ($stepdata->$context as $entityclass => $matchs) {
-                foreach ($matchs as $originid => $targetentityid) {
-                    $fieldname = $this->get_field_name($context, $entityclass, $originid);
-                    if(empty($data->$context[$entityclass][$originid])) {
-                        //$mform->setDefault($fieldname, $stepdata->$context[$entityclass][$originid]);
-                    }
-                }
-            }
-        }
-
-    }
     /**
      * Helper to cache information that otherwise will be retrieved in a loop.
      *
@@ -170,7 +260,7 @@ class dmc_diffmodelsmodifications_form extends moodleform implements dmc_form_in
      * @param $model
      * @param $renderable
      * @return array|null
-     * @throws \moodle_exception
+     * @throws moodle_exception
      */
     protected function get_all_dest_entities($dmc, $entityclass, $model, $renderable) {
         static $lastmodel = null;
@@ -190,85 +280,5 @@ class dmc_diffmodelsmodifications_form extends moodleform implements dmc_form_in
         $lastmodel = $model;
         $lastalldestentitiesoptions = $alldestentitiesoptions;
         return $lastalldestentitiesoptions;
-    }
-
-    protected function get_current_model() {
-        $currentmodel = $this->optional_param('model', null, PARAM_RAW);
-        return empty($currentmodel) ? array_key_first($this->entities) : $currentmodel;
-    }
-
-    protected function get_next_model() {
-        $currentmodel = $this->optional_param('model', null, PARAM_RAW);
-        if ($currentmodel) {
-            $entitiesname = array_keys($this->entities);
-            $nextindex = array_search($currentmodel, $entitiesname);
-            return ($nextindex !== false && $nextindex < (count($entitiesname) - 1)) ? $entitiesname[$nextindex + 1] : null;
-        } else {
-            return array_key_first($this->entities);
-        }
-    }
-
-    protected function get_prev_model() {
-        $currentmodel = $this->optional_param('model', null, PARAM_RAW);
-        if ($currentmodel) {
-            $entitiesname = array_keys($this->entities);
-            $previndex = array_search($currentmodel, $entitiesname);
-            return ($previndex !== false && $previndex > 0) ? $entitiesname[$previndex - 1] : null;
-        } else {
-            return array_key_first($this->entities);
-        }
-    }
-    /**
-     * @param $data
-     * @return mixed|void
-     * @throws \moodle_exception
-     */
-    public function execute_action($data) {
-        global $PAGE;
-        $dmc = $this->_customdata['dmc'] ?? null;
-        $nextmodel = null;
-        /* @var data_migration_controller|null $dmc */
-        if ($dmc) {
-            $stepdata = $this->convert_form_data_into_stepdata($data);
-            $dmc->set_step_data($stepdata);
-            $nextmodel = $this->get_next_model();
-        }
-        if ($nextmodel) {
-            redirect(new \moodle_url($PAGE->url, ['step' => $dmc->get_step(), 'model' => $nextmodel]));
-        } else {
-            redirect(new \moodle_url($PAGE->url, ['step' => $dmc->get_next_step()]));
-        }
-    }
-
-    /**
-     * @param $formdata
-     * @return object
-     */
-    protected function convert_form_data_into_stepdata($formdata) {
-        $stepdata = (object) [
-            'originimportid' => $formdata->originimportid,
-            'destimportid' => $formdata->destimportid,
-        ];
-        foreach(dmc_entity_renderer_base::ALL_CONTEXTS as  $context) {
-            $stepdata->$context = [];
-            if (!empty($formdata->$context)) {
-                foreach ($formdata->$context as $key => $value) {
-                    $newkey = str_replace('__', '\\', $key);
-                    $stepdata->$context[$newkey] = $value;
-                }
-            }
-        }
-        return $stepdata;
-    }
-
-    public function execute_cancel() {
-        global $PAGE;
-        $dmc = $this->_customdata['dmc'] ?? null;
-        $prevmodel = $this->get_prev_model();
-        if ($prevmodel) {
-            redirect(new \moodle_url($PAGE->url, ['step' => $dmc->get_step(), 'model' => $prevmodel]));
-        } else {
-            redirect(new \moodle_url($PAGE->url, ['step' => $dmc->get_previous_step()]));
-        }
     }
 }

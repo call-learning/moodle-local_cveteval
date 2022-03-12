@@ -15,11 +15,6 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace local_cveteval\local\datamigration;
-use local_cveteval\local\persistent\appraisal\entity as appraisal_entity;
-use local_cveteval\local\persistent\history\entity as history_entity;
-
-defined('MOODLE_INTERNAL') || die();
-
 
 /**
  * Data migration utils

@@ -28,12 +28,12 @@ use coding_exception;
 use dml_exception;
 use local_cveteval\local\datamigration\data_migration_controller;
 use local_cveteval\local\persistent\history\entity as history_entity;
+use moodle_url;
 use moodleform;
 
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->libdir . '/formslib.php');
-
 
 /**
  * Choose history form
@@ -56,7 +56,7 @@ class dmc_choosehistory_form extends moodleform implements dmc_form_interface {
         /* @var data_migration_controller|null $dmc */
         $histories = history_entity::get_records();
         $choices = [];
-        foreach($histories as $history) {
+        foreach ($histories as $history) {
             $choices[$history->get('id')] = $history->get('idnumber') . ' - ' . $history->get('comments');
         }
         $mform->addElement('select', 'originimportid', get_string('import:originimportid', 'local_cveteval'), $choices);
@@ -94,12 +94,12 @@ class dmc_choosehistory_form extends moodleform implements dmc_form_interface {
         /* @var data_migration_controller|null $dmc */
         if ($dmc) {
             $stepdata = (object) [
-                'originimportid' => $data->originimportid,
-                'destimportid' => $data->destimportid,
+                    'originimportid' => $data->originimportid,
+                    'destimportid' => $data->destimportid,
             ];
             $dmc->set_step_data($stepdata);
         }
-        redirect(new \moodle_url($PAGE->url, ['step'=> $dmc->get_next_step()]));
+        redirect(new moodle_url($PAGE->url, ['step' => $dmc->get_next_step()]));
     }
 
     public function execute_cancel() {

@@ -23,7 +23,6 @@
  */
 
 namespace local_cveteval\local\external;
-defined('MOODLE_INTERNAL') || die();
 
 use external_multiple_structure;
 use external_single_structure;
@@ -45,16 +44,16 @@ class group_assign extends base_get_entity {
      */
     public static function get_returns() {
         return new external_multiple_structure(
-            new external_single_structure(
-                array(
-                    'id' => new external_value(PARAM_INT, 'id of the appraisal criterion'),
-                    'studentid' => new external_value(PARAM_INT, 'id the student'),
-                    'groupid' => new external_value(PARAM_INT, 'id of the group'),
-                    'timemodified' => new external_value(PARAM_INT, 'last modification time'),
-                    'timecreated' => new external_value(PARAM_INT, 'last modification time'),
-                    'usermodified' => new external_value(PARAM_INT, 'user modified'),
+                new external_single_structure(
+                        array(
+                                'id' => new external_value(PARAM_INT, 'id of the appraisal criterion'),
+                                'studentid' => new external_value(PARAM_INT, 'id the student'),
+                                'groupid' => new external_value(PARAM_INT, 'id of the group'),
+                                'timemodified' => new external_value(PARAM_INT, 'last modification time'),
+                                'timecreated' => new external_value(PARAM_INT, 'last modification time'),
+                                'usermodified' => new external_value(PARAM_INT, 'user modified'),
+                        )
                 )
-            )
         );
     }
 

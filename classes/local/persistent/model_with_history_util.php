@@ -27,10 +27,10 @@ class model_with_history_util {
     public static function get_all_entity_class_with_history() {
         $files = scandir(__DIR__);
         $currentnamespace = __NAMESPACE__;
-        $folders = array_filter($files, function($file)  {
-            return is_dir(__DIR__. "/$file") && !in_array($file, ['.', '..']);
+        $folders = array_filter($files, function($file) {
+            return is_dir(__DIR__ . "/$file") && !in_array($file, ['.', '..']);
         });
-        $classes = array_map(function($file) use ($currentnamespace){
+        $classes = array_map(function($file) use ($currentnamespace) {
             return "$currentnamespace\\$file\\entity";
         }, $folders);
         $classeswithistory = array_filter($classes, function($class) {

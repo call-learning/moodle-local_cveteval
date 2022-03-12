@@ -23,7 +23,6 @@
  */
 
 namespace local_cveteval\local\importer;
-defined('MOODLE_INTERNAL') || die();
 
 use context_system;
 use moodle_exception;
@@ -65,8 +64,8 @@ abstract class base_helper {
     /**
      * import_helper constructor.
      *
-     * @param $csvpath
-     * @param $importid
+     * @param string $csvpath
+     * @param int $importid
      * @param string $filename
      * @param string $delimiter
      * @param string $encoding
@@ -74,29 +73,36 @@ abstract class base_helper {
      * @throws importer_exception
      */
     public function __construct($csvpath, $importid, $filename = '', $delimiter = 'semicolon', $encoding = 'utf-8',
-        $progressbar = null) {
+            $progressbar = null) {
         $this->csvsource = $this->create_csv_datasource($csvpath, $delimiter, $encoding, $filename);
         $this->transformer = $this->create_transformer();
         $this->dataimporter = $this->create_data_importer();
         $this->processor =
-            $this->create_processor($this->csvsource, $this->transformer, $this->dataimporter, $progressbar, $importid);
+                $this->create_processor($this->csvsource, $this->transformer, $this->dataimporter, $progressbar, $importid);
         $this->csvpath = $csvpath;
     }
 
     /**
-     * @param $csvpath
-     * @param $delimiter
-     * @param $encoding
+     * Create CSV Data source
+     *
+     * @param string $csvpath
+     * @param string $delimiter
+     * @param string $encoding
+     * @param string $filename
      * @return data_source
      */
     abstract protected function create_csv_datasource($csvpath, $delimiter, $encoding, $filename);
 
     /**
+     * Create CSV Data transformer
+     *
      * @return data_transformer
      */
     abstract protected function create_transformer();
 
     /**
+     * Create CSV Data importer
+     *
      * @return data_importer
      */
     abstract protected function create_data_importer();
@@ -107,27 +113,48 @@ abstract class base_helper {
      * @param csv_data_source $csvsource
      * @param data_transformer $transformer
      * @param data_importer $dataimporter
-     * @param $progressbar
-     * @param $importid
+     * @param object $progressbar
+     * @param int $importid
      */
     protected function create_processor(csv_data_source $csvsource, data_transformer $transformer, data_importer $dataimporter,
-        $progressbar, $importid) {
+            $progressbar, $importid) {
         return new processor($csvsource,
-            $transformer,
-            $dataimporter,
-            $progressbar,
-            $importid
+                $transformer,
+                $dataimporter,
+                $progressbar,
+                $importid
         );
     }
 
+    /**
+     * Trim data
+     *
+     * @param mixed $value
+     * @param string $columnname
+     * @return string
+     */
     public static function trimmed($value, $columnname) {
         return trim($value);
     }
 
+    /**
+     * Convert to int
+     *
+     * @param mixed $value
+     * @param string $columnname
+     * @return string
+     */
     public static function toint($value, $columnname) {
         return intval($value);
     }
 
+    /**
+     * Trim data and upper case
+     *
+     * @param mixed $value
+     * @param string $columnname
+     * @return string
+     */
     public static function trimmeduppercase($value, $columnname) {
         return trim(strtoupper($value));
     }
@@ -143,14 +170,14 @@ abstract class base_helper {
             if ($result = $this->processor->import($options)) {
                 // Send an event after importation.
                 $eventparams = array('context' => context_system::instance(),
-                    'other' => array('filename' => $this->csvpath));
+                        'other' => array('filename' => $this->csvpath));
                 $event = $this->importeventclass::create($eventparams);
                 $event->trigger();
             }
             return $result;
         } catch (moodle_exception $e) {
             $eventparams = array('context' => context_system::instance(),
-                'other' => array('filename' => $this->csvpath, 'error' => $e->getMessage()));
+                    'other' => array('filename' => $this->csvpath, 'error' => $e->getMessage()));
             $event = $this->importeventclass::create($eventparams);
             $event->trigger();
             if (defined('CLI_SCRIPT')) {
@@ -173,6 +200,11 @@ abstract class base_helper {
         return $this->processor->validate($options);
     }
 
+    /**
+     * Get processor
+     *
+     * @return processor
+     */
     public function get_processor(): processor {
         return $this->processor;
     }

@@ -27,8 +27,6 @@ namespace local_cveteval\local\persistent\appraisal;
 use coding_exception;
 use core\persistent;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Appraisal entity
  *
@@ -48,34 +46,34 @@ class entity extends persistent {
      */
     protected static function define_properties() {
         return array(
-            'studentid' => array(
-                'type' => PARAM_INT,
-                'default' => ''
-            ),
-            'appraiserid' => array(
-                'type' => PARAM_INT,
-                'default' => ''
-            ),
-            'evalplanid' => array(
-                'type' => PARAM_INT,
-                'default' => ''
-            ),
-            'context' => array(
-                'type' => PARAM_TEXT,
-                'default' => ''
-            ),
-            'contextformat' => array(
-                'type' => PARAM_INT,
-                'default' => FORMAT_PLAIN
-            ),
-            'comment' => array(
-                'type' => PARAM_TEXT,
-                'default' => ''
-            ),
-            'commentformat' => array(
-                'type' => PARAM_INT,
-                'default' => FORMAT_PLAIN
-            ),
+                'studentid' => array(
+                        'type' => PARAM_INT,
+                        'default' => ''
+                ),
+                'appraiserid' => array(
+                        'type' => PARAM_INT,
+                        'default' => ''
+                ),
+                'evalplanid' => array(
+                        'type' => PARAM_INT,
+                        'default' => ''
+                ),
+                'context' => array(
+                        'type' => PARAM_TEXT,
+                        'default' => ''
+                ),
+                'contextformat' => array(
+                        'type' => PARAM_INT,
+                        'default' => FORMAT_PLAIN
+                ),
+                'comment' => array(
+                        'type' => PARAM_TEXT,
+                        'default' => ''
+                ),
+                'commentformat' => array(
+                        'type' => PARAM_INT,
+                        'default' => FORMAT_PLAIN
+                ),
         );
     }
 }

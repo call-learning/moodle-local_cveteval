@@ -23,7 +23,6 @@
  */
 
 namespace local_cveteval\local\importer\evaluation_grid;
-defined('MOODLE_INTERNAL') || die();
 
 use local_cveteval\event\evaluation_grid_imported;
 use local_cveteval\local\importer\base_helper;
@@ -48,7 +47,7 @@ class import_helper extends base_helper {
      * @throws importer_exception
      */
     public function __construct($csvpath, $importid, $filename = '', $delimiter = 'semicolon', $encoding = 'utf-8',
-        $progressbar = null) {
+            $progressbar = null) {
         parent::__construct($csvpath, $importid, $filename, $delimiter, $encoding, $progressbar);
         $this->importeventclass = evaluation_grid_imported::class;
     }
@@ -85,22 +84,22 @@ class import_helper extends base_helper {
      */
     protected function create_transformer() {
         $transformdef = array(
-            'Evaluation Grid Id' =>
-                array(
-                    array('to' => 'evalgridid', 'transformcallback' => base_helper::class . '::trimmed')
-                ),
-            'Criterion Id' =>
-                array(
-                    array('to' => 'idnumber', 'transformcallback' => base_helper::class . ':trimmed')
-                ),
-            'Criterion Parent Id' =>
-                array(
-                    array('to' => 'parentidnumber', 'transformcallback' => base_helper::class . ':trimmed')
-                ),
-            'Criterion Label' =>
-                array(
-                    array('to' => 'label', 'transformcallback' => base_helper::class . ':trimmed')
-                )
+                'Evaluation Grid Id' =>
+                        array(
+                                array('to' => 'evalgridid', 'transformcallback' => base_helper::class . '::trimmed')
+                        ),
+                'Criterion Id' =>
+                        array(
+                                array('to' => 'idnumber', 'transformcallback' => base_helper::class . ':trimmed')
+                        ),
+                'Criterion Parent Id' =>
+                        array(
+                                array('to' => 'parentidnumber', 'transformcallback' => base_helper::class . ':trimmed')
+                        ),
+                'Criterion Label' =>
+                        array(
+                                array('to' => 'label', 'transformcallback' => base_helper::class . ':trimmed')
+                        )
         );
         $transformer = new standard($transformdef);
         return $transformer;
@@ -112,6 +111,7 @@ class import_helper extends base_helper {
     protected function create_data_importer() {
         return new data_importer();
     }
+
     /**
      * Create processor
      *
@@ -122,22 +122,23 @@ class import_helper extends base_helper {
      * @param $importid
      */
     protected function create_processor($csvsource, $transformer, $dataimporter,
-        $progressbar, $importid) {
+            $progressbar, $importid) {
         return new class($csvsource,
-            $transformer,
-            $dataimporter,
-            $progressbar,
-            $importid
+                $transformer,
+                $dataimporter,
+                $progressbar,
+                $importid
         ) extends processor {
             /**
              * Get statistics in a displayable (HTML) format
+             *
              * @return string
              */
             public function get_displayable_stats() {
                 return
-                    get_string('evaluationgrid:stats', 'local_cveteval',
-                        ['criterions' => $this->importer->criterioncount ]
-                    );
+                        get_string('evaluationgrid:stats', 'local_cveteval',
+                                ['criterions' => $this->importer->criterioncount]
+                        );
             }
         };
     }

@@ -29,8 +29,6 @@ use core\persistent;
 use local_cveteval\local\persistent\model_with_history;
 use local_cveteval\local\persistent\model_with_history_impl;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Evaluation group_assignment entity
  *
@@ -38,9 +36,10 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class entity extends persistent implements model_with_history{
+class entity extends persistent implements model_with_history {
 
     use model_with_history_impl;
+
     const TABLE = 'local_cveteval_group_assign';
 
     /**
@@ -51,27 +50,27 @@ class entity extends persistent implements model_with_history{
      */
     protected static function define_properties() {
         return array(
-            'studentid' => array(
-                'type' => PARAM_INT,
-                'default' => '',
-                'format' => [
-                    'type' => 'user_selector',
-                    'selector_info' => (object) [
-                        'rolesn' => 'student'
-                    ]
-                ]
-            ),
-            'groupid' => array(
-                'type' => PARAM_INT,
-                'default' => '',
-                'format' => [
-                    'type' => 'entity_selector',
-                    'selector_info' => (object) [
-                        'entity_type' => '\\local_cveteval\\local\\persistent\\group\\entity',
-                        'display_field' => 'name'
-                    ]
-                ]
-            ),
+                'studentid' => array(
+                        'type' => PARAM_INT,
+                        'default' => '',
+                        'format' => [
+                                'type' => 'user_selector',
+                                'selector_info' => (object) [
+                                        'rolesn' => 'student'
+                                ]
+                        ]
+                ),
+                'groupid' => array(
+                        'type' => PARAM_INT,
+                        'default' => '',
+                        'format' => [
+                                'type' => 'entity_selector',
+                                'selector_info' => (object) [
+                                        'entity_type' => '\\local_cveteval\\local\\persistent\\group\\entity',
+                                        'display_field' => 'name'
+                                ]
+                        ]
+                ),
         );
     }
 }

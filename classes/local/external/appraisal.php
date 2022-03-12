@@ -23,7 +23,6 @@
  */
 
 namespace local_cveteval\local\external;
-defined('MOODLE_INTERNAL') || die();
 
 use context_system;
 use external_function_parameters;
@@ -48,25 +47,25 @@ class appraisal extends base_get_entity {
      */
     public static function get_returns() {
         return new external_multiple_structure(
-            static::single_appraisal_returns()
+                static::single_appraisal_returns()
         );
     }
 
     protected static function single_appraisal_returns() {
         return new external_single_structure(
-            array(
-                'id' => new external_value(PARAM_INT, 'id of the appraisal criterion'),
-                'studentid' => new external_value(PARAM_INT, 'id of the student'),
-                'appraiserid' => new external_value(PARAM_INT, 'id of the appraiser'),
-                'evalplanid' => new external_value(PARAM_INT, 'id of the evalplan'),
-                'context' => new external_value(PARAM_TEXT, 'context'),
-                'contextformat' => new external_value(PARAM_INT, 'context format', VALUE_DEFAULT, FORMAT_PLAIN),
-                'comment' => new external_value(PARAM_TEXT, 'comment'),
-                'commentformat' => new external_value(PARAM_INT, 'comment format', VALUE_DEFAULT, FORMAT_PLAIN),
-                'timemodified' => new external_value(PARAM_INT, 'last modification time'),
-                'timecreated' => new external_value(PARAM_INT, 'last modification time'),
-                'usermodified' => new external_value(PARAM_INT, 'user modified'),
-            )
+                array(
+                        'id' => new external_value(PARAM_INT, 'id of the appraisal criterion'),
+                        'studentid' => new external_value(PARAM_INT, 'id of the student'),
+                        'appraiserid' => new external_value(PARAM_INT, 'id of the appraiser'),
+                        'evalplanid' => new external_value(PARAM_INT, 'id of the evalplan'),
+                        'context' => new external_value(PARAM_TEXT, 'context'),
+                        'contextformat' => new external_value(PARAM_INT, 'context format', VALUE_DEFAULT, FORMAT_PLAIN),
+                        'comment' => new external_value(PARAM_TEXT, 'comment'),
+                        'commentformat' => new external_value(PARAM_INT, 'comment format', VALUE_DEFAULT, FORMAT_PLAIN),
+                        'timemodified' => new external_value(PARAM_INT, 'last modification time'),
+                        'timecreated' => new external_value(PARAM_INT, 'last modification time'),
+                        'usermodified' => new external_value(PARAM_INT, 'user modified'),
+                )
         );
     }
 
@@ -83,11 +82,11 @@ class appraisal extends base_get_entity {
      * Return the elements
      */
     public static function submit($id, $studentid, $appraiserid, $evalplanid, $context, $contextformat, $comment, $commentformat,
-        $timemodified, $timecreated, $usermodified) {
+            $timemodified, $timecreated, $usermodified) {
         // TODO: leverage the persistent entities features to get the right columns/fields to return.
         $params = self::validate_parameters(self::submit_parameters(),
-            compact('id', 'studentid', 'appraiserid', 'evalplanid', 'context', 'contextformat', 'comment',
-                'commentformat', 'timemodified', 'timecreated', 'usermodified'));
+                compact('id', 'studentid', 'appraiserid', 'evalplanid', 'context', 'contextformat', 'comment',
+                        'commentformat', 'timemodified', 'timecreated', 'usermodified'));
         $context = context_system::instance();
         self::validate_context($context);
 
@@ -106,19 +105,19 @@ class appraisal extends base_get_entity {
      */
     public static function submit_parameters() {
         return new external_function_parameters(
-            array(
-                'id' => new external_value(PARAM_INT, 'id of the appraisal criterion', VALUE_DEFAULT),
-                'studentid' => new external_value(PARAM_INT, 'id of the student'),
-                'appraiserid' => new external_value(PARAM_INT, 'id of the appraiser'),
-                'evalplanid' => new external_value(PARAM_INT, 'id of the evalplan'),
-                'context' => new external_value(PARAM_TEXT, 'context', VALUE_DEFAULT, ""),
-                'contextformat' => new external_value(PARAM_INT, 'context format', VALUE_DEFAULT, FORMAT_PLAIN),
-                'comment' => new external_value(PARAM_TEXT, 'comment', VALUE_DEFAULT, ""),
-                'commentformat' => new external_value(PARAM_INT, 'comment format', VALUE_DEFAULT, FORMAT_PLAIN),
-                'timemodified' => new external_value(PARAM_INT, 'last modification time', VALUE_DEFAULT, 0),
-                'timecreated' => new external_value(PARAM_INT, 'last modification time', VALUE_DEFAULT, 0),
-                'usermodified' => new external_value(PARAM_INT, 'user modified', VALUE_DEFAULT, 0),
-            )
+                array(
+                        'id' => new external_value(PARAM_INT, 'id of the appraisal criterion', VALUE_DEFAULT),
+                        'studentid' => new external_value(PARAM_INT, 'id of the student'),
+                        'appraiserid' => new external_value(PARAM_INT, 'id of the appraiser'),
+                        'evalplanid' => new external_value(PARAM_INT, 'id of the evalplan'),
+                        'context' => new external_value(PARAM_TEXT, 'context', VALUE_DEFAULT, ""),
+                        'contextformat' => new external_value(PARAM_INT, 'context format', VALUE_DEFAULT, FORMAT_PLAIN),
+                        'comment' => new external_value(PARAM_TEXT, 'comment', VALUE_DEFAULT, ""),
+                        'commentformat' => new external_value(PARAM_INT, 'comment format', VALUE_DEFAULT, FORMAT_PLAIN),
+                        'timemodified' => new external_value(PARAM_INT, 'last modification time', VALUE_DEFAULT, 0),
+                        'timecreated' => new external_value(PARAM_INT, 'last modification time', VALUE_DEFAULT, 0),
+                        'usermodified' => new external_value(PARAM_INT, 'user modified', VALUE_DEFAULT, 0),
+                )
         );
     }
 

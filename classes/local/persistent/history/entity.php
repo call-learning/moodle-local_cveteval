@@ -23,8 +23,7 @@ use local_cltools\local\crud\enhanced_persistent_impl;
 use local_cltools\local\field\blank_field;
 use local_cltools\local\field\boolean;
 use local_cltools\local\field\text;
-
-defined('MOODLE_INTERNAL') || die();
+use moodle_exception;
 
 /**
  * Import and model history
@@ -43,6 +42,7 @@ class entity extends persistent implements enhanced_persistent {
     const CACHE_REQUEST_CURRENT_HISTORY_STRICT_NAME = 'local_cveteval_currenthistory_is_strict';
 
     const HISTORY_DISABLED_CONFIG_NAME = 'history_disabled_globally';
+    const HISTORY_DISABLED_ID = -1;
 
     /**
      * Define fields
@@ -108,13 +108,13 @@ class entity extends persistent implements enhanced_persistent {
      * @param int $id import id
      * @param bool $strict should only look for this historyid or also the default historyid (0)
      * @return false|int
-     * @throws \moodle_exception
+     * @throws moodle_exception
      */
     public static function set_current_id($id, $strict = false) {
         $cache = cache::make('local_cveteval', 'persistenthistory');
         if (!$id) {
             if (!self::record_exists($id)) {
-                throw new \moodle_exception('couldnotfindhistory', 'local_cveteval', '', $id);
+                throw new moodle_exception('couldnotfindhistory', 'local_cveteval', '', $id);
             }
         }
         $cache->set(self::CACHE_REQUEST_CURRENT_HISTORY_ID_NAME, $id);
@@ -129,8 +129,6 @@ class entity extends persistent implements enhanced_persistent {
         $cache->set(self::CACHE_REQUEST_CURRENT_HISTORY_ID_NAME, 0);
         $cache->set(self::CACHE_REQUEST_CURRENT_HISTORY_STRICT_NAME, false);
     }
-
-    const HISTORY_DISABLED_ID = -1;
 
     /**
      * Disable history for current request

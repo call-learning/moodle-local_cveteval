@@ -15,10 +15,6 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace local_cveteval\local\datamigration;
-use local_cveteval\local\persistent\model_with_history;
-
-defined('MOODLE_INTERNAL') || die();
-
 
 /**
  * Data migration entity
@@ -28,9 +24,9 @@ defined('MOODLE_INTERNAL') || die();
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class data_model_matcher {
+    protected array $matchers;
     private $originimportid;
     private $destimportid;
-    protected array $matchers;
 
     /**
      * Constructor
@@ -42,13 +38,33 @@ class data_model_matcher {
         $this->originimportid = $originimportid;
         $this->destimportid = $destimportid;
         $this->matchers = [];
-        foreach(self::get_model_matchers_class() as $macherclass) {
-            $this->matchers[]  = new $macherclass($this);
+        foreach (self::get_model_matchers_class() as $macherclass) {
+            $this->matchers[] = new $macherclass($this);
         }
     }
 
     /**
+     * Get all entities matcher
+     *
+     * @return array
+     */
+    public static function get_model_matchers_class() {
+        $files = scandir(__DIR__ . '/matchers');
+        $classes = array_filter($files, function($file) {
+            return !is_dir(__DIR__ . "/$file") && !in_array($file, ['.', '..']);
+        });
+        $classes = array_map(function($cl) {
+            return '\local_cveteval\local\datamigration\matchers\\' . basename($cl, '.php');
+        }, $classes);
+        $matcherclasses = array_filter($classes, function($class) {
+            return class_exists($class) && in_array(matchers\base::class, class_parents($class));
+        });
+        return $matcherclasses;
+    }
+
+    /**
      * Get origin id
+     *
      * @return int
      */
     public function get_origin_id() {
@@ -72,6 +88,25 @@ class data_model_matcher {
     public function get_matched_entities_list() {
         return $this->iterate_over_matchers("get_matched_origin_entities");
     }
+
+    /**
+     * Helper function that iterates through all matchers
+     *
+     * @param $callbackname
+     * @return array
+     */
+    protected function iterate_over_matchers($callbackname) {
+        $entities = [];
+        foreach ($this->matchers as $matcher) {
+            $entityclass = $matcher->get_entity();
+            if (empty($entities[$entityclass])) {
+                $entities[$entityclass] = [];
+            }
+            $entities[$entityclass] = $matcher->$callbackname();
+        }
+        return $entities;
+    }
+
     /**
      * Return an array of entities ID that could not be matched from the dest to origin models
      *
@@ -88,43 +123,5 @@ class data_model_matcher {
      */
     public function get_orphaned_entities_list() {
         return $this->iterate_over_matchers("get_orphaned_origin_entities");
-    }
-
-
-    /**
-     * Helper function that iterates through all matchers
-     *
-     * @param $callbackname
-     * @return array
-     */
-    protected function iterate_over_matchers($callbackname) {
-        $entities = [];
-        foreach($this->matchers as $matcher) {
-            $entityclass = $matcher->get_entity();
-            if (empty($entities[$entityclass])) {
-                $entities[$entityclass] = [];
-            }
-            $entities[$entityclass] = $matcher->$callbackname();
-        }
-        return $entities;
-    }
-
-    /**
-     * Get all entities matcher
-     *
-     * @return array
-     */
-    public static function get_model_matchers_class() {
-        $files = scandir(__DIR__.'/matchers');
-        $classes = array_filter($files, function($file)  {
-            return !is_dir(__DIR__. "/$file") && !in_array($file, ['.', '..']);
-        });
-        $classes = array_map(function($cl) {
-            return '\local_cveteval\local\datamigration\matchers\\'.basename($cl, '.php');
-        }, $classes);
-        $matcherclasses = array_filter($classes, function($class) {
-            return class_exists($class) && in_array(matchers\base::class, class_parents($class));
-        });
-        return $matcherclasses;
     }
 }
