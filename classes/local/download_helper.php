@@ -134,6 +134,7 @@ class download_helper {
      */
     public static function download_userdata_appraisal($importid, string $dataformat) {
         global $DB;
+        persistent\history\entity::set_current_id($importid);
         $sql = planning_entity::get_historical_sql_query('plan');
         $rs = $DB->get_recordset_sql("SELECT CONCAT(a.id, ac.id) AS id, a.*, c.idnumber AS critidnumber,
                     ac.grade AS grade, ac.comment AS gradecomment, ac.commentformat AS gradecommentformat,

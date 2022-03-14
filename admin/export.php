@@ -41,7 +41,7 @@ $PAGE->set_pagelayout('standard');
 $PAGE->set_context(context_system::instance());
 $PAGE->set_title(get_string('import:download', 'local_cveteval'));
 $PAGE->set_heading(get_string('import:download', 'local_cveteval'));
-$PAGE->set_url(new moodle_url('/local/cveteval/admin/importdownload.php'));
+$PAGE->set_url(new moodle_url('/local/cveteval/admin/export.php'));
 
 if (!empty($dataformat) && !empty($importid) && !empty($type)) {
     $downloadcb = "download_{$downloadtype}_{$type}";
@@ -59,7 +59,7 @@ echo $OUTPUT->heading(get_string('download:model', 'local_cveteval'));
 foreach (['situation', 'planning', 'group', 'evaluation_grid'] as $filetype) {
     echo $OUTPUT->download_dataformat_selector(
             get_string('import:downloadfile', 'local_cveteval', get_string($filetype . ':entity', 'local_cveteval')),
-            $CFG->wwwroot . '/local/cveteval/admin/importdownload.php',
+            $CFG->wwwroot . '/local/cveteval/admin/export.php',
             'dataformat',
             ['importid' => $importid, 'type' => $filetype, 'downloadtype' => 'model']
     );
@@ -69,7 +69,7 @@ echo $OUTPUT->heading(get_string('download:userdata', 'local_cveteval'));
 foreach (['appraisal', 'final_evaluation'] as $filetype) {
     echo $OUTPUT->download_dataformat_selector(
             get_string('import:downloadfile', 'local_cveteval', get_string($filetype . ':entity', 'local_cveteval')),
-            $CFG->wwwroot . '/local/cveteval/admin/importdownload.php',
+            $CFG->wwwroot . '/local/cveteval/admin/export.php',
             'dataformat',
             ['importid' => $importid, 'type' => $filetype, 'downloadtype' => 'userdata']
     );

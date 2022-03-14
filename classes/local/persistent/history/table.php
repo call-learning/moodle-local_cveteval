@@ -64,7 +64,7 @@ class table extends entity_table {
     protected function col_tools($row) {
         global $OUTPUT, $CFG, $PAGE;
         $returnurl = new moodle_url('/local/cveteval/admin/importindex.php');
-        $url = new moodle_url($CFG->wwwroot . '/local/cveteval/admin/importdownload.php',
+        $url = new moodle_url($CFG->wwwroot . '/local/cveteval/admin/export.php',
                 ['importid' => $row->id, 'returnurl' => $returnurl]);
         $buttons = $OUTPUT->action_icon($url, new pix_icon('t/download', get_string('download:model', 'local_cveteval')));
         $url = new moodle_url($CFG->wwwroot . '/local/cveteval/manage/index.php',
