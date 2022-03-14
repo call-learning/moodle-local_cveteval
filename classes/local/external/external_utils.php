@@ -45,9 +45,10 @@ class external_utils {
      * Query entities
      *
      * @param $entitytype
-     * @param string $queryjson
      * @param array $query associative array (a column => value)
+     * @param null $select
      * @return false|int|mixed
+     * @throws \coding_exception
      * @throws dml_exception
      */
     public static function query_entities($entitytype, $query, $select = null) {
@@ -109,7 +110,6 @@ class external_utils {
      * Additional query to retrieve values from a simple entity (planning, criteria, situation)
      *
      * @param $entitytype
-     * @param $contextid
      * @return array
      */
     protected static function get_entity_additional_query($entitytype) {
@@ -133,7 +133,8 @@ class external_utils {
                 ];
             case 'appraisal':
                 return [
-                        '( eplan.id IS NOT NULL AND (( ga.studentid = :rolecheckstudentid AND e.studentid = :appraisalcheckstudentid )'
+                        '( eplan.id IS NOT NULL AND (( ga.studentid = :rolecheckstudentid
+                        AND e.studentid = :appraisalcheckstudentid )'
                         . ' OR ( role.userid = :rolecheckappraiserid AND (role.type = :rolechecktypeappraiser OR
                role.type = :rolechecktypeassessor ))))',
                         $paramscheckroleappraisal,
@@ -147,7 +148,8 @@ class external_utils {
                 ];
             case 'appraisal_criterion':
                 return [
-                        '( eplan.id IS NOT NULL AND (( ga.studentid = :rolecheckstudentid AND appr.studentid = :appraisalcheckstudentid )'
+                        '( eplan.id IS NOT NULL AND (( ga.studentid = :rolecheckstudentid
+                         AND appr.studentid = :appraisalcheckstudentid )'
                         . ' OR ( role.userid = :rolecheckappraiserid AND (role.type = :rolechecktypeappraiser OR
                role.type = :rolechecktypeassessor ))))',
                         $paramscheckroleappraisal,

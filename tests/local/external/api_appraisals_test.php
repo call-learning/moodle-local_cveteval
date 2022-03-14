@@ -132,7 +132,7 @@ class api_appraisals_test extends advanced_testcase {
         $this->setUser($user1);
         $appraisalscrit = appr_crit::get();
         $this->assertNotEmpty($appraisalscrit, json_encode($DB->get_records(appraisal_criteria_entity::TABLE), true));
-        // Group A: 6 appraisals, 40 criteria => 240 criteria
+        // Group A: 6 appraisals, 40 criteria => 240 criteria.
         $this->assertCount(6 * 40, $appraisalscrit); // 6 situations for this user in his planning.
         // Now I am an appraiser, I should see my appraisals.
         $obs1 = core_user::get_user_by_username('obs1');

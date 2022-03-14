@@ -19,8 +19,6 @@ namespace local_cveteval\local\persistent;
 use local_cveteval\local\persistent\history\entity as history_entity;
 use local_cveteval\test\assessment_test_trait;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Historical model test.
  *
@@ -92,7 +90,7 @@ class model_with_history_test extends \advanced_testcase {
         $this->assertEquals(2, criterion\entity::count_records(['evalgridid' => $evalgrid->get('id')]));
         $this->assertEquals(42, criterion\entity::count_records()); // Default criteria: 40.
         $this->assertEquals(['criterion1', 'criterion1bis'],
-            array_map($extractidnumber, criterion\entity::get_records(['evalgridid' => $evalgrid->get('id')])));
+            array_map($extractidnumber, array_values(criterion\entity::get_records(['evalgridid' => $evalgrid->get('id')]))));
         $this->assertCount(2,
             criterion\entity::get_records_select("evalgridid = :evalgridid", ['evalgridid' => $evalgrid->get('id')]));
         $this->assertCount(1, planning\entity::get_records());
@@ -113,10 +111,9 @@ class model_with_history_test extends \advanced_testcase {
         $this->assertCount(2,
             criterion\entity::get_records_select("evalgridid = :evalgridid", ['evalgridid' => $evalgrid->get('id')]));
         $this->assertEquals(['criterion2', 'criterion2bis'],
-            array_map($extractidnumber, criterion\entity::get_records(['evalgridid' => $evalgrid->get('id')])));
+            array_map($extractidnumber, array_values(criterion\entity::get_records(['evalgridid' => $evalgrid->get('id')]))));
         $this->assertEquals(0, planning\entity::count_records());
         $this->assertEquals(0, planning\entity::count_records());
-
 
         // All are active now.
         $firsthistory->set('isactive', true);
@@ -129,7 +126,7 @@ class model_with_history_test extends \advanced_testcase {
         $this->assertCount(4,
             criterion\entity::get_records_select("evalgridid = :evalgridid", ['evalgridid' => $evalgrid->get('id')]));
         $this->assertEquals(['criterion1', 'criterion1bis', 'criterion2', 'criterion2bis'],
-            array_map($extractidnumber, criterion\entity::get_records(['evalgridid' => $evalgrid->get('id')])));
+            array_map($extractidnumber, array_values(criterion\entity::get_records(['evalgridid' => $evalgrid->get('id')]))));
         $this->assertEquals(44, criterion\entity::count_records()); // Default criteria: 40.
         $this->assertEquals(1, planning\entity::count_records());
         $this->assertEquals(1, planning\entity::count_records());
@@ -142,7 +139,7 @@ class model_with_history_test extends \advanced_testcase {
         $this->assertCount(2,
             criterion\entity::get_records_select("evalgridid = :evalgridid", ['evalgridid' => $evalgrid->get('id')]));
         $this->assertEquals(['criterion2', 'criterion2bis'],
-            array_map($extractidnumber, criterion\entity::get_records(['evalgridid' => $evalgrid->get('id')])));
+            array_map($extractidnumber, array_values(criterion\entity::get_records(['evalgridid' => $evalgrid->get('id')]))));
         $this->assertEquals(42, criterion\entity::count_records()); // Default criteria: 40.
         $this->assertEquals(0, planning\entity::count_records());
         $this->assertEquals(0, planning\entity::count_records());

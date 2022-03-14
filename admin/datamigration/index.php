@@ -31,26 +31,24 @@ require_once($CFG->libdir . "/adminlib.php");
 admin_externalpage_setup('cvetevalmigration');
 $step = optional_param('step', 'init', PARAM_ALPHA);
 $title = $step ?
-    get_string('datamigrationstep', 'local_cveteval',
-        get_string('dmcstep:' . $step, 'local_cveteval'))
-    : get_string('datamigration', 'local_cveteval');
+        get_string('datamigrationstep', 'local_cveteval',
+                get_string('dmcstep:' . $step, 'local_cveteval'))
+        : get_string('datamigration', 'local_cveteval');
 
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
 $currenturl = new moodle_url('/local/cveteval/admin/datamigration/index.php', [
-    'step' => $step
+        'step' => $step
 ]);
 
 $PAGE->set_url($currenturl);
 $dmc = new data_migration_controller($step);
 $renderable = $dmc->get_widget();
 if ($form = $dmc->get_form($renderable)) {
-    if ($form) {
-        if($data = $form->get_data()) {
-            $form->execute_action($data);
-        } else if ($form->is_cancelled()) {
-            $form->execute_cancel();
-        }
+    if ($data = $form->get_data()) {
+        $form->execute_action($data);
+    } else if ($form->is_cancelled()) {
+        $form->execute_cancel();
     }
 }
 $dmc->prepare_page();

@@ -39,7 +39,7 @@ class planning extends base {
      * Try to match a given model/entity type
      *
      * @param persistent $newentity
-     * @return persistent|persistent[]|false
+     * @return persistent[]
      */
     public function do_match(persistent $newentity) {
         global $DB;

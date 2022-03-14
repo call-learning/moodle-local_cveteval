@@ -51,9 +51,9 @@ trait importer_test_trait {
     /**
      * Assert file can be imported and checked.
      */
-    public function assert_validation(base_helper $importhelper, $shouldhaveerror = null) {
+    public function assert_validation(base_helper $importhelper, $shouldhaveerror = null, $printederrormessage = '') {
         $haserror = !$importhelper->get_processor()->validate();
-        $this->assertEquals($shouldhaveerror, $haserror);
+        $this->assertEquals($shouldhaveerror, $haserror, $printederrormessage);
     }
 
     /**
@@ -62,7 +62,6 @@ trait importer_test_trait {
      * @param string $type
      * @param string $filename
      * @return mixed
-     * @throws dml_exception
      */
     public function get_import_helper($type, $filename) {
         global $CFG;

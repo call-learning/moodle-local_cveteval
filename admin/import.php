@@ -41,7 +41,7 @@ $form = new cveteval_import_form();
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('import:heading:process', 'local_cveteval'));
 
-/* @var core_renderer $OUTPUT */
+/* @var core_renderer $OUTPUT .*/
 if ($formdata = $form->get_data()) {
     global $DB;
     // Just in case.
@@ -89,8 +89,8 @@ if ($formdata = $form->get_data()) {
             array(
                     'importid' => $importid,
                     'failed' => $importfailed,
-                    'continuenurl' => $manageurl->out(true),
-                    'restarturl' => $currenturl->out(true)
+                    'continuenurl' => $manageurl->out(),
+                    'restarturl' => $currenturl->out()
 
             )
     );

@@ -39,9 +39,9 @@ class user_data_migration_helper {
     /**
      * @param $contexts
      * @param $stepdata
-     * @param $output
      * @return array
      * @throws coding_exception
+     * @throws dml_exception
      */
     public static function convert_origin_appraisals($contexts, $stepdata) {
         $newappraisalinfo = [];
@@ -117,8 +117,8 @@ class user_data_migration_helper {
     /**
      * @param $contexts
      * @param $stepdata
-     * @param $output
      * @return array
+     * @throws dml_exception
      */
     public static function convert_origin_finaleval($contexts, $stepdata) {
         $newfinalevalinfo = [];

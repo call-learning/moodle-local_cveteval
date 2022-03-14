@@ -83,7 +83,7 @@ class role_importation_failed extends base {
     /**
      * Get URL related to the action.
      *
-     * @return moodle_url
+     * @return moodle_url|null
      */
     public function get_url() {
         return null;

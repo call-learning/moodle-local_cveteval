@@ -36,7 +36,7 @@ class criterion extends base {
     /**
      * Try to match a given model/entity type
      *
-     * @return persistent|persistent[]|false
+     * @return persistent[]
      */
     public function do_match(persistent $newentity) {
         history_entity::set_current_id($this->dm->get_dest_id());

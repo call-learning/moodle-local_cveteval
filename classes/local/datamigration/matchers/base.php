@@ -124,7 +124,7 @@ abstract class base {
      * Retrieve a list of matched entities' id (which are both in old and new model)
      *
      *
-     * @return int[]|false associative array with oldentityid => newentityid
+     * @return int[] associative array with oldentityid => newentityid
      */
     public function get_matched_origin_entities() {
         return $this->matchedentities;
@@ -133,7 +133,7 @@ abstract class base {
     /**
      * Retrieve a list of unmatched entities'  id (which are only in the new model)
      *
-     * @return int[]|false array composed of unmatched entity id
+     * @return int[] array composed of unmatched entity id
      */
     public function get_unmatched_dest_entities() {
         return $this->unmatchedentities;
@@ -142,7 +142,7 @@ abstract class base {
     /**
      * Retrieve a list of orphaned entities'  id (which are only in the old model)
      *
-     * @return int[]|false array composed of orphaned entity id
+     * @return int[] array composed of orphaned entity id
      */
     public function get_orphaned_origin_entities() {
         return $this->orphanedentities;

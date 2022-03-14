@@ -19,8 +19,6 @@ namespace local_cveteval\local\importer;
 use local_cveteval\test\importer_test_trait;
 use tool_importer\local\exceptions\importer_exception;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Planning importer test
  *
@@ -51,7 +49,8 @@ class planning_importer_test extends \advanced_testcase {
      */
     public function test_basic_import($filename, $results, $validationerrors) {
         $this->resetAfterTest();
-        \local_cveteval\local\persistent\history\entity::disable_history_globally(); // Disable to speed up tests as we do not need history here.
+        \local_cveteval\local\persistent\history\entity::disable_history_globally();
+        // Disable to speed up tests as we do not need history here.
         foreach (self::EXISTING_USERS as $useremail) {
             $this->getDataGenerator()->create_user(['email' => $useremail]);
         }

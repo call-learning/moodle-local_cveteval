@@ -35,7 +35,7 @@ class situation extends base {
     /**
      * Try to match a given model/entity type
      *
-     * @return persistent|persistent[]|false
+     * @return persistent[]
      */
     public function do_match(persistent $newentity) {
         return entity::get_records(['idnumber' => $newentity->get('idnumber')]);

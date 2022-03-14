@@ -28,8 +28,9 @@ use local_cveteval\utils;
 /**
  * Execute local_cveteval upgrade from the given old version.
  *
- * @param int $oldversion
  * @return bool
+ * @throws coding_exception
+ * @throws dml_exception
  */
 function xmldb_local_cveteval_install() {
     utils::create_scale_if_not_present();

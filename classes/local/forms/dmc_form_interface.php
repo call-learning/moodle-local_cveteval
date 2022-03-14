@@ -23,9 +23,6 @@
  */
 
 namespace local_cveteval\local\forms;
-
-global $CFG;
-
 /**
  * DMC form interface
  *

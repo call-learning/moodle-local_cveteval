@@ -61,7 +61,7 @@ class entity extends persistent implements enhanced_persistent {
     /**
      * Get current
      *
-     * @return false|entity
+     * @return entity
      */
     public static function get_current() {
         static $current = null;
@@ -96,8 +96,7 @@ class entity extends persistent implements enhanced_persistent {
      */
     public static function is_currentid_strict() {
         $cache = cache::make('local_cveteval', 'persistenthistory');
-        $strict = $cache->get(self::CACHE_REQUEST_CURRENT_HISTORY_STRICT_NAME);
-        return $strict;
+        return $cache->get(self::CACHE_REQUEST_CURRENT_HISTORY_STRICT_NAME);
     }
 
     /**
@@ -107,7 +106,6 @@ class entity extends persistent implements enhanced_persistent {
      *
      * @param int $id import id
      * @param bool $strict should only look for this historyid or also the default historyid (0)
-     * @return false|int
      * @throws moodle_exception
      */
     public static function set_current_id($id, $strict = false) {
@@ -140,7 +138,7 @@ class entity extends persistent implements enhanced_persistent {
     }
 
     /**
-     * @return false|entity
+     * @return bool|false
      */
     public static function is_disabled() {
         $cache = cache::make('local_cveteval', 'persistenthistory');

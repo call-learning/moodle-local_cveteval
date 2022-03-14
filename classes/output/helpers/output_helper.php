@@ -35,17 +35,15 @@ class output_helper {
 
     public static function export_entity_situation($entityid) {
         $newentity = new situation_entity($entityid);
-        $situation = ['label' => $newentity->get('title') . '(' . $newentity->get('idnumber') . ')'];
-        return $situation;
+        return ['label' => $newentity->get('title') . '(' . $newentity->get('idnumber') . ')'];
     }
 
     public static function export_entity_role($entityid) {
         $newentity = new role_entity($entityid);
         $user = core_user::get_user($newentity->get('userid'));
         $situation = new situation_entity($newentity->get('clsituationid'));
-        $role = ['label' => fullname($user) . ' (' . role_entity::get_type_fullname($newentity->get('type')) . ') - '
+        return ['label' => fullname($user) . ' (' . role_entity::get_type_fullname($newentity->get('type')) . ') - '
                 . $situation->get('idnumber')];
-        return $role;
     }
 
     public static function export_entity_criterion($entityid, $shortlabel = false) {
@@ -53,40 +51,34 @@ class output_helper {
         if ($shortlabel) {
             return ['label' => $newentity->get('idnumber')];
         }
-        $criterion = ['label' => $newentity->get('label') . '(' . $newentity->get('idnumber') . ')'];
-        return $criterion;
+        return ['label' => $newentity->get('label') . '(' . $newentity->get('idnumber') . ')'];
     }
 
     public static function export_entity_group_assignment($entityid) {
         $newentity = new group_assignment_entity($entityid);
         $student = core_user::get_user($newentity->get('studentid'));
         $group = new group_entity($newentity->get('groupid'));
-        $groupa = ['label' => fullname($student) . ' - ' . $group->get('name')];
-        return $groupa;
+        return ['label' => fullname($student) . ' - ' . $group->get('name')];
     }
 
     public static function export_entity_evaluation_grid($entityid) {
         $newentity = new evaluation_grid_entity($entityid);
-        $evalgrid = ['label' => $newentity->get('name') . '(' . $newentity->get('idnumber') . ')'];
-        return $evalgrid;
+        return ['label' => $newentity->get('name') . '(' . $newentity->get('idnumber') . ')'];
     }
 
     public static function export_entity_group($entityid) {
         $newentity = new group_entity($entityid);
-        $group = ['label' => $newentity->get('name')];
-        return $group;
+        return ['label' => $newentity->get('name')];
     }
 
     public static function export_entity_planning($entityid) {
         $newentity = new planning_entity($entityid);
         $situation = new situation_entity($newentity->get('clsituationid'));
         $group = new group_entity($newentity->get('groupid'));
-        $planning =
-                ['label' =>
-                        $newentity->get_starttime_string() . '/' . $newentity->get_endtime_string()
-                        . ' - ' .
-                        $group->get('name')
-                        . ' / ' . $situation->get('idnumber')];
-        return $planning;
+        return ['label' =>
+                $newentity->get_starttime_string() . '/' . $newentity->get_endtime_string()
+                . ' - ' .
+                $group->get('name')
+                . ' / ' . $situation->get('idnumber')];
     }
 }

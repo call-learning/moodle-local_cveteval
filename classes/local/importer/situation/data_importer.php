@@ -87,7 +87,7 @@ class data_importer extends \tool_importer\data_importer {
      * @throws validation_exception
      */
     public function validate_before_transform($row, $rowindex, $options = null) {
-        $checkotherentities = empty($options['fastcheck']) ? true : !$options['fastcheck'];
+        $checkotherentities = empty($options['fastcheck']) || !$options['fastcheck'];
         parent::validate_before_transform($row, $rowindex);
         if (!empty($row['GrilleEval'])) {
             $trimmedval = trim($row['GrilleEval']);
@@ -152,8 +152,7 @@ class data_importer extends \tool_importer\data_importer {
      *
      * @param array $row associative array storing the record
      * @param mixed|null $options import options
-     * @return mixed|void
-     * @throws importer_exception
+     * @return situation_entity
      */
     protected function raw_import($row, $rowindex, $options = null) {
         $assessors = $row['assessors'];

@@ -21,6 +21,7 @@
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 namespace local_cveteval\local\persistent\import_log;
 
 use coding_exception;
@@ -58,8 +59,6 @@ class table extends entity_table {
      *
      * @param $row
      * @return string
-     * @throws coding_exception
-     * @throws moodle_exception
      */
     protected function col_origin($row) {
         return basename($row->origin);
@@ -78,8 +77,7 @@ class table extends entity_table {
         if (is_object($addinfo)) {
             $addinfo = $addinfo->info ?? '';
         }
-        $message = get_string($row->messagecode, $row->module, $addinfo);
-        return $message;
+        return get_string($row->messagecode, $row->module, $addinfo);
     }
 
     /**

@@ -54,7 +54,7 @@ if (!$importid) {
         $selection[$history->get('id')] = $history->get('idnumber');
     }
     sesskey();
-    /* @var core_renderer $OUTPUT */
+    /* @var core_renderer $OUTPUT .*/
     $currenturl->remove_all_params();
     $currenturl->param('type', $cleanuptype);
     $currenturl->param('returnurl', $returnurl);
@@ -69,7 +69,7 @@ if (!$importid) {
     );
 } else {
     $currenthistory = new local_cveteval\local\persistent\history\entity($importid);
-    /* @var core_renderer $OUTPUT */
+    /* @var core_renderer $OUTPUT .*/
     echo $OUTPUT->box(get_string('cleanup:details', 'local_cveteval', $currenthistory->to_record()),
             'generalboxalert alert-secondary');
 
@@ -81,7 +81,7 @@ if (!$importid) {
         $progressbar->create();
 
         utils::$cleanupcb($importid, $progressbar);
-        /* @var core_renderer $OUTPUT */
+        /* @var core_renderer $OUTPUT .*/
         echo $OUTPUT->continue_button(
                 new moodle_url($returnurl)
         );

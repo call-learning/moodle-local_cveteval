@@ -33,9 +33,8 @@ class model_with_history_util {
         $classes = array_map(function($file) use ($currentnamespace) {
             return "$currentnamespace\\$file\\entity";
         }, $folders);
-        $classeswithistory = array_filter($classes, function($class) {
+        return array_filter($classes, function($class) {
             return class_exists($class) && in_array(model_with_history::class, class_implements($class));
         });
-        return $classeswithistory;
     }
 }

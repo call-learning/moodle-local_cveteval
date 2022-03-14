@@ -37,7 +37,6 @@ use local_cveteval\local\persistent\group_assignment\entity as group_assignment_
 use local_cveteval\local\persistent\planning\entity as planning_entity;
 use local_cveteval\local\persistent\situation\entity as situation_entity;
 use moodle_url;
-use ReflectionException;
 
 /**
  * A list of student matching this situation
@@ -94,8 +93,6 @@ class mystudents extends dynamic_table_sql {
      *
      * Add all the fields from persistent class except the reserved ones
      *
-     * @return array
-     * @throws ReflectionException
      */
     protected function setup_fields() {
         $this->fields = [

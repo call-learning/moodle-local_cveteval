@@ -151,8 +151,7 @@ class import_helper extends base_helper {
                         ),
         );
 
-        $transformer = new standard($transformdef, ',');
-        return $transformer;
+        return new standard($transformdef, ',');
     }
 
     /**
@@ -168,8 +167,9 @@ class import_helper extends base_helper {
      * @param csv_data_source $csvsource
      * @param data_transformer $transformer
      * @param data_importer $dataimporter
-     * @param $progressbar
-     * @param $importid
+     * @param object $progressbar
+     * @param int $importid
+     * @return processor
      */
     protected function create_processor($csvsource, $transformer, $dataimporter,
             $progressbar, $importid) {

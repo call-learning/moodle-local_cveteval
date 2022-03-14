@@ -18,7 +18,6 @@ namespace local_cveteval\task;
 
 use core\task\adhoc_task;
 use local_cveteval\local\persistent\history\entity as history_entity;
-use tool_importer\local\validation_log;
 
 /**
  * Import default grid task

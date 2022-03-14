@@ -13,12 +13,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
 namespace local_cveteval\local\importer;
-
 use local_cveteval\test\importer_test_trait;
-
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * Grouping importer test
@@ -37,7 +33,8 @@ class grouping_importer_test extends \advanced_testcase {
      */
     public function test_basic_import($filename, $results, $validationerrors) {
         $this->resetAfterTest();
-        \local_cveteval\local\persistent\history\entity::disable_history_globally(); // Disable to speed up tests as we do not need history here.
+        \local_cveteval\local\persistent\history\entity::disable_history_globally();
+        // Disable to speed up tests as we do not need history here.
         if (!empty($results['exception'])) {
             $this->expectException($results['exception']);
         }

@@ -19,8 +19,6 @@ namespace local_cveteval\local\importer;
 use local_cveteval\local\persistent\situation\entity as situation_entity;
 use local_cveteval\test\importer_test_trait;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Situation importer test
  *
@@ -54,7 +52,8 @@ class situation_importer_test extends \advanced_testcase {
      */
     public function test_basic_import($filename, $results, $validationerrors) {
         $this->resetAfterTest();
-        \local_cveteval\local\persistent\history\entity::disable_history_globally(); // Disable to speed up tests as we do not need history here.
+        \local_cveteval\local\persistent\history\entity::disable_history_globally();
+        // Disable to speed up tests as we do not need history here.
         if (!empty($results['exception'])) {
             $this->expectException($results['exception']);
         }
@@ -62,7 +61,7 @@ class situation_importer_test extends \advanced_testcase {
             $this->getDataGenerator()->create_user(['email' => $useremail]);
         }
         $importhelper = $this->get_import_helper('situation', $filename);
-        $this->assert_validation($importhelper, $results['haserror'], $results['exception'] ?? null);
+        $this->assert_validation($importhelper, $results['haserror'], $results['exception'] ?? '');
         if ($results['haserror']) {
             $this->assert_validation_errors($validationerrors, $importhelper);
         } else {
@@ -89,7 +88,8 @@ class situation_importer_test extends \advanced_testcase {
                             0 =>
                                 [
                                     'title' => 'Consultations de médecine générale',
-                                    'description' => 'Clinique des animaux de compagnie : médecine générale – médecine interne – médecine d’urgence et soins intensifs',
+                                    'description' => 'Clinique des animaux de compagnie : médecine générale'
+                                     .' – médecine interne – médecine d’urgence et soins intensifs',
                                     'descriptionformat' => '1',
                                     'idnumber' => 'TMG',
                                     'expectedevalsnb' => '1',
@@ -97,7 +97,9 @@ class situation_importer_test extends \advanced_testcase {
                                 ],
                             [
                                 'title' => 'Médecine interne',
-                                'description' => 'Clinique des animaux de compagnie : médecine générale – médecine interne – médecine d’urgence et soins intensifs',
+                                'description' =>
+                                        'Clinique des animaux de compagnie : médecine générale'
+                                         . ' – médecine interne – médecine d’urgence et soins intensifs',
                                 'descriptionformat' => '1',
                                 'idnumber' => 'TMI',
                                 'expectedevalsnb' => '2',
@@ -105,7 +107,9 @@ class situation_importer_test extends \advanced_testcase {
                             ],
                             [
                                 'title' => 'Urgences-Soins intensifs',
-                                'description' => 'Clinique des animaux de compagnie : médecine générale – médecine interne – médecine d’urgence et soins intensifs',
+                                'description' =>
+                                        'Clinique des animaux de compagnie : médecine générale'
+                                         . ' – médecine interne – médecine d’urgence et soins intensifs',
                                 'descriptionformat' => '1',
                                 'idnumber' => 'TUS',
                                 'expectedevalsnb' => '2',

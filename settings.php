@@ -55,7 +55,7 @@ if ($hassiteconfig) {
             new admin_setting_configselect('local_cveteval/grade_scale',
                 new lang_string('settings:grade_scale', 'local_cveteval'),
                 new lang_string('settings:grade_scale', 'local_cveteval'),
-                $defaultid ? $defaultid : array_keys($scalelist)[0],
+                $defaultid ?: array_keys($scalelist)[0],
                 $scalelist
             )
         );

@@ -35,7 +35,7 @@ $PAGE->set_context(context_system::instance());
 $PAGE->set_title(get_string('import:logs', 'local_cveteval'));
 $PAGE->set_heading(get_string('import:logs', 'local_cveteval'));
 $PAGE->set_url(new moodle_url('/local/cveteval/admin/importlogs.php'));
-/* @var core_renderer $OUTPUT */
+/* @var core_renderer $OUTPUT Core renderer.*/
 
 if (!$failed) {
     $PAGE->set_button(

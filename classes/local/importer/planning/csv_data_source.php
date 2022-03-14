@@ -24,10 +24,16 @@
 
 namespace local_cveteval\local\importer\planning;
 
+use cache;
+use cache_store;
 use tool_importer\field_types;
 use tool_importer\local\exceptions\importer_exception;
 
 class csv_data_source extends \tool_importer\local\source\csv_data_source {
+    /**
+     * Planning importer cache
+     */
+    const PLANNING_IMPORTER_CACHE_NAME = 'planningimportercache';
     /**
      * @var array $groupcolumns group columns
      */
@@ -40,9 +46,8 @@ class csv_data_source extends \tool_importer\local\source\csv_data_source {
      * @throws importer_exception
      */
     public function get_fields_definition() {
-        static $columns = null;
-
-        if (!$columns) {
+        $cache = cache::make_from_params(cache_store::MODE_REQUEST, 'local_cveteval', self::PLANNING_IMPORTER_CACHE_NAME);
+        if (!$cache->has('columns')) {
             $additionalcolumns = [
                     'Date début' => [
                             'type' => field_types::TYPE_TEXT,
@@ -70,9 +75,9 @@ class csv_data_source extends \tool_importer\local\source\csv_data_source {
                         ];
                 $this->groupcolumns[] = $colname;
             }
-            $columns = $additionalcolumns;
+            $cache->set('columns', $additionalcolumns);
         }
-        return $columns;
+        return $cache->get('columns');
     }
 
     /**

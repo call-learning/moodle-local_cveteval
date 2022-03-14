@@ -33,7 +33,6 @@ use local_cltools\local\field\text;
 use local_cltools\local\table\dynamic_table_sql;
 use local_cveteval\local\persistent\criterion\entity as criterion_entity;
 use local_cveteval\output\grade_widget;
-use ReflectionException;
 
 /**
  * A list of appraisal criteria for a given appraisal
@@ -90,7 +89,7 @@ class appraisals_criteria extends dynamic_table_sql {
             $subcriteria = $DB->get_records_sql($sql, $params);
             $formattedrow = $this->format_row($row);
             if ($subcriteria) {
-                foreach ($subcriteria as &$sub) {
+                foreach ($subcriteria as $sub) {
                     $sub->grade = $this->col_grade($sub);
                 }
                 $formattedrow['_children'] = array_values($subcriteria);
@@ -119,8 +118,6 @@ class appraisals_criteria extends dynamic_table_sql {
      *
      * Add all the fields from persistent class except the reserved ones
      *
-     * @return array
-     * @throws ReflectionException
      */
     protected function setup_fields() {
         $this->fields = [

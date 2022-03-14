@@ -48,7 +48,7 @@ class grouping_imported extends base {
     /**
      * Get the backup/restore table mapping for this event.
      *
-     * @return string
+     * @return int
      */
     public static function get_objectid_mapping() {
         return base::NOT_MAPPED;
@@ -57,7 +57,7 @@ class grouping_imported extends base {
     /**
      * No mapping
      *
-     * @return array|false
+     * @return false
      */
     public static function get_other_mapping() {
         // Nothing to map.

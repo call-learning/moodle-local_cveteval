@@ -76,8 +76,7 @@ abstract class base_get_entity extends external_api {
         }
         $context = context_system::instance();
         self::validate_context($context);
-        $entities = external_utils::query_entities($entityname, $queryobject);
-        return $entities;
+        return external_utils::query_entities($entityname, $queryobject);
     }
 
     /**

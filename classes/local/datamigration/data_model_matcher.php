@@ -56,10 +56,9 @@ class data_model_matcher {
         $classes = array_map(function($cl) {
             return '\local_cveteval\local\datamigration\matchers\\' . basename($cl, '.php');
         }, $classes);
-        $matcherclasses = array_filter($classes, function($class) {
+        return array_filter($classes, function($class) {
             return class_exists($class) && in_array(matchers\base::class, class_parents($class));
         });
-        return $matcherclasses;
     }
 
     /**

@@ -24,6 +24,8 @@
 
 namespace local_cveteval;
 
+use cache;
+use cache_store;
 use coding_exception;
 use context_system;
 use core\event\webservice_token_created;
@@ -33,7 +35,10 @@ use dml_exception;
 use grade_scale;
 use html_writer;
 use lang_string;
-use local_cveteval\local\persistent\history\entity;
+use local_cveteval\local\persistent\appraisal_comment\entity as appraisal_comment_entity;
+use local_cveteval\local\persistent\appraisal_criterion\entity as appraisal_criterion_entity;
+use local_cveteval\local\persistent\appraisal_criterion_comment\entity as appraisal_criterion_comment_entity;
+use local_cveteval\local\persistent\history\entity as history_entity;
 use local_cveteval\local\persistent\model_with_history_util;
 use local_cveteval\task\upload_default_criteria_grid;
 use moodle_exception;
@@ -43,6 +48,7 @@ use stdClass;
 use testing_util;
 use tool_importer\local\exceptions\importer_exception;
 use tool_importer\local\log_levels;
+use tool_importer\local\logs\import_log_entity;
 use webservice;
 
 /**
@@ -83,6 +89,11 @@ class utils {
     ];
 
     /**
+     * Username cache
+     */
+    const USER_NAME_CACHE_NAME = 'usernamecache';
+
+    /**
      * To get usernames in a loop faster
      *
      * @param $userid
@@ -90,12 +101,11 @@ class utils {
      * @throws dml_exception
      */
     public static function fast_user_fullname($userid) {
-        static $usernames = [];
-        if (empty($usernames[$userid])) {
-            $usernames[$userid] = fullname(core_user::get_user($userid));
+        $cache = cache::make_from_params(cache_store::MODE_APPLICATION, 'local_cveteval', self::USER_NAME_CACHE_NAME);
+        if (!$cache->has($userid)) {
+            $cache->set($userid, fullname(core_user::get_user($userid)));
         }
-
-        return $usernames[$userid];
+        return $cache->get($userid);
     }
 
     /**
@@ -130,7 +140,6 @@ class utils {
     }
 
     /**
-     * @throws coding_exception
      */
     public static function create_update_default_criteria_grid() {
         if (testing_util::is_test_site()) {
@@ -456,14 +465,14 @@ class utils {
             }
             $DB->delete_records($table);
         }
-        //$importlogclass = import_log::class;
-        //$message = "Deleting records from import log...";
-        //if (defined('CLI_SCRIPT') && CLI_SCRIPT == true) {
-        //    cli_writeln($message);
-        //} else {
-        //    echo html_writer::div($message);
-        //}
-        //$DB->delete_records($importlogclass::TABLE, ['module' => 'local_cveteval']);
+        $importlogclass = import_log_entity::class;
+        $message = "Deleting records from import log...";
+        if (defined('CLI_SCRIPT') && CLI_SCRIPT == true) {
+            cli_writeln($message);
+        } else {
+            echo html_writer::div($message);
+        }
+        $DB->delete_records($importlogclass::TABLE, ['module' => 'local_cveteval']);
     }
 
     /**
@@ -473,7 +482,7 @@ class utils {
      * @param progress_bar|null $progressbar
      */
     public static function cleanup_model($importid, $progressbar = null) {
-        local\persistent\history\entity::set_current_id($importid, true);
+        history_entity::set_current_id($importid, true);
         // Cleanup user data.
         self::cleanup_userdata($importid, $progressbar);
         // Cleanup model.
@@ -494,8 +503,8 @@ class utils {
             }
             $currentcount = 0;
         }
-        local\persistent\history\entity::reset_current_id();
-        $history = new local\persistent\history\entity($importid);
+        history_entity::reset_current_id();
+        $history = new history_entity($importid);
         $history->delete();
         // Cleanup logs.
         foreach (local\persistent\import_log\entity::get_records(['importid' => $importid]) as $ilog) {
@@ -512,7 +521,7 @@ class utils {
      * @return void
      */
     public static function cleanup_userdata($importid, $progressbar = null) {
-        local\persistent\history\entity::set_current_id($importid, true);
+        history_entity::set_current_id($importid, true);
         foreach (local\persistent\planning\entity::get_records() as $evalplan) {
             $finalevals = local\persistent\final_evaluation\entity::get_records(['evalplanid' => $evalplan->get('id')]);
             $totalcount = count($finalevals);
@@ -531,17 +540,16 @@ class utils {
                             get_string('appraisal:entity', 'local_cveteval') . " - " . $appraisal->get('id') . " / " .
                             $appraisal->get('id'));
                 }
-                foreach (local\persistent\appraisal_criterion\entity::get_records(['appraisalid' => $appraisal->get('id')]) as
-                        $appraisalcriterion) {
-                    foreach (local\persistent\appraisal_criterion_comment\entity::get_records(
-                            ['appraisalqtemplateid' => $appraisalcriterion->get('id')]
+                foreach (appraisal_criterion_entity::get_records(['appraisalid' => $appraisal->get('id')]) as $appraisalcriterion) {
+                    foreach (appraisal_criterion_comment_entity::get_records([
+                                    'appraisalqtemplateid' => $appraisalcriterion->get('id')
+                            ]
                     ) as $appraisalcriterioncomment) {
                         $appraisalcriterioncomment->delete();
                     }
                     $appraisalcriterion->delete();
                 }
-                foreach (local\persistent\appraisal_comment\entity::get_records(['appraisalid' => $appraisal->get('id')]) as
-                        $appraisalcomment) {
+                foreach (appraisal_comment_entity::get_records(['appraisalid' => $appraisal->get('id')]) as $appraisalcomment) {
                     $appraisalcomment->delete();
                 }
                 $appraisal->delete();
@@ -572,12 +580,12 @@ class utils {
         local\persistent\history\entity::disable_history();
         foreach ($historyclasstomigrate as $entityclass) {
             foreach ($entityclass::get_records() as $record) {
-                $historymodel = new local\persistent\history_model\entity(
+                $historymodel = new history_entity(
                         0, (object) [
                         'tablename' => $entityclass::TABLE,
                         'tableid' => $record->get('id'),
-                        'historyid' => $history->get('id'),
-                ]
+                        'historyid' => $history->get('id')
+                        ]
                 );
                 $historymodel->create();
             }
@@ -604,7 +612,7 @@ class utils {
     /**
      * Setup page navigation for entity managaement
      *
-     * @param $importid
+     * @param int $importid
      * @return void
      * @throws coding_exception
      */
@@ -613,7 +621,7 @@ class utils {
         $PAGE->navbar->add(
                 get_string('import:list', 'local_cveteval'),
                 new moodle_url('/local/cveteval/admin/importindex.php'));
-        $import = new entity($importid);
+        $import = new import_log_entity($importid);
         $PAGE->navbar->add(
                 $import->get('idnumber'),
                 new moodle_url('/local/cveteval/manage/index.php', ['importid' => $importid]));

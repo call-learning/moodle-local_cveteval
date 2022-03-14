@@ -33,7 +33,6 @@ use local_cltools\local\field\number;
 use local_cltools\local\field\text;
 use local_cltools\local\table\dynamic_table_sql;
 use moodle_url;
-use ReflectionException;
 
 /**
  * A list of student matching this situation
@@ -73,8 +72,6 @@ class situations_for_student extends dynamic_table_sql {
      *
      * Add all the fields from persistent class except the reserved ones
      *
-     * @return array
-     * @throws ReflectionException
      */
     protected function setup_fields() {
         $this->fields = [

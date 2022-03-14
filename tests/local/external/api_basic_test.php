@@ -52,7 +52,7 @@ class api_basic_test extends advanced_testcase {
         $this->resetAfterTest();
         $this->setAdminUser();
         $CFG->auth = $CFG->auth . ',cas';
-        $this->assertEquals(auth::idp_list(), []);
+        $this->assertEquals([], auth::idp_list());
     }
 
 }

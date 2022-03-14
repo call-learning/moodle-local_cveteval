@@ -26,19 +26,17 @@ use local_cveteval\local\persistent\role\entity as role_entity;
 use local_cveteval\utils;
 use local_cveteval\roles;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Get plugin file
  *
- * @param $course
- * @param $cm
- * @param $context
- * @param $filearea
- * @param $args
- * @param $forcedownload
+ * @param object $course
+ * @param object $cm
+ * @param context $context
+ * @param string $filearea
+ * @param array $args
+ * @param bool $forcedownload
  * @param array $options
- * @return false
+ * @return false|void
  * @throws coding_exception
  * @throws moodle_exception
  * @throws require_login_exception

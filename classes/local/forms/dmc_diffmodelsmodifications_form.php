@@ -24,6 +24,8 @@
 
 namespace local_cveteval\local\forms;
 
+use cache;
+use cache_store;
 use html_writer;
 use local_cveteval\local\datamigration\data_migration_controller;
 use local_cveteval\local\datamigration\data_migration_utils;
@@ -48,6 +50,10 @@ require_once($CFG->libdir . '/formslib.php');
  */
 class dmc_diffmodelsmodifications_form extends moodleform implements dmc_form_interface {
 
+    /**
+     * Model modification cache
+     */
+    const MODEL_MODIFICATIONS_CACHE = 'dmcmodelsmodificationcache';
     protected $entities = [];
 
     /**
@@ -97,8 +103,8 @@ class dmc_diffmodelsmodifications_form extends moodleform implements dmc_form_in
             foreach ($stepdata->$context as $entityclass => $matchs) {
                 foreach ($matchs as $originid => $targetentityid) {
                     $fieldname = $this->get_field_name($context, $entityclass, $originid);
-                    if (empty($data->$context[$entityclass][$originid])) {
-                        //$mform->setDefault($fieldname, $stepdata->$context[$entityclass][$originid]);
+                    if (empty($data->{$context}[$entityclass][$originid])) {
+                        //  $mform->setDefault($fieldname, $stepdata->$context[$entityclass][$originid]);
                     }
                 }
             }
@@ -106,6 +112,14 @@ class dmc_diffmodelsmodifications_form extends moodleform implements dmc_form_in
 
     }
 
+    /**
+     * Get field name for form
+     *
+     * @param $context
+     * @param $entityclass
+     * @param $id
+     * @return string
+     */
     protected function get_field_name($context, $entityclass, $id) {
         // There is a bug in the way moodle transfer this info in HTML_Element.
         // The \\ is replaced by \\\\ and it does not match anymore. See  HTML_QuickForm_utils::recursiveValue.
@@ -113,15 +127,15 @@ class dmc_diffmodelsmodifications_form extends moodleform implements dmc_form_in
     }
 
     /**
-     * @param $data
-     * @return mixed|void
+     * @param object $data
+     * @return void
      * @throws moodle_exception
      */
     public function execute_action($data) {
         global $PAGE;
         $dmc = $this->_customdata['dmc'] ?? null;
         $nextmodel = null;
-        /* @var data_migration_controller|null $dmc */
+        /* @var data_migration_controller|null $dmc the DMC (controller) .*/
         if ($dmc) {
             $stepdata = $this->convert_form_data_into_stepdata($data);
             $dmc->set_step_data($stepdata);
@@ -148,7 +162,7 @@ class dmc_diffmodelsmodifications_form extends moodleform implements dmc_form_in
             if (!empty($formdata->$context)) {
                 foreach ($formdata->$context as $key => $value) {
                     $newkey = str_replace('__', '\\', $key);
-                    $stepdata->$context[$newkey] = $value;
+                    $stepdata->{$context}[$newkey] = $value;
                 }
             }
         }
@@ -231,7 +245,7 @@ class dmc_diffmodelsmodifications_form extends moodleform implements dmc_form_in
                 }
             }
         }
-        /* @var data_migration_controller|null $dmc */
+        /* @var data_migration_controller|null $dmc The data migration controller .*/
         $mform->addElement('hidden', 'step', $dmc->get_step());
         $mform->setType('step', PARAM_TEXT);
         $mform->addElement('hidden', 'originimportid', $stepdata->originimportid);
@@ -263,8 +277,9 @@ class dmc_diffmodelsmodifications_form extends moodleform implements dmc_form_in
      * @throws moodle_exception
      */
     protected function get_all_dest_entities($dmc, $entityclass, $model, $renderable) {
-        static $lastmodel = null;
-        static $lastalldestentitiesoptions = null;
+        $cache = cache::make_from_params(cache_store::MODE_REQUEST, 'local_cveteval', self::MODEL_MODIFICATIONS_CACHE);
+        $lastmodel = $cache->get('lastmodel');
+        $lastalldestentitiesoptions = $cache->get('lastalldestentitiesoptions');
         if ($model == $lastmodel) {
             return $lastalldestentitiesoptions;
         }
@@ -277,8 +292,8 @@ class dmc_diffmodelsmodifications_form extends moodleform implements dmc_form_in
             $id = $e->get('id');
             $alldestentitiesoptions[$id] = output_helper::$exportentitymethod($id)['label'];
         }
-        $lastmodel = $model;
-        $lastalldestentitiesoptions = $alldestentitiesoptions;
+        $cache->set('lastmodel', $model);
+        $cache->set('lastalldestentitiesoptions', $alldestentitiesoptions);
         return $lastalldestentitiesoptions;
     }
 }

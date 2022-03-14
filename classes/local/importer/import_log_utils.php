@@ -51,7 +51,6 @@ class import_log_utils {
         );
         $entitylist->set_filterset($filterset);
 
-        $renderable = new entity_table_renderable($entitylist);
-        return $renderable;
+        return new entity_table_renderable($entitylist);
     }
 }

@@ -14,6 +14,25 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace local_cveteval\local\datamigration;
+
+use local_cveteval\local\datamigration\matchers\criterion as criterion_matcher;
+use local_cveteval\local\datamigration\matchers\evaluation_grid as evaluation_grid_matcher;
+use local_cveteval\local\datamigration\matchers\group as group_matcher;
+use local_cveteval\local\datamigration\matchers\group_assignment as group_assignment_matcher;
+use local_cveteval\local\datamigration\matchers\planning as planning_matcher;
+use local_cveteval\local\datamigration\matchers\role as role_matcher;
+use local_cveteval\local\datamigration\matchers\situation as situation_matcher;
+use local_cveteval\local\persistent\criterion\entity as criterion_entity;
+use local_cveteval\local\persistent\evaluation_grid\entity as evaluation_grid_entity;
+use local_cveteval\local\persistent\group\entity as group_entity;
+use local_cveteval\local\persistent\group_assignment\entity as group_assignment_entity;
+use local_cveteval\local\persistent\history\entity as history_entity;
+use local_cveteval\local\persistent\planning\entity as planning_entity;
+use local_cveteval\local\persistent\role\entity as role_entity;
+use local_cveteval\local\persistent\situation\entity as situation_entity;
+use local_cveteval\test\assessment_test_trait;
+
 /**
  * Data migration test
  *
@@ -21,29 +40,6 @@
  * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-namespace local_cveteval\local\assessment;
-
-use local_cveteval\local\datamigration\data_model_matcher;
-use local_cveteval\local\datamigration\matchers\criterion as criterion_matcher;
-use local_cveteval\local\datamigration\matchers\evaluation_grid as evaluation_grid_matcher;
-use local_cveteval\local\datamigration\matchers\group as group_matcher;
-use local_cveteval\local\datamigration\matchers\group_assignment as group_assignment_matcher;
-use local_cveteval\local\datamigration\matchers\situation as situation_matcher;
-use local_cveteval\local\datamigration\matchers\planning as planning_matcher;
-use local_cveteval\local\datamigration\matchers\role as role_matcher;
-use local_cveteval\local\persistent\criterion\entity as criterion_entity;
-use local_cveteval\local\persistent\evaluation_grid\entity as evaluation_grid_entity;
-use local_cveteval\local\persistent\group\entity as group_entity;
-use local_cveteval\local\persistent\group_assignment\entity as group_assignment_entity;
-use local_cveteval\local\persistent\history\entity as history_entity;
-use local_cveteval\local\persistent\situation\entity as situation_entity;
-use local_cveteval\local\persistent\planning\entity as planning_entity;
-use local_cveteval\local\persistent\role\entity as role_entity;
-use local_cveteval\test\assessment_test_trait;
-
-defined('MOODLE_INTERNAL') || die();
-
 class data_migration_matching_test extends \advanced_testcase {
 
     use assessment_test_trait;
@@ -61,106 +57,106 @@ class data_migration_matching_test extends \advanced_testcase {
         $sample = new \stdClass();
 
         $sample->criteria = [
-            [
-                'evalgrididnumber' => 'evalgrid',
-                'idnumber' => 'criterion1',
-                'parentid' => 0,
-                'sort' => 1
-            ],
-            [
-                'evalgrididnumber' => 'evalgrid',
-                'idnumber' => 'criterion1bis',
-                'parentidnumber' => 'criterion1',
-                'sort' => 1
-            ],
-            [
-                'evalgrididnumber' => 'evalgrid',
-                'idnumber' => 'criterion2',
-                'parentidnumber' => 'criterion1',
-                'sort' => 1
-            ]
+                [
+                        'evalgrididnumber' => 'evalgrid',
+                        'idnumber' => 'criterion1',
+                        'parentid' => 0,
+                        'sort' => 1
+                ],
+                [
+                        'evalgrididnumber' => 'evalgrid',
+                        'idnumber' => 'criterion1bis',
+                        'parentidnumber' => 'criterion1',
+                        'sort' => 1
+                ],
+                [
+                        'evalgrididnumber' => 'evalgrid',
+                        'idnumber' => 'criterion2',
+                        'parentidnumber' => 'criterion1',
+                        'sort' => 1
+                ]
         ];
         $sample->situations = [
-            [
-                'evalgrididnumber' => 'evalgrid',
-                'title' => 'Situation 1',
-                'description' => 'Situation desc',
-                'descriptionformat' => FORMAT_PLAIN,
-                'idnumber' => 'SIT1',
-                'expectedevalsnb' => 2
-            ],
-            [
-                'evalgrididnumber' => 'evalgrid',
-                'title' => 'Situation 2',
-                'description' => 'Situation desc',
-                'descriptionformat' => FORMAT_PLAIN,
-                'idnumber' => 'SIT2',
-                'expectedevalsnb' => 1
-            ],
+                [
+                        'evalgrididnumber' => 'evalgrid',
+                        'title' => 'Situation 1',
+                        'description' => 'Situation desc',
+                        'descriptionformat' => FORMAT_PLAIN,
+                        'idnumber' => 'SIT1',
+                        'expectedevalsnb' => 2
+                ],
+                [
+                        'evalgrididnumber' => 'evalgrid',
+                        'title' => 'Situation 2',
+                        'description' => 'Situation desc',
+                        'descriptionformat' => FORMAT_PLAIN,
+                        'idnumber' => 'SIT2',
+                        'expectedevalsnb' => 1
+                ],
         ];
         $sample->evalplans = [
-            [
-                'groupname' => 'Group 1',
-                'clsituationidnumber' => 'SIT1',
-                'starttime' => $planstart,
-                'endtime' => $planend
-            ],
-            [
-                'groupname' => 'Group 2',
-                'clsituationidnumber' => 'SIT2',
-                'starttime' => $planstart,
-                'endtime' => $planend
-            ],
-            [
-                'groupname' => 'Group 2bis',
-                'clsituationidnumber' => 'SIT2',
-                'starttime' => $planstart,
-                'endtime' => $planend
-            ],
+                [
+                        'groupname' => 'Group 1',
+                        'clsituationidnumber' => 'SIT1',
+                        'starttime' => $planstart,
+                        'endtime' => $planend
+                ],
+                [
+                        'groupname' => 'Group 2',
+                        'clsituationidnumber' => 'SIT2',
+                        'starttime' => $planstart,
+                        'endtime' => $planend
+                ],
+                [
+                        'groupname' => 'Group 2bis',
+                        'clsituationidnumber' => 'SIT2',
+                        'starttime' => $planstart,
+                        'endtime' => $planend
+                ],
         ];
         $sample->criteriaeval = [
-            [
-                'criterionidnumber' => 'criterion1',
-                'grade' => 1,
-                'comment' => 'Context crit1',
-                'commentformat' => FORMAT_PLAIN,
-            ],
-            [
-                'criterionidnumber' => 'criterion1bis',
-                'grade' => 2,
-                'comment' => 'Context crit1bis',
-                'commentformat' => FORMAT_PLAIN,
-            ],
-            [
-                'criterionidnumber' => 'criterion2',
-                'grade' => 3,
-                'comment' => 'Context crit2',
-                'commentformat' => FORMAT_PLAIN,
-            ]
+                [
+                        'criterionidnumber' => 'criterion1',
+                        'grade' => 1,
+                        'comment' => 'Context crit1',
+                        'commentformat' => FORMAT_PLAIN,
+                ],
+                [
+                        'criterionidnumber' => 'criterion1bis',
+                        'grade' => 2,
+                        'comment' => 'Context crit1bis',
+                        'commentformat' => FORMAT_PLAIN,
+                ],
+                [
+                        'criterionidnumber' => 'criterion2',
+                        'grade' => 3,
+                        'comment' => 'Context crit2',
+                        'commentformat' => FORMAT_PLAIN,
+                ]
         ];
         $sample->appraisals = [
-            [
-                'studentname' => 'student1',
-                'appraisername' => 'assessor1',
-                'evalplandatestart' => $planstart,
-                'evalplansituation' => 'SIT1',
-                'context' => 'Context',
-                'contextformat' => FORMAT_PLAIN,
-                'comment' => 'Context',
-                'commentformat' => FORMAT_PLAIN,
-                'criteria' => $sample->criteriaeval
-            ],
-            [
-                'studentname' => 'student1',
-                'appraisername' => 'assessor2',
-                'evalplandatestart' => $planstart,
-                'evalplansituation' => 'SIT2',
-                'context' => 'Context',
-                'contextformat' => FORMAT_PLAIN,
-                'comment' => 'Context',
-                'commentformat' => FORMAT_PLAIN,
-                'criteria' => $sample->criteriaeval
-            ],
+                [
+                        'studentname' => 'student1',
+                        'appraisername' => 'assessor1',
+                        'evalplandatestart' => $planstart,
+                        'evalplansituation' => 'SIT1',
+                        'context' => 'Context',
+                        'contextformat' => FORMAT_PLAIN,
+                        'comment' => 'Context',
+                        'commentformat' => FORMAT_PLAIN,
+                        'criteria' => $sample->criteriaeval
+                ],
+                [
+                        'studentname' => 'student1',
+                        'appraisername' => 'assessor2',
+                        'evalplandatestart' => $planstart,
+                        'evalplansituation' => 'SIT2',
+                        'context' => 'Context',
+                        'contextformat' => FORMAT_PLAIN,
+                        'comment' => 'Context',
+                        'commentformat' => FORMAT_PLAIN,
+                        'criteria' => $sample->criteriaeval
+                ],
         ];
         $sample->assessors = ['assessor1' => 'SIT1', 'assessor2' => 'SIT2'];
         $sample->students = ['student1' => ['Group 1'], 'student2' => ['Group 1', 'Group 2']];
@@ -176,114 +172,114 @@ class data_migration_matching_test extends \advanced_testcase {
         $sample = new \stdClass();
 
         $sample->criteria = [
-            [
-                'evalgrididnumber' => 'evalgrid',
-                'idnumber' => 'criterion1',
-                'parentid' => 0,
-                'sort' => 1
-            ],
-            [
-                'evalgrididnumber' => 'evalgrid',
-                'idnumber' => 'criterion2',
-                'parentidnumber' => 'criterion1',
-                'sort' => 1
-            ],
-            [
-                'evalgrididnumber' => 'evalgrid',
-                'idnumber' => 'criterion1bis',
-                'parentidnumber' => 'criterion2',
-                'sort' => 1
-            ]
+                [
+                        'evalgrididnumber' => 'evalgrid',
+                        'idnumber' => 'criterion1',
+                        'parentid' => 0,
+                        'sort' => 1
+                ],
+                [
+                        'evalgrididnumber' => 'evalgrid',
+                        'idnumber' => 'criterion2',
+                        'parentidnumber' => 'criterion1',
+                        'sort' => 1
+                ],
+                [
+                        'evalgrididnumber' => 'evalgrid',
+                        'idnumber' => 'criterion1bis',
+                        'parentidnumber' => 'criterion2',
+                        'sort' => 1
+                ]
         ];
         $sample->situations = [
-            [
-                'evalgrididnumber' => 'evalgrid',
-                'title' => 'Situation 1',
-                'description' => 'Situation desc',
-                'descriptionformat' => FORMAT_PLAIN,
-                'idnumber' => 'SIT1',
-                'expectedevalsnb' => 2
-            ],
-            [
-                'evalgrididnumber' => 'evalgrid',
-                'title' => 'Situation 2',
-                'description' => 'Situation desc',
-                'descriptionformat' => FORMAT_PLAIN,
-                'idnumber' => 'SIT2',
-                'expectedevalsnb' => 2
-            ],
-            [
-                'evalgrididnumber' => 'evalgrid',
-                'title' => 'Situation 3',
-                'description' => 'Situation desc',
-                'descriptionformat' => FORMAT_PLAIN,
-                'idnumber' => 'SIT3',
-                'expectedevalsnb' => 1
-            ],
+                [
+                        'evalgrididnumber' => 'evalgrid',
+                        'title' => 'Situation 1',
+                        'description' => 'Situation desc',
+                        'descriptionformat' => FORMAT_PLAIN,
+                        'idnumber' => 'SIT1',
+                        'expectedevalsnb' => 2
+                ],
+                [
+                        'evalgrididnumber' => 'evalgrid',
+                        'title' => 'Situation 2',
+                        'description' => 'Situation desc',
+                        'descriptionformat' => FORMAT_PLAIN,
+                        'idnumber' => 'SIT2',
+                        'expectedevalsnb' => 2
+                ],
+                [
+                        'evalgrididnumber' => 'evalgrid',
+                        'title' => 'Situation 3',
+                        'description' => 'Situation desc',
+                        'descriptionformat' => FORMAT_PLAIN,
+                        'idnumber' => 'SIT3',
+                        'expectedevalsnb' => 1
+                ],
         ];
         $sample->evalplans = [
-            [
-                'groupname' => 'Group 1',
-                'clsituationidnumber' => 'SIT1',
-                'starttime' => $planstart,
-                'endtime' => $planend
-            ],
-            [
-                'groupname' => 'Group 2',
-                'clsituationidnumber' => 'SIT2',
-                'starttime' => $planstart,
-                'endtime' => $planend
-            ],
-            [
-                'groupname' => 'Group 3',
-                'clsituationidnumber' => 'SIT2',
-                'starttime' => $planstart,
-                'endtime' => $planend
-            ],
+                [
+                        'groupname' => 'Group 1',
+                        'clsituationidnumber' => 'SIT1',
+                        'starttime' => $planstart,
+                        'endtime' => $planend
+                ],
+                [
+                        'groupname' => 'Group 2',
+                        'clsituationidnumber' => 'SIT2',
+                        'starttime' => $planstart,
+                        'endtime' => $planend
+                ],
+                [
+                        'groupname' => 'Group 3',
+                        'clsituationidnumber' => 'SIT2',
+                        'starttime' => $planstart,
+                        'endtime' => $planend
+                ],
         ];
         $sample->criteriaeval = [
-            [
-                'criterionidnumber' => 'criterion1',
-                'grade' => 1,
-                'comment' => 'Context crit1',
-                'commentformat' => FORMAT_PLAIN,
-            ],
-            [
-                'criterionidnumber' => 'criterion1bis',
-                'grade' => 2,
-                'comment' => 'Context crit1bis',
-                'commentformat' => FORMAT_PLAIN,
-            ],
-            [
-                'criterionidnumber' => 'criterion2',
-                'grade' => 3,
-                'comment' => 'Context crit2',
-                'commentformat' => FORMAT_PLAIN,
-            ]
+                [
+                        'criterionidnumber' => 'criterion1',
+                        'grade' => 1,
+                        'comment' => 'Context crit1',
+                        'commentformat' => FORMAT_PLAIN,
+                ],
+                [
+                        'criterionidnumber' => 'criterion1bis',
+                        'grade' => 2,
+                        'comment' => 'Context crit1bis',
+                        'commentformat' => FORMAT_PLAIN,
+                ],
+                [
+                        'criterionidnumber' => 'criterion2',
+                        'grade' => 3,
+                        'comment' => 'Context crit2',
+                        'commentformat' => FORMAT_PLAIN,
+                ]
         ];
         $sample->appraisals = [
-            [
-                'studentname' => 'student1',
-                'appraisername' => 'assessor1',
-                'evalplandatestart' => $planstart,
-                'evalplansituation' => 'SIT1',
-                'context' => 'Context',
-                'contextformat' => FORMAT_PLAIN,
-                'comment' => 'Context',
-                'commentformat' => FORMAT_PLAIN,
-                'criteria' => $sample->criteriaeval
-            ],
-            [
-                'studentname' => 'student1',
-                'appraisername' => 'assessor2',
-                'evalplandatestart' => $planstart,
-                'evalplansituation' => 'SIT2',
-                'context' => 'Context',
-                'contextformat' => FORMAT_PLAIN,
-                'comment' => 'Context',
-                'commentformat' => FORMAT_PLAIN,
-                'criteria' => $sample->criteriaeval
-            ],
+                [
+                        'studentname' => 'student1',
+                        'appraisername' => 'assessor1',
+                        'evalplandatestart' => $planstart,
+                        'evalplansituation' => 'SIT1',
+                        'context' => 'Context',
+                        'contextformat' => FORMAT_PLAIN,
+                        'comment' => 'Context',
+                        'commentformat' => FORMAT_PLAIN,
+                        'criteria' => $sample->criteriaeval
+                ],
+                [
+                        'studentname' => 'student1',
+                        'appraisername' => 'assessor2',
+                        'evalplandatestart' => $planstart,
+                        'evalplansituation' => 'SIT2',
+                        'context' => 'Context',
+                        'contextformat' => FORMAT_PLAIN,
+                        'comment' => 'Context',
+                        'commentformat' => FORMAT_PLAIN,
+                        'criteria' => $sample->criteriaeval
+                ],
         ];
         $sample->assessors = ['assessor1' => 'SIT1', 'assessor2' => 'SIT2'];
         $sample->students = ['student1' => ['Group 1'], 'student2' => ['Group 1', 'Group 2'], 'student3' => ['Group 3']];
@@ -291,41 +287,41 @@ class data_migration_matching_test extends \advanced_testcase {
     }
 
     public function setUp() {
-        parent::setUp(); // TODO: Change the autogenerated stub
+        parent::setUp();
         $this->resetAfterTest();
         $planstart = time();
         $duration = 3600 * 24;
         $planend = time() + $duration;
 
-        $historyold = new history_entity(0, (object) ['idnumber' => 'history1', 'comments' => '', 'isactive'=>true]);
+        $historyold = new history_entity(0, (object) ['idnumber' => 'history1', 'comments' => '', 'isactive' => true]);
         $historyold->create();
         history_entity::set_current_id($historyold->get('id'));
         $this->oldentities = (object) [
-            'criteria' => [],
-            'situations' => [],
-            'evalplans' => [],
-            'students' => [],
-            'assessors' => [],
-            'appraisals' => [],
+                'criteria' => [],
+                'situations' => [],
+                'evalplans' => [],
+                'students' => [],
+                'assessors' => [],
+                'appraisals' => [],
         ];
         [$this->oldentities->criteria, $this->oldentities->situations, $this->oldentities->evalplans,
-            $this->oldentities->students, $this->oldentities->assessors, $this->oldentities->appraisals] =
-            $this->set_up($this->get_sample_origin1($planstart, $planend));
+                $this->oldentities->students, $this->oldentities->assessors, $this->oldentities->appraisals] =
+                $this->set_up($this->get_sample_origin1($planstart, $planend));
 
-        $historynew = new history_entity(0, (object) ['idnumber' => 'history2', 'comments' => '', 'isactive'=>true]);
+        $historynew = new history_entity(0, (object) ['idnumber' => 'history2', 'comments' => '', 'isactive' => true]);
         $historynew->create();
         history_entity::set_current_id($historynew->get('id'));
         $this->newentities = (object) [
-            'criteria' => [],
-            'situations' => [],
-            'evalplans' => [],
-            'students' => [],
-            'assessors' => [],
-            'appraisals' => [],
+                'criteria' => [],
+                'situations' => [],
+                'evalplans' => [],
+                'students' => [],
+                'assessors' => [],
+                'appraisals' => [],
         ];
         [$this->newentities->criteria, $this->newentities->situations, $this->newentities->evalplans,
-            $this->newentities->students, $this->newentities->assessors, $this->newentities->appraisals] =
-            $this->set_up($this->get_sample_dest2($planstart, $planend));
+                $this->newentities->students, $this->newentities->assessors, $this->newentities->appraisals] =
+                $this->set_up($this->get_sample_dest2($planstart, $planend));
 
         history_entity::reset_current_id();
         $this->dm = new data_model_matcher($historyold->get('id'), $historynew->get('id'));
@@ -363,7 +359,7 @@ class data_migration_matching_test extends \advanced_testcase {
         };
         $fourtycriterion = iterator_to_array($generator()); // The common criteria are a match.
         $this->assert_entities_name_matches(array_merge($fourtycriterion, ['criterion1', 'criterion2']), $matchedcriterion,
-            criterion_entity::class);
+                criterion_entity::class);
         $this->assert_entities_name_matches(['criterion1bis'], $unmatchedcriterion, criterion_entity::class);
         $this->assert_entities_name_matches(['criterion1bis'], $orphanedcriterion, criterion_entity::class); // Not the same parent.
     }
@@ -409,13 +405,13 @@ class data_migration_matching_test extends \advanced_testcase {
 
         $this->assert_entities_name_matches(['Group 1', 'Group 1', 'Group 2'],
                 $this->get_field_from_entities_id($matchedgroupa, group_assignment_entity::class, "groupid"),
-            group_entity::class,
+                group_entity::class,
                 "name"
-            );
+        );
         $this->assert_entities_name_matches(['Group 3'],
-            $this->get_field_from_entities_id($unmatchedgroupa, group_assignment_entity::class, "groupid"),
-            group_entity::class,
-            "name"
+                $this->get_field_from_entities_id($unmatchedgroupa, group_assignment_entity::class, "groupid"),
+                group_entity::class,
+                "name"
         );
         $this->assertEmpty($orphanedgroupa);
     }
@@ -432,19 +428,16 @@ class data_migration_matching_test extends \advanced_testcase {
         $orphanedplanning = $smatcher->get_orphaned_origin_entities();
 
         $this->assert_entities_name_matches(['SIT1', 'SIT2'],
-            $this->get_field_from_entities_id($matchedplanning, planning_entity::class, "clsituationid"),
-            situation_entity::class,
-            "idnumber"
+                $this->get_field_from_entities_id($matchedplanning, planning_entity::class, "clsituationid"),
+                situation_entity::class
         );
         $this->assert_entities_name_matches(['SIT2'],
-            $this->get_field_from_entities_id($unmatchedplanning, planning_entity::class, "clsituationid"),
-            situation_entity::class,
-            "idnumber"
+                $this->get_field_from_entities_id($unmatchedplanning, planning_entity::class, "clsituationid"),
+                situation_entity::class
         );
         $this->assert_entities_name_matches(['SIT2'],
-            $this->get_field_from_entities_id($orphanedplanning, planning_entity::class, "clsituationid"),
-            situation_entity::class,
-            "idnumber"
+                $this->get_field_from_entities_id($orphanedplanning, planning_entity::class, "clsituationid"),
+                situation_entity::class
         );
     }
 
@@ -459,30 +452,14 @@ class data_migration_matching_test extends \advanced_testcase {
         $unmatchedroles = $smatcher->get_unmatched_dest_entities();
         $orphanedroles = $smatcher->get_orphaned_origin_entities();
         $this->assert_entities_name_matches(['SIT1', 'SIT1', 'SIT1', 'SIT2', 'SIT2', 'SIT2'],
-            $this->get_field_from_entities_id($matchedroles, role_entity::class, "clsituationid"),
-            situation_entity::class,
-            "idnumber"
+                $this->get_field_from_entities_id($matchedroles, role_entity::class, "clsituationid"),
+                situation_entity::class
         );
         $this->assert_entities_name_matches(['SIT1', 'SIT2'],
-            $this->get_field_from_entities_id($unmatchedroles, role_entity::class, "clsituationid"),
-            situation_entity::class,
-            "idnumber"
+                $this->get_field_from_entities_id($unmatchedroles, role_entity::class, "clsituationid"),
+                situation_entity::class
         );
         $this->assertEmpty($orphanedroles);
-    }
-    /**
-     * Get ID array
-     *
-     * @param array $entityarray
-     * @return array
-     */
-    protected function get_field_from_entities($entityarray, $fieldname = 'idnumber') {
-        return array_values(
-            array_map(
-                function($e) use ($fieldname) {
-                    return $e->get($fieldname);
-                }, $entityarray)
-        );
     }
 
     /**
@@ -491,15 +468,32 @@ class data_migration_matching_test extends \advanced_testcase {
      * @param array $entityarray
      * @return array
      */
+    protected function get_field_from_entities($entityarray, $fieldname = 'idnumber') {
+        return array_values(
+                array_map(
+                        function($e) use ($fieldname) {
+                            return $e->get($fieldname);
+                        }, $entityarray)
+        );
+    }
+
+    /**
+     * Get ID array
+     *
+     * @param array $entityidarray
+     * @param string $entityclass
+     * @param string $fieldname
+     * @return array
+     */
     protected function get_field_from_entities_id($entityidarray, $entityclass, $fieldname = 'idnumber') {
         return array_values(
-            array_map(
-                function($id) use ($entityclass, $fieldname) {
-                    $e = new $entityclass($id);
-                    return $e->get($fieldname);
-                },
-                $entityidarray
-            )
+                array_map(
+                        function($id) use ($entityclass, $fieldname) {
+                            $e = new $entityclass($id);
+                            return $e->get($fieldname);
+                        },
+                        $entityidarray
+                )
         );
     }
 
@@ -514,7 +508,7 @@ class data_migration_matching_test extends \advanced_testcase {
      */
     public function assert_entities_name_matches($matchedname, $entitiesidarray, $entityclassname, $fieldname = 'idnumber') {
         $this->assertEquals($matchedname,
-            $this->get_field_from_entities_id($entitiesidarray, $entityclassname, $fieldname)
+                $this->get_field_from_entities_id($entitiesidarray, $entityclassname, $fieldname)
         );
     }
 }

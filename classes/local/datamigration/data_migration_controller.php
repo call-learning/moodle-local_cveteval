@@ -19,7 +19,6 @@ namespace local_cveteval\local\datamigration;
 use cache;
 use core\notification;
 use core_php_time_limit;
-use core_renderer;
 use moodle_url;
 use stdClass;
 
@@ -117,35 +116,34 @@ class data_migration_controller {
         return new $widgetclass($this);
     }
 
+    /**
+     * Get form for this renderable
+     *
+     * @param $renderable
+     * @return mixed|null
+     */
     public function get_form($renderable = null) {
-        static $form = null;
-        if (empty($form)) {
-            $formclass = '\local_cveteval\local\forms\\dmc_' . self::STEPS[$this->currentstep] . '_form';
-            $form = class_exists($formclass) ? new $formclass(null, ['dmc' => $this, 'renderable' => $renderable]) : null;
-        }
-        return $form;
+        $formclass = '\local_cveteval\local\forms\\dmc_' . self::STEPS[$this->currentstep] . '_form';
+        return class_exists($formclass) ? new $formclass(null, ['dmc' => $this, 'renderable' => $renderable]) : null;
     }
 
     public function get_next_step() {
         $step = self::STEPS[$this->currentstep + 1] ?? '';
-        $step = $this->is_next_step_allowed() ? $step : '';
-        return $step;
+        return $this->is_next_step_allowed() ? $step : '';
     }
 
     private function is_next_step_allowed() {
         $data = $this->get_step_data();
-        switch ($this->currentstep) {
-            case self::CHOOSE_HISTORY_STEP:
-                return !empty($data->originimportid)
-                        && !empty($data->destimportid);
+        if ($this->currentstep == self::CHOOSE_HISTORY_STEP) {
+            return !empty($data->originimportid)
+                    && !empty($data->destimportid);
         }
         return true;
     }
 
     public function get_previous_step() {
         $step = self::STEPS[$this->currentstep - 1] ?? '';
-        $step = $this->is_previous_step_allowed() ? $step : '';
-        return $step;
+        return $this->is_previous_step_allowed() ? $step : '';
     }
 
     private function is_previous_step_allowed() {
@@ -177,7 +175,7 @@ class data_migration_controller {
         if (empty($this->get_step_data())) {
             $message = $result . $OUTPUT->notification(get_string('dmc:expired', 'local_cveteval'), notification::ERROR);
             return $message . $OUTPUT->single_button(
-                    get_string('continue'), new moodle_url('/local/cveteval/admin/datamigration/index.php'));
+                            get_string('continue'), new moodle_url('/local/cveteval/admin/datamigration/index.php'));
         }
         if ($form) {
             $result .= $form->render();
@@ -187,8 +185,7 @@ class data_migration_controller {
 
     protected function process_userdatamigration($renderer, $renderable, $form) {
         // For each appraisal, appraisal criteria and final eval attached to the old model,create a copy.
-        $result = $renderer->render($renderable);
-        return $result;
+        return $renderer->render($renderable);
     }
 
 }

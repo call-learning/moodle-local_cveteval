@@ -26,13 +26,12 @@ class local_cveteval_generator extends \component_generator_base {
      * Create a situation entry
      *
      * @param array $data
-     * @throws \core\invalid_persistent_exception
-     * @throws coding_exception
+     * @return \local_cveteval\local\persistent\situation\entity
      */
     public function create_situation(array $data) {
         if (isset($data['evalgrididnumber'])) {
             $data['evalgridid'] = local_cveteval\local\persistent\evaluation_grid\entity::get_record(
-                array('idnumber' => $data['evalgrididnumber']))->get('id');
+                    array('idnumber' => $data['evalgrididnumber']))->get('id');
             unset($data['evalgrididnumber']);
         }
         $situation = new local_cveteval\local\persistent\situation\entity(0, (object) $data);
@@ -44,18 +43,19 @@ class local_cveteval_generator extends \component_generator_base {
      * Create a planning entry
      *
      * @param array $data
+     * @return \local_cveteval\local\persistent\planning\entity
      * @throws \core\invalid_persistent_exception
      * @throws coding_exception
      */
     public function create_evalplan(array $data) {
         if (isset($data['clsituationidnumber'])) {
             $data['clsituationid'] = local_cveteval\local\persistent\situation\entity::get_record(
-                array('idnumber' => $data['clsituationidnumber']))->get('id');
+                    array('idnumber' => $data['clsituationidnumber']))->get('id');
             unset($data['clsituationidnumber']);
         }
         if (isset($data['groupname'])) {
             $data['groupid'] = local_cveteval\local\persistent\group\entity::get_record(
-                array('name' => $data['groupname']))->get('id');
+                    array('name' => $data['groupname']))->get('id');
             unset($data['groupname']);
         }
 
@@ -68,6 +68,7 @@ class local_cveteval_generator extends \component_generator_base {
      * Create eval grid
      *
      * @param array $data
+     * @return \local_cveteval\local\persistent\evaluation_grid\entity
      * @throws \core\invalid_persistent_exception
      * @throws coding_exception
      */
@@ -81,18 +82,20 @@ class local_cveteval_generator extends \component_generator_base {
      * Create a criterion in an eval grid (will create a criterion an attach it to an eval grid)
      *
      * @param array $data
+     * @return \local_cveteval\local\persistent\criterion\entity
      * @throws \core\invalid_persistent_exception
      * @throws coding_exception
      */
     public function create_criterion(array $data) {
         if (isset($data['evalgrididnumber'])) {
             $data['evalgridid'] = is_int($data['evalgrididnumber']) ? intval($data['evalgrididnumber']) :
-                local_cveteval\local\persistent\evaluation_grid\entity::get_record(array('idnumber' => $data['evalgrididnumber']))->get('id');
+                    local_cveteval\local\persistent\evaluation_grid\entity::get_record(['idnumber' => $data['evalgrididnumber']])
+                            ->get('id');
             unset($data['evalgrididnumber']);
         }
         if (isset($data['parentidnumber'])) {
             $data['parentid'] = local_cveteval\local\persistent\criterion\entity::get_record(
-                array('idnumber' => $data['parentidnumber']))->get('id');
+                    array('idnumber' => $data['parentidnumber']))->get('id');
             unset($data['parentidnumber']);
         }
         $criterion = new local_cveteval\local\persistent\criterion\entity(0, (object) $data);
@@ -104,14 +107,16 @@ class local_cveteval_generator extends \component_generator_base {
      * Create a role
      *
      * @param array $data
+     * @return \local_cveteval\local\persistent\role\entity
      * @throws \core\invalid_persistent_exception
      * @throws coding_exception
+     * @throws dml_exception
      */
     public function create_role(array $data) {
         $this->get_from_username($data, 'username', 'userid');
         if (isset($data['clsituationidnumber'])) {
             $data['clsituationid'] = local_cveteval\local\persistent\situation\entity::get_record(
-                array('idnumber' => $data['clsituationidnumber']))->get('id');
+                    array('idnumber' => $data['clsituationidnumber']))->get('id');
             unset($data['clsituationidnumber']);
         }
         $role = new local_cveteval\local\persistent\role\entity(0, (object) $data);
@@ -123,8 +128,10 @@ class local_cveteval_generator extends \component_generator_base {
      * Create an appraisal
      *
      * @param array $data
+     * @return \local_cveteval\local\persistent\appraisal\entity
      * @throws \core\invalid_persistent_exception
      * @throws coding_exception
+     * @throws dml_exception
      */
     public function create_appraisal(array $data) {
         $this->get_from_username($data, 'studentname', 'studentid');
@@ -155,13 +162,14 @@ class local_cveteval_generator extends \component_generator_base {
      * Create an appraisal criteria
      *
      * @param array $data
+     * @return \local_cveteval\local\persistent\appraisal_criterion\entity
      * @throws \core\invalid_persistent_exception
      * @throws coding_exception
      */
     public function create_appraisal_criterion(array $data) {
         if (isset($data['criterionidnumber'])) {
             $data['criterionid'] = local_cveteval\local\persistent\criterion\entity::get_record(
-                array('idnumber' => $data['criterionidnumber']))->get('id');
+                    array('idnumber' => $data['criterionidnumber']))->get('id');
             unset($data['criterionidnumber']);
         }
         if (!isset($data['appraisalid'])) {
@@ -179,8 +187,10 @@ class local_cveteval_generator extends \component_generator_base {
      * Create a final evaluation
      *
      * @param array $data
+     * @return \local_cveteval\local\persistent\final_evaluation\entity
      * @throws \core\invalid_persistent_exception
      * @throws coding_exception
+     * @throws dml_exception
      */
     public function create_final_evaluation(array $data) {
         $this->get_from_username($data, 'studentname', 'studentid');
@@ -198,14 +208,16 @@ class local_cveteval_generator extends \component_generator_base {
      * Create a group assignment
      *
      * @param array $data
+     * @return \local_cveteval\local\persistent\group_assignment\entity
      * @throws \core\invalid_persistent_exception
      * @throws coding_exception
+     * @throws dml_exception
      */
     public function create_group_assign(array $data) {
         $this->get_from_username($data, 'studentname', 'studentid');
         if (isset($data['groupname'])) {
             $data['groupid'] = local_cveteval\local\persistent\group\entity::get_record(
-                array('name' => $data['groupname'])
+                    array('name' => $data['groupname'])
             )->get('id');
             unset($data['groupname']);
         }
@@ -218,6 +230,7 @@ class local_cveteval_generator extends \component_generator_base {
      * Create a group
      *
      * @param array $data
+     * @return \local_cveteval\local\persistent\group\entity
      * @throws \core\invalid_persistent_exception
      * @throws coding_exception
      */
@@ -232,7 +245,8 @@ class local_cveteval_generator extends \component_generator_base {
      *
      * @param $data
      * @param $originalfield
-     * @param $destfield
+     * @param null $destfield
+     * @return mixed|null
      * @throws dml_exception
      */
     protected function get_from_username(&$data, $originalfield, $destfield = null) {
@@ -248,6 +262,7 @@ class local_cveteval_generator extends \component_generator_base {
      * Get evalplan from date and situation
      *
      * @param $data
+     * @param int $roundtime
      * @return int|bool
      * @throws coding_exception
      */
@@ -258,20 +273,20 @@ class local_cveteval_generator extends \component_generator_base {
             if (!is_int($date)) {
                 $date = date_parse($data['evalplandatestart']);
                 $date = mktime(
-                    $date['hour'],
-                    $date['minute'],
-                    $date['second'],
-                    $date['month'],
-                    $date['day'],
-                    $date['year']
+                        $date['hour'],
+                        $date['minute'],
+                        $date['second'],
+                        $date['month'],
+                        $date['day'],
+                        $date['year']
                 );
             }
             unset($data['evalplandatestart']);
             $situationid = local_cveteval\local\persistent\situation\entity::get_record(
-                array('idnumber' => $data['evalplansituation']))->get('id');
+                    array('idnumber' => $data['evalplansituation']))->get('id');
             unset($data['evalplansituation']);
             $evalplans = local_cveteval\local\persistent\planning\entity::get_records(
-                array('clsituationid' => $situationid));
+                    array('clsituationid' => $situationid));
 
             foreach ($evalplans as $ep) {
                 if ($ep->get('starttime') >= ($date - $roundtime) && $ep->get('starttime') <= ($date + $roundtime)) {
@@ -298,7 +313,7 @@ class local_cveteval_generator extends \component_generator_base {
             }
             if ($studentid && $appraiserid) {
                 $appraisals = local_cveteval\local\persistent\appraisal\entity::get_records(['studentid' => $studentid,
-                    'appraiserid' => $appraiserid, 'evalplanid' => $evaliplanid]);
+                        'appraiserid' => $appraiserid, 'evalplanid' => $evaliplanid]);
                 if ($appraisals) {
                     $appraisal = end($appraisals);
                     $appraisalid = $appraisal->get('id');

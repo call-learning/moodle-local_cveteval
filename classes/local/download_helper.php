@@ -53,10 +53,10 @@ class download_helper {
             history_entity::set_current_id($importid);
         }
         $plansql = planning_entity::get_historical_sql_query('plan');
-        $rs = $DB->get_recordset_sql("SELECT fe.*,situation.title AS situationtitle, 
-                situation.idnumber AS situationidnumber, 
-                plan.starttime AS starttime, 
-                plan.endtime AS endtime,   
+        $rs = $DB->get_recordset_sql("SELECT fe.*,situation.title AS situationtitle,
+                situation.idnumber AS situationidnumber,
+                plan.starttime AS starttime,
+                plan.endtime AS endtime,
                 grp.name AS groupname
             FROM {" . final_evaluation_entity::TABLE . "} AS fe"
                 . " LEFT JOIN $plansql ON plan.id = fe.evalplanid"
@@ -127,14 +127,16 @@ class download_helper {
     /**
      * Download appraisals
      *
+     * @param int $importid
      * @param string $dataformat
-     * @param string $filename
+     * @throws \dml_exception
+     * @throws coding_exception
      */
     public static function download_userdata_appraisal($importid, string $dataformat) {
         global $DB;
         $sql = planning_entity::get_historical_sql_query('plan');
         $rs = $DB->get_recordset_sql("SELECT CONCAT(a.id, ac.id) AS id, a.*, c.idnumber AS critidnumber,
-                    ac.grade AS grade, ac.comment AS gradecomment, ac.commentformat AS gradecommentformat, 
+                    ac.grade AS grade, ac.comment AS gradecomment, ac.commentformat AS gradecommentformat,
                     ac.timemodified AS criteriatimemodified, ac.timecreated AS criteriatimecreated FROM {"
                 . appraisal_entity::TABLE . "} AS a LEFT JOIN $sql ON plan.id = a.evalplanid"
                 . " LEFT JOIN {" . appraisal_criterion_entity::TABLE . "} ac ON ac.appraisalid = a.id"
@@ -291,7 +293,7 @@ class download_helper {
         $maxlength = 0;
         foreach ($usergroups as $ug) {
             $count = count($ug->groups);
-            $maxlength = $count > $maxlength ? $count : $maxlength;
+            $maxlength = max($count, $maxlength);
         }
         $groupingfields = [];
         for ($i = 0; $i < $maxlength; $i++) {

@@ -45,7 +45,6 @@ class assessment_utils {
      * Get my situations
      *
      * @return situations
-     * @throws coding_exception
      */
     public static function get_mysituations_list() {
         global $USER;
@@ -61,7 +60,7 @@ class assessment_utils {
                     ]
             );
             $filterset->set_join_type(filter::JOINTYPE_ALL);
-            assessment_utils::add_roles_evaluation_filterset($filterset);
+            self::add_roles_evaluation_filterset($filterset);
             $filterset->add_filter_from_params(
                     'appraiserid', // Field name.
                     filter::JOINTYPE_ALL,
@@ -113,7 +112,7 @@ class assessment_utils {
                     ]
             );
             $filterset->set_join_type(filter::JOINTYPE_ALL);
-            assessment_utils::add_roles_evaluation_filterset($filterset);
+            self::add_roles_evaluation_filterset($filterset);
             $filterset->add_filter_from_params(
                     'appraiserid', // Field name.
                     filter::JOINTYPE_ALL,
@@ -204,7 +203,6 @@ class assessment_utils {
      *
      * @param $studentid
      * @return situations_for_student
-     * @throws coding_exception
      */
     public static function get_situations_for_student($studentid) {
         $entitylist = new situations_for_student(null, null, null);

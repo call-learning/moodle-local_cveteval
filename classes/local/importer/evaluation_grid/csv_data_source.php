@@ -33,7 +33,6 @@ class csv_data_source extends \tool_importer\local\source\csv_data_source {
      * A bit of a specific implementation for variable number of columns
      *
      * @return array
-     * @throws importer_exception
      */
     public function get_fields_definition() {
         return [

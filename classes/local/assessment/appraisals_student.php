@@ -38,7 +38,6 @@ use local_cveteval\local\persistent\planning\entity as planning_entity;
 use local_cveteval\local\persistent\role\entity as role_entity;
 use local_cveteval\local\persistent\situation\entity as situation_entity;
 use local_cveteval\output\grade_widget;
-use ReflectionException;
 use stdClass;
 
 /**
@@ -175,7 +174,7 @@ class appraisals_student extends dynamic_table_sql {
                     FROM {local_cveteval_appr_crit} c
                     LEFT JOIN $criterionsql ON criterion.id = c.criterionid
                     LEFT JOIN {local_cveteval_appraisal} appraisal ON appraisal.id = c.appraisalid
-                    WHERE criterion.parentid = :criterionid AND appraisal.appraiserid = :appraiserid 
+                    WHERE criterion.parentid = :criterionid AND appraisal.appraiserid = :appraiserid
                         AND c.appraisalid = :appraisalid AND c.grade <> 0
                     ", [
                         'criterionid' => $row->id,
@@ -254,8 +253,6 @@ class appraisals_student extends dynamic_table_sql {
      *
      * Add all the fields from persistent class except the reserved ones
      *
-     * @return array
-     * @throws ReflectionException
      */
     protected function setup_fields() {
         $this->fields = [
@@ -274,7 +271,7 @@ class appraisals_student extends dynamic_table_sql {
                     array('criterionname'),
                     $this->fieldaliases
             );
-            $from = "{local_cveteval_appraisal} appraisal 
+            $from = "{local_cveteval_appraisal} appraisal
                 LEFT JOIN $planningsql ON appraisal.evalplanid = plan.id
                 LEFT JOIN $situationsql ON plan.clsituationid = situation.id
                 LEFT JOIN $groupassignmentsql ON groupa.groupid = plan.groupid

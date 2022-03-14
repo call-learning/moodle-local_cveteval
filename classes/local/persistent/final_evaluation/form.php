@@ -49,14 +49,12 @@ class form extends entity_form {
      * Additional definitions for the form
      */
     protected function post_field_definitions(&$mform) {
-        global $OUTPUT;
-        foreach (['tabname'] as $fieldtocheck) {
-            if (empty($this->_customdata[$fieldtocheck])) {
-                throw new coding_exception($fieldtocheck . ' must be defined');
-            }
-            $value = $this->_customdata[$fieldtocheck];
-            $mform->setDefault('evalplanid', $value);
-            $this->set_data([$fieldtocheck => $value]);
+        $fieldtocheck = 'tabname';
+        if (empty($this->_customdata[$fieldtocheck])) {
+            throw new coding_exception($fieldtocheck . ' must be defined');
         }
+        $value = $this->_customdata[$fieldtocheck];
+        $mform->setDefault('evalplanid', $value);
+        $this->set_data([$fieldtocheck => $value]);
     }
 }

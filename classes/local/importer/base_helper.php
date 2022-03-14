@@ -115,6 +115,7 @@ abstract class base_helper {
      * @param data_importer $dataimporter
      * @param object $progressbar
      * @param int $importid
+     * @return processor
      */
     protected function create_processor(csv_data_source $csvsource, data_transformer $transformer, data_importer $dataimporter,
             $progressbar, $importid) {
@@ -142,7 +143,7 @@ abstract class base_helper {
      *
      * @param mixed $value
      * @param string $columnname
-     * @return string
+     * @return int
      */
     public static function toint($value, $columnname) {
         return intval($value);

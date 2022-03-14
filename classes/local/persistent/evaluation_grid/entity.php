@@ -94,9 +94,9 @@ class entity extends persistent implements enhanced_persistent, model_with_histo
     /**
      * Validate entity context
      *
-     * @param $entityclass
-     * @param $context
+     * @param context $context
      * @return false|mixed
+     * @throws \dml_exception
      */
     public function validate_access(context $context) {
         global $USER;

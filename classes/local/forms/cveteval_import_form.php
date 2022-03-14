@@ -54,7 +54,6 @@ class cveteval_import_form extends moodleform {
      * Form definition
      *
      * @throws coding_exception
-     * @throws dml_exception
      */
     public function definition() {
         $mform = $this->_form;
@@ -157,7 +156,7 @@ class cveteval_import_form extends moodleform {
                     $importhelper = new $importclass($filepath, $randomvalidationid, $file->get_filename(), $delimiter, $encoding);
                     $importhelper->validate(['fastcheck' => true]);
                     $processor = $importhelper->get_processor();
-                    /* @var processor processor  */
+                    /* @var processor processor */
                     foreach ($processor->get_validation_log() as $log) {
                         if (empty($errors[$fieldname])) {
                             $errors[$fieldname] = $log->get_full_message();

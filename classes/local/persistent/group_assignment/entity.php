@@ -46,7 +46,6 @@ class entity extends persistent implements model_with_history {
      * Usual properties definition for a persistent
      *
      * @return array|array[]
-     * @throws coding_exception
      */
     protected static function define_properties() {
         return array(

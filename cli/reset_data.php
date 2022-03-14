@@ -23,7 +23,6 @@
  */
 
 use local_cveteval\utils;
-use local_vetagropro\locallib\setup;
 
 define('CLI_SCRIPT', true);
 require(__DIR__ . '/../../../config.php');

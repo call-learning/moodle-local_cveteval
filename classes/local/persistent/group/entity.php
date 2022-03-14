@@ -49,7 +49,6 @@ class entity extends persistent implements enhanced_persistent, model_with_histo
      * Usual properties definition for a persistent
      *
      * @return array|array[]
-     * @throws coding_exception
      */
     public static function define_fields(): array {
         return [

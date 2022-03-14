@@ -16,9 +16,6 @@
 
 namespace local_cveteval\local\persistent;
 
-use local_cveteval\local\persistent\history\entity as history_entity;
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Historical util test.
  *
@@ -40,5 +37,4 @@ class model_with_history_utils_test extends \advanced_testcase {
             'local_cveteval\\local\\persistent\\situation\\entity',
         ), array_values($classes));
     }
-
 }

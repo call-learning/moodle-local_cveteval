@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace local_cveteval\local\persistent;
+defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
@@ -23,8 +24,6 @@ require_once($CFG->dirroot. '/local/cveteval/tests/local/assessment/assessment_u
 use advanced_testcase;
 use local_cveteval\local\assessment\assessment_utils_test;
 use local_cveteval\test\assessment_test_trait;
-
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * Same tests as assessment_utils_test but with history enabled

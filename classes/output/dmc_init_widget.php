@@ -36,7 +36,6 @@ class dmc_init_widget implements renderable, templatable {
     }
 
     public function export_for_template(renderer_base $output) {
-        $context = $this->navigation->export_for_template($output);
-        return $context;
+        return $this->navigation->export_for_template($output);
     }
 }

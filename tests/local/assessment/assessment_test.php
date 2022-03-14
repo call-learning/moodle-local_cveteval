@@ -80,7 +80,7 @@ class assessment_test extends advanced_testcase {
         $entitylist = assessment_utils::get_mysituations_list();
         $rows = $entitylist->get_rows(100);
         $this->assertCount(1, $rows);
-        $this->assertEquals($rows[0]->idnumber, "TMG");
+        $this->assertEquals("TMG", $rows[0]->idnumber);
     }
 
     /**
@@ -93,13 +93,13 @@ class assessment_test extends advanced_testcase {
         $entitylist = assessment_utils::get_mystudents_list( $tmgsituation->get('id'));
         $rows = $entitylist->get_rows(100);
         $this->assertCount(10, $rows);
-        $this->assertEquals($rows[0]->studentfullname, "Adéla Veselá");
-        $this->assertEquals($rows[0]->groupname, "Groupe A");
-        $this->assertEquals($rows[1]->studentfullname, "Adéla Veselá");
-        $this->assertEquals($rows[1]->groupname, "Groupe A");
+        $this->assertEquals("Adéla Veselá", $rows[0]->studentfullname);
+        $this->assertEquals("Groupe A", $rows[0]->groupname);
+        $this->assertEquals("Adéla Veselá", $rows[1]->studentfullname);
+        $this->assertEquals("Groupe A", $rows[1]->groupname);
         $this->assertTrue($rows[0]->planid != $rows[1]->planid);
-        $this->assertEquals($rows[2]->studentfullname, "Anna Horáková");
-        $this->assertEquals($rows[2]->groupname, "Groupe A");
+        $this->assertEquals("Anna Horáková", $rows[2]->studentfullname);
+        $this->assertEquals("Groupe A", $rows[2]->groupname);
     }
 
     /**
@@ -115,8 +115,8 @@ class assessment_test extends advanced_testcase {
         $entitylist = assessment_utils::get_thissituation_list($student->id, $evalplan->get('id'));
         $rows = $entitylist->get_rows(100);
         $this->assertCount(7, $rows);
-        $this->assertEquals($rows[0]->criterionname, "Savoir être");
-        $this->assertEquals($rows[0]->_children[0]->criterionname, "Respect des horaires de travail");
+        $this->assertEquals("Savoir être", $rows[0]->criterionname);
+        $this->assertEquals("Respect des horaires de travail", $rows[0]->_children[0]->criterionname);
     }
 
     /**

@@ -69,7 +69,7 @@ class test_utils {
             utils::cleanup_userdata(history_entity::get_current_id());
         }
 
-        self::create_appraisal_for_students(null, 5, true);
+        self::create_appraisal_for_students(null, 5, $verbose);
     }
 
     /**
@@ -189,7 +189,7 @@ class test_utils {
         $transaction = $DB->start_delegated_transaction();
         $basepath = $CFG->dirroot . '/local/cveteval/tests/fixtures/';
         static::import_sample_users($CFG->dirroot . self::SHORT_SAMPLE_FILES['users']);
-        $importid = static::import_sample_planning(self::SHORT_SAMPLE_FILES['cveteval'], $basepath, false);
+        $importid = static::import_sample_planning(self::SHORT_SAMPLE_FILES['cveteval'], $basepath);
         if (!$historydisabled) {
             $currenthistory = history_entity::get_record(['id' => $importid]);
             $currenthistory->set('isactive', true);
@@ -253,9 +253,8 @@ class test_utils {
                 $errors = array_map(
                         function($record) {
                             $rec = (array) $record->to_record();
-                            $rec = array_intersect_key($rec,
+                            return array_intersect_key($rec,
                                     array_flip(['messagecode', 'linenumber', 'fieldname', 'additionalinfo']));
-                            return $rec;
                         },
                         $importhelper->get_processor()->get_logger()->get_logs()
                 );
@@ -271,8 +270,7 @@ class test_utils {
             throw new moodle_exception('importclassnotfound', 'local_cveteval', null,
                     ' class:' . $importclass);
         }
-        $importhelper = new $importclass($filename, $importid, 'semicolon');
-        return $importhelper;
+        return new $importclass($filename, $importid, 'semicolon');
     }
 
     /**

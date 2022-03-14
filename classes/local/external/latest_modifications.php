@@ -106,7 +106,7 @@ class latest_modifications extends external_api {
     /**
      * @param $entitytype
      * @param string $queryjson
-     * @return false|int|mixed
+     * @return int
      * @throws dml_exception
      */
     public static function get_entity_latest_modifications($entitytype, $queryjson) {

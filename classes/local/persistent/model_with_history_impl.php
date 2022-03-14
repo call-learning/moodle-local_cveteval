@@ -47,16 +47,17 @@ trait model_with_history_impl {
         if (!empty($sort)) {
             $orderby = " ORDER BY $sort $order";
         }
-        [$sql, $where, $params] = self::prepare_sql_get_records($filters, "e");
+        [$sql, $where, $params] = self::prepare_sql_get_records($filters);
         if ($where) {
             $where = "WHERE $where";
         }
         $records = $DB->get_records_sql("SELECT e.* FROM $sql $where $orderby", $params, $skip, $limit);
         $instances = array();
 
-        foreach ($records as $record) {
-            $newrecord = new static(0, $record);
-            array_push($instances, $newrecord);
+        if ($records) {
+            $instances = array_map(function($r) {
+                return new static(0, $r);
+            }, $records);
         }
         return $instances;
     }
@@ -64,7 +65,8 @@ trait model_with_history_impl {
     /**
      * Prepare for get record(s)
      *
-     * @param $filters
+     * @param array $filters
+     * @param string $alias
      * @return array
      */
     protected static function prepare_sql_get_records($filters, $alias = "e") {
@@ -195,13 +197,11 @@ trait model_with_history_impl {
         }
 
         $historymtable = history_model\entity::TABLE;
-        $sql = "(SELECT ctable.*
+        return "(SELECT ctable.*
                 FROM {" . $currenttable . "} ctable
                 LEFT JOIN {" . $historymtable . "} AS hmtable
                 ON hmtable.tablename = '$currenttable' AND ctable.id = hmtable.tableid AND ($currentidquery)
                 WHERE hmtable.id IS NOT NULL) AS $alias";
-
-        return $sql;
     }
 
     /**
@@ -242,10 +242,10 @@ trait model_with_history_impl {
         $fields = "e.*";
         $records = $DB->get_records_sql("SELECT $fields FROM $sql WHERE $select $sort", $params, $limitfrom, $limitnum);
         $instances = array();
-
-        foreach ($records as $record) {
-            $newrecord = new static(0, $record);
-            array_push($instances, $newrecord);
+        if ($records) {
+            $instances = array_map(function($r) {
+                return new static(0, $r);
+            }, $records);
         }
         return $instances;
     }
@@ -260,8 +260,7 @@ trait model_with_history_impl {
      */
     public static function count_records(array $conditions = array()) {
         [$sql, $where, $params] = self::prepare_sql_get_records($conditions);
-        $count = self::do_count_records_select($sql, $where, $params);
-        return $count;
+        return self::do_count_records_select($sql, $where, $params);
     }
 
     /**
@@ -269,7 +268,7 @@ trait model_with_history_impl {
      *
      * @param string $sql The query with potential historical joins
      * @param string $select A fragment of SQL to be used in a WHERE clause in the SQL call.
-     * @param array $params array of sql parameters
+     * @param array|null $params array of sql parameters
      * @param string $countitem The count string to be used in the SQL call. Default is COUNT('x').
      * @return int The count of records returned from the specified criteria.
      * @throws dml_exception A DML specific exception is thrown for any errors.
@@ -293,8 +292,7 @@ trait model_with_history_impl {
      */
     public static function count_records_select($select, $params = null) {
         $sql = self::get_historical_sql_query();
-        $count = self::do_count_records_select($sql, $select, $params);
-        return $count;
+        return self::do_count_records_select($sql, $select, $params);
     }
 
     /**
@@ -315,7 +313,7 @@ trait model_with_history_impl {
      *
      * @param string $sql The query with potential historical joins
      * @param string $select A fragment of SQL to be used in a WHERE clause in the SQL call.
-     * @param array $params array of sql parameters
+     * @param array|null $params array of sql parameters
      * @return bool true if a matching record exists, else false.
      * @throws dml_exception A DML specific exception is thrown for any errors.
      */
@@ -333,8 +331,9 @@ trait model_with_history_impl {
      * Take into account only active records or current history.
      *
      * @param string $select
-     * @param array $params
+     * @param array|null $params
      * @return bool
+     * @throws dml_exception
      */
     public static function record_exists_select($select, array $params = null) {
         $sql = self::get_historical_sql_query();

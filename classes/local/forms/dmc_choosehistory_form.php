@@ -48,12 +48,11 @@ class dmc_choosehistory_form extends moodleform implements dmc_form_interface {
      * Form definition
      *
      * @throws coding_exception
-     * @throws dml_exception
      */
     public function definition() {
         $mform = $this->_form;
         $dmc = $this->_customdata['dmc'] ?? null;
-        /* @var data_migration_controller|null $dmc */
+        /* @var data_migration_controller|null $dmc Data migration controller .*/
         $histories = history_entity::get_records();
         $choices = [];
         foreach ($histories as $history) {
@@ -91,7 +90,7 @@ class dmc_choosehistory_form extends moodleform implements dmc_form_interface {
     public function execute_action($data) {
         global $PAGE;
         $dmc = $this->_customdata['dmc'] ?? null;
-        /* @var data_migration_controller|null $dmc */
+        /* @var data_migration_controller|null $dmc Data migration controller .*/
         if ($dmc) {
             $stepdata = (object) [
                     'originimportid' => $data->originimportid,

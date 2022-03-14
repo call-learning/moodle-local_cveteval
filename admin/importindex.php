@@ -24,7 +24,6 @@
 
 use local_cltools\output\table\entity_table_renderable;
 
-
 require_once(__DIR__ . '../../../../config.php');
 global $CFG, $OUTPUT, $PAGE;
 require_once($CFG->libdir . "/adminlib.php");
@@ -35,17 +34,17 @@ $PAGE->set_context(context_system::instance());
 $PAGE->set_title(get_string('import:list', 'local_cveteval'));
 $PAGE->set_heading(get_string('import:list', 'local_cveteval'));
 $PAGE->set_url(new moodle_url('/local/cveteval/admin/importindex.php'));
-/* @var core_renderer $OUTPUT */
+/* @var core_renderer $OUTPUT . */
 
 if ($returnurl) {
     $PAGE->set_button(
-        $OUTPUT->single_button(new moodle_url($returnurl),
-            get_string('continue'))
+            $OUTPUT->single_button(new moodle_url($returnurl),
+                    get_string('continue'))
     );
 }
 echo $OUTPUT->header();
 
-$entitylist =  new local_cveteval\local\persistent\history\table();
+$entitylist = new local_cveteval\local\persistent\history\table();
 
 $renderable = new entity_table_renderable($entitylist);
 
