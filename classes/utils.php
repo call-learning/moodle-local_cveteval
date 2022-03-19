@@ -604,7 +604,7 @@ class utils {
                     $fieldname,
                     'local_cveteval',
                     $email,
-                    log_levels::LEVEL_ERROR
+                    log_levels::LEVEL_WARNING
             );
         }
     }

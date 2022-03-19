@@ -111,7 +111,7 @@ class data_importer extends \tool_importer\data_importer {
             $group = group_entity::get_record(['name' => $groupname]);
             if ($checkotherentities && empty($group)) {
                 throw new importer_exception('planning:groupdoesnotexist',
-                        $rowindex,
+                        importer_exception::ROW_HEADER_INDEX,
                         $groupname,
                         'local_cveteval',
                         $groupname,
@@ -124,7 +124,7 @@ class data_importer extends \tool_importer\data_importer {
                         $groupname,
                         'local_cveteval',
                         $situationsn,
-                        log_levels::LEVEL_ERROR);
+                        log_levels::LEVEL_WARNING);
             }
         }
         foreach ($this->existingdates as $prevrowindex => $existingdate) {
@@ -158,7 +158,7 @@ class data_importer extends \tool_importer\data_importer {
                         'currentstartdate' => userdate($currentdatestart, get_string('strftimedatefullshort', 'core_langconfig')),
                         'currentenddate' => userdate($currendateend, get_string('strftimedatefullshort', 'core_langconfig')),
                 ],
-                log_levels::LEVEL_ERROR
+                log_levels::LEVEL_WARNING
         );
     }
 

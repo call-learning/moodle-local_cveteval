@@ -76,6 +76,9 @@ class user_data_migration_helper {
                         if ($newcriterionid) {
                             $newappraisalcritdata->criterionid = $newcriterionid;
                             $newappraisal = new appraisal_entity(0, $newapprdata);
+                            // TODO : if student id or assessor id have changed group and has been replaced or
+                            // (for example the situation has a new appraiser and an old assessor is missing)
+                            // make sure it changes also.
                             $newappraisal->save();
                             $evalinfo->criteria[] =
                                     static::get_eval_info($newapprdata->studentid, $newapprdata->appraiserid,
@@ -138,6 +141,8 @@ class user_data_migration_helper {
                     unset($newfinalevaldata->id);
                     unset($newfinalevaldata->timemodified);
                     $newfinalevaldata->evalplanid = $plantargetid;
+                    // TODO : if student id or assessor id have changed (for example the situation has a new assessor and
+                    // an old assessor is missing) make sure it changes also.
                     $newfinaleval = new final_evaluation_entity(0, $newfinalevaldata);
                     $newfinaleval->save();
                     $newfinalevalinfo[] = static::get_final_eval_info($newfinalevaldata->studentid, $newfinalevaldata->assessorid,

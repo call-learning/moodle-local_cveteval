@@ -60,7 +60,7 @@ class csv_data_source extends \tool_importer\local\source\csv_data_source {
                     ],
             ];
             if (!$this->csvimporter) {
-                throw new importer_exception('nocolumnsdefined', 0, '', 'local_cveteval');
+                throw new importer_exception('nocolumnsdefined', importer_exception::ROW_HEADER_INDEX, '', 'local_cveteval');
             }
             if ($allcolumns = $this->csvimporter->get_columns()) {
                 foreach ($allcolumns as $colname) {

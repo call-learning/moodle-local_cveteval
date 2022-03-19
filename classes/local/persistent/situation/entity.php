@@ -64,21 +64,33 @@ class entity extends persistent implements enhanced_persistent, model_with_histo
      */
     public static function define_fields(): array {
         return [
-                new text('title'),
-                new editor('description'),
+                new text(
+                        [
+                                'fieldname' => 'title',
+                                'fullname' => get_string('situation:title', 'local_cveteval')
+                        ]
+                ),
+                new editor(
+                        [
+                                'fieldname' => 'description',
+                                'fullname' => get_string('situation:description', 'local_cveteval')
+                        ]),
                 new text([
                         'fieldname' => 'idnumber',
-                        'rawtype' => PARAM_ALPHANUMEXT
+                        'rawtype' => PARAM_ALPHANUMEXT,
+                        'fullname' => get_string('situation:idnumber', 'local_cveteval')
                 ]),
                 new text(
                         [
                                 'fieldname' => 'expectedevalsnb',
-                                'rawtype' => PARAM_INT
+                                'rawtype' => PARAM_INT,
+                                'fullname' => get_string('situation:expectedevalsnb', 'local_cveteval')
                         ]),
                 new entity_selector([
                         'fieldname' => 'evalgridid',
                         'entityclass' => \local_cveteval\local\persistent\evaluation_grid\entity::class,
-                        'displayfield' => 'name'
+                        'displayfield' => 'name',
+                        'fullname' => get_string('situation:evalgridid', 'local_cveteval')
                 ])
         ];
 

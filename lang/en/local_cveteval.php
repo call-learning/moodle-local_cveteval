@@ -216,6 +216,10 @@ $string['settings:manage_situations'] = 'Manage situations';
 $string['situation:entity'] = 'Clinical situation';
 $string['situation:evalgridid'] = 'Linked Evaluation Grid';
 $string['situation:expectedevalsnb'] = '#Eval';
+$string['situation:entity'] = 'Situation clinique';
+$string['situation:description'] = 'Description';
+$string['situation:title'] = 'Title';
+$string['situation:idnumber'] = 'ID';
 $string['situationfile_help'] =
         'A list of situation in CSV format. The file must contain the following headers <pre>"Description";"Nom";"Nom court";"ResponsableUE";"Responsable";"Evaluateurs";"Observateurs";"Appreciations"; "GrilleEval";"Etiquettes"</pre>';
 $string['situationfile'] = 'List of situations';
@@ -223,7 +227,7 @@ $string['situation:gridnotfound'] = 'Grid not found {$a}.';
 $string['situation:groupname'] = 'Group name';
 $string['situation:plural'] = 'Clinical situations';
 $string['situation:stats'] = 'Imported roles: {$a->roles}, planning situations : {$a->situations}';
-$string['situation:title'] = 'Title';
+
 $string['situation:usernotfound'] = 'User not found {$a}.';
 $string['student'] = 'Student';
 $string['thissituation'] = 'This situation';

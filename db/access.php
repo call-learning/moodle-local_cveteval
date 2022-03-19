@@ -83,7 +83,7 @@ $capabilities = array(
         ),
         'local/cveteval:manageimport' => array(
                 'riskbitmask' => RISK_SPAM,
-                'captype' => 'read',
+                'captype' => 'write',
                 'contextlevel' => CONTEXT_SYSTEM,
                 'archetypes' => array(
                         'manager' => CAP_ALLOW,

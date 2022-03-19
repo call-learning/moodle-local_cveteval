@@ -29,6 +29,7 @@ global $CFG, $OUTPUT, $PAGE;
 require_once($CFG->libdir . "/adminlib.php");
 
 admin_externalpage_setup('cvetevalmigration');
+require_capability('local/cveteval:datamigration', context_system::instance());
 $step = optional_param('step', 'init', PARAM_ALPHA);
 $title = $step ?
         get_string('datamigrationstep', 'local_cveteval',

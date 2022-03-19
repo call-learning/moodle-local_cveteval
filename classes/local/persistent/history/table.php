@@ -62,21 +62,29 @@ class table extends entity_table {
      * @throws moodle_exception
      */
     protected function col_tools($row) {
-        global $OUTPUT, $CFG, $PAGE;
+        global $OUTPUT, $CFG;
+        $buttons = '';
         $returnurl = new moodle_url('/local/cveteval/admin/importindex.php');
         $url = new moodle_url($CFG->wwwroot . '/local/cveteval/admin/export.php',
                 ['importid' => $row->id, 'returnurl' => $returnurl]);
-        $buttons = $OUTPUT->action_icon($url, new pix_icon('t/download', get_string('download:model', 'local_cveteval')));
+        if (has_capability('local/cveteval:exportall', \context_system::instance())) {
+            $buttons = $OUTPUT->action_icon($url, new pix_icon('t/download', get_string('download:model', 'local_cveteval')));
+        }
         $url = new moodle_url($CFG->wwwroot . '/local/cveteval/manage/index.php',
                 ['importid' => $row->id, 'returnurl' => $returnurl]);
-        $buttons .= $OUTPUT->action_icon($url, new pix_icon('t/edit', get_string('cveteval:manageentities', 'local_cveteval')));
-
+        if (has_capability('local/cveteval:manageentities', \context_system::instance())) {
+            $buttons .= $OUTPUT->action_icon($url, new pix_icon('t/edit', get_string('cveteval:manageentities', 'local_cveteval')));
+        }
         $url = new moodle_url($CFG->wwwroot . '/local/cveteval/admin/cleanup.php',
                 ['importid' => $row->id, 'type' => 'model', 'returnurl' => $returnurl]);
-        $buttons .= $OUTPUT->action_icon($url, new pix_icon('t/delete', get_string('cleanup:model', 'local_cveteval')));
+        if (has_capability('local/cveteval:cleanupdata', \context_system::instance())) {
+            $buttons .= $OUTPUT->action_icon($url, new pix_icon('t/delete', get_string('cleanup:model', 'local_cveteval')));
+        }
         $url = new moodle_url($CFG->wwwroot . '/local/cveteval/admin/cleanup.php',
                 ['importid' => $row->id, 'type' => 'userdata', 'returnurl' => $returnurl]);
-        $buttons .= $OUTPUT->action_icon($url, new pix_icon('t/reset', get_string('cleanup:userdata', 'local_cveteval')));
+        if (has_capability('local/cveteval:cleanupdata', \context_system::instance())) {
+            $buttons .= $OUTPUT->action_icon($url, new pix_icon('t/reset', get_string('cleanup:userdata', 'local_cveteval')));
+        }
         return $buttons;
     }
 }

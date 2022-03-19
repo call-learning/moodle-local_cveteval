@@ -31,6 +31,7 @@ global $CFG, $OUTPUT, $PAGE;
 require_once($CFG->libdir . "/adminlib.php");
 
 admin_externalpage_setup('cvetevalimportindex');
+require_capability('local/cveteval:manageimport', context_system::instance());
 $PAGE->set_title(get_string('import', 'local_cveteval'));
 $PAGE->set_heading(get_string('import', 'local_cveteval'));
 $currenturl = new moodle_url('/local/cveteval/admin/import.php');

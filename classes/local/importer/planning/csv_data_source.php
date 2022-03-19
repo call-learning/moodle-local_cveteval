@@ -46,7 +46,8 @@ class csv_data_source extends \tool_importer\local\source\csv_data_source {
      * @throws importer_exception
      */
     public function get_fields_definition() {
-        $cache = cache::make_from_params(cache_store::MODE_REQUEST, 'local_cveteval', self::PLANNING_IMPORTER_CACHE_NAME);
+        $cache = cache::make_from_params(cache_store::MODE_REQUEST, 'local_cveteval',
+                self::PLANNING_IMPORTER_CACHE_NAME);
         if (!$cache->has('columns')) {
             $additionalcolumns = [
                     'Date début' => [
@@ -59,12 +60,15 @@ class csv_data_source extends \tool_importer\local\source\csv_data_source {
                     ]
             ];
             if (!$this->csvimporter) {
-                throw new importer_exception('planning:nocolumnsdefined', 0, '', 'local_cveteval');
+                throw new importer_exception('planning:nocolumnsdefined', importer_exception::ROW_HEADER_INDEX,
+                        '',
+                        'local_cveteval');
             }
 
             $allcolumns = $this->csvimporter->get_columns();
             if (count($allcolumns) <= 2) {
-                throw new importer_exception('planning:nogroupdefined', 0, '', 'local_cveteval');
+                throw new importer_exception('planning:nogroupdefined', importer_exception::ROW_HEADER_INDEX,
+                        '', 'local_cveteval');
             }
             $allgroups = array_slice($allcolumns, 2);
             foreach ($allgroups as $colname) {

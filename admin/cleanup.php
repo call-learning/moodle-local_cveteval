@@ -31,7 +31,7 @@ require_once($CFG->libdir . "/adminlib.php");
 
 $cleanuptype = required_param('type', PARAM_ALPHA);
 admin_externalpage_setup('cvetevalcleanup' . $cleanuptype);
-
+require_capability('local/cveteval:cleanupdata', context_system::instance());
 $PAGE->set_title(get_string('cleanup:' . $cleanuptype, 'local_cveteval'));
 $PAGE->set_heading(get_string('cleanup:' . $cleanuptype, 'local_cveteval'));
 $confirm = optional_param('confirm', false, PARAM_BOOL);

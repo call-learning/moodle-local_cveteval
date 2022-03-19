@@ -28,6 +28,7 @@ require_once(__DIR__ . '../../../../config.php');
 global $CFG, $OUTPUT, $PAGE;
 require_once($CFG->libdir . "/adminlib.php");
 admin_externalpage_setup('cvetevalimportindex');
+require_capability('local/cveteval:manageimport', context_system::instance());
 $returnurl = optional_param('returnurl', null, PARAM_RAW);
 $PAGE->set_pagelayout('standard');
 $PAGE->set_context(context_system::instance());

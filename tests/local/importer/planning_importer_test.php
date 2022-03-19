@@ -30,18 +30,18 @@ class planning_importer_test extends \advanced_testcase {
     use importer_test_trait;
 
     const EXISTING_USERS = [
-        'appraiser_0001@exemple.com',
-        'appraiser_0002@exemple.com',
-        'resp1@exemple.com',
-        'resp2@exemple.com',
-        'resp3@exemple.com',
-        'obs1@exemple.com',
-        'obs2@exemple.com',
-        'obs3@exemple.com',
-        'etu1@exemple.com',
-        'etu2@exemple.com',
-        'etu3@exemple.com',
-        'etu4@exemple.com',
+            'appraiser_0001@exemple.com',
+            'appraiser_0002@exemple.com',
+            'resp1@exemple.com',
+            'resp2@exemple.com',
+            'resp3@exemple.com',
+            'obs1@exemple.com',
+            'obs2@exemple.com',
+            'obs3@exemple.com',
+            'etu1@exemple.com',
+            'etu2@exemple.com',
+            'etu3@exemple.com',
+            'etu4@exemple.com',
     ];
 
     /**
@@ -55,8 +55,8 @@ class planning_importer_test extends \advanced_testcase {
             $this->getDataGenerator()->create_user(['email' => $useremail]);
         }
         $dependencies = [
-            'situation' => 'basic_planning_situations.csv',
-            'grouping' => 'basic_planning_grouping.csv',
+                'situation' => 'basic_planning_situations.csv',
+                'grouping' => 'basic_planning_grouping.csv',
         ];
         // First import groups and situations.
         foreach ($dependencies as $helpername => $helperfilename) {
@@ -94,163 +94,162 @@ class planning_importer_test extends \advanced_testcase {
      */
     public function basic_csv_dataprovider() {
         return [
-            'oksample' => [
-                'filename' => 'basic_planning.csv',
-                'results' => [
-                    'haserror' => false,
-                    'imported' => [
-                        [
-                            'name' => 'Groupe A',
-                            'title' => 'Consultations de médecine générale',
-                            'starttime' => '24 May 2021',
-                            'endtime' => '30 May 2021',
+                'oksample' => [
+                        'filename' => 'basic_planning.csv',
+                        'results' => [
+                                'haserror' => false,
+                                'imported' => [
+                                        [
+                                                'name' => 'Groupe A',
+                                                'title' => 'Consultations de médecine générale',
+                                                'starttime' => '24 May 2021',
+                                                'endtime' => '30 May 2021',
+                                        ],
+                                        [
+                                                'name' => 'Groupe B',
+                                                'title' => 'Urgences-Soins intensifs',
+                                                'starttime' => '24 May 2021',
+                                                'endtime' => '30 May 2021',
+                                        ],
+                                        [
+                                                'name' => 'Groupe A',
+                                                'title' => 'Médecine interne',
+                                                'starttime' => '31 May 2021',
+                                                'endtime' => '6 June 2021',
+                                        ],
+                                        [
+                                                'name' => 'Groupe B',
+                                                'title' => 'Consultations de médecine générale',
+                                                'starttime' => '31 May 2021',
+                                                'endtime' => '6 June 2021',
+                                        ],
+                                        [
+                                                'name' => 'Groupe A',
+                                                'title' => 'Urgences-Soins intensifs',
+                                                'starttime' => '7 June 2021',
+                                                'endtime' => '13 June 2021',
+                                        ],
+                                        [
+                                                'name' => 'Groupe B',
+                                                'title' => 'Médecine interne',
+                                                'starttime' => '7 June 2021',
+                                                'endtime' => '13 June 2021',
+                                        ],
+                                        [
+                                                'name' => 'Groupe A',
+                                                'title' => 'Consultations de médecine générale',
+                                                'starttime' => '14 June 2021',
+                                                'endtime' => '20 June 2021',
+                                        ],
+                                        [
+                                                'name' => 'Groupe B',
+                                                'title' => 'Urgences-Soins intensifs',
+                                                'starttime' => '14 June 2021',
+                                                'endtime' => '20 June 2021',
+                                        ],
+                                        [
+                                                'name' => 'Groupe A',
+                                                'title' => 'Médecine interne',
+                                                'starttime' => '21 June 2021',
+                                                'endtime' => '27 June 2021',
+                                        ],
+                                        [
+                                                'name' => 'Groupe B',
+                                                'title' => 'Consultations de médecine générale',
+                                                'starttime' => '21 June 2021',
+                                                'endtime' => '27 June 2021',
+                                        ],
+                                        [
+                                                'name' => 'Groupe A',
+                                                'title' => 'Urgences-Soins intensifs',
+                                                'starttime' => '28 June 2021',
+                                                'endtime' => '4 July 2021',
+                                        ],
+                                        [
+                                                'name' => 'Groupe B',
+                                                'title' => 'Médecine interne',
+                                                'starttime' => '28 June 2021',
+                                                'endtime' => '4 July 2021',
+                                        ],
+                                ],
+                                'errors' => []
                         ],
-                        [
-                            'name' => 'Groupe B',
-                            'title' => 'Urgences-Soins intensifs',
-                            'starttime' => '24 May 2021',
-                            'endtime' => '30 May 2021',
-                        ],
-                        [
-                            'name' => 'Groupe A',
-                            'title' => 'Médecine interne',
-                            'starttime' => '31 May 2021',
-                            'endtime' => '6 June 2021',
-                        ],
-                        [
-                            'name' => 'Groupe B',
-                            'title' => 'Consultations de médecine générale',
-                            'starttime' => '31 May 2021',
-                            'endtime' => '6 June 2021',
-                        ],
-                        [
-                            'name' => 'Groupe A',
-                            'title' => 'Urgences-Soins intensifs',
-                            'starttime' => '7 June 2021',
-                            'endtime' => '13 June 2021',
-                        ],
-                        [
-                            'name' => 'Groupe B',
-                            'title' => 'Médecine interne',
-                            'starttime' => '7 June 2021',
-                            'endtime' => '13 June 2021',
-                        ],
-                        [
-                            'name' => 'Groupe A',
-                            'title' => 'Consultations de médecine générale',
-                            'starttime' => '14 June 2021',
-                            'endtime' => '20 June 2021',
-                        ],
-                        [
-                            'name' => 'Groupe B',
-                            'title' => 'Urgences-Soins intensifs',
-                            'starttime' => '14 June 2021',
-                            'endtime' => '20 June 2021',
-                        ],
-                        [
-                            'name' => 'Groupe A',
-                            'title' => 'Médecine interne',
-                            'starttime' => '21 June 2021',
-                            'endtime' => '27 June 2021',
-                        ],
-                        [
-                            'name' => 'Groupe B',
-                            'title' => 'Consultations de médecine générale',
-                            'starttime' => '21 June 2021',
-                            'endtime' => '27 June 2021',
-                        ],
-                        [
-                            'name' => 'Groupe A',
-                            'title' => 'Urgences-Soins intensifs',
-                            'starttime' => '28 June 2021',
-                            'endtime' => '4 July 2021',
-                        ],
-                        [
-                            'name' => 'Groupe B',
-                            'title' => 'Médecine interne',
-                            'starttime' => '28 June 2021',
-                            'endtime' => '4 July 2021',
-                        ],
-                    ],
-                    'errors' => []
+                        'validationerrors' => []
                 ],
-                'validationerrors' => []
-            ],
-            'issue with overlapping dates' => [
-                'filename' => 'basic_planning_overlap_date.csv',
-                'results' => [
-                    'haserror' => true,
-                    'imported' => [
-                    ]
-                ],
-                'validationerrors' => [
-                    [
-                        'linenumber' => '3',
-                        'messagecode' => 'planning:dateoverlaps',
-                        'additionalinfo' => (object) [
-                            "prevrowindex" => 2,
-                            "previousstartdate" => "24/05/21",
-                            "previousenddate" => "30/05/21",
-                            "currentstartdate" => "25/05/21",
-                            "currentenddate" => "6/06/21"
+                'issue with overlapping dates' => [
+                        'filename' => 'basic_planning_overlap_date.csv',
+                        'results' => [
+                                'haserror' => true,
+                                'imported' => [
+                                ]
                         ],
-                        'fieldname' => 'Date début',
-                    ],
-                    [
-                        'linenumber' => '5',
-                        'messagecode' => 'planning:dateoverlaps',
-                        'additionalinfo' =>
-                            (object) [
-                                "prevrowindex" => 4,
-                                "previousstartdate" => "7/06/21",
-                                "previousenddate" => "13/06/21",
-                                "currentstartdate" => "6/06/21",
-                                "currentenddate" => "12/06/21"
-                            ],
-                        'fieldname' => 'Date fin',
-                    ],
-                ]
-            ],
-            'missing group' => [
-                'filename' => 'basic_planning_missing_group.csv',
-                'results' => [
-                    'haserror' => true,
-                    'errors' => [],
-                    'imported' => []
+                        'validationerrors' => [
+                                [
+                                        'linenumber' => '3',
+                                        'messagecode' => 'planning:dateoverlaps',
+                                        'additionalinfo' => (object) [
+                                                "prevrowindex" => 2,
+                                                "previousstartdate" => "24/05/21",
+                                                "previousenddate" => "30/05/21",
+                                                "currentstartdate" => "25/05/21",
+                                                "currentenddate" => "6/06/21"
+                                        ],
+                                        'fieldname' => 'Date début',
+                                ],
+                                [
+                                        'linenumber' => '5',
+                                        'messagecode' => 'planning:dateoverlaps',
+                                        'additionalinfo' =>
+                                                (object) [
+                                                        "prevrowindex" => 4,
+                                                        "previousstartdate" => "7/06/21",
+                                                        "previousenddate" => "13/06/21",
+                                                        "currentstartdate" => "6/06/21",
+                                                        "currentenddate" => "12/06/21"
+                                                ],
+                                        'fieldname' => 'Date fin',
+                                ],
+                        ]
                 ],
-                'validationerrors' => [
-                    [
+                'missing group' => [
+                        'filename' => 'basic_planning_missing_group.csv',
+                        'results' => [
+                                'haserror' => true,
+                                'errors' => [],
+                                'imported' => []
+                        ],
+                        'validationerrors' => [
+                                [
+                                        'linenumber' => '1',
+                                        'messagecode' => 'planning:groupdoesnotexist',
+                                        'additionalinfo' => 'Groupe C',
+                                        'fieldname' => 'Groupe C',
+                                ],
+                        ]
+                ],
+                'missing situation' => [
+                        'filename' => 'basic_planning_missing_situation.csv',
+                        'results' => [
+                                'haserror' => true,
+                                'exception' => importer_exception::class
+                        ],
+                        'validationerrors' => [
 
-                        'linenumber' => '1',
-                        'messagecode' => 'columnmissing',
-                        'additionalinfo' => '',
-                        'fieldname' => 'Groupe B',
-                    ]
-                ]
-            ],
-            'missing situation' => [
-                'filename' => 'basic_planning_missing_situation.csv',
-                'results' => [
-                    'haserror' => true,
-                    'exception' => importer_exception::class
+                                [
+                                        'linenumber' => '2',
+                                        'messagecode' => 'planning:situationnotfound',
+                                        'additionalinfo' => 'TAG',
+                                        'fieldname' => 'Groupe B',
+                                ],
+                                [
+                                        'linenumber' => '3',
+                                        'messagecode' => 'planning:situationnotfound',
+                                        'additionalinfo' => 'TEG',
+                                        'fieldname' => 'Groupe B',
+                                ],
+
+                        ]
                 ],
-                'validationerrors' => [
-
-                    [
-                        'linenumber' => '2',
-                        'messagecode' => 'planning:situationnotfound',
-                        'additionalinfo' => 'TAG',
-                        'fieldname' => 'Groupe B',
-                    ],
-                    [
-                        'linenumber' => '3',
-                        'messagecode' => 'planning:situationnotfound',
-                        'additionalinfo' => 'TEG',
-                        'fieldname' => 'Groupe B',
-                    ],
-
-                ]
-            ],
 
         ];
     }

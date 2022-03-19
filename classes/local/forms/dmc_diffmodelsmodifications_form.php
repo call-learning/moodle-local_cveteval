@@ -104,7 +104,8 @@ class dmc_diffmodelsmodifications_form extends moodleform implements dmc_form_in
                 foreach ($matchs as $originid => $targetentityid) {
                     $fieldname = $this->get_field_name($context, $entityclass, $originid);
                     if (empty($data->{$context}[$entityclass][$originid])) {
-                        //  $mform->setDefault($fieldname, $stepdata->$context[$entityclass][$originid]);
+                        $mform = $this->_form;
+                        $mform->setDefault($fieldname, $stepdata->{$context}[$entityclass][$originid]);
                     }
                 }
             }
@@ -135,7 +136,7 @@ class dmc_diffmodelsmodifications_form extends moodleform implements dmc_form_in
         global $PAGE;
         $dmc = $this->_customdata['dmc'] ?? null;
         $nextmodel = null;
-        /* @var data_migration_controller|null $dmc the DMC (controller) .*/
+        /* @var data_migration_controller|null $dmc the DMC (controller) . */
         if ($dmc) {
             $stepdata = $this->convert_form_data_into_stepdata($data);
             $dmc->set_step_data($stepdata);
@@ -245,7 +246,7 @@ class dmc_diffmodelsmodifications_form extends moodleform implements dmc_form_in
                 }
             }
         }
-        /* @var data_migration_controller|null $dmc The data migration controller .*/
+        /* @var data_migration_controller|null $dmc The data migration controller . */
         $mform->addElement('hidden', 'step', $dmc->get_step());
         $mform->setType('step', PARAM_TEXT);
         $mform->addElement('hidden', 'originimportid', $stepdata->originimportid);
