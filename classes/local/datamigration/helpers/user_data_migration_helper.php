@@ -21,10 +21,14 @@ use core_user;
 use dml_exception;
 use local_cveteval\local\datamigration\matchers\criterion;
 use local_cveteval\local\datamigration\matchers\planning;
+use local_cveteval\local\datamigration\matchers\role;
 use local_cveteval\local\persistent\appraisal\entity as appraisal_entity;
 use local_cveteval\local\persistent\appraisal_criterion\entity as appraisal_criterion_entity;
 use local_cveteval\local\persistent\final_evaluation\entity as final_evaluation_entity;
 use local_cveteval\local\persistent\history\entity;
+use local_cveteval\local\persistent\planning\entity as planning_entity;
+use local_cveteval\local\persistent\role\entity as role_entity;
+use local_cveteval\local\persistent\situation\entity as situation_entity;
 use local_cveteval\output\helpers\output_helper;
 use stdClass;
 
@@ -44,6 +48,7 @@ class user_data_migration_helper {
      * @throws dml_exception
      */
     public static function convert_origin_appraisals($contexts, $stepdata) {
+        global $DB;
         $newappraisalinfo = [];
         // Check first if there are any data in this context and also if there are any data to migrate
         // i.e. any appraisal, appraisalcriteria and so on. If not, not useful to bother.
@@ -59,30 +64,34 @@ class user_data_migration_helper {
                 foreach ($appraisals as $appr) {
                     $newapprdata = $appr->to_record();
                     unset($newapprdata->id);
-                    unset($newapprdata->timemodified);
                     $newapprdata->evalplanid = $evalplantargetid;
-                    $newappraisal = new appraisal_entity(0, $newapprdata);
-                    $newappraisal->save();
+                    // TODO : if student id or assessor id have changed group and has been replaced or
+                    // (for example the situation has a new appraiser and an old assessor is missing)
+                    // make sure it changes also.
+                    $appraiserid = self::get_current_eval_user_for_role(
+                            $currentcontext,
+                            $appr->get('appraiserid'),
+                            $evalplanoriginid
+                    );
+                    if ($appraiserid != $newapprdata->appraiserid) {
+                        $newapprdata->appraiserid = $appraiserid;
+                    }
+                    // We cannot use the entity/persistent save here. As it modify the date.
+                    $newapprdata->id = $DB->insert_record(appraisal_entity::TABLE, $newapprdata);
                     $evalinfo = static::get_eval_info($newapprdata->studentid, $newapprdata->appraiserid, $newapprdata->evalplanid);
                     $evalinfo->criteria = [];
                     $appraisalcrits = appraisal_criterion_entity::get_records(['appraisalid' => $appr->get('id')]);
-
                     foreach ($appraisalcrits as $appraisalcrit) {
                         $newappraisalcritdata = $appraisalcrit->to_record();
                         unset($newappraisalcritdata->id);
-                        unset($newappraisalcritdata->timemodified);
-                        $newappraisalcritdata->evalplanid = $evalplantargetid;
                         $newcriterionid = $stepdata->{$context}[criterion::get_entity()][$appraisalcrit->get('criterionid')] ?? 0;
                         if ($newcriterionid) {
                             $newappraisalcritdata->criterionid = $newcriterionid;
-                            $newappraisal = new appraisal_entity(0, $newapprdata);
-                            // TODO : if student id or assessor id have changed group and has been replaced or
-                            // (for example the situation has a new appraiser and an old assessor is missing)
-                            // make sure it changes also.
-                            $newappraisal->save();
+                            $newappraisalcritdata->appraisalid = $newapprdata->id;
+                            $DB->insert_record(appraisal_criterion_entity::TABLE, $newappraisalcritdata);
                             $evalinfo->criteria[] =
                                     static::get_eval_info($newapprdata->studentid, $newapprdata->appraiserid,
-                                            $newappraisalcritdata->evalplanid, $newcriterionid, $newappraisalcritdata->grade);
+                                            $newapprdata->evalplanid, $newcriterionid, $newappraisalcritdata->grade);
                         }
                     }
                     $newappraisalinfo[] = $evalinfo;
@@ -90,6 +99,40 @@ class user_data_migration_helper {
             }
         }
         return $newappraisalinfo;
+    }
+
+    /**
+     * @param object $currentcontext
+     * @param int $oldappraiserid
+     * @param int $evalplanoriginid
+     * @return void
+     * @throws coding_exception
+     */
+    public static function get_current_eval_user_for_role(
+            $currentcontext,
+            $oldappraiserid,
+            $evalplanoriginid
+
+    ) {
+        $originplan = planning_entity::get_record(['id' => $evalplanoriginid]);
+        $originsit = situation_entity::get_record(['id' => $originplan->get('clsituationid')]);
+        $destappraiserid = $oldappraiserid;
+
+        foreach ($currentcontext[role::get_entity()] as $originroleid => $destroleid) {
+            $destrole = role_entity::get_record(['id' => $destroleid]);
+            $originrolechange = role_entity::get_records(['id' => $originroleid,
+                    'clsituationid' => $originsit->get('id'),
+                    'userid' => $oldappraiserid,
+            ]);
+            if ($originrolechange) {
+                foreach ($originrolechange as $originrole) {
+                    if ($originrole->get('type') == $destrole->get('type')) {
+                        $destappraiserid = $destrole->get('userid');
+                    }
+                }
+            }
+        }
+        return $destappraiserid;
     }
 
     /**
@@ -124,6 +167,7 @@ class user_data_migration_helper {
      * @throws dml_exception
      */
     public static function convert_origin_finaleval($contexts, $stepdata) {
+        global $DB;
         $newfinalevalinfo = [];
         // Check first if there are any data in this context and also if there are any data to migrate
         // i.e. any appraisal, appraisalcriteria and so on. If not, not useful to bother.
@@ -136,15 +180,18 @@ class user_data_migration_helper {
                     continue; // No chosen target.
                 }
                 $finalevals = final_evaluation_entity::get_records(['evalplanid' => $planoriginid]);
-                foreach ($finalevals as $appr) {
-                    $newfinalevaldata = $appr->to_record();
+                foreach ($finalevals as $finalev) {
+                    $newfinalevaldata = $finalev->to_record();
                     unset($newfinalevaldata->id);
-                    unset($newfinalevaldata->timemodified);
                     $newfinalevaldata->evalplanid = $plantargetid;
                     // TODO : if student id or assessor id have changed (for example the situation has a new assessor and
                     // an old assessor is missing) make sure it changes also.
-                    $newfinaleval = new final_evaluation_entity(0, $newfinalevaldata);
-                    $newfinaleval->save();
+                    $newfinalevaldata->assessorid = self::get_current_eval_user_for_role(
+                            $currentcontext,
+                            $finalev->get('assessorid'),
+                            $planoriginid
+                    );
+                    $DB->insert_record(final_evaluation_entity::TABLE, $newfinalevaldata);
                     $newfinalevalinfo[] = static::get_final_eval_info($newfinalevaldata->studentid, $newfinalevaldata->assessorid,
                             $newfinalevaldata->evalplanid, $newfinalevaldata->grade);
                 }

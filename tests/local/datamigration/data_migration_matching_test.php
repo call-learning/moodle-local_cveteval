@@ -361,7 +361,8 @@ class data_migration_matching_test extends \advanced_testcase {
         $this->assert_entities_name_matches(array_merge($fourtycriterion, ['criterion1', 'criterion2']), $matchedcriterion,
                 criterion_entity::class);
         $this->assert_entities_name_matches(['criterion1bis'], $unmatchedcriterion, criterion_entity::class);
-        $this->assert_entities_name_matches(['criterion1bis'], array_flip($orphanedcriterion), criterion_entity::class); // Not the same parent.
+        $this->assert_entities_name_matches(['criterion1bis'], array_flip($orphanedcriterion),
+                criterion_entity::class); // Not the same parent.
     }
 
     /**

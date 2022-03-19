@@ -138,20 +138,30 @@ class download_helper {
         $sql = planning_entity::get_historical_sql_query('plan');
         $rs = $DB->get_recordset_sql("SELECT CONCAT(a.id, ac.id) AS id, a.*, c.idnumber AS critidnumber,
                     ac.grade AS grade, ac.comment AS gradecomment, ac.commentformat AS gradecommentformat,
-                    ac.timemodified AS criteriatimemodified, ac.timecreated AS criteriatimecreated FROM {"
+                    ac.timemodified AS criteriatimemodified, ac.timecreated AS criteriatimecreated,
+                    s.idnumber AS situationlabel,
+                    plan.starttime AS starttime,
+                    plan.endtime AS endtime
+                FROM {"
                 . appraisal_entity::TABLE . "} AS a LEFT JOIN $sql ON plan.id = a.evalplanid"
                 . " LEFT JOIN {" . appraisal_criterion_entity::TABLE . "} ac ON ac.appraisalid = a.id"
                 . " LEFT JOIN {" . criterion_entity::TABLE . "} c ON c.id = ac.criterionid"
+                . " LEFT JOIN {" . situation_entity::TABLE . "} s ON s.id = plan.clsituationid"
                 . " WHERE plan.id IS NOT NULL");
 
         $fields =
-                ['studentname', 'studentemail', 'studentusername', 'appraisername', 'appraiseremail', 'appraiserusername',
+                ['situation', 'planning', 'studentname', 'studentemail', 'studentusername', 'appraisername', 'appraiseremail',
+                        'appraiserusername',
                         'comment', 'criterionidnumber', 'grade', 'gradecomment', 'timemodified', 'timecreated',
                         'criteriatimemodified', 'criteriatimecreated'];
         $transformcsv = function($eval) {
             $studentinfo = static::get_user_info($eval->studentid);
             $appraiserinfo = static::get_user_info($eval->appraiserid);
             return [
+                    'situation' => "$eval->situationlabel",
+                    'planning' => userdate($eval->starttime, get_string('strftimedate', 'core_langconfig'))
+                            . '/'
+                            . userdate($eval->endtime, get_string('strftimedate', 'core_langconfig')),
                     'studentname' => $studentinfo->fullname,
                     'studentemail' => $studentinfo->email,
                     'studentusername' => $studentinfo->username,

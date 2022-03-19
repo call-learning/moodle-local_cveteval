@@ -209,7 +209,6 @@ class dmc_diffmodelsmodifications_form extends moodleform implements dmc_form_in
     protected function definition() {
         $model = $this->get_current_model();
         $dmc = $this->_customdata['dmc'];
-        $renderable = $this->_customdata['renderable'];
         $mform = $this->_form;
         $title = html_writer::start_span('h3') . $this->entities[$model] . html_writer::end_span();
         $mform->addElement('html', $title);
@@ -231,8 +230,9 @@ class dmc_diffmodelsmodifications_form extends moodleform implements dmc_form_in
                             html_writer::end_span();
                     $headerelement = 'context' . $context;
                     $mform->addElement('header', $headerelement, $title);
-                    $alldestentitiesoptions = $this->get_all_dest_entities($dmc, $entityclass, $model, $renderable);
                     history_entity::disable_history();
+                    $filters = [];
+                    $alldestentitiesoptions = $this->get_all_dest_entities($dmc, $entityclass, $model, $filters);
                     foreach ($currentmatchs as $originid => $targetentityid) {
                         $entitylabel = output_helper::output_entity_info($originid, $model);
                         $fieldname = $this->get_field_name($context, $entityclass, $originid);
@@ -241,7 +241,7 @@ class dmc_diffmodelsmodifications_form extends moodleform implements dmc_form_in
                         $mform->setType($fieldname, PARAM_INT);
                         $mform->setDefault($fieldname, $targetentityid);
                     }
-                    $mform->setExpanded($headerelement, false);
+                    $mform->setExpanded($headerelement, true);
                 }
             }
         }
@@ -269,14 +269,14 @@ class dmc_diffmodelsmodifications_form extends moodleform implements dmc_form_in
     /**
      * Helper to cache information that otherwise will be retrieved in a loop.
      *
-     * @param $dmc
-     * @param $entityclass
-     * @param $model
-     * @param $renderable
+     * @param object $dmc
+     * @param string $entityclass
+     * @param string $model
+     * @param array $filters
      * @return array|null
      * @throws moodle_exception
      */
-    protected function get_all_dest_entities($dmc, $entityclass, $model, $renderable) {
+    protected function get_all_dest_entities($dmc, $entityclass, $model, $filters = []) {
         $cache = cache::make_from_params(cache_store::MODE_REQUEST, 'local_cveteval', self::MODEL_MODIFICATIONS_CACHE);
         $lastmodel = $cache->get('lastmodel');
         $lastalldestentitiesoptions = $cache->get('lastalldestentitiesoptions');
@@ -285,7 +285,7 @@ class dmc_diffmodelsmodifications_form extends moodleform implements dmc_form_in
         }
         $stepdata = $dmc->get_step_data();
         history_entity::set_current_id($stepdata->destimportid);
-        $alldestentities = $entityclass::get_records();
+        $alldestentities = $entityclass::get_records($filters);
         $alldestentitiesoptions = [];
         foreach ($alldestentities as $e) {
             $id = $e->get('id');
@@ -293,6 +293,6 @@ class dmc_diffmodelsmodifications_form extends moodleform implements dmc_form_in
         }
         $cache->set('lastmodel', $model);
         $cache->set('lastalldestentitiesoptions', $alldestentitiesoptions);
-        return $lastalldestentitiesoptions;
+        return $alldestentitiesoptions;
     }
 }

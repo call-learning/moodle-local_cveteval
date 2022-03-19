@@ -21,6 +21,7 @@ use local_cveteval\local\datamigration\helpers\user_data_migration_helper;
 use local_cveteval\local\datamigration\matchers\criterion;
 use local_cveteval\local\datamigration\matchers\group;
 use local_cveteval\local\datamigration\matchers\planning;
+use local_cveteval\local\datamigration\matchers\role;
 use local_cveteval\local\persistent\final_evaluation\entity as final_evaluation_entity;
 use local_cveteval\local\persistent\history\entity as history_entity;
 use local_cveteval\output\dmc_entity_renderer_base;
@@ -277,7 +278,7 @@ class data_migration_test extends \advanced_testcase {
                         'criteria' => $sample->criteriaeval
                 ],
         ];
-        $sample->assessors = ['assessor1' => 'SIT1', 'assessor2' => 'SIT2'];
+        $sample->assessors = ['assessor1' => 'SIT1', 'assessor3' => 'SIT2']; // Assessor 2 is not present anymore.
         $sample->students = ['student1' => ['Group 1'], 'student2' => ['Group 1', 'Group 2'], 'student3' => ['Group 3']];
         return $sample;
     }
@@ -358,13 +359,13 @@ class data_migration_test extends \advanced_testcase {
                 ],
                 2 => [
                         'student' => 'student2 student2',
-                        'appraiser' => 'assessor2 assessor2',
+                        'appraiser' => 'assessor3 assessor3',
                         'planning' => "$planningrootlabel - Group 2 / SIT2",
                         'criteria' =>
                                 [
                                         (object) [
                                                 'student' => 'student2 student2',
-                                                'appraiser' => 'assessor2 assessor2',
+                                                'appraiser' => 'assessor3 assessor3',
                                                 'planning' => "$planningrootlabel - Group 2 / SIT2",
                                                 'criterion' => '(criterion1bis)',
                                                 'grade' => '2',
@@ -381,25 +382,25 @@ class data_migration_test extends \advanced_testcase {
      * Expected:
      * student 1 appraisal (SIT1, Group1) => student 1 appraisal (SIT1, Group1)
      * student 2 appraisal (SIT2, Group2) => student 2 appraisal (SIT2, Group1)
+     * Assessor2 is changed to Assessor 3.
      */
     public function test_migration() {
         $data = new stdClass();
         $data->matchedentities = $this->dm->get_matched_entities_list();
         $data->unmatchedentities = $this->dm->get_unmatched_entities_list();
         $data->orphanedentities = $this->dm->get_orphaned_entities_list();
-        // Make sure we match the orphaned entities first.
-        history_entity::set_current_id($this->dm->get_origin_id());
-        $criterionfrom = \local_cveteval\local\persistent\criterion\entity::get_record(['idnumber' => 'criterion1bis']);
-        $groupfrom = \local_cveteval\local\persistent\group\entity::get_record(['name' => 'Group 2bis']);
 
-        // Create a final evaluation.
+        $this->setup_migration_orphaned_entities($data); // Adjust the data for the migration.
+
+        // Create Final evaluation.
+        history_entity::set_current_id($this->dm->get_origin_id());
         $psituationfrom = \local_cveteval\local\persistent\situation\entity::get_record(['idnumber' => 'SIT2']);
         $pgroupfrom = \local_cveteval\local\persistent\group\entity::get_record(['name' => 'Group 2bis']);
+        $planningfrom = \local_cveteval\local\persistent\planning\entity::get_record(['groupid' => $pgroupfrom->get('id'),
+                'clsituationid' => $psituationfrom->get('id')]);
         $scaleid = get_config('local_cveteval', 'grade_scale');
         $scale = grade_scale::fetch(array('id' => $scaleid));
         $scaleitems = $scale->load_items();
-        $planningfrom = \local_cveteval\local\persistent\planning\entity::get_record(['groupid' => $pgroupfrom->get('id'),
-                'clsituationid' => $psituationfrom->get('id')]);
         $evalinfo = new final_evaluation_entity(0,
                 (object) [
                         'studentid' => (array_values($this->oldentities->students)[0])->id,
@@ -410,23 +411,15 @@ class data_migration_test extends \advanced_testcase {
                 ]
         );
         $evalinfo->save();
-        history_entity::set_current_id($this->dm->get_dest_id());
-        $criterionto = \local_cveteval\local\persistent\criterion\entity::get_record(['idnumber' => 'criterion1bis']);
-        $groupto = \local_cveteval\local\persistent\group\entity::get_record(['name' => 'Group 3']);
-        $psituationto = \local_cveteval\local\persistent\situation\entity::get_record(['idnumber' => 'SIT2']);
-        $pgroupto = \local_cveteval\local\persistent\group\entity::get_record(['name' => 'Group 2']);
-        $planningto = \local_cveteval\local\persistent\planning\entity::get_record(['groupid' => $pgroupto->get('id'),
-                'clsituationid' => $psituationto->get('id')]);
         history_entity::disable_history();
 
-        $data->orphanedentities[criterion::get_entity()][$criterionfrom->get('id')] = $criterionto->get('id');
-        $data->orphanedentities[group::get_entity()][$groupfrom->get('id')] = $groupto->get('id');
-        $data->orphanedentities[planning::get_entity()][$planningfrom->get('id')] = $planningto->get('id');
-
+        // Convert for checks.
         $convertedappraisalsinfo =
                 user_data_migration_helper::convert_origin_appraisals(dmc_entity_renderer_base::ACTIONABLE_CONTEXTS, $data);
         $convertedfinalevalsinfo =
                 user_data_migration_helper::convert_origin_finaleval(dmc_entity_renderer_base::ACTIONABLE_CONTEXTS, $data);
+
+        // Checks.
         $this->assertNotEmpty($convertedappraisalsinfo);
         $this->assertNotEmpty($convertedfinalevalsinfo);
         $this->assertCount(2, $convertedappraisalsinfo);
@@ -435,6 +428,61 @@ class data_migration_test extends \advanced_testcase {
                 $convertedappraisalsinfo[0]);
         $this->assertEquals($this->get_appraisals_students(1, $this->planstart, $this->planend),
                 $convertedappraisalsinfo[1]);
+    }
+
+    /**
+     * Setup data for migration
+     * @param object $data
+     * @return void
+     */
+    protected function setup_migration_orphaned_entities(&$data) {
+        // Make sure we match the orphaned entities first.
+        history_entity::set_current_id($this->dm->get_origin_id());
+        $criterionfrom = \local_cveteval\local\persistent\criterion\entity::get_record(['idnumber' => 'criterion1bis']);
+        $groupfrom = \local_cveteval\local\persistent\group\entity::get_record(['name' => 'Group 2bis']);
+
+        // Create a final evaluation.
+        $psituationfrom = \local_cveteval\local\persistent\situation\entity::get_record(['idnumber' => 'SIT2']);
+        $pgroupfrom = \local_cveteval\local\persistent\group\entity::get_record(['name' => 'Group 2bis']);
+        $planningfrom = \local_cveteval\local\persistent\planning\entity::get_record(['groupid' => $pgroupfrom->get('id'),
+                'clsituationid' => $psituationfrom->get('id')]);
+        $assessor2id = 0;
+        foreach ($this->oldentities->assessors as $assessor) {
+            if ($assessor->username == 'assessor2') {
+                $assessor2id = $assessor->id;
+            }
+        }
+        $rolefrom = \local_cveteval\local\persistent\role\entity::get_record([
+                'clsituationid' => $psituationfrom->get('id'),
+                'userid' => $assessor2id,
+                'type' => \local_cveteval\local\persistent\role\entity::ROLE_ASSESSOR_ID
+        ]);
+        history_entity::set_current_id($this->dm->get_dest_id());
+        $criterionto = \local_cveteval\local\persistent\criterion\entity::get_record(['idnumber' => 'criterion1bis']);
+        $groupto = \local_cveteval\local\persistent\group\entity::get_record(['name' => 'Group 3']);
+        $psituationto = \local_cveteval\local\persistent\situation\entity::get_record(['idnumber' => 'SIT2']);
+        $pgroupto = \local_cveteval\local\persistent\group\entity::get_record(['name' => 'Group 2']);
+        $planningto = \local_cveteval\local\persistent\planning\entity::get_record([
+                'groupid' => $pgroupto->get('id'),
+                'clsituationid' => $psituationto->get('id')
+        ]);
+        $assessor3id = 0;
+        foreach ($this->newentities->assessors as $assessor) {
+            if ($assessor->username == 'assessor3') {
+                $assessor3id = $assessor->id;
+            }
+        }
+        $roleto = \local_cveteval\local\persistent\role\entity::get_record([
+                'clsituationid' => $psituationto->get('id'),
+                'userid' => $assessor3id,
+                'type' =>
+                        \local_cveteval\local\persistent\role\entity::ROLE_ASSESSOR_ID
+        ]);
+        history_entity::disable_history();
+        $data->orphanedentities[criterion::get_entity()][$criterionfrom->get('id')] = $criterionto->get('id');
+        $data->orphanedentities[group::get_entity()][$groupfrom->get('id')] = $groupto->get('id');
+        $data->orphanedentities[planning::get_entity()][$planningfrom->get('id')] = $planningto->get('id');
+        $data->orphanedentities[role::get_entity()][$rolefrom->get('id')] = $roleto->get('id');
     }
 }
 
