@@ -32,53 +32,109 @@ use local_cveteval\local\persistent\situation\entity as situation_entity;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class output_helper {
-
-    public static function export_entity_situation($entityid) {
-        $newentity = new situation_entity($entityid);
-        return ['label' => $newentity->get('title') . '(' . $newentity->get('idnumber') . ')'];
+    /**
+     * Output entity information
+     *
+     * @param int $entityid
+     * @param string $entitytypename from 'situation', 'role', 'criterion', 'group_assignment', 'evaluation_grid', 'entity_group',
+     * 'entity_planning'
+     * @return bool|string
+     */
+    public static function output_entity_info($entityid, $entitytypename) {
+        if (method_exists(self::class, 'output_entity_' . $entitytypename)) {
+            return self::{'output_entity_' . $entitytypename}($entityid);
+        } else {
+            return false;
+        }
     }
 
-    public static function export_entity_role($entityid) {
+    /**
+     * Return human readable version of this entity
+     *
+     * @param int $entityid
+     * @return string
+     */
+    public static function output_entity_situation($entityid) {
+        $newentity = new situation_entity($entityid);
+        return $newentity->get('title') . '(' . $newentity->get('idnumber') . ')';
+    }
+
+    /**
+     * Return human readable version of this entity
+     *
+     * @param int $entityid
+     * @return string
+     */
+    protected static function output_entity_role($entityid) {
         $newentity = new role_entity($entityid);
         $user = core_user::get_user($newentity->get('userid'));
         $situation = new situation_entity($newentity->get('clsituationid'));
-        return ['label' => fullname($user) . ' (' . role_entity::get_type_fullname($newentity->get('type')) . ') - '
-                . $situation->get('idnumber')];
+        return fullname($user) . ' (' . role_entity::get_type_fullname($newentity->get('type')) . ') - '
+                . $situation->get('idnumber');
     }
 
-    public static function export_entity_criterion($entityid, $shortlabel = false) {
+    /**
+     * Return human readable version of this entity
+     *
+     * @param int $entityid
+     * @return string
+     */
+    protected static function output_entity_criterion($entityid, $shortlabel = false) {
         $newentity = new criterion_entity($entityid);
         if ($shortlabel) {
             return ['label' => $newentity->get('idnumber')];
         }
-        return ['label' => $newentity->get('label') . '(' . $newentity->get('idnumber') . ')'];
+        return $newentity->get('label') . '(' . $newentity->get('idnumber') . ')';
     }
 
-    public static function export_entity_group_assignment($entityid) {
+    /**
+     * Return human readable version of this entity
+     *
+     * @param int $entityid
+     * @return string
+     */
+    protected static function output_entity_group_assignment($entityid) {
         $newentity = new group_assignment_entity($entityid);
         $student = core_user::get_user($newentity->get('studentid'));
         $group = new group_entity($newentity->get('groupid'));
-        return ['label' => fullname($student) . ' - ' . $group->get('name')];
+        return fullname($student) . ' - ' . $group->get('name');
     }
 
-    public static function export_entity_evaluation_grid($entityid) {
+    /**
+     * Return human readable version of this entity
+     *
+     * @param int $entityid
+     * @return string
+     */
+    protected static function output_entity_evaluation_grid($entityid) {
         $newentity = new evaluation_grid_entity($entityid);
-        return ['label' => $newentity->get('name') . '(' . $newentity->get('idnumber') . ')'];
+        return $newentity->get('name') . '(' . $newentity->get('idnumber') . ')';
     }
 
-    public static function export_entity_group($entityid) {
+    /**
+     * Return human readable version of this entity
+     *
+     * @param int $entityid
+     * @return string
+     */
+    protected static function output_entity_group($entityid) {
         $newentity = new group_entity($entityid);
-        return ['label' => $newentity->get('name')];
+        return $newentity->get('name');
     }
 
-    public static function export_entity_planning($entityid) {
+    /**
+     * Return human readable version of this entity
+     *
+     * @param int $entityid
+     * @return string
+     */
+    protected static function output_entity_planning($entityid) {
         $newentity = new planning_entity($entityid);
         $situation = new situation_entity($newentity->get('clsituationid'));
         $group = new group_entity($newentity->get('groupid'));
-        return ['label' =>
-                $newentity->get_starttime_string() . '/' . $newentity->get_endtime_string()
+        return  $newentity->get_starttime_string() . '/' . $newentity->get_endtime_string()
                 . ' - ' .
                 $group->get('name')
-                . ' / ' . $situation->get('idnumber')];
+                . ' / ' . $situation->get('idnumber');
     }
 }

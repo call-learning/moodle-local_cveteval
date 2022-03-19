@@ -32,13 +32,13 @@
                 "contextstatusicon" : "<i class="fa fa-checked"></i>",
                 "entities":[
                    {
-                      "label":"Savoir \u00eatre(Q001)",
+                      "Savoir \u00eatre(Q001)",
                    },
                    {
-                      "label":"Respect des horaires de travail(Q002)",
+                      "Respect des horaires de travail(Q002)",
                    },
                    {
-                      "label":"Respect des interlocuteurs (clients, personnels, encadrants, pairs, ...)(Q003)",
+                      "Respect des interlocuteurs (clients, personnels, encadrants, pairs, ...)(Q003)",
                    },
                 ],
               }
@@ -70,7 +70,7 @@
                         <div class="card-body">
                             <ul class="dmc-status-{{contextstatusclass}}">
                                 {{#entities}}
-                                    <li>{{label}}</li>
+                                    <li>{{.}}</li>
                                 {{/entities}}
                             </ul>
                         </div>

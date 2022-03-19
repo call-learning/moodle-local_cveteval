@@ -42,6 +42,8 @@ class data_migration_test extends \advanced_testcase {
 
     protected $oldentities, $newentities;
 
+    protected $planstart, $planend;
+
     /**
      * History 1
      *
@@ -283,9 +285,8 @@ class data_migration_test extends \advanced_testcase {
     public function setUp() {
         parent::setUp();
         $this->resetAfterTest();
-        $planstart = time();
-        $duration = 3600 * 24;
-        $planend = time() + $duration;
+        $this->planstart = time();
+        $this->planend = time() + 3600 * 24;;
 
         $historyold = new history_entity(0, (object) ['idnumber' => 'history1', 'comments' => '', 'isactive' => true]);
         $historyold->create();
@@ -300,7 +301,7 @@ class data_migration_test extends \advanced_testcase {
         ];
         [$this->oldentities->criteria, $this->oldentities->situations, $this->oldentities->evalplans,
                 $this->oldentities->students, $this->oldentities->assessors, $this->oldentities->appraisals] =
-                $this->set_up($this->get_sample_origin1($planstart, $planend));
+                $this->set_up($this->get_sample_origin1($this->planstart, $this->planend));
 
         $historynew = new history_entity(0, (object) ['idnumber' => 'history2', 'comments' => '', 'isactive' => true]);
         $historynew->create();
@@ -315,7 +316,7 @@ class data_migration_test extends \advanced_testcase {
         ];
         [$this->newentities->criteria, $this->newentities->situations, $this->newentities->evalplans,
                 $this->newentities->students, $this->newentities->assessors, $this->newentities->appraisals] =
-                $this->set_up($this->get_sample_dest2($planstart, $planend));
+                $this->set_up($this->get_sample_dest2($this->planstart, $this->planend));
 
         history_entity::reset_current_id();
         $this->dm = new data_model_matcher($historyold->get('id'), $historynew->get('id'));
@@ -328,38 +329,29 @@ class data_migration_test extends \advanced_testcase {
      * @param $studentindex
      * @return object
      */
-    private function get_appraisals_students($studentindex) {
+    private function get_appraisals_students($studentindex, $planstart, $planend) {
+        $daystart = userdate($planstart, get_string('strftimedate', 'core_langconfig'));
+        $dayend = userdate($planend, get_string('strftimedate', 'core_langconfig'));
+        $planningrootlabel = "{$daystart}/{$dayend}";
         $appraisals = [
                 1 => [
                         'student' => 'student1 student1',
                         'appraiser' => 'assessor1 assessor1',
-                        'planning' => ['label' => '31 January 2022/1 February 2022 - Group 1 / SIT1'],
+                        'planning' => "$planningrootlabel - Group 1 / SIT1",
                         'criteria' =>
                                 [
                                         (object) [
                                                 'student' => 'student1 student1',
                                                 'appraiser' => 'assessor1 assessor1',
-                                                'planning' =>
-                                                        [
-                                                                'label' => '31 January 2022/1 February 2022 - Group 1 / SIT1',
-                                                        ],
-                                                'criterion' =>
-                                                        [
-                                                                'label' => '(criterion1)',
-                                                        ],
+                                                'planning' => "$planningrootlabel - Group 1 / SIT1",
+                                                'criterion' => '(criterion1)',
                                                 'grade' => '1',
                                         ],
                                         (object) [
                                                 'student' => 'student1 student1',
                                                 'appraiser' => 'assessor1 assessor1',
-                                                'planning' =>
-                                                        [
-                                                                'label' => '31 January 2022/1 February 2022 - Group 1 / SIT1',
-                                                        ],
-                                                'criterion' =>
-                                                        [
-                                                                'label' => '(criterion2)',
-                                                        ],
+                                                'planning' => "$planningrootlabel - Group 1 / SIT1",
+                                                'criterion' => '(criterion2)',
                                                 'grade' => '3',
                                         ],
                                 ],
@@ -367,23 +359,14 @@ class data_migration_test extends \advanced_testcase {
                 2 => [
                         'student' => 'student2 student2',
                         'appraiser' => 'assessor2 assessor2',
-                        'planning' =>
-                                [
-                                        'label' => '31 January 2022/1 February 2022 - Group 2 / SIT2',
-                                ],
+                        'planning' => "$planningrootlabel - Group 2 / SIT2",
                         'criteria' =>
                                 [
                                         (object) [
                                                 'student' => 'student2 student2',
                                                 'appraiser' => 'assessor2 assessor2',
-                                                'planning' =>
-                                                        [
-                                                                'label' => '31 January 2022/1 February 2022 - Group 2 / SIT2',
-                                                        ],
-                                                'criterion' =>
-                                                        [
-                                                                'label' => '(criterion1bis)',
-                                                        ],
+                                                'planning' => "$planningrootlabel - Group 2 / SIT2",
+                                                'criterion' => '(criterion1bis)',
                                                 'grade' => '2',
                                         ],
                                 ],
@@ -448,8 +431,10 @@ class data_migration_test extends \advanced_testcase {
         $this->assertNotEmpty($convertedfinalevalsinfo);
         $this->assertCount(2, $convertedappraisalsinfo);
         $this->assertCount(1, $convertedfinalevalsinfo);
-        $this->assertEquals($this->get_appraisals_students(2), $convertedappraisalsinfo[0]);
-        $this->assertEquals($this->get_appraisals_students(1), $convertedappraisalsinfo[1]);
+        $this->assertEquals($this->get_appraisals_students(2, $this->planstart, $this->planend),
+                $convertedappraisalsinfo[0]);
+        $this->assertEquals($this->get_appraisals_students(1, $this->planstart, $this->planend),
+                $convertedappraisalsinfo[1]);
     }
 }
 

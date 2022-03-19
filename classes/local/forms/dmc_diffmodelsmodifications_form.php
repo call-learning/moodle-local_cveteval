@@ -233,11 +233,10 @@ class dmc_diffmodelsmodifications_form extends moodleform implements dmc_form_in
                     $mform->addElement('header', $headerelement, $title);
                     $alldestentitiesoptions = $this->get_all_dest_entities($dmc, $entityclass, $model, $renderable);
                     history_entity::disable_history();
-                    $exportentitymethod = "export_entity_" . $model;
                     foreach ($currentmatchs as $originid => $targetentityid) {
-                        $entitydata = output_helper::$exportentitymethod($originid);
+                        $entitylabel = output_helper::output_entity_info($originid, $model);
                         $fieldname = $this->get_field_name($context, $entityclass, $originid);
-                        $mform->addElement('select', $fieldname, $entitydata['label'], $alldestentitiesoptions,
+                        $mform->addElement('select', $fieldname, $entitylabel, $alldestentitiesoptions,
                                 $targetentityid);
                         $mform->setType($fieldname, PARAM_INT);
                         $mform->setDefault($fieldname, $targetentityid);
@@ -287,11 +286,10 @@ class dmc_diffmodelsmodifications_form extends moodleform implements dmc_form_in
         $stepdata = $dmc->get_step_data();
         history_entity::set_current_id($stepdata->destimportid);
         $alldestentities = $entityclass::get_records();
-        $exportentitymethod = "export_entity_" . $model;
         $alldestentitiesoptions = [];
         foreach ($alldestentities as $e) {
             $id = $e->get('id');
-            $alldestentitiesoptions[$id] = output_helper::$exportentitymethod($id)['label'];
+            $alldestentitiesoptions[$id] = output_helper::output_entity_info($id, $model);
         }
         $cache->set('lastmodel', $model);
         $cache->set('lastalldestentitiesoptions', $alldestentitiesoptions);

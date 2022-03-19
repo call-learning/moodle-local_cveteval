@@ -98,7 +98,7 @@ class data_importer extends \tool_importer\data_importer {
                         'GrilleEval',
                         'local_cveteval',
                         $trimmedval,
-                        log_levels::LEVEL_ERROR);
+                        log_levels::LEVEL_WARNING);
             }
         }
     }

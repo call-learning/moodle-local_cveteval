@@ -32,12 +32,12 @@
         <div>
             <span>{{#str}}userdatamigration:student, local_cveteval{{/str}}:</span><span class="font-weight-bold">{{student}}</span>
             <span>{{#str}}userdatamigration:appraiser, local_cveteval{{/str}}:</span> <span class="font-weight-bold">{{appraiser}}</span>
-            <span class="badge badge-info ">{{#str}}userdatamigration:planning, local_cveteval{{/str}}:{{#planning}}{{label}}{{/planning}}</span>
+            <span class="badge badge-info ">{{#str}}userdatamigration:planning, local_cveteval{{/str}}:{{planning}}</span>
             {{#grade}}<span>({{#str}}userdatamigration:grade, local_cveteval{{/str}}:</span> <span class="font-weight-bold">{{.}})</span>{{/grade}}
             <ul>
                 {{#criteria}}
                     <li>
-                        <span>{{#str}}userdatamigration:criterion, local_cveteval{{/str}}:{{#criterion}}{{label}}{{/criterion}}</span>
+                        <span>{{#str}}userdatamigration:criterion, local_cveteval{{/str}}:{{criterion}}</span>
                         {{#grade}}<span class="badge badge-info">{{#str}}userdatamigration:grade, local_cveteval{{/str}}: <span class="font-weight-bold">{{.}}{{/grade}}
                     </li>
                 {{/criteria}}
@@ -50,7 +50,7 @@
         <div>
             <span>{{#str}}userdatamigration:student, local_cveteval{{/str}}:</span><span class="font-weight-bold">{{student}}</span>
             <span>{{#str}}userdatamigration:assessor, local_cveteval{{/str}}:</span><span class="font-weight-bold">{{assessor}}</span>
-            <span class="badge badge-info">{{#str}}userdatamigration:situation, local_cveteval{{/str}}:{{#planning}}{{label}}{{/planning}}</span>
+            <span class="badge badge-info">{{#str}}userdatamigration:situation, local_cveteval{{/str}}:{{planning}}</span>
             {{#grade}}<span>({{#str}}userdatamigration:grade, local_cveteval{{/str}}:</span><span class="font-weight-bold">{{.}})</span>{{/grade}}
         </div>
     {{/convertedfinalevalsinfo}}

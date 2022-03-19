@@ -107,9 +107,9 @@ class user_data_migration_helper {
         $evalinfo = new stdClass();
         $evalinfo->student = fullname(core_user::get_user($studentid));
         $evalinfo->appraiser = fullname(core_user::get_user($appraiserid));
-        $evalinfo->planning = output_helper::export_entity_planning($evalplanid);
+        $evalinfo->planning = output_helper::output_entity_info($evalplanid, 'planning');
         if (!empty($criterionid)) {
-            $evalinfo->criterion = output_helper::export_entity_criterion($criterionid);
+            $evalinfo->criterion = output_helper::output_entity_info($criterionid, 'criterion');
         }
         if (!empty($grade)) {
             $evalinfo->grade = $grade;
@@ -167,7 +167,7 @@ class user_data_migration_helper {
         $evalinfo = new stdClass();
         $evalinfo->student = fullname(core_user::get_user($studentid));
         $evalinfo->assessor = fullname(core_user::get_user($assessorid));
-        $evalinfo->planning = output_helper::export_entity_planning($evalplanid);
+        $evalinfo->planning = output_helper::output_entity_info($evalplanid, 'planning');
         $evalinfo->grade = $grade;
         return $evalinfo;
     }

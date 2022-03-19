@@ -361,7 +361,7 @@ class data_migration_matching_test extends \advanced_testcase {
         $this->assert_entities_name_matches(array_merge($fourtycriterion, ['criterion1', 'criterion2']), $matchedcriterion,
                 criterion_entity::class);
         $this->assert_entities_name_matches(['criterion1bis'], $unmatchedcriterion, criterion_entity::class);
-        $this->assert_entities_name_matches(['criterion1bis'], $orphanedcriterion, criterion_entity::class); // Not the same parent.
+        $this->assert_entities_name_matches(['criterion1bis'], array_flip($orphanedcriterion), criterion_entity::class); // Not the same parent.
     }
 
     /**
@@ -389,7 +389,7 @@ class data_migration_matching_test extends \advanced_testcase {
         $orphanedgroup = $smatcher->get_orphaned_origin_entities();
         $this->assert_entities_name_matches(['Group 1', 'Group 2'], $matchedgroup, group_entity::class, "name");
         $this->assert_entities_name_matches(['Group 3'], $unmatchedgroup, group_entity::class, "name");
-        $this->assert_entities_name_matches(['Group 2bis'], $orphanedgroup, group_entity::class, "name");
+        $this->assert_entities_name_matches(['Group 2bis'], array_flip($orphanedgroup), group_entity::class, "name");
     }
 
     /**
@@ -436,7 +436,7 @@ class data_migration_matching_test extends \advanced_testcase {
                 situation_entity::class
         );
         $this->assert_entities_name_matches(['SIT2'],
-                $this->get_field_from_entities_id($orphanedplanning, planning_entity::class, "clsituationid"),
+                $this->get_field_from_entities_id(array_flip($orphanedplanning), planning_entity::class, "clsituationid"),
                 situation_entity::class
         );
     }
