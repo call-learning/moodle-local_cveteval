@@ -45,7 +45,6 @@ use moodle_exception;
 use moodle_url;
 use progress_bar;
 use stdClass;
-use testing_util;
 use tool_importer\local\exceptions\importer_exception;
 use tool_importer\local\log_levels;
 use tool_importer\local\logs\import_log_entity;
@@ -142,7 +141,7 @@ class utils {
     /**
      */
     public static function create_update_default_criteria_grid() {
-        if (testing_util::is_test_site()) {
+        if ((defined('PHPUNIT_TEST') && PHPUNIT_TEST) || defined('BEHAT_SITE_RUNNING')) {
             upload_default_criteria_grid::create_default_grid();
         } else {
             $task = new upload_default_criteria_grid();
