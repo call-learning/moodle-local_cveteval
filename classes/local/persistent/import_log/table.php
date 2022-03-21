@@ -69,15 +69,17 @@ class table extends entity_table {
      *
      * @param $row
      * @return string
-     * @throws coding_exception
      * @throws moodle_exception
      */
     protected function col_information($row) {
-        $addinfo = json_decode($row->additionalinfo);
+        $addinfo = json_decode($row->additionalinfo) ?? '';
         if (is_object($addinfo)) {
             $addinfo = $addinfo->info ?? '';
+        } else {
+            $addinfo = $row->additionalinfo;
         }
-        return get_string($row->messagecode, $row->module, $addinfo);
+        $message = get_string($row->messagecode, $row->module, $addinfo);
+        return $message;
     }
 
     /**

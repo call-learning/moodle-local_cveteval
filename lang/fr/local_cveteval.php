@@ -190,7 +190,7 @@ $string['planning:entity'] = 'Planning des évaluations';
 $string['planningfile_help'] =
         'Une liste de planning en format CSV. Le fichier doit contenir les entêtes suivants:<pre>"Date début";"Date fin";"Groupe XX";"Groupe YY"</pre>';
 $string['planningfile'] = 'Liste des plannings';
-$string['planning:groupdoesnotexist'] = 'Le groupe {$a} \'existe pas.';
+$string['planning:groupdoesnotexist'] = 'Le groupe {$a} n\'existe pas.';
 $string['planning:groupid'] = 'Identifiant de groupe';
 $string['planning:groupname'] = 'Nom de groupe';
 $string['planning:invalidstarttime'] = 'Format de date erroné pour la date de début ({$a})';

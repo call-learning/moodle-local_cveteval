@@ -620,7 +620,7 @@ class utils {
         $PAGE->navbar->add(
                 get_string('import:list', 'local_cveteval'),
                 new moodle_url('/local/cveteval/admin/importindex.php'));
-        $import = new import_log_entity($importid);
+        $import = new history_entity($importid);
         $PAGE->navbar->add(
                 $import->get('idnumber'),
                 new moodle_url('/local/cveteval/manage/index.php', ['importid' => $importid]));

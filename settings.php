@@ -108,7 +108,11 @@ if ($hassiteconfig) {
     );
 
     if ($enabled) {
-        $ADMIN->add('localplugins', $settings); // Add it to the main admin men.
+        $ADMIN->add('localplugins', $settings); // Add it to the main admin menu.
+        $ADMIN->add('root', new admin_externalpage('cvetevalmenu',
+                get_string('pluginname', 'local_cveteval'),
+                new moodle_url('/admin/category.php', ['category' => 'cveteval'])
+        )); // Add a link in the root menu.
     }
     // Create a global Advanced Feature Toggle.
     $enableoption = new admin_setting_configcheckbox('enablecompetveteval',
