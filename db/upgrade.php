@@ -66,8 +66,10 @@ function xmldb_local_cveteval_upgrade($oldversion) {
         }
         // Change the current evaluation grid to the default one.
         $defaultgrid = $DB->get_record('local_cveteval_evalgrid', ['idnumber' => 'GRID01']);
-        $defaultgrid->idnumber = \local_cveteval\local\persistent\evaluation_grid\entity::DEFAULT_GRID_SHORTNAME;
-        $DB->update_record('local_cveteval_evalgrid', $defaultgrid);
+        if ($defaultgrid) {
+            $defaultgrid->idnumber = \local_cveteval\local\persistent\evaluation_grid\entity::DEFAULT_GRID_SHORTNAME;
+            $DB->update_record('local_cveteval_evalgrid', $defaultgrid);
+        }
         // Cveteval savepoint reached.
         upgrade_plugin_savepoint(true, 2021092006, 'local', 'cveteval');
     }
