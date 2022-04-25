@@ -229,6 +229,7 @@ $string['situation:plural'] = 'Clinical situations';
 $string['situation:stats'] = 'Imported roles: {$a->roles}, planning situations : {$a->situations}';
 
 $string['situation:usernotfound'] = 'User not found {$a}.';
+$string['situation:multipleuserfound'] = 'Multiple user found {$a}';
 $string['student'] = 'Student';
 $string['thissituation'] = 'This situation';
 $string['title'] = 'Title';

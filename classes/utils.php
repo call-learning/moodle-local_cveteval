@@ -594,7 +594,7 @@ class utils {
 
     public static function check_user_exists_or_multiple($email, $rowindex, $messagemultiple, $messagenotfound, $fieldname) {
         try {
-            core_user::get_user_by_email($email, '*', null, MUST_EXIST);
+            core_user::get_user_by_email(trim($email), '*', null, MUST_EXIST);
         } catch (moodle_exception $e) {
             $message = core_user::get_user_by_email($email) ? $messagemultiple : $messagenotfound;
             throw new importer_exception(

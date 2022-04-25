@@ -228,6 +228,7 @@ $string['situation:groupname'] = 'Nom du groupe';
 $string['situation:plural'] = 'Situations cliniques';
 $string['situation:stats'] = 'Roles: {$a->roles}, Situations : {$a->situations}';
 $string['situation:usernotfound'] = 'Utilisateur {$a} non trouvé.';
+$string['situation:multipleuserfound'] = 'Multiple user found {$a}';
 $string['student'] = 'Etudiant';
 $string['thissituation'] = 'Cette situation';
 $string['title'] = 'Titre';

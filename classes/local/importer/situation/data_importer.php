@@ -117,21 +117,16 @@ class data_importer extends \tool_importer\data_importer {
         $appraisersemails = explode(',', $row['appraisers']);
 
         foreach ($assessorsemails as $email) {
+            if (empty(trim($email))) {
+                continue;
+            }
             utils::check_user_exists_or_multiple($email, $rowindex, 'situation:multipleuserfound', 'situation:usernotfound',
                     'Evaluateur');
-            try {
-                core_user::get_user_by_email($email, '*', null, MUST_EXIST);
-            } catch (moodle_exception $e) {
-                $message = core_user::get_user_by_email($email) ? 'situation:multipleuserfound' : 'situation:usernotfound';
-                throw new importer_exception($message,
-                        $rowindex,
-                        'Evaluateurs',
-                        'local_cveteval',
-                        $email,
-                        log_levels::LEVEL_ERROR);
-            }
         }
         foreach ($appraisersemails as $email) {
+            if (empty(trim($email))) {
+                continue;
+            }
             utils::check_user_exists_or_multiple($email, $rowindex, 'situation:multipleuserfound', 'situation:usernotfound',
                     'Observateurs');
         }
@@ -186,6 +181,9 @@ class data_importer extends \tool_importer\data_importer {
      */
     public function add_roles($emails, $clinicalsituationid, $roletype) {
         foreach ($emails as $email) {
+            if (empty(trim($email))) {
+                continue;
+            }
             $email = clean_param(trim($email), PARAM_EMAIL);
             $user = core_user::get_user_by_email($email);
 
