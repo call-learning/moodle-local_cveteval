@@ -32,6 +32,7 @@ use local_cltools\local\field\hidden;
 use local_cltools\local\field\number;
 use local_cltools\local\field\text;
 use local_cltools\local\table\dynamic_table_sql;
+use local_cveteval\local\persistent\group_assignment\entity as group_assignment_entity;
 use moodle_url;
 
 /**
@@ -50,20 +51,20 @@ class situations_for_student extends dynamic_table_sql {
      * @see page_list::get_filter_definition() for filter definition
      */
     public function __construct($uniqueid = null,
-            $actionsdefs = null,
-            $editable = false,
-            $studentid = null) {
+        $actionsdefs = null,
+        $editable = false,
+        $studentid = null) {
         global $PAGE;
         $this->fieldaliases = [
-                'studentid' => 'groupa.studentid',
-                'studentfullname' => 'student.fullname',
-                'assessorfullname' => 'assessor.fullname',
+            'studentid' => 'groupa.studentid',
+            'studentfullname' => 'student.fullname',
+            'assessorfullname' => 'assessor.fullname',
         ];
         parent::__construct($uniqueid, $actionsdefs, $editable);
         $PAGE->requires->js_call_amd('local_cltools/tabulator-row-action-url', 'init', [
-                $this->get_unique_id(),
-                (new moodle_url('/local/cveteval/pages/assessment/assess.php'))->out(),
-                (object) array('evalplanid' => 'planid', 'studentid' => 'studentid')
+            $this->get_unique_id(),
+            (new moodle_url('/local/cveteval/pages/assessment/assess.php'))->out(),
+            (object) array('evalplanid' => 'planid', 'studentid' => 'studentid')
         ]);
     }
 
@@ -75,18 +76,18 @@ class situations_for_student extends dynamic_table_sql {
      */
     protected function setup_fields() {
         $this->fields = [
-                new hidden(['fieldname' => 'id', 'rawtype' => PARAM_INT]),
-                new hidden(['fieldname' => 'planid', 'rawtype' => PARAM_INT]),
-                new hidden(['fieldname' => 'studentid', 'rawtype' => PARAM_INT]),
-                new hidden(['fieldname' => 'assessorid', 'rawtype' => PARAM_INT]),
-                new hidden(['fieldname' => 'situationid', 'rawtype' => PARAM_INT]),
-                new text(['fieldname' => 'situationtitle', 'fullname' => get_string("situation:title", 'local_cveteval')]),
-                new date(['fieldname' => 'startdate', 'fullname' => get_string("planning:starttime", 'local_cveteval')]),
-                new date(['fieldname' => 'enddate', 'fullname' => get_string("planning:endtime", 'local_cveteval')]),
-                new text(['fieldname' => 'assessorfullname', 'fullname' => get_string("evaluation:assessor", 'local_cveteval')]),
-                new number(['fieldname' => 'grade', 'fullname' => get_string("evaluation:grade", 'local_cveteval')]),
-                new editor(['fieldname' => 'comment', 'fullname' => get_string("evaluation:comment", 'local_cveteval')]),
-                new datetime(['fieldname' => 'evaluationdate', 'fullname' => get_string("evaluation:date", 'local_cveteval')])
+            new hidden(['fieldname' => 'id', 'rawtype' => PARAM_INT]),
+            new hidden(['fieldname' => 'planid', 'rawtype' => PARAM_INT]),
+            new hidden(['fieldname' => 'studentid', 'rawtype' => PARAM_INT]),
+            new hidden(['fieldname' => 'assessorid', 'rawtype' => PARAM_INT]),
+            new hidden(['fieldname' => 'situationid', 'rawtype' => PARAM_INT]),
+            new text(['fieldname' => 'situationtitle', 'fullname' => get_string("situation:title", 'local_cveteval')]),
+            new date(['fieldname' => 'startdate', 'fullname' => get_string("planning:starttime", 'local_cveteval')]),
+            new date(['fieldname' => 'enddate', 'fullname' => get_string("planning:endtime", 'local_cveteval')]),
+            new text(['fieldname' => 'assessorfullname', 'fullname' => get_string("evaluation:assessor", 'local_cveteval')]),
+            new number(['fieldname' => 'grade', 'fullname' => get_string("evaluation:grade", 'local_cveteval')]),
+            new editor(['fieldname' => 'comment', 'fullname' => get_string("evaluation:comment", 'local_cveteval')]),
+            new datetime(['fieldname' => 'evaluationdate', 'fullname' => get_string("evaluation:date", 'local_cveteval')])
         ];
         $this->setup_other_fields();
     }
@@ -122,9 +123,9 @@ class situations_for_student extends dynamic_table_sql {
 
     protected function internal_get_sql_from($tablealias = 'e') {
         global $DB;
-        return '
-         {local_cveteval_group_assign} groupa
-         LEFT JOIN {local_cveteval_evalplan} plan ON plan.groupid = groupa.groupid
+        $groupasql = group_assignment_entity::get_historical_sql_query("groupa");
+        return $groupasql .
+            ' LEFT JOIN {local_cveteval_evalplan} plan ON plan.groupid = groupa.groupid
          LEFT JOIN {local_cveteval_clsituation} situation ON plan.clsituationid = situation.id
          LEFT JOIN {local_cveteval_finalevl} eval ON eval.evalplanid = plan.id AND groupa.studentid = eval.studentid
          LEFT JOIN (SELECT ' . $DB->sql_concat('u.firstname', 'u.lastname') . ' AS fullname, u.id FROM {user} u ) assessor
