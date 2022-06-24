@@ -45,7 +45,8 @@ class roles {
      * @throws dml_exception
      */
     public static function can_assess($userid) {
-        return (self::get_user_role_id($userid) == role_entity::ROLE_ASSESSOR_ID) || is_primary_admin($userid);
+        return (self::get_user_role_id($userid) == role_entity::ROLE_ASSESSOR_ID)
+            || has_capability('moodle/site:config', \context_system::instance(), $userid);
     }
 
     /**
@@ -101,7 +102,7 @@ class roles {
      * @return bool
      */
     public static function can_see_all_situations($userid) {
-        return is_primary_admin($userid);
+        return has_capability('moodle/site:config', \context_system::instance(), $userid);
     }
 }
 
