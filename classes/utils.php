@@ -444,6 +444,7 @@ class utils {
                 'local_cveteval_evalplan',
                 'local_cveteval_clsituation',
                 'local_cveteval_evalgrid',
+                'local_cveteval_cevalgrid',
                 'local_cveteval_criterion',
                 'local_cveteval_role',
                 'local_cveteval_appraisal',

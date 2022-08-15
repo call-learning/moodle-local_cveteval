@@ -184,7 +184,7 @@ class data_importer extends \tool_importer\data_importer {
             if (empty(trim($email))) {
                 continue;
             }
-            $email = clean_param(trim($email), PARAM_EMAIL);
+            $email = trim($email);
             $user = core_user::get_user_by_email($email);
 
             $roledef = [
