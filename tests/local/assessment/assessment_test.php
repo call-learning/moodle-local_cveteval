@@ -95,11 +95,11 @@ class assessment_test extends advanced_testcase {
         $this->assertCount(10, $rows);
         $this->assertEquals("Adéla Veselá", $rows[0]->studentfullname);
         $this->assertEquals("Groupe A", $rows[0]->groupname);
-        $this->assertEquals("Adéla Veselá", $rows[1]->studentfullname);
+        $this->assertEquals("Anna Horáková", $rows[1]->studentfullname);
         $this->assertEquals("Groupe A", $rows[1]->groupname);
-        $this->assertTrue($rows[0]->planid != $rows[1]->planid);
-        $this->assertEquals("Anna Horáková", $rows[2]->studentfullname);
-        $this->assertEquals("Groupe A", $rows[2]->groupname);
+        $this->assertTrue($rows[2]->planid != $rows[1]->planid);
+        $this->assertEquals("Dan Martin", $rows[2]->studentfullname);
+        $this->assertEquals("Groupe B", $rows[2]->groupname);
     }
 
     /**

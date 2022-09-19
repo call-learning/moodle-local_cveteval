@@ -163,8 +163,11 @@ class external_utils {
                         []
                 ];
             case 'criterion':
-                return ['1=1', [], '', 'ORDER BY realparent',
-                        ['CASE e.parentid WHEN 0 THEN e.id ELSE e.parentid END AS realparent']];
+                return ['1=1', [], '', 'ORDER BY realparent ASC, realsort ASC',
+                        [
+                            'CASE e.parentid WHEN 0 THEN e.id ELSE e.parentid END AS realparent, ' .
+                            'CASE e.parentid WHEN 0 THEN 0 ELSE e.sort END AS realsort'
+                        ]];
             default:
                 return ['1=1', [], '', '', []];
         }

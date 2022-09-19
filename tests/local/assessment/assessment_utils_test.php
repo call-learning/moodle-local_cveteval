@@ -65,7 +65,7 @@ class assessment_utils_test extends \advanced_testcase {
         $this->setUser($this->assessors[0]);
         $studentlist = assessment_utils::get_mystudents_list($this->situations[0]->get('id'));
         $data = $studentlist->get_rows(10);
-        // Check that we have two row.
+        // Check that we have two rows.
         $this->assertCount(2, $data);
         // Check student info.
         $this->assertEquals($this->students[0]->id, $data[0]->studentid);
