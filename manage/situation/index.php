@@ -47,7 +47,7 @@ $crudmgmt = crud_helper::create(
     $action,
     null,
     null,
-        '\\local_cveteval\\local\\persistent\\situation\\table',
+        \local_cveteval\local\persistent\situation\table::class,
     null,
     $navigation
 );

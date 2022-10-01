@@ -17,7 +17,9 @@
 namespace local_cveteval\local\persistent\evaluation_grid;
 
 use coding_exception;
-use local_cltools\local\crud\entity_table;
+use context;
+use local_cltools\local\crud\generic\generic_entity_table;
+use restricted_context_exception;
 
 /**
  * Evaluation grid table
@@ -26,7 +28,7 @@ use local_cltools\local\crud\entity_table;
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class table extends entity_table {
+class table extends generic_entity_table {
     protected static $persistentclass = entity::class;
 
     /**
@@ -36,9 +38,27 @@ class table extends entity_table {
      * @see page_list::get_filter_definition() for filter definition
      */
     public function __construct($uniqueid = null,
-            $actionsdefs = null,
-            $editable = false
+            $actionsdefs = null
     ) {
-        parent::__construct($uniqueid, $actionsdefs, true);
+        parent::__construct($uniqueid, $actionsdefs, true, entity::class);
+    }
+    /**
+     * Validate current user has access to the table instance
+     *
+     * Note: this can involve a more complicated check if needed and requires filters and all
+     * setup to be done in order to make sure we validated against the right information
+     * (such as for example a filter needs to be set in order not to return data a user should not see).
+     *
+     * @param context $context
+     * @param bool $writeaccess
+     * @throws restricted_context_exception
+     */
+    public function validate_access(context $context, $writeaccess = false) {
+        if (!has_capability('local/cltools:dynamictableread', $context)) {
+            throw new restricted_context_exception();
+        }
+        if ($writeaccess && !has_capability('local/cltools:dynamictablewrite', $context)) {
+            throw new restricted_context_exception();
+        }
     }
 }

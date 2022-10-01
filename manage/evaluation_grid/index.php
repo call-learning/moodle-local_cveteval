@@ -47,7 +47,7 @@ $crudmgmt = crud_helper::create(
     $action,
     null,
     null,
-        '\\local_cveteval\\local\\persistent\\evaluation_grid\\table',
+    \local_cveteval\local\persistent\evaluation_grid\table::class,
     null,
     $navigation
 );
