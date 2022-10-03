@@ -194,9 +194,11 @@ class data_importer extends \tool_importer\data_importer {
                 $record = new stdClass();
                 $record->starttime = $row['starttime'];
                 $record->endtime = $row['endtime'];
-                if (!empty($row[$groupname]) && !empty($this->situations[$row[$groupname]])) {
+                $snshortname = $row[$groupname] ?? '';
+                $snshortname = strtoupper($snshortname);
+                if ($snshortname && !empty($this->situations[$snshortname])) {
                     $record->groupid = $group->get('id');
-                    $record->clsituationid = $this->situations[$row[$groupname]]->get('id');
+                    $record->clsituationid = $this->situations[$snshortname]->get('id');
                     $planning = new planning_entity(0, $record);
                     $planning->create();
                     $this->planningeventscount++;
