@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Main page for all planning editions
+ * Main page for all clinical group_assignment editions
  *
  * Routing is made through the action parameter.
  *
@@ -38,8 +38,8 @@ require_capability('local/cveteval:manageentities', context_system::instance());
 
 history_entity::set_current_id($importid);
 $action = optional_param('action', crud_list::ACTION, PARAM_TEXT);
-$entityclassname = '\\local_cveteval\\local\\persistent\\role\\entity';
-$currenturl = new moodle_url('/local/cveteval/manage/role/index.php', ['importid' => $importid]);
+$entityclassname = '\\local_cveteval\\local\\persistent\\group_assignment\\entity';
+$currenturl = new moodle_url('/local/cveteval/manage/group_assignment/index.php', ['importid' => $importid]);
 $navigation = new routed_navigation($entityclassname, $currenturl);
 
 $crudmgmt = crud_helper::create(
@@ -47,7 +47,7 @@ $crudmgmt = crud_helper::create(
     $action,
     null,
     null,
-        '\\local_cveteval\\local\\persistent\\role\\table',
+        \local_cveteval\local\persistent\group_assignment\table::class,
     null,
     $navigation
 );

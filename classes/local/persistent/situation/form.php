@@ -13,35 +13,24 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
-namespace local_cveteval\local\persistent\role;
-
-use coding_exception;
-use core_user\output\myprofile\manager;
-use local_cltools\local\crud\entity_table;
-use local_cltools\local\crud\entity_utils;
-use local_cltools\local\field\blank_field;
+namespace local_cveteval\local\persistent\situation;
+use local_cltools\local\crud\form\entity_form;
 
 /**
- * Role table
+ * Situation form
  *
  * @package   local_cveteval
- * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
+ * @copyright 2022 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class table extends entity_table {
+class form extends entity_form {
+
+    /** @var string The fully qualified classname. */
     protected static $persistentclass = entity::class;
 
-    /**
-     * Sets up the page_table parameters.
-     *
-     * @throws coding_exception
-     * @see page_list::get_filter_definition() for filter definition
-     */
-    public function __construct($uniqueid = null,
-            $actionsdefs = null,
-            $editable = false
-    ) {
-        parent::__construct($uniqueid, $actionsdefs, true);
-    }
+    /** @var array Fields to remove when getting the final data. */
+    protected static $fieldstoremove = array('submitbutton', 'files');
+
+    /** @var string[] $foreignfields */
+    protected static $foreignfields = array();
 }

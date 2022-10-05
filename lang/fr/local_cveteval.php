@@ -214,6 +214,7 @@ $string['settings:general'] = 'General settings';
 $string['settings:grade_scale'] = 'Echelle de notes';
 $string['settings:manage_evaluation_templates'] = 'Gère les modèles d\'évaluation';
 $string['settings:manage_situations'] = 'Gère les situations';
+$string['situation:action'] = 'Actions';
 $string['situation:entity'] = 'Situation clinique';
 $string['situation:evalgridid'] = 'Grille d\'évaluation';
 $string['situation:expectedevalsnb'] = '#Nb Evaluations';

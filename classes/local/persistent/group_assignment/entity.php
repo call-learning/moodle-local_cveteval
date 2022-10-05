@@ -26,6 +26,10 @@ namespace local_cveteval\local\persistent\group_assignment;
 
 use coding_exception;
 use core\persistent;
+use local_cltools\local\crud\enhanced_persistent;
+use local_cltools\local\crud\enhanced_persistent_impl;
+use local_cltools\local\field\entity_selector;
+use local_cltools\local\field\hidden;
 use local_cveteval\local\persistent\model_with_history;
 use local_cveteval\local\persistent\model_with_history_impl;
 
@@ -36,40 +40,21 @@ use local_cveteval\local\persistent\model_with_history_impl;
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class entity extends persistent implements model_with_history {
-
+class entity extends persistent implements enhanced_persistent, model_with_history {
+    use enhanced_persistent_impl;
     use model_with_history_impl;
 
     const TABLE = 'local_cveteval_group_assign';
 
-    /**
-     * Usual properties definition for a persistent
-     *
-     * @return array|array[]
-     */
-    protected static function define_properties() {
-        return array(
-                'studentid' => array(
-                        'type' => PARAM_INT,
-                        'default' => '',
-                        'format' => [
-                                'type' => 'user_selector',
-                                'selector_info' => (object) [
-                                        'rolesn' => 'student'
-                                ]
+    public static function define_fields(): array {
+        return [
+                new hidden(['fieldname' => 'studentid', 'type' => PARAM_INT ]),
+                new entity_selector([
+                                'fieldname' => 'groupid',
+                                'entityclass' => \local_cveteval\local\persistent\group\entity::class,
+                                'displayfield' => 'name',
                         ]
                 ),
-                'groupid' => array(
-                        'type' => PARAM_INT,
-                        'default' => '',
-                        'format' => [
-                                'type' => 'entity_selector',
-                                'selector_info' => (object) [
-                                        'entity_type' => '\\local_cveteval\\local\\persistent\\group\\entity',
-                                        'display_field' => 'name'
-                                ]
-                        ]
-                ),
-        );
+        ];
     }
 }

@@ -28,8 +28,8 @@ use core\persistent;
 use local_cltools\local\crud\enhanced_persistent;
 use local_cltools\local\crud\enhanced_persistent_impl;
 use local_cltools\local\field\entity_selector;
-use local_cltools\local\field\hidden;
 use local_cltools\local\field\select_choice;
+use local_cltools\local\field\generic_selector;
 use local_cveteval\local\persistent\model_with_history;
 use local_cveteval\local\persistent\model_with_history_impl;
 
@@ -57,6 +57,26 @@ class entity extends persistent implements enhanced_persistent, model_with_histo
 
     const TABLE = 'local_cveteval_role';
 
+    public static function define_fields(): array {
+        return [
+                new generic_selector(['fieldname' => 'userid', 'type' => 'user']),
+                new entity_selector([
+                                'fieldname' => 'clsituationid',
+                                'entityclass' => \local_cveteval\local\persistent\situation\entity::class,
+                                'displayfield' => 'title',
+                        ]
+                ),
+                new select_choice([
+                        'fieldname' => 'type',
+                        'choices' => [
+                                self::ROLE_APPRAISER_ID => self::get_type_fullname(self::ROLE_APPRAISER_ID),
+                                self::ROLE_ASSESSOR_ID => self::get_type_fullname(self::ROLE_ASSESSOR_ID)
+                        ],
+                        'editable' => true
+                ]),
+        ];
+    }
+
     /**
      * Get type localised fullname
      *
@@ -76,22 +96,6 @@ class entity extends persistent implements enhanced_persistent, model_with_histo
      */
     public static function get_type_shortname($typeid) {
         return static::ROLE_SHORTNAMES[$typeid] ?? 'unknown';
-    }
-
-    public static function define_fields(): array {
-        return [
-                new hidden('userid'),
-                new entity_selector([
-                                'fieldname' => 'clsituationid',
-                                'entityclass' => \local_cveteval\local\persistent\situation\entity::class,
-                                'displayfield' => 'title',
-                        ]
-                ),
-                new select_choice([
-                        'fieldname' => 'type',
-                        'choices' => [self::ROLE_APPRAISER_ID, self::ROLE_ASSESSOR_ID]
-                ])
-        ];
     }
 }
 

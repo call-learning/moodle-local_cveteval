@@ -53,6 +53,7 @@ $crudmgmt = crud_helper::create(
 );
 
 \local_cveteval\utils::setup_entity_management_page_navigation($importid);
+\local_cveteval\local\persistent\history\entity::set_current_id($importid);
 $crudmgmt->setup_page($PAGE);
 
 $out = $crudmgmt->action_process();

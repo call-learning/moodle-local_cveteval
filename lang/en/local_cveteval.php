@@ -213,6 +213,7 @@ $string['settings:general'] = 'Paramètres généraux';
 $string['settings:grade_scale'] = 'Grade Scales';
 $string['settings:manage_evaluation_templates'] = 'Manage evaluation templates';
 $string['settings:manage_situations'] = 'Manage situations';
+$string['situation:action'] = 'Actions';
 $string['situation:entity'] = 'Clinical situation';
 $string['situation:evalgridid'] = 'Linked Evaluation Grid';
 $string['situation:expectedevalsnb'] = '#Eval';

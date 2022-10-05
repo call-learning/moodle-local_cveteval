@@ -14,18 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace local_cveteval\local\persistent\situation;
+namespace local_cveteval\local\persistent\group_assignment;
+
 
 use coding_exception;
 use context;
-use local_cltools\local\crud\entity_table;
-use local_cltools\local\crud\entity_utils;
 use local_cltools\local\crud\generic\generic_entity_table;
 use local_cltools\local\field\blank_field;
 use restricted_context_exception;
 
 /**
- * Situation table
+ * Evaluation group_assignment table
  *
  * @package   local_cveteval
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
@@ -64,6 +63,35 @@ class table extends generic_entity_table {
         }
         if ($writeaccess && !has_capability('local/cltools:dynamictablewrite', $context)) {
             throw new restricted_context_exception();
+        }
+    }
+
+    /**
+     * Default property definition
+     *
+     * Add all the fields from persistent class except the reserved ones
+     *
+     * @throws ReflectionException
+     */
+    protected function setup_fields() {
+        parent::setup_fields();
+        $this->fields[] = new blank_field([
+                'fieldname' => 'user',
+                'fullname' => get_string('username')
+        ]);
+    }
+
+    /**
+     * Format the username cell.
+     *
+     * @param $row
+     * @return string
+     * @throws coding_exception
+     */
+    protected function col_user($row) {
+        $user = \core_user::get_user($row->studentid);
+        if($user) {
+            return fullname($user) . "($user->email)";
         }
     }
 }
