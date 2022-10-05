@@ -124,5 +124,20 @@ function xmldb_local_cveteval_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2021092009, 'local', 'cveteval');
     }
 
+    if ($oldversion < 2022100500) {
+
+        // Define index tbl_name_id_history_idx (not unique) to be added to local_cveteval_history_mdl.
+        $table = new xmldb_table('local_cveteval_history_mdl');
+        $index = new xmldb_index('tbl_name_id_history_idx', XMLDB_INDEX_NOTUNIQUE, ['tablename', 'tableid', 'historyid']);
+
+        // Conditionally launch add index tbl_name_id_history_idx.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Cveteval savepoint reached.
+        upgrade_plugin_savepoint(true, 2022100500, 'local', 'cveteval');
+    }
+
     return true;
 }
