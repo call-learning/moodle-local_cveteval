@@ -22,6 +22,8 @@ use local_cltools\local\crud\entity_table;
 use local_cltools\local\crud\entity_utils;
 use local_cltools\local\crud\generic\generic_entity_table;
 use local_cltools\local\field\blank_field;
+use local_cveteval\local\manager\table_manager_with_access;
+use local_cveteval\local\persistent\table_with_history_impl;
 use restricted_context_exception;
 
 /**
@@ -31,9 +33,9 @@ use restricted_context_exception;
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class table extends generic_entity_table {
+class table extends table_manager_with_access {
     protected static $persistentclass = entity::class;
-
+    use table_with_history_impl;
     /**
      * Sets up the page_table parameters.
      *
@@ -65,5 +67,38 @@ class table extends generic_entity_table {
         if ($writeaccess && !has_capability('local/cltools:dynamictablewrite', $context)) {
             throw new restricted_context_exception();
         }
+    }
+    /**
+     * Check if we can do the following action
+     *
+     * If there is an appraisal or final evaluation we cannot edit or delete
+     *
+     * @param string $action
+     * @param object $row
+     * @return bool
+     */
+    protected function can_i_do(string $action, object $row): bool {
+        global $DB;
+        switch ($action) {
+            case 'edit':
+            case 'delete':
+                // Check if there are any appraisal involving this user.
+                if ($DB->count_records_sql('SELECT COUNT(*) FROM {local_cveteval_appraisal} ap
+                                LEFT JOIN {local_cveteval_evalplan} ep ON ap.evalplanid = ep.id
+                                WHERE ep.clsituationid = :situationid',
+                        ['situationid' => $row->id])
+                ) {
+                    return false;
+                }
+                if ($DB->count_records_sql('SELECT COUNT(*) FROM {local_cveteval_finalevl} fe
+                                LEFT JOIN {local_cveteval_evalplan} ep ON fe.evalplanid = ep.id
+                                WHERE ep.clsituationid = :situationid',
+                        ['situationid' => $row->id])
+                ) {
+                    return false;
+                }
+                break;
+        }
+        return true;
     }
 }

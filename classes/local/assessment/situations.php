@@ -79,9 +79,9 @@ class situations extends entity_table {
     }
 
     protected function internal_get_sql_from($tablealias = 'e') {
-        $from = situation_entity::get_historical_sql_query('entity');
+        $from = situation_entity::get_historical_sql_query($tablealias);
         $rolesql = role_entity::get_historical_sql_query("role");
-        return "$from  LEFT JOIN  $rolesql ON entity.id = role.clsituationid";
+        return "{$from}  LEFT JOIN  $rolesql ON {$tablealias}.id = role.clsituationid";
     }
 
     protected function col_description($row) {

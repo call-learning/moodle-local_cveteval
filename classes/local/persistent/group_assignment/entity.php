@@ -29,6 +29,7 @@ use core\persistent;
 use local_cltools\local\crud\enhanced_persistent;
 use local_cltools\local\crud\enhanced_persistent_impl;
 use local_cltools\local\field\entity_selector;
+use local_cltools\local\field\generic_selector;
 use local_cltools\local\field\hidden;
 use local_cveteval\local\persistent\model_with_history;
 use local_cveteval\local\persistent\model_with_history_impl;
@@ -48,7 +49,7 @@ class entity extends persistent implements enhanced_persistent, model_with_histo
 
     public static function define_fields(): array {
         return [
-                new hidden(['fieldname' => 'studentid', 'type' => PARAM_INT ]),
+                new generic_selector(['fieldname' => 'studentid', 'type' => 'user']),
                 new entity_selector([
                                 'fieldname' => 'groupid',
                                 'entityclass' => \local_cveteval\local\persistent\group\entity::class,

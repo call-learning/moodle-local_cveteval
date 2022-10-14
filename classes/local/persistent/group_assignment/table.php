@@ -21,6 +21,8 @@ use coding_exception;
 use context;
 use local_cltools\local\crud\generic\generic_entity_table;
 use local_cltools\local\field\blank_field;
+use local_cveteval\local\manager\table_manager_with_access;
+use local_cveteval\local\persistent\table_with_history_impl;
 use restricted_context_exception;
 
 /**
@@ -30,9 +32,9 @@ use restricted_context_exception;
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class table extends generic_entity_table {
+class table extends table_manager_with_access {
     protected static $persistentclass = entity::class;
-
+    use table_with_history_impl;
     /**
      * Sets up the page_table parameters.
      *
@@ -67,31 +69,36 @@ class table extends generic_entity_table {
     }
 
     /**
-     * Default property definition
+     * Check if we can do the following action
      *
-     * Add all the fields from persistent class except the reserved ones
+     * If there is an appraisal or final evaluation we cannot edit or delete
      *
-     * @throws ReflectionException
+     * @param string $action
+     * @param object $row
+     * @return bool
      */
-    protected function setup_fields() {
-        parent::setup_fields();
-        $this->fields[] = new blank_field([
-                'fieldname' => 'user',
-                'fullname' => get_string('username')
-        ]);
-    }
-
-    /**
-     * Format the username cell.
-     *
-     * @param $row
-     * @return string
-     * @throws coding_exception
-     */
-    protected function col_user($row) {
-        $user = \core_user::get_user($row->studentid);
-        if($user) {
-            return fullname($user) . "($user->email)";
+    protected function can_i_do(string $action, object $row): bool {
+        global $DB;
+        switch ($action) {
+            case 'edit':
+            case 'delete':
+                // Check if there are any appraisal involving this user.
+                if ($DB->count_records_sql('SELECT COUNT(*) FROM {local_cveteval_appraisal} ap
+                                LEFT JOIN {local_cveteval_evalplan} ep ON ap.evalplanid = ep.id
+                                WHERE ap.studentid = :studentid AND ep.groupid = :groupid',
+                        ['groupid' => $row->groupid, 'studentid' => $row->studentid])
+                ) {
+                    return false;
+                }
+                if ($DB->count_records_sql('SELECT COUNT(*) FROM {local_cveteval_finalevl} ap
+                                LEFT JOIN {local_cveteval_evalplan} ep ON ap.evalplanid = ep.id
+                                WHERE ap.studentid = :studentid AND ep.groupid = :groupid',
+                        ['groupid' => $row->groupid, 'studentid' => $row->studentid])
+                ) {
+                    return false;
+                }
+                break;
         }
+        return true;
     }
 }
