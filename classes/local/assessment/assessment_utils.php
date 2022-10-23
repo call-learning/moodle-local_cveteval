@@ -100,7 +100,7 @@ class assessment_utils {
      */
     public static function get_mystudents_list($situationid) {
         global $USER;
-        $entitylist = new mystudents(null, null, null, $situationid);
+        $entitylist = new mystudents(null, null, false, $situationid);
         if (!roles::can_see_all_situations($USER->id)) {
             $filterset = new enhanced_filterset(
                     [
@@ -174,7 +174,6 @@ class assessment_utils {
      *
      * @param $appraisalid
      * @return appraisals_criteria
-     * @throws coding_exception
      */
     public static function get_assessmentcriteria_list($appraisalid) {
         $uniqueid = html_writer::random_id('apprasailcriteriatable');
@@ -205,7 +204,7 @@ class assessment_utils {
      * @return situations_for_student
      */
     public static function get_situations_for_student($studentid) {
-        $entitylist = new situations_for_student(null, null, null);
+        $entitylist = new situations_for_student(null, null, false);
         $filterset = new enhanced_filterset(
                 [
                         'studentid' => (object)

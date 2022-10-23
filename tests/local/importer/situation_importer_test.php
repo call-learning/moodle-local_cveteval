@@ -17,6 +17,7 @@
 namespace local_cveteval\local\importer;
 
 use local_cveteval\local\persistent\situation\entity as situation_entity;
+use local_cveteval\local\persistent\evaluation_grid\entity as evaluation_grid_entity;
 use local_cveteval\test\importer_test_trait;
 
 /**
@@ -27,7 +28,9 @@ use local_cveteval\test\importer_test_trait;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class situation_importer_test extends \advanced_testcase {
-    use importer_test_trait;
+    use importer_test_trait {
+        extract_record_information as extract_record_information_importer_test;
+    }
 
     const EXISTING_USERS = [
         'appraiser_0001@exemple.com',
@@ -72,6 +75,15 @@ class situation_importer_test extends \advanced_testcase {
         }
     }
 
+    protected static function extract_record_information($record) {
+        $rec = self::extract_record_information_importer_test($record);
+        if ($record instanceof situation_entity) {
+            $evalgrid = evaluation_grid_entity::get_record(['id' => $record->get('evalgridid')]);
+            $rec['evalgridnum'] = $evalgrid->get('idnumber');
+            unset($rec['evalgridid']);
+        }
+        return $rec;
+    }
     /**
      * Data provider for basic import
      *
@@ -93,7 +105,7 @@ class situation_importer_test extends \advanced_testcase {
                                     'descriptionformat' => '1',
                                     'idnumber' => 'TMG',
                                     'expectedevalsnb' => '1',
-                                    'evalgridid' => '1',
+                                    'evalgridnum' => 'DEFAULTGRID',
                                 ],
                             [
                                 'title' => 'Médecine interne',
@@ -103,7 +115,7 @@ class situation_importer_test extends \advanced_testcase {
                                 'descriptionformat' => '1',
                                 'idnumber' => 'TMI',
                                 'expectedevalsnb' => '2',
-                                'evalgridid' => '1',
+                                'evalgridnum' => 'DEFAULTGRID',
                             ],
                             [
                                 'title' => 'Urgences-Soins intensifs',
@@ -113,7 +125,7 @@ class situation_importer_test extends \advanced_testcase {
                                 'descriptionformat' => '1',
                                 'idnumber' => 'TUS',
                                 'expectedevalsnb' => '2',
-                                'evalgridid' => '1',
+                                'evalgridnum' => 'DEFAULTGRID',
                             ]
 
                         ]

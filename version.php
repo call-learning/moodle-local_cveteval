@@ -24,12 +24,12 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2022100500;      // The current module version (Date: YYYYMMDDXX).
+$plugin->version = 2022100501;      // The current module version (Date: YYYYMMDDXX).
 $plugin->requires = 2020061500;      // Requires this Moodle version (3.9.1).
 $plugin->maturity = MATURITY_RC;
-$plugin->release = '1.0.0'; // No more specific course fields.
+$plugin->release = '2.0.0'; // No more specific course fields.
 $plugin->component = 'local_cveteval';// Full name of the plugin (used for diagnostics).
 $plugin->cron = 0;
 $plugin->dependencies = [
-    'local_cltools' => ANY_VERSION
+    'local_cltools' => 2022100101
 ];

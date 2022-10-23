@@ -37,6 +37,7 @@ use local_cveteval\local\persistent\model_with_history;
 use local_cveteval\local\persistent\model_with_history_impl;
 use local_cveteval\roles;
 use local_cveteval\task\upload_default_criteria_grid;
+use restricted_context_exception;
 
 /**
  * Evaluation grid entity
@@ -58,7 +59,11 @@ class entity extends persistent implements enhanced_persistent, model_with_histo
      * DEFAULT GRID SHORTNAME
      */
     const DEFAULT_GRID_SHORTNAME = 'DEFAULTGRID';
-
+    /**
+     * Usual properties definition for a persistent
+     *
+     * @return array|array[]
+     */
     public static function define_fields(): array {
         return [
                 new text(['fieldname' => 'name', 'editable' => true]),
@@ -95,10 +100,11 @@ class entity extends persistent implements enhanced_persistent, model_with_histo
      * Validate entity context
      *
      * @param context $context
-     * @return false|mixed
+     * @param bool $writeaccess
+     * @return bool
      * @throws \dml_exception
      */
-    public function validate_access(context $context) {
+    public static function validate_access(context $context, $writeaccess = false): bool {
         global $USER;
         return roles::can_assess($USER->id);
     }

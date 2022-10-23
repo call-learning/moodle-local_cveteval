@@ -34,12 +34,18 @@ use restricted_context_exception;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class table extends table_manager_with_access {
+    /**
+     * @var string $persistentclass current persistent class
+     */
     protected static $persistentclass = entity::class;
     use table_with_history_impl;
+
     /**
      * Sets up the page_table parameters.
      *
-     * @throws coding_exception
+     * @param null $uniqueid
+     * @param null $actionsdefs
+     * @param bool $editable
      * @see page_list::get_filter_definition() for filter definition
      */
     public function __construct($uniqueid = null,
@@ -58,15 +64,17 @@ class table extends table_manager_with_access {
      *
      * @param context $context
      * @param bool $writeaccess
+     * @return bool
      * @throws restricted_context_exception
      */
-    public function validate_access(context $context, $writeaccess = false) {
+    public static function validate_access(context $context, $writeaccess = false): bool {
         if (!has_capability('local/cltools:dynamictableread', $context)) {
             throw new restricted_context_exception();
         }
         if ($writeaccess && !has_capability('local/cltools:dynamictablewrite', $context)) {
             throw new restricted_context_exception();
         }
+        return true;
     }
     /**
      * Check if we can do the following action

@@ -327,7 +327,9 @@ class data_migration_test extends \advanced_testcase {
     /**
      * Get appraisals for student
      *
-     * @param $studentindex
+     * @param int $studentindex
+     * @param int $planstart
+     * @param int $planend
      * @return object
      */
     private function get_appraisals_students($studentindex, $planstart, $planend) {

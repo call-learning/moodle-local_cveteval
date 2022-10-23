@@ -73,7 +73,7 @@ if (!empty($user)) {
     require_once($CFG->dirroot . '/local/cveteval/lib.php');
     // Cannot authenticate unless maintenance access is granted.
     $hasmaintenanceaccess = has_capability('moodle/site:maintenanceaccess', $systemcontext, $user);
-    if (!empty($CFG->maintenance_enabled) and !$hasmaintenanceaccess) {
+    if (!empty($CFG->maintenance_enabled) && !$hasmaintenanceaccess) {
         throw new moodle_exception('sitemaintenance', 'admin');
     }
 
@@ -85,7 +85,7 @@ if (!empty($user)) {
     }
     // Check credential expiry.
     $userauth = get_auth_plugin($user->auth);
-    if (!empty($userauth->config->expiration) and $userauth->config->expiration == 1) {
+    if (!empty($userauth->config->expiration) && $userauth->config->expiration == 1) {
         $days2expire = $userauth->password_expire($user->username);
         if (intval($days2expire) < 0) {
             throw new moodle_exception('passwordisexpired', 'webservice');
@@ -114,7 +114,7 @@ if (!empty($user)) {
 
     $returnedvalue->token = $token->token;
     // Private token, only transmitted to https sites and non-admin users.
-    if (is_https() and !$siteadmin) {
+    if (is_https() && !$siteadmin) {
         $returnedvalue->privatetoken = $privatetoken;
     } else {
         $returnedvalue->privatetoken = null;

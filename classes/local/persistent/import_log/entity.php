@@ -36,7 +36,6 @@ use tool_importer\local\logs\import_log_entity;
  */
 class entity extends import_log_entity implements enhanced_persistent {
     use enhanced_persistent_impl;
-
     /**
      * Usual properties definition for a persistent
      *

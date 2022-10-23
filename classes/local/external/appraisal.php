@@ -91,9 +91,12 @@ class appraisal extends base_get_entity {
         self::validate_context($context);
 
         $appraisal = null;
+        // Temporary fix for the app: should not set "null" into comment and context".
+        $params['context'] = $params['context'] == "null" ? "" : $params['context'];
+        $params['comment'] = $params['comment'] == "null" ? "" : $params['comment'];
         $entities = self::entities_submit([$params], entity::class);
         if (!empty($entities)) {
-            return $entities[0];
+            $appraisal = array_pop($entities);
         }
         return $appraisal;
     }

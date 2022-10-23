@@ -27,12 +27,23 @@ use local_cltools\local\crud\entity_table;
  */
 class generic_cveteval_table extends entity_table {
 
+    /**
+     * @var string $genericpersistentclass
+     */
     private $genericpersistentclass;
 
-    public function __construct($uniqueid,
-            $actionsdefs,
-            $editable,
-            $genericclassname
+    /**
+     * Constructor for dynamic table
+     *
+     * @param string $uniqueid a random unique id
+     * @param array $actionsdefs an array of action
+     * @param bool $editable is the table editable ?
+     * @param string $genericclassname
+     */
+    public function __construct(string $uniqueid,
+            array $actionsdefs,
+            bool $editable,
+            string $genericclassname
     ) {
         $this->genericpersistentclass = $genericclassname;
         parent::__construct($uniqueid, $actionsdefs, $editable);
@@ -47,6 +58,10 @@ class generic_cveteval_table extends entity_table {
         return $this->genericpersistentclass;
     }
 
+    /**
+     * Get persistent class
+     * @return string
+     */
     public function get_persistent_class() {
         return $this->genericpersistentclass;
     }

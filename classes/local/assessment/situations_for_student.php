@@ -47,24 +47,26 @@ class situations_for_student extends dynamic_table_sql {
     /**
      * Sets up the page_table parameters.
      *
-     * @throws coding_exception
+     * @param string|null $uniqueid a random unique id
+     * @param array|null $actionsdefs an array of action
+     * @param bool $editable is the table editable ?
      * @see page_list::get_filter_definition() for filter definition
      */
-    public function __construct($uniqueid = null,
-        $actionsdefs = null,
-        $editable = false,
-        $studentid = null) {
+    public function __construct(?string $uniqueid,
+            ?array $actionsdefs,
+            bool $editable = false,
+            $studentid = null) {
         global $PAGE;
         $this->fieldaliases = [
-            'studentid' => 'groupa.studentid',
-            'studentfullname' => 'student.fullname',
-            'assessorfullname' => 'assessor.fullname',
+                'studentid' => 'groupa.studentid',
+                'studentfullname' => 'student.fullname',
+                'assessorfullname' => 'assessor.fullname',
         ];
         parent::__construct($uniqueid, $actionsdefs, $editable);
         $PAGE->requires->js_call_amd('local_cltools/tabulator-row-action-url', 'init', [
-            $this->get_unique_id(),
-            (new moodle_url('/local/cveteval/pages/assessment/assess.php'))->out(),
-            (object) array('evalplanid' => 'planid', 'studentid' => 'studentid')
+                $this->get_unique_id(),
+                (new moodle_url('/local/cveteval/pages/assessment/assess.php'))->out(),
+                (object) array('evalplanid' => 'planid', 'studentid' => 'studentid')
         ]);
     }
 

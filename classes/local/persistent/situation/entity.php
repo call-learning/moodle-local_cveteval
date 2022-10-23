@@ -44,7 +44,9 @@ class entity extends persistent implements enhanced_persistent, model_with_histo
 
     use enhanced_persistent_impl;
     use model_with_history_impl;
-
+    /**
+     * Current table
+     */
     const TABLE = 'local_cveteval_clsituation';
 
     /**

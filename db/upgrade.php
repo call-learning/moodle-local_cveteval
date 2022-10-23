@@ -139,5 +139,21 @@ function xmldb_local_cveteval_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2022100500, 'local', 'cveteval');
     }
 
+    if ($oldversion < 2022100501) {
+        // Fix comment and context set to "null".
+        $DB->set_field_select(\local_cveteval\local\persistent\appraisal\entity::TABLE,
+                "comment",
+                "",
+                "comment = 'null'"
+        );
+        $DB->set_field_select(\local_cveteval\local\persistent\appraisal\entity::TABLE,
+                "context",
+                "",
+                "context = 'null'"
+        );
+        // Cveteval savepoint reached.
+        upgrade_plugin_savepoint(true, 2022100501, 'local', 'cveteval');
+    }
+
     return true;
 }

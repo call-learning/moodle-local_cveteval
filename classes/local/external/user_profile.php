@@ -74,20 +74,14 @@ class user_profile extends external_api {
         } else {
             $user = $USER;
         }
-
         $context = context_user::instance($user->id);
-        $userinfo = new stdClass();
-        $userinfo->fullname = fullname($user);
         $canseeadvanced = true;
-        if ($user->id != $USER->id and !has_capability('moodle/user:viewdetails', $context)) {
+        if ($user->id != $USER->id && !has_capability('moodle/user:viewdetails', $context)) {
             $canseeadvanced = false;
         }
         $userpicture = new user_picture($user);
         $userpicture->includetoken = true;
         $userpicture->size = 1; // Size f1.
-        $userinfo->studentname = fullname($user);
-
-        $userinfo->studentpictureurl = $userpicture->get_url($PAGE)->out(false);
         return (object) [
                 'userid' => intval($user->id),
                 'fullname' => fullname($user),

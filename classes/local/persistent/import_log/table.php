@@ -37,6 +37,9 @@ use tool_importer\local\log_levels;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class table extends entity_table {
+    /**
+     * @var string $persistentclass current persistent class
+     */
     protected static $persistentclass = entity::class;
 
     /**

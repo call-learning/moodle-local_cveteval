@@ -42,9 +42,16 @@ use local_cveteval\local\persistent\model_with_history_impl;
 class entity extends persistent implements enhanced_persistent, model_with_history {
     use model_with_history_impl;
     use enhanced_persistent_impl;
-
+    /**
+     * Current table
+     */
     const TABLE = 'local_cveteval_evalplan';
 
+    /**
+     * Define fields
+     *
+     * @return array
+     */
     public static function define_fields(): array {
         return [
                 new entity_selector(
@@ -82,9 +89,5 @@ class entity extends persistent implements enhanced_persistent, model_with_histo
      */
     public function get_endtime_string() {
         return userdate($this->raw_get('endtime'), get_string('strftimedate', 'core_langconfig'));
-    }
-
-    public function get_context() {
-        // TODO: Implement get_context() method.
     }
 }

@@ -15,22 +15,21 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template local_cveteval/situation
+    @template local_cveteval/planning
 
 
     Example context (json):
     {
-        "starttime": <int timestamp>,
-        "endtime": <int timestamp>,
-        "mineval": 1,
+
 
     }
 }}
+<h3>{{title}}</h3>
+<p>{{{description}}}</p>
 <div>
-    <h3>{{title}}</h3>
-    <p>{{{description}}}</p>
-    <span class="idnumber">{{idnumber}}</span>
-    <span class="evalgrididformatted">{{evalgrididformatted}}</span>
-    <span class="expectedevalsnb">{{expectedevalsnb}}</span>
-    {{>local_cltools/persistent_info}}
+<span class="groupidformatted">{{groupidformatted}}</span> - <span class="clsituationidformatted">{{clsituationidformatted}}</span>
 </div>
+<div>
+<span class="starttime">{{#userdate}} {{starttime}}, {{#str}} strftimedate {{/str}} {{/userdate}}</span> - <span class="endtime">{{#userdate}} {{endtime}}, {{#str}} strftimedate {{/str}} {{/userdate}}</span>
+</div>
+{{>local_cltools/persistent_info}}

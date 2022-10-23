@@ -109,7 +109,7 @@ class data_model_matcher {
     /**
      * Return an array of entities ID that could not be matched from the dest to origin models
      *
-     * @returns array array of class/entity id that could not be matched
+     * @return array array of class/entity id that could not be matched
      */
     public function get_unmatched_entities_list() {
         return $this->iterate_over_matchers("get_unmatched_dest_entities");
@@ -118,7 +118,7 @@ class data_model_matcher {
     /**
      * Return an array of entities ID that could not be in the origin model from the dest
      *
-     * @returns array array of class/entity id that could not be matched
+     * @return array array of class/entity id that could not be matched
      */
     public function get_orphaned_entities_list() {
         return $this->iterate_over_matchers("get_orphaned_origin_entities");

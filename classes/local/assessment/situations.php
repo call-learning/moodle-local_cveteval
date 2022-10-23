@@ -69,13 +69,15 @@ class situations extends entity_table {
      *
      * @param context $context
      * @param bool $writeaccess
+     * @return bool
      * @throws restricted_context_exception
      */
-    public function validate_access(context $context, $writeaccess = false) {
+    public static function validate_access(context $context, $writeaccess = false): bool {
         global $USER;
         if (!roles::can_assess($USER->id)) {
             throw new restricted_context_exception();
         }
+        return true;
     }
 
     protected function internal_get_sql_from($tablealias = 'e') {

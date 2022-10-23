@@ -43,7 +43,7 @@ $user = false;
 $authplugin->loginpage_hook();
 $mobilelaunchparams = [];
 
-if ($frm and isset($frm->username)) {                             // Login WITH cookies.
+if ($frm && isset($frm->username)) {                             // Login WITH cookies.
 
     $frm->username = trim(core_text::strtolower($frm->username));
 
@@ -107,7 +107,7 @@ if ($frm and isset($frm->username)) {                             // Login WITH 
         external_log_token_request($token);
 
         // Don't return the private token if the user didn't just log in and a new token wasn't created.
-        if (empty($SESSION->justloggedin) and $token->timecreated < $timenow) {
+        if (empty($SESSION->justloggedin) && $token->timecreated < $timenow) {
             $privatetoken = null;
         }
 
@@ -118,7 +118,7 @@ if ($frm and isset($frm->username)) {                             // Login WITH 
         // No trailing slash.
         $siteid = md5(rtrim($CFG->wwwroot, '/'));
         $apptoken = $siteid . ':::' . $token->token;
-        if ($privatetoken and is_https() and !$siteadmin) {
+        if ($privatetoken && is_https() && !$siteadmin) {
             $apptoken .= ':::' . $privatetoken;
         }
 

@@ -47,44 +47,51 @@ use moodle_url;
  */
 class mystudents extends dynamic_table_sql {
 
-    public function __construct($uniqueid = null,
-        $actionsdefs = null,
-        $editable = false,
-        $situationid = null
-    ) {
+    /**
+     * Constructor for dynamic table
+     *
+     * @param string|null $uniqueid a random unique id
+     * @param array|null $actionsdefs an array of action
+     * @param bool $editable is the table editable ?
+     * @param int|null $situationid situation identifier
+     */
+    public function __construct(?string $uniqueid,
+            ?array $actionsdefs,
+            bool $editable = false,
+            ?int $situationid = null) {
         global $PAGE;
         $filterset = new enhanced_filterset([
-            'situationid' => (object)
-            [
-                'filterclass' => numeric_comparison_filter::class,
-                'required' => true
-            ],
+                'situationid' => (object)
+                [
+                        'filterclass' => numeric_comparison_filter::class,
+                        'required' => true
+                ],
         ]);
         if ($situationid) {
             // Either given by value in the constructor or passed by parameter later in the dynamic table.
             $filterset->add_filter_from_params(
-                'situationid', // Field name.
-                filter::JOINTYPE_ALL,
-                [['direction' => '=', 'value' => $situationid]]
+                    'situationid', // Field name.
+                    filter::JOINTYPE_ALL,
+                    [['direction' => '=', 'value' => $situationid]]
             );
         }
         $filterset->set_join_type(filter::JOINTYPE_ALL);
         $this->filterset = $filterset;
         $this->fieldaliases = [
-            'roletype' => 'role.type',
-            'appraiserid' => 'role.userid',
-            'situationid' => 'situation.id',
-            'appraisalcount' => 'apc.count',
-            'appraisalrequired' => 'situation.expectedevalsnb',
-            'studentfullname' => 'student.fullname',
-            'groupname' => 'grp.name',
-            'hasgrade' => '(eval.id IS NOT NULL)'
+                'roletype' => 'role.type',
+                'appraiserid' => 'role.userid',
+                'situationid' => 'situation.id',
+                'appraisalcount' => 'apc.count',
+                'appraisalrequired' => 'situation.expectedevalsnb',
+                'studentfullname' => 'student.fullname',
+                'groupname' => 'grp.name',
+                'hasgrade' => '(eval.id IS NOT NULL)'
         ];
         parent::__construct($uniqueid, $actionsdefs, $editable);
         $PAGE->requires->js_call_amd('local_cltools/tabulator-row-action-url', 'init', [
-            $this->get_unique_id(),
-            (new moodle_url('/local/cveteval/pages/assessment/assess.php'))->out(),
-            (object) array('evalplanid' => 'planid', 'studentid' => 'studentid')
+                $this->get_unique_id(),
+                (new moodle_url('/local/cveteval/pages/assessment/assess.php'))->out(),
+                (object) array('evalplanid' => 'planid', 'studentid' => 'studentid')
         ]);
     }
 
@@ -96,17 +103,17 @@ class mystudents extends dynamic_table_sql {
      */
     protected function setup_fields() {
         $this->fields = [
-            new hidden(['fieldname' => 'planid', 'rawtype' => PARAM_INT]),
-            new hidden(['fieldname' => 'studentid', 'rawtype' => PARAM_INT]),
-            new hidden(['fieldname' => 'situationid', 'rawtype' => PARAM_INT]),
-            new text(['fieldname' => 'studentfullname', 'fullname' => get_string("appraisal:student", 'local_cveteval')]),
-            new text(['fieldname' => 'groupname', 'fullname' => get_string("planning:groupname", 'local_cveteval')]),
-            new date(['fieldname' => 'starttime', 'fullname' => get_string("planning:starttime", 'local_cveteval')]),
-            new date(['fieldname' => 'endtime', 'fullname' => get_string("planning:endtime", 'local_cveteval')]),
-            new text(['fieldname' => 'appraisalcount', 'fullname' => get_string("appraisal:count", 'local_cveteval')]),
-            new text(['fieldname' => 'appraisalrequired',
-                'fullname' => get_string("planning:requiredappraisals", 'local_cveteval')]),
-            new boolean(['fieldname' => 'hasgrade', 'fullname' => get_string("evaluation:hasgrade", 'local_cveteval')]),
+                new hidden(['fieldname' => 'planid', 'rawtype' => PARAM_INT]),
+                new hidden(['fieldname' => 'studentid', 'rawtype' => PARAM_INT]),
+                new hidden(['fieldname' => 'situationid', 'rawtype' => PARAM_INT]),
+                new text(['fieldname' => 'studentfullname', 'fullname' => get_string("appraisal:student", 'local_cveteval')]),
+                new text(['fieldname' => 'groupname', 'fullname' => get_string("planning:groupname", 'local_cveteval')]),
+                new date(['fieldname' => 'starttime', 'fullname' => get_string("planning:starttime", 'local_cveteval')]),
+                new date(['fieldname' => 'endtime', 'fullname' => get_string("planning:endtime", 'local_cveteval')]),
+                new text(['fieldname' => 'appraisalcount', 'fullname' => get_string("appraisal:count", 'local_cveteval')]),
+                new text(['fieldname' => 'appraisalrequired',
+                        'fullname' => get_string("planning:requiredappraisals", 'local_cveteval')]),
+                new boolean(['fieldname' => 'hasgrade', 'fullname' => get_string("evaluation:hasgrade", 'local_cveteval')]),
         ];
         $this->setup_other_fields();
     }

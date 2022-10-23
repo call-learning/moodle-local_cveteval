@@ -156,7 +156,7 @@ class cveteval_import_form extends moodleform {
                     $importhelper = new $importclass($filepath, $randomvalidationid, $file->get_filename(), $delimiter, $encoding);
                     $importhelper->validate(['fastcheck' => true]);
                     $processor = $importhelper->get_processor();
-                    /* @var processor processor */
+                    /* @var processor $processor processor */
                     foreach ($processor->get_validation_log() as $log) {
                         if (empty($errors[$fieldname])) {
                             $errors[$fieldname] = $log->get_full_message();

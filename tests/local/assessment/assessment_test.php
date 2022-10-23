@@ -121,7 +121,6 @@ class assessment_test extends advanced_testcase {
 
     /**
      * @throws \coding_exception
-     * @throws \core\invalid_persistent_exception
      * @throws \dml_exception
      */
     public function test_list_assessment_criteria() {

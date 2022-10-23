@@ -39,9 +39,18 @@ defined('MOODLE_INTERNAL') || die();
 class entity extends persistent implements enhanced_persistent {
 
     use enhanced_persistent_impl;
-
+    /**
+     * Current table
+     */
     const TABLE = 'local_cveteval_finalevl';
 
+    /**
+     * Define fields
+     *
+     * @return array
+     * @throws \coding_exception
+     * @throws \dml_exception
+     */
     public static function define_fields(): array {
         $scaleid = get_config('local_cveteval', 'grade_scale');
         $scale = grade_scale::fetch(array('id' => $scaleid));

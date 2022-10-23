@@ -38,7 +38,9 @@ use local_cveteval\local\persistent\model_with_history_impl;
  */
 class entity extends persistent implements model_with_history {
     use model_with_history_impl;
-
+    /**
+     * Current table
+     */
     const TABLE = 'local_cveteval_criterion';
 
     /**

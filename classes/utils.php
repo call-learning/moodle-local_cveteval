@@ -266,11 +266,11 @@ class utils {
             $params['roleid'] = $roleid;
             $params['capability'] = 'webservice/rest:use';
             $protocolcapallowed = $DB->record_exists('role_capabilities', $params);
-            if ($status and !$protocolcapallowed) {
+            if ($status && !$protocolcapallowed) {
                 // Need to allow the cap.
                 $permission = CAP_ALLOW;
                 $assign = true;
-            } else if (!$status and $protocolcapallowed) {
+            } else if (!$status && $protocolcapallowed) {
                 // Need to disallow the cap.
                 $permission = CAP_INHERIT;
                 $assign = true;
@@ -323,7 +323,7 @@ class utils {
         core_user::require_active_user($USER, true, true);
 
         // Check if there is any required system capability.
-        if ($service->requiredcapability and !has_capability($service->requiredcapability, context_system::instance())) {
+        if ($service->requiredcapability && !has_capability($service->requiredcapability, context_system::instance())) {
             throw new moodle_exception('missingrequiredcapability', 'webservice', '', $service->requiredcapability);
         }
 
@@ -338,11 +338,11 @@ class utils {
                 throw new moodle_exception('usernotallowed', 'webservice', '', $service->shortname);
             }
 
-            if (!empty($authoriseduser->validuntil) and $authoriseduser->validuntil < time()) {
+            if (!empty($authoriseduser->validuntil) && $authoriseduser->validuntil < time()) {
                 throw new moodle_exception('invalidtimedtoken', 'webservice');
             }
 
-            if (!empty($authoriseduser->iprestriction) and !address_in_subnet(getremoteaddr(), $authoriseduser->iprestriction)) {
+            if (!empty($authoriseduser->iprestriction) && !address_in_subnet(getremoteaddr(), $authoriseduser->iprestriction)) {
                 throw new moodle_exception('invalidiptoken', 'webservice');
             }
         }
@@ -370,13 +370,13 @@ class utils {
             }
 
             // Remove token is not valid anymore.
-            if (!empty($token->validuntil) and $token->validuntil < time()) {
+            if (!empty($token->validuntil) && $token->validuntil < time()) {
                 $DB->delete_records('external_tokens', array('token' => $token->token, 'tokentype' => EXTERNAL_TOKEN_PERMANENT));
                 $unsettoken = true;
             }
 
             // Remove token if its ip not in whitelist.
-            if (isset($token->iprestriction) and !address_in_subnet(getremoteaddr(), $token->iprestriction)) {
+            if (isset($token->iprestriction) && !address_in_subnet(getremoteaddr(), $token->iprestriction)) {
                 $unsettoken = true;
             }
 
@@ -392,7 +392,7 @@ class utils {
             $context = context_system::instance();
             $isofficialservice = $service->shortname == self::CVETEVAL_MOBILE_SERVICE;
 
-            if (($isofficialservice and has_capability('moodle/webservice:createmobiletoken', $context)) or
+            if (($isofficialservice && has_capability('moodle/webservice:createmobiletoken', $context)) ||
                     (!is_siteadmin($USER) && has_capability('moodle/webservice:createtoken', $context))) {
 
                 // Create a new token.

@@ -38,12 +38,17 @@ use pix_icon;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class table extends entity_table {
+    /**
+     * @var string $persistentclass current persistent class
+     */
     protected static $persistentclass = entity::class;
 
     /**
      * Sets up the page_table parameters.
      *
-     * @throws coding_exception
+     * @param null $uniqueid
+     * @param null $actionsdefs
+     * @param bool $editable
      * @see page_list::get_filter_definition() for filter definition
      */
     public function __construct($uniqueid = null,
@@ -56,7 +61,7 @@ class table extends entity_table {
     /**
      * Format the origin field
      *
-     * @param $row
+     * @param object $row
      * @return string
      * @throws coding_exception
      * @throws moodle_exception

@@ -125,15 +125,14 @@ switch ($currenttab) {
     case "thissituation":
         $entitylist = assessment_utils::get_thissituation_list($studentid, $evalplan->get('id'));
         $renderer = $PAGE->get_renderer('local_cltools');
-        /* @var entity_table_renderable entity table */
         $perpage = 0; // No pagination as it fails with dataTree.
-        $renderable = new entity_table_renderable($entitylist, ['dataTree' => true], $perpage);
+        $renderable = new entity_table_renderable($entitylist, (object) ['dataTree' => true], $perpage);
         echo $renderer->render($renderable);
         break;
     case "allsituations":
         $entitylist = assessment_utils::get_situations_for_student($studentid);
         $renderer = $PAGE->get_renderer('local_cltools');
-        /* @var entity_table_renderable entity table */
+        /* @var entity_table_renderable $entitylist entity table */
         $renderable = new entity_table_renderable($entitylist);
         echo $renderer->render($renderable);
         break;

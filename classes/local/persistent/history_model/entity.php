@@ -33,7 +33,9 @@ use local_cltools\local\field\text;
 class entity extends persistent implements enhanced_persistent {
 
     use enhanced_persistent_impl;
-
+    /**
+     * Current table
+     */
     const TABLE = 'local_cveteval_history_mdl';
 
     /**

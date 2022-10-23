@@ -45,18 +45,38 @@ class entity extends persistent implements enhanced_persistent, model_with_histo
     use enhanced_persistent_impl;
     use model_with_history_impl;
 
+    /**
+     * Student role
+     */
     const ROLE_STUDENT_ID = 0;
+    /**
+     * Appraiser role
+     */
     const ROLE_APPRAISER_ID = 1;
+    /**
+     * Assessor role
+     */
     const ROLE_ASSESSOR_ID = 2;
 
+    /**
+     * Shortname for roles
+     */
     const ROLE_SHORTNAMES = [
             self::ROLE_STUDENT_ID => 'student',
             self::ROLE_APPRAISER_ID => 'appraiser',
             self::ROLE_ASSESSOR_ID => 'assessor',
     ];
 
+    /**
+     * Current table
+     */
     const TABLE = 'local_cveteval_role';
 
+    /**
+     * Define fields
+     *
+     * @return array
+     */
     public static function define_fields(): array {
         return [
                 new generic_selector(['fieldname' => 'userid', 'type' => 'user']),
@@ -80,10 +100,10 @@ class entity extends persistent implements enhanced_persistent, model_with_histo
     /**
      * Get type localised fullname
      *
-     * @param $typeid
+     * @param string $typeid
      * @return string
      */
-    public static function get_type_fullname($typeid) {
+    public static function get_type_fullname(string $typeid) {
         $shortname = static::get_type_shortname($typeid);
         return get_string("role:type:$shortname", 'local_cveteval');
     }
@@ -91,10 +111,10 @@ class entity extends persistent implements enhanced_persistent, model_with_histo
     /**
      * Get type shortname
      *
-     * @param $typeid
+     * @param string $typeid
      * @return string
      */
-    public static function get_type_shortname($typeid) {
+    public static function get_type_shortname(string $typeid): string {
         return static::ROLE_SHORTNAMES[$typeid] ?? 'unknown';
     }
 }

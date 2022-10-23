@@ -47,7 +47,7 @@ class external_utils {
      * @param $entitytype
      * @param array $query associative array (a column => value)
      * @param null $select
-     * @return false|int|mixed
+     * @return array|false
      * @throws \coding_exception
      * @throws dml_exception
      */

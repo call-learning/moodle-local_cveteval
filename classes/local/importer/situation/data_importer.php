@@ -176,7 +176,6 @@ class data_importer extends \tool_importer\data_importer {
      * @param $emails
      * @param $clinicalsituationid
      * @param $roletype
-     * @throws coding_exception
      * @throws dml_exception
      */
     public function add_roles($emails, $clinicalsituationid, $roletype) {

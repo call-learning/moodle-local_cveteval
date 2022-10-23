@@ -34,10 +34,10 @@ abstract class table_manager_with_access extends entity_table {
     /**
      * Format the action cell.
      *
-     * @param $row
+     * @param object $row
      * @return string
      */
-    protected function col_actions($row) {
+    protected function col_actions(object $row): string {
         // That will render a template from a json instead.
         global $OUTPUT;
         $actions = [];

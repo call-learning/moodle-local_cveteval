@@ -70,7 +70,6 @@ abstract class base_helper {
      * @param string $delimiter
      * @param string $encoding
      * @param null $progressbar
-     * @throws importer_exception
      */
     public function __construct($csvpath, $importid, $filename = '', $delimiter = 'semicolon', $encoding = 'utf-8',
             $progressbar = null) {

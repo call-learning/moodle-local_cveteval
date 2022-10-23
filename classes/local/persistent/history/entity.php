@@ -35,13 +35,26 @@ use moodle_exception;
 class entity extends persistent implements enhanced_persistent {
 
     use enhanced_persistent_impl;
-
+    /**
+     * Current table
+     */
     const TABLE = 'local_cveteval_history';
-
+    /**
+     * Cache name for current ID
+     */
     const CACHE_REQUEST_CURRENT_HISTORY_ID_NAME = 'local_cveteval_currenthistoryid';
+    /**
+     * Cache name for strict setting
+     */
     const CACHE_REQUEST_CURRENT_HISTORY_STRICT_NAME = 'local_cveteval_currenthistory_is_strict';
 
+    /**
+     * Is history disabled
+     */
     const HISTORY_DISABLED_CONFIG_NAME = 'history_disabled_globally';
+    /**
+     * ID for when history is disabled
+     */
     const HISTORY_DISABLED_ID = -1;
 
     /**
@@ -138,6 +151,8 @@ class entity extends persistent implements enhanced_persistent {
     }
 
     /**
+     * Is history disabled ?
+     *
      * @return bool|false
      */
     public static function is_disabled() {
@@ -149,6 +164,10 @@ class entity extends persistent implements enhanced_persistent {
         return $activeid == self::HISTORY_DISABLED_ID;
     }
 
+    /**
+     * Disable history globally
+     * @return void
+     */
     public static function disable_history_globally() {
         set_config(self::HISTORY_DISABLED_CONFIG_NAME, true, 'local_cveteval');
     }

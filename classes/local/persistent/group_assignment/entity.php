@@ -44,9 +44,17 @@ use local_cveteval\local\persistent\model_with_history_impl;
 class entity extends persistent implements enhanced_persistent, model_with_history {
     use enhanced_persistent_impl;
     use model_with_history_impl;
-
+    /**
+     * Current table
+     */
     const TABLE = 'local_cveteval_group_assign';
 
+    /**
+     * Define fields
+     *
+     * @return array
+     * @throws \local_cltools\local\field\field_exception
+     */
     public static function define_fields(): array {
         return [
                 new generic_selector(['fieldname' => 'studentid', 'type' => 'user']),

@@ -29,12 +29,16 @@ use restricted_context_exception;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class table extends generic_entity_table {
+    /**
+     * @var string $persistentclass current persistent class
+     */
     protected static $persistentclass = entity::class;
 
     /**
      * Sets up the page_table parameters.
      *
-     * @throws coding_exception
+     * @param null $uniqueid
+     * @param null $actionsdefs
      * @see page_list::get_filter_definition() for filter definition
      */
     public function __construct($uniqueid = null,
@@ -51,14 +55,16 @@ class table extends generic_entity_table {
      *
      * @param context $context
      * @param bool $writeaccess
+     * @return bool
      * @throws restricted_context_exception
      */
-    public function validate_access(context $context, $writeaccess = false) {
+    public static function validate_access(context $context, $writeaccess = false): bool {
         if (!has_capability('local/cltools:dynamictableread', $context)) {
             throw new restricted_context_exception();
         }
         if ($writeaccess && !has_capability('local/cltools:dynamictablewrite', $context)) {
             throw new restricted_context_exception();
         }
+        return true;
     }
 }

@@ -72,7 +72,7 @@ $entitylist = assessment_utils::get_mystudents_list($situationid);
 $renderable = new entity_table_renderable($entitylist);
 
 $renderer = $PAGE->get_renderer('local_cltools');
-/* @var entity_table_renderable entity table */
+/* @var entity_table_renderable $renderable entity table */
 echo $renderer->render($renderable);
 
 echo $OUTPUT->footer();

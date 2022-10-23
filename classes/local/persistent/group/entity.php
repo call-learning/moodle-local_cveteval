@@ -42,7 +42,9 @@ use local_cveteval\local\persistent\model_with_history_impl;
 class entity extends persistent implements enhanced_persistent, model_with_history {
     use model_with_history_impl;
     use enhanced_persistent_impl;
-
+    /**
+     * Current table
+     */
     const TABLE = 'local_cveteval_group';
 
     /**
@@ -54,15 +56,6 @@ class entity extends persistent implements enhanced_persistent, model_with_histo
         return [
                 new text('name')
         ];
-    }
-
-    protected static function define_properties() {
-        return array(
-                'name' => array(
-                        'type' => PARAM_TEXT,
-                        'default' => ''
-                ),
-        );
     }
 }
 

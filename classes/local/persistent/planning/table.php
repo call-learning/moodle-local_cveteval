@@ -29,12 +29,18 @@ use local_cveteval\local\persistent\table_with_history_impl;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class table extends table_manager_with_access {
+    /**
+     * @var string $persistentclass current persistent class
+     */
     protected static $persistentclass = entity::class;
     use table_with_history_impl;
+
     /**
      * Sets up the page_table parameters.
      *
-     * @throws coding_exception
+     * @param null $uniqueid
+     * @param null $actionsdefs
+     * @param bool $editable
      * @see page_list::get_filter_definition() for filter definition
      */
     public function __construct($uniqueid = null,
@@ -44,6 +50,13 @@ class table extends table_manager_with_access {
         parent::__construct($uniqueid, $actionsdefs, true);
     }
 
+    /**
+     * Can I do an actions ?
+     *
+     * @param string $action
+     * @param object $row
+     * @return bool
+     */
     protected function can_i_do(string $action, object $row): bool {
         global $DB;
         switch ($action) {

@@ -24,6 +24,10 @@ namespace local_cveteval\local\persistent;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class model_with_history_util {
+    /**
+     * Get all classes for entities with history
+     * @return string[]
+     */
     public static function get_all_entity_class_with_history() {
         $files = scandir(__DIR__);
         $currentnamespace = __NAMESPACE__;

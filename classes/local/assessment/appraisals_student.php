@@ -71,7 +71,9 @@ class appraisals_student extends dynamic_table_sql {
     /**
      * Sets up the page_table parameters.
      *
-     * @throws coding_exception
+     * @param null $uniqueid
+     * @param null $actionsdefs
+     * @param bool $editable
      * @see page_list::get_filter_definition() for filter definition
      */
     public function __construct($uniqueid = null,
