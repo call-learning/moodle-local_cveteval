@@ -37,24 +37,27 @@ use MoodleQuickForm;
  */
 class form extends entity_form {
 
+    /**
+     * Field for tabname
+     */
+    const PAGE_TABNAME_FIELD = 'tabname';
     /** @var string The fully qualified classname. */
     protected static $persistentclass = entity::class;
     /** @var array Fields to remove when getting the final data. */
     protected static $fieldstoremove = array('submitbutton');
     /** @var string[] $foreignfields */
-    protected static $foreignfields = array();
+    protected static $foreignfields = [self::PAGE_TABNAME_FIELD];
 
     /**
      * @param MoodleQuickForm $mform
      * Additional definitions for the form
      */
-    protected function post_field_definitions(&$mform) {
-        $fieldtocheck = 'tabname';
-        if (empty($this->_customdata[$fieldtocheck])) {
-            throw new coding_exception($fieldtocheck . ' must be defined');
+    protected function pre_field_definitions(&$mform) {
+        if (empty($this->_customdata[self::PAGE_TABNAME_FIELD])) {
+            throw new coding_exception(self::PAGE_TABNAME_FIELD . ' must be defined');
         }
-        $value = $this->_customdata[$fieldtocheck];
-        $mform->setDefault('evalplanid', $value);
-        $this->set_data([$fieldtocheck => $value]);
+        $value = $this->_customdata[self::PAGE_TABNAME_FIELD];
+        $mform->addElement('hidden', self::PAGE_TABNAME_FIELD, $value);
+        $mform->setType(self::PAGE_TABNAME_FIELD, PARAM_ALPHANUM);
     }
 }
