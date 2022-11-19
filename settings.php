@@ -98,15 +98,6 @@ if ($hassiteconfig) {
             !$enabled)
     );
 
-    $settings->add('cveteval',
-        new admin_externalpage(
-            'cvetevalmigration',
-            get_string('datamigration', 'local_cveteval'),
-            $CFG->wwwroot . '/local/cveteval/admin/datamigration/index.php',
-            array('local/cveteval:datamigration'),
-            !$enabled)
-    );
-
     if ($enabled) {
         $ADMIN->add('localplugins', $settings); // Add it to the main admin menu.
         $ADMIN->add('root', new admin_externalpage('cvetevalmenu',
