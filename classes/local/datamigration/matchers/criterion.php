@@ -29,14 +29,22 @@ use local_cveteval\local\persistent\history\entity as history_entity;
  */
 class criterion extends base {
 
+    /**
+     * Get entity
+     *
+     * @return string
+     */
     public static function get_entity() {
         return entity::class;
     }
 
     /**
-     * Try to match a given model/entity type
+     * Internal: Try to match a given model/entity type
      *
-     * @return persistent[]
+     * The current active history is the origin
+     *
+     * @param persistent $newentity
+     * @return persistent|persistent[]|false
      */
     public function do_match(persistent $newentity) {
         history_entity::set_current_id($this->dm->get_dest_id());

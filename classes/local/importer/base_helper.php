@@ -29,10 +29,15 @@ use moodle_exception;
 use tool_importer\data_importer;
 use tool_importer\data_source;
 use tool_importer\data_transformer;
-use tool_importer\local\exceptions\importer_exception;
 use tool_importer\local\source\csv_data_source;
 use tool_importer\processor;
-
+/**
+ * Class base_helper
+ *
+ * @package   local_cveteval
+ * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 abstract class base_helper {
     /**
      * @var string $csvpath

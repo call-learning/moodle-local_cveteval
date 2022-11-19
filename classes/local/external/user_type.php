@@ -34,7 +34,6 @@ use local_cveteval\roles;
 
 /**
  * Get user type
- * Class user_type
  *
  * @package   local_cveteval
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
@@ -56,6 +55,7 @@ class user_type extends external_api {
 
     /**
      * Return the current role for the user
+     * @param int $userid
      */
     public static function execute($userid) {
         self::validate_parameters(self::execute_parameters(), array('userid' => $userid));

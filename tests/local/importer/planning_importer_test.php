@@ -29,6 +29,9 @@ use tool_importer\local\exceptions\importer_exception;
 class planning_importer_test extends \advanced_testcase {
     use importer_test_trait;
 
+    /**
+     * Fake existing users
+     */
     const EXISTING_USERS = [
             'appraiser_0001@exemple.com',
             'appraiser_0002@exemple.com',
@@ -45,6 +48,15 @@ class planning_importer_test extends \advanced_testcase {
     ];
 
     /**
+     * Test basic import
+     *
+     * @param array $inputfiles
+     * @param array $results
+     * @param array $validationerrors
+     *
+     * @covers \local_cveteval\local\importer\planning\import_helper
+     * @covers \local_cveteval\local\importer\planning\csv_data_source
+     * @covers \local_cveteval\local\importer\planning\data_importer
      * @dataProvider basic_csv_dataprovider
      */
     public function test_basic_import($inputfiles, $results, $validationerrors) {
@@ -87,6 +99,9 @@ class planning_importer_test extends \advanced_testcase {
         }
     }
 
+    /**
+     * Planning sample
+     */
     const OKSAMPLE = [
             [
                     'name' => 'Groupe A',

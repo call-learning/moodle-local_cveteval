@@ -35,8 +35,7 @@ use stdClass;
 use user_picture;
 
 /**
- * Get user type
- * Class user_type
+ * Get user profile
  *
  * @package   local_cveteval
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
@@ -64,6 +63,8 @@ class user_profile extends external_api {
 
     /**
      * Return the current information for the user
+     * @param int $userid
+     * @return object
      */
     public static function execute($userid = 0) {
         global $USER, $PAGE;

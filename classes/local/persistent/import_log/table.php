@@ -43,6 +43,8 @@ class table extends entity_table {
     protected static $persistentclass = entity::class;
 
     /**
+     * Get the fields defintions for this table
+     *
      * @return array
      */
     public function get_fields_definition() {
@@ -60,7 +62,7 @@ class table extends entity_table {
     /**
      * Format the origin field
      *
-     * @param $row
+     * @param object $row
      * @return string
      */
     protected function col_origin($row) {
@@ -70,7 +72,7 @@ class table extends entity_table {
     /**
      * Format the origin field
      *
-     * @param $row
+     * @param object $row
      * @return string
      * @throws moodle_exception
      */
@@ -88,10 +90,9 @@ class table extends entity_table {
     /**
      * Format the level field
      *
-     * @param $row
+     * @param object $row
      * @return string
      * @throws coding_exception
-     * @throws moodle_exception
      */
     protected function col_level($row) {
         return strtoupper(strtoupper(log_levels::to_displayable_string($row->level, 'local_cveteval')));

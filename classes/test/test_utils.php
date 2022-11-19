@@ -58,13 +58,13 @@ class test_utils {
      *
      * TODO: Optimise queries (redondant loops)
      *
-     * @throws invalid_persistent_exception
+     * @param bool $cleanup
+     * @param bool $verbose
+     * @return void
      * @throws coding_exception
      * @throws dml_exception
      */
     public static function create_random_appraisals($cleanup, $verbose = true) {
-        global $DB;
-
         if ($cleanup) {
             utils::cleanup_userdata(history_entity::get_current_id());
         }
@@ -80,9 +80,7 @@ class test_utils {
      * @param bool $verbose
      * @param int|null $forcedappraiserid
      * @param int|null $evaluationgrid
-     * @throws coding_exception
-     * @throws dml_exception
-     * @throws invalid_persistent_exception
+     * @throws moodle_exception
      */
     public static function create_appraisal_for_students(?int $studentid = 0, ?bool $skip = false, ?bool $verbose = true,
             ?int $forcedappraiserid = 0,
@@ -177,6 +175,7 @@ class test_utils {
     /**
      * Setup from short sample files
      *
+     * @param bool $historydisabled
      * @throws dml_exception
      * @throws moodle_exception
      */
@@ -201,6 +200,7 @@ class test_utils {
     /**
      * Import sample users
      *
+     * @param string $samplefilepath
      * @throws dml_exception
      * @throws moodle_exception
      */
@@ -237,6 +237,10 @@ class test_utils {
     /**
      * Test helpers
      *
+     * @param array $samplefiles
+     * @param string $basepath
+     * @param bool $cleanup
+     *
      * @package   local_cveteval
      * @copyright 2020 - CALL Learning - Laurent David <laurent@call-learning.fr>
      * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -264,6 +268,15 @@ class test_utils {
         return $importid;
     }
 
+    /**
+     * Get import helper
+     *
+     * @param string $type
+     * @param string $filename
+     * @param int $importid
+     * @return mixed
+     * @throws moodle_exception
+     */
     public static function get_import_helper($type, $filename, $importid) {
         $importclass = "\\local_cveteval\\local\\importer\\{$type}\\import_helper";
         if (!class_exists($importclass)) {
@@ -276,8 +289,8 @@ class test_utils {
     /**
      * Delete data from sample planning
      *
-     * @param $samplefiles
-     * @param $basepath
+     * @param array $samplefiles
+     * @param string $basepath
      * @throws dml_exception
      * @throws moodle_exception
      */
@@ -293,7 +306,7 @@ class test_utils {
     /**
      * Delete sample users
      *
-     * @param $samplefilepath
+     * @param string $samplefilepath
      * @throws coding_exception
      * @throws dml_exception
      */

@@ -32,8 +32,9 @@ trait importer_test_trait {
     /**
      * Used internally to get rid of values we don't want to compare with.
      *
-     * @param $record
+     * @param object $record
      * @return array
+     * @package   local_cveteval
      */
     protected static function extract_record_information($record) {
         if ($record instanceof persistent) {
@@ -50,6 +51,12 @@ trait importer_test_trait {
 
     /**
      * Assert file can be imported and checked.
+     *
+     * @param base_helper $importhelper
+     * @param bool $shouldhaveerror
+     * @param bool $printederrormessage
+     * @return void
+     * @package   local_cveteval
      */
     public function assert_validation(base_helper $importhelper, $shouldhaveerror = null, $printederrormessage = '') {
         $haserror = !$importhelper->get_processor()->validate();
@@ -62,6 +69,7 @@ trait importer_test_trait {
      * @param string $type
      * @param string $filename
      * @return mixed
+     * @package   local_cveteval
      */
     public function get_import_helper($type, $filename) {
         global $CFG;
@@ -75,8 +83,9 @@ trait importer_test_trait {
     /**
      * Assert errors are present
      *
-     * @param $expectederrors
+     * @param array $expectederrors
      * @param base_helper $importhelper
+     * @package   local_cveteval
      */
     public function assert_validation_errors($expectederrors, base_helper $importhelper) {
         $validationvalues = array_map(

@@ -38,6 +38,9 @@ use external_value;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 abstract class base_get_entity extends external_api {
+    /**
+     * Field matcher
+     */
     const MOBILE_ENTITY_MATCHER = [
             'appr_crit' => 'appraisal_criterion',
             'appraisal' => 'appraisal',
@@ -56,7 +59,10 @@ abstract class base_get_entity extends external_api {
     abstract public static function get_returns();
 
     /**
-     * Return the elements
+     * Get query and return elements
+     *
+     * @param string $query
+     * @return array
      */
     public static function get($query = null) {
         $classname = static::class;
@@ -65,7 +71,10 @@ abstract class base_get_entity extends external_api {
     }
 
     /**
-     * Return the elements
+     * Basic query get
+     * @param string $entityname
+     * @param object $query
+     * @return array|false
      */
     public static function basic_get($entityname, $query) {
         // TODO: leverage the persistent entities features to get the right columns/fields to return.
@@ -102,8 +111,8 @@ abstract class base_get_entity extends external_api {
      *
      * TODO: check for user right at submission
      *
-     * @param $entityarray
-     * @param $entityclass
+     * @param array $entityarray
+     * @param object $entityclass
      * @return array
      */
     protected static function entities_submit($entityarray, $entityclass) {

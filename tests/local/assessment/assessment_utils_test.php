@@ -28,6 +28,9 @@ use local_cveteval\test\assessment_test_trait;
 class assessment_utils_test extends \advanced_testcase {
     use assessment_test_trait;
 
+    /**
+     * Setup before tests.
+     */
     public function setUp() {
         parent::setUp();
         \local_cveteval\local\persistent\history\entity::disable_history_globally();
@@ -41,6 +44,11 @@ class assessment_utils_test extends \advanced_testcase {
         $this->assessors = array_values($this->assessors);
     }
 
+    /**
+     * Get this situation list
+     *
+     * @covers \local_cveteval\local\assessment\assessment_utils::get_thissituation_list
+     */
     public function test_get_thissituation_list() {
         $assessment = assessment_utils::get_thissituation_list($this->students[0]->id, $this->evalplans[0]->get('id'));
         $data = $assessment->get_rows(10);
@@ -60,6 +68,11 @@ class assessment_utils_test extends \advanced_testcase {
         $this->assertCount(0, $data);
     }
 
+    /**
+     * Test get my student list
+     *
+     * @covers \local_cveteval\local\assessment\assessment_utils::get_mystudents_list
+     */
     public function test_get_mystudents_list() {
         $this->resetAfterTest();
         $this->setUser($this->assessors[0]);
@@ -79,6 +92,11 @@ class assessment_utils_test extends \advanced_testcase {
         $this->assertCount(0, $data);
     }
 
+    /**
+     * Test get assessment criteria list
+     *
+     * @covers \local_cveteval\local\assessment\assessment_utils::get_assessmentcriteria_list
+     */
     public function test_get_assessmentcriteria_list() {
         $this->resetAfterTest();
         $this->setUser($this->assessors[0]);
@@ -89,6 +107,11 @@ class assessment_utils_test extends \advanced_testcase {
         $this->assertCount(2, $data[0]->_children);
     }
 
+    /**
+     * Test get situation for student list
+     *
+     * @covers \local_cveteval\local\assessment\assessment_utils::get_situations_for_student
+     */
     public function test_get_situations_for_student() {
         $this->resetAfterTest();
         $this->setUser($this->assessors[0]);

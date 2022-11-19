@@ -49,8 +49,11 @@ class form extends entity_form {
     protected static $foreignfields = [self::PAGE_TABNAME_FIELD];
 
     /**
+     * Field definition before setting up the form completely
+     *
      * @param MoodleQuickForm $mform
      * Additional definitions for the form
+     * @throws coding_exception
      */
     protected function pre_field_definitions(&$mform) {
         if (empty($this->_customdata[self::PAGE_TABNAME_FIELD])) {

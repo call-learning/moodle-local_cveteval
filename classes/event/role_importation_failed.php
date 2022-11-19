@@ -55,6 +55,8 @@ class role_importation_failed extends base {
     }
 
     /**
+     * Get mapping for other fields
+     *
      * @return false
      */
     public static function get_other_mapping() {

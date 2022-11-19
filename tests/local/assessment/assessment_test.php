@@ -27,6 +27,7 @@ namespace local_cveteval\local\assessment;
 use advanced_testcase;
 use core_user;
 use local_cveteval\local\persistent\appraisal\entity as appraisal_entity;
+use local_cveteval\local\persistent\evaluation_grid\entity;
 use local_cveteval\local\persistent\history\entity as history_entity;
 use local_cveteval\local\persistent\planning\entity as planning_entity;
 use local_cveteval\local\persistent\situation\entity as situation_entity;
@@ -40,7 +41,7 @@ require_once($CFG->libdir . '/externallib.php');
 /**
  * API tests
  *
- * @package     local_cltools
+ * @package     local_cveteval
  * @copyright   2020 CALL Learning <contact@call-learning.fr>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -54,17 +55,20 @@ class assessment_test extends advanced_testcase {
         test_utils::setup_from_shortsample();
         $student = core_user::get_user_by_username('etu1');
         $obs1 = core_user::get_user_by_username('obs1');
-        $currentgrid = \local_cveteval\local\persistent\evaluation_grid\entity::get_record(['idnumber' => 'GRID01']);
+        $currentgrid = entity::get_record(['idnumber' => 'GRID01']);
         test_utils::create_appraisal_for_students($student->id, null, false, $obs1->id, $currentgrid->get('id'));
     }
 
+    /**
+     * Reset all data
+     */
     public static function tearDownAfterClass() {
         parent::tearDownAfterClass();
         self::resetAllData();
     }
 
     /**
-     * setUp
+     * Setup before tests.
      */
     public function setUp() {
         parent::setUp();
@@ -73,6 +77,8 @@ class assessment_test extends advanced_testcase {
 
     /**
      * Test
+     *
+     * @covers \local_cveteval\local\assessment\assessment_utils::get_mysituations_list
      */
     public function test_list_situation() {
         $obs1 = core_user::get_user_by_username('obs1');
@@ -85,6 +91,8 @@ class assessment_test extends advanced_testcase {
 
     /**
      * Test listing my students
+     *
+     * @covers \local_cveteval\local\assessment\assessment_utils::get_mysituations_list
      */
     public function test_list_mystudents() {
         $resp1 = core_user::get_user_by_username('resp1');
@@ -104,6 +112,8 @@ class assessment_test extends advanced_testcase {
 
     /**
      * Test listing appraisal for a student
+     *
+     * @covers \local_cveteval\local\assessment\assessment_utils::get_mysituations_list
      */
     public function test_list_appraisal_students() {
         $obs1 = core_user::get_user_by_username('obs1');
@@ -120,8 +130,9 @@ class assessment_test extends advanced_testcase {
     }
 
     /**
-     * @throws \coding_exception
-     * @throws \dml_exception
+     * Test getting list of assessment criteria
+     *
+     * @covers \local_cveteval\local\assessment\assessment_utils::get_mysituations_list
      */
     public function test_list_assessment_criteria() {
         $obs1 = core_user::get_user_by_username('obs1');

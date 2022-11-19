@@ -38,7 +38,7 @@ require_once($CFG->libdir . '/externallib.php');
 /**
  * API tests
  *
- * @package     local_cltools
+ * @package     local_cveteval
  * @copyright   2020 CALL Learning <contact@call-learning.fr>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

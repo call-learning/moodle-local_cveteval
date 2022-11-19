@@ -87,6 +87,12 @@ class dmc_choosehistory_form extends moodleform implements dmc_form_interface {
         return $errors;
     }
 
+    /**
+     * Execute action
+     *
+     * @param object $data
+     * @return void
+     */
     public function execute_action($data) {
         global $PAGE;
         $dmc = $this->_customdata['dmc'] ?? null;
@@ -101,6 +107,11 @@ class dmc_choosehistory_form extends moodleform implements dmc_form_interface {
         redirect(new moodle_url($PAGE->url, ['step' => $dmc->get_next_step()]));
     }
 
+    /**
+     * Cancel execution
+     *
+     * @return void
+     */
     public function execute_cancel() {
         // Nothing for now.
     }

@@ -35,7 +35,7 @@ interface dmc_form_interface {
     /**
      * Execute action with submitted data
      *
-     * @param $data
+     * @param object $data
      * @return mixed
      */
     public function execute_action($data);

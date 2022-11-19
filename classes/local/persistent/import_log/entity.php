@@ -64,5 +64,3 @@ class entity extends import_log_entity implements enhanced_persistent {
         ];
     }
 }
-
-

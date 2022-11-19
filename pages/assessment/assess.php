@@ -86,7 +86,6 @@ $evaluationform = new local_cveteval\local\persistent\final_evaluation\form(null
     ], 'post', '', ['class' => 'd-flex flex-row ceveteval-eval-form']);
 
 echo $OUTPUT->header();
-/* @var $OUTPUT core_renderer .*/
 echo $OUTPUT->heading($assessfulltitle, 3);
 $evaluationform->prepare_for_files();
 if ($data = $evaluationform->get_data()) {

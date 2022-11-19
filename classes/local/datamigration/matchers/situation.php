@@ -27,15 +27,22 @@ use local_cveteval\local\persistent\situation\entity;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class situation extends base {
-
+    /**
+     * Get entity
+     *
+     * @return string
+     */
     public static function get_entity() {
         return entity::class;
     }
 
     /**
-     * Try to match a given model/entity type
+     * Internal: Try to match a given model/entity type
      *
-     * @return persistent[]
+     * The current active history is the origin
+     *
+     * @param persistent $newentity
+     * @return persistent|persistent[]|false
      */
     public function do_match(persistent $newentity) {
         return entity::get_records(['idnumber' => $newentity->get('idnumber')]);

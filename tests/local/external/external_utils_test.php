@@ -33,7 +33,7 @@ global $CFG;
 /**
  * API tests
  *
- * @package     local_cltools
+ * @package     local_cveteval
  * @copyright   2020 CALL Learning <contact@call-learning.fr>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -51,6 +51,9 @@ class external_utils_test extends advanced_testcase {
     /**
      * Test query function
      *
+     * @param string $query
+     * @param array $expected
+     * @covers \local_cveteval\local\external\external_utils::query_entities
      * @dataProvider situation_query_data_feeder
      */
     public function test_get_get_situations($query, $expected) {
@@ -68,6 +71,11 @@ class external_utils_test extends advanced_testcase {
 
     }
 
+    /**
+     * Data provider
+     *
+     * @return array[]
+     */
     public function situation_query_data_feeder() {
         return [
                 'no query' => [

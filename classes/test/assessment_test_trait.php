@@ -33,34 +33,35 @@ trait assessment_test_trait {
     /**
      * @var array $criteria all criteria
      */
-    protected array $criteria = [];
+    protected $criteria = [];
     /**
      * @var array $situations all situations
      */
-    protected array $situations = [];
+    protected $situations = [];
     /**
      * @var array $evalplans all evalplans
      */
-    protected array $evalplans = [];
+    protected $evalplans = [];
     /**
      * @var array $students all students
      */
-    protected array $students = [];
+    protected $students = [];
     /**
      * @var array $assessors all assessors
      */
-    protected array $assessors = [];
+    protected $assessors = [];
     /**
      * @var array $appraisals
      */
-    protected array $appraisals = [];
+    protected $appraisals = [];
 
     /**
      * Create a set of data
      *
-     * @param $sample
+     * @param object $sample
      * @return array an array composed of [criteria, situations, evalplans, students, assessors, appraisals]
      * which themselves are array indexed by their respective id.
+     * @package   local_cveteval
      */
     protected function set_up($sample) {
         [$criteria, $situations, $evalplans] = $this->create_simple_model(
@@ -78,6 +79,15 @@ trait assessment_test_trait {
         return [$criteria, $situations, $evalplans, $students, $assessors, $appraisals];
     }
 
+    /**
+     * Create a simple model for testing
+     *
+     * @param string $criteria
+     * @param array $situations
+     * @param array $evalplans
+     * @return array[]
+     * @package   local_cveteval
+     */
     public function create_simple_model($criteria, $situations, $evalplans) {
         $cevetevalgenerator = $this->getDataGenerator()->get_plugin_generator('local_cveteval');
         $ccriteria = [];
@@ -122,6 +132,14 @@ trait assessment_test_trait {
         return [$ccriteria, $csituations, $cevalplans];
     }
 
+    /**
+     * Create roles for testing
+     *
+     * @param array $assessors
+     * @param array $students
+     * @return array[]
+     * @package   local_cveteval
+     */
     public function create_simple_roles($assessors, $students) {
         $cevetevalgenerator = $this->getDataGenerator()->get_plugin_generator('local_cveteval');
         $genericgenerator = $this->getDataGenerator();
@@ -179,6 +197,13 @@ trait assessment_test_trait {
         return [$cstudents, $cassessors];
     }
 
+    /**
+     * Create appraisals for testing
+     *
+     * @param array $appraisalsdefs
+     * @return array[]
+     * @package   local_cveteval
+     */
     public function create_simple_appraisals($appraisalsdefs) {
         $cevetevalgenerator = $this->getDataGenerator()->get_plugin_generator('local_cveteval');
         $cappraisals = [];
@@ -189,6 +214,12 @@ trait assessment_test_trait {
         return $cappraisals;
     }
 
+    /**
+     * Get sample with assessments
+     *
+     * @return stdClass
+     * @package   local_cveteval
+     */
     protected function get_sample_with_assessments() {
         $sample = new stdClass();
         $planstart = time();
@@ -321,6 +352,12 @@ trait assessment_test_trait {
         return $sample;
     }
 
+    /**
+     * Get model 1
+     *
+     * @return stdClass
+     * @package   local_cveteval
+     */
     protected function get_simple_model_1() {
         $sample = new stdClass();
         $planstart = time();
@@ -386,6 +423,12 @@ trait assessment_test_trait {
         return $sample;
     }
 
+    /**
+     * Get model 2
+     *
+     * @return stdClass
+     * @package   local_cveteval
+     */
     protected function get_simple_model_2() {
         $sample = new stdClass();
         $planstart = time();
@@ -442,6 +485,13 @@ trait assessment_test_trait {
         return $sample;
     }
 
+    /**
+     * Create a new history entity
+     *
+     * @param string $comments
+     * @return history_entity
+     * @package   local_cveteval
+     */
     protected function create_history($comments = "") {
         if (empty($idnumber)) {
             $dateandrandom = userdate(time(), get_string('strftimedatetimeshort')) . '-' . random_string(5);

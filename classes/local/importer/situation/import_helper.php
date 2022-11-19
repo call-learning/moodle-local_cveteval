@@ -34,22 +34,26 @@ use local_cveteval\local\persistent\role\entity as role_entity;
 use local_cveteval\local\persistent\situation\entity as situation_entity;
 use tool_importer\data_source;
 use tool_importer\data_transformer;
-use tool_importer\local\exceptions\importer_exception;
 use tool_importer\local\transformer\standard;
 use tool_importer\processor;
-
+/**
+ * Import helper
+ *
+ * @package   local_cveteval
+ * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class import_helper extends base_helper {
 
     /**
      * import_helper constructor.
      *
-     * @param $csvpath
-     * @param $importid
+     * @param string $csvpath
+     * @param int $importid
      * @param string $filename
      * @param string $delimiter
      * @param string $encoding
      * @param null $progressbar
-     * @throws importer_exception
      */
     public function __construct($csvpath, $importid, $filename = '', $delimiter = 'semicolon', $encoding = 'utf-8',
             $progressbar = null) {
@@ -60,8 +64,8 @@ class import_helper extends base_helper {
     /**
      * To eval grid
      *
-     * @param $value
-     * @param $columnname
+     * @param string $value
+     * @param string $columnname
      * @return int|mixed
      * @throws coding_exception
      */
@@ -102,10 +106,10 @@ class import_helper extends base_helper {
     /**
      * Create the CSV Datasource
      *
-     * @param $csvpath
-     * @param $delimiter
-     * @param $encoding
-     * @param $filename
+     * @param string $csvpath
+     * @param string $delimiter
+     * @param string $encoding
+     * @param string $filename
      * @return data_source
      */
     protected function create_csv_datasource($csvpath, $delimiter, $encoding, $filename) {
@@ -113,6 +117,8 @@ class import_helper extends base_helper {
     }
 
     /**
+     * Create transformer
+     *
      * @return data_transformer
      */
     protected function create_transformer() {
@@ -155,6 +161,8 @@ class import_helper extends base_helper {
     }
 
     /**
+     * Create importer
+     *
      * @return \tool_importer\data_importer
      */
     protected function create_data_importer() {

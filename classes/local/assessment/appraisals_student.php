@@ -49,6 +49,9 @@ use stdClass;
  */
 class appraisals_student extends dynamic_table_sql {
 
+    /**
+     * Field defintion
+     */
     protected const FIELDS = [
             'criterion.id AS id',
             'criterion.parentid AS criterionparentid',
@@ -71,8 +74,8 @@ class appraisals_student extends dynamic_table_sql {
     /**
      * Sets up the page_table parameters.
      *
-     * @param null $uniqueid
-     * @param null $actionsdefs
+     * @param int $uniqueid
+     * @param array $actionsdefs
      * @param bool $editable
      * @see page_list::get_filter_definition() for filter definition
      */
@@ -94,6 +97,7 @@ class appraisals_student extends dynamic_table_sql {
      * Main method to create the underlying query (SQL)
      *
      * @param int $pagesize
+     * @param bool $disablefilters
      */
     public function query_db($pagesize, $disablefilters = false) {
         // Very specific use here: we do not use the same filters for criteria and for the observations filterings.
@@ -105,6 +109,7 @@ class appraisals_student extends dynamic_table_sql {
      * This is a complete hack here as we have had to transpose the table from the original
      * design.
      *
+     * @param int $pagesize
      * @return array
      */
     public function get_rows($pagesize) {
@@ -132,7 +137,7 @@ class appraisals_student extends dynamic_table_sql {
     /**
      * Get appraisal criteria grade
      *
-     * @param $row
+     * @param object $row
      * @throws dml_exception
      * @throws coding_exception
      */
@@ -200,6 +205,13 @@ class appraisals_student extends dynamic_table_sql {
         }
     }
 
+    /**
+     * Get appraisal comumn name
+     *
+     * @param int $appraiserid
+     * @param int $appraisalid
+     * @return string
+     */
     protected function get_appraiser_appraisal_columnname($appraiserid, $appraisalid) {
         return "appraisergrade{$appraiserid}{$appraisalid}";
     }
@@ -216,6 +228,12 @@ class appraisals_student extends dynamic_table_sql {
         $this->define_headers($headers);
     }
 
+    /**
+     * Get SQL parts
+     *
+     * @param string $tablealias
+     * @return string
+     */
     protected function internal_get_sql_from($tablealias = 'e') {
         return criterion_entity::get_historical_sql_query("criterion");
     }
@@ -224,7 +242,6 @@ class appraisals_student extends dynamic_table_sql {
      * Get sql fields
      *
      * Overridable sql query
-     *
      * @param string $tablealias
      */
     protected function internal_get_sql_fields($tablealias = 'e') {
@@ -241,6 +258,7 @@ class appraisals_student extends dynamic_table_sql {
      * Get where
      *
      * @param bool $disablefilters
+     * @param string $tablealias
      * @return array
      */
     protected function internal_get_sql_where($disablefilters = false, $tablealias = 'e') {

@@ -26,6 +26,9 @@ namespace local_cveteval\local\persistent;
 trait table_with_history_impl {
     /**
      * Overridable sql query
+     *
+     * @package   local_cveteval
+     * @param string $tablealias
      */
     protected function internal_get_sql_from($tablealias = 'entity') {
         $persistentclass = $this->define_class();

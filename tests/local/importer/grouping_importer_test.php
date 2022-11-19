@@ -26,9 +26,21 @@ use local_cveteval\test\importer_test_trait;
 class grouping_importer_test extends \advanced_testcase {
     use importer_test_trait;
 
+    /**
+     * Fake existing users
+     */
     const EXISTING_USERS = ['etu1@exemple.com', 'etu2@exemple.com', 'etu3@exemple.com', 'etu4@exemple.com', 'obs7@exemple.com'];
 
     /**
+     * Test basic import
+     *
+     * @param string $filename
+     * @param array $results
+     * @param array $validationerrors
+     *
+     * @covers \local_cveteval\local\importer\grouping\import_helper
+     * @covers \local_cveteval\local\importer\grouping\csv_data_source
+     * @covers \local_cveteval\local\importer\grouping\data_importer
      * @dataProvider basic_csv_dataprovider
      */
     public function test_basic_import($filename, $results, $validationerrors) {

@@ -30,10 +30,25 @@ use stdClass;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class data_migration_controller {
+    /**
+     *
+     */
     const INIT_STEP = 0;
+    /**
+     *
+     */
     const CHOOSE_HISTORY_STEP = 1;
+    /**
+     *
+     */
     const DIFF_MODEL_STEP = 2;
+    /**
+     *
+     */
     const USER_DATA_MIGRATION = 3;
+    /**
+     *
+     */
     const STEPS = [
             'init',
             'choosehistory',
@@ -42,10 +57,24 @@ class data_migration_controller {
             'userdatamigration',
             'final'
     ];
+    /**
+     *
+     */
     const CACHE_SESSION_MIGRATION_VAR_ID = 'cveteval_migration';
+    /**
+     *
+     */
     const CACHE_DATA_MIGRATION_NAME = 'datamigration';
+    /**
+     * @var int|string
+     */
     protected $currentstep = 0;
 
+    /**
+     * Constructor
+     *
+     * @param string $stepname
+     */
     public function __construct($stepname) {
         $stepnametoid = array_flip(self::STEPS);
         $this->currentstep = $stepnametoid[trim(strtolower($stepname))] ?? 0;
@@ -54,15 +83,31 @@ class data_migration_controller {
         }
     }
 
+    /**
+     * Reset step data
+     *
+     * @return void
+     */
     public function reset_step_data() {
         $cache = cache::make('local_cveteval', self::CACHE_DATA_MIGRATION_NAME);
         $cache->purge_current_user();
     }
 
+    /**
+     * Get current step
+     *
+     * @return string
+     */
     public function get_step() {
         return self::STEPS[$this->currentstep];
     }
 
+    /**
+     * Set step data
+     *
+     * @param mixed $data
+     * @return void
+     */
     public function set_step_data($data) {
         $data = is_object($data) ? (array) $data : $data;
         if (!empty($data)) {
@@ -76,17 +121,36 @@ class data_migration_controller {
         }
     }
 
+    /**
+     * Get step data
+     *
+     * @return mixed
+     */
     public function get_step_data() {
         $cache = cache::make('local_cveteval', self::CACHE_DATA_MIGRATION_NAME);
         $data = $cache->get(self::CACHE_SESSION_MIGRATION_VAR_ID);
         return !empty($data) ? $data : new stdClass();
     }
 
+    /**
+     * Set raw data for step
+     *
+     * @param mixed $data
+     * @return void
+     */
     private function raw_set_step_data($data) {
         $cache = cache::make('local_cveteval', self::CACHE_DATA_MIGRATION_NAME);
         $cache->set(self::CACHE_SESSION_MIGRATION_VAR_ID, (object) $data);
     }
 
+    /**
+     * Execute process
+     *
+     * @param \renderer_base $renderer
+     * @param \renderable $renderable
+     * @param \MoodleQuickForm $form
+     * @return mixed|string
+     */
     public function execute_process($renderer, $renderable, $form) {
         $callback = "process_" . self::STEPS[$this->currentstep];
         if (method_exists($this, $callback)) {
@@ -96,6 +160,14 @@ class data_migration_controller {
         }
     }
 
+    /**
+     * Process standard
+     *
+     * @param \renderer_base $renderer
+     * @param \renderable $renderable
+     * @param \MoodleQuickForm $form
+     * @return string
+     */
     protected function process_standard($renderer, $renderable, $form) {
         $result = $renderer->render($renderable);
         if ($form) {
@@ -104,6 +176,11 @@ class data_migration_controller {
         return $result;
     }
 
+    /**
+     * Prepare page
+     *
+     * @return void
+     */
     public function prepare_page() {
         global $PAGE;
         $PAGE->set_cacheable(false);    // Progress bar might be used here.
@@ -111,6 +188,11 @@ class data_migration_controller {
         raise_memory_limit(MEMORY_EXTRA);
     }
 
+    /**
+     * Get widget
+     *
+     * @return mixed
+     */
     public function get_widget() {
         $widgetclass = '\local_cveteval\output\\dmc_' . self::STEPS[$this->currentstep] . '_widget';
         return new $widgetclass($this);
@@ -119,7 +201,7 @@ class data_migration_controller {
     /**
      * Get form for this renderable
      *
-     * @param $renderable
+     * @param \renderable $renderable
      * @return mixed|null
      */
     public function get_form($renderable = null) {
@@ -127,11 +209,21 @@ class data_migration_controller {
         return class_exists($formclass) ? new $formclass(null, ['dmc' => $this, 'renderable' => $renderable]) : null;
     }
 
+    /**
+     * Get next step
+     *
+     * @return string
+     */
     public function get_next_step() {
         $step = self::STEPS[$this->currentstep + 1] ?? '';
         return $this->is_next_step_allowed() ? $step : '';
     }
 
+    /**
+     * Is next step allowed?
+     *
+     * @return bool
+     */
     private function is_next_step_allowed() {
         $data = $this->get_step_data();
         if ($this->currentstep == self::CHOOSE_HISTORY_STEP) {
@@ -141,11 +233,21 @@ class data_migration_controller {
         return true;
     }
 
+    /**
+     * Get previous step
+     *
+     * @return string
+     */
     public function get_previous_step() {
         $step = self::STEPS[$this->currentstep - 1] ?? '';
         return $this->is_previous_step_allowed() ? $step : '';
     }
 
+    /**
+     * Is previous step allowed ?
+     *
+     * @return bool
+     */
     private function is_previous_step_allowed() {
         $step = self::STEPS[$this->currentstep] ?? '';
         if (in_array($step, ['userdatamigration', 'final'])) {
@@ -154,6 +256,14 @@ class data_migration_controller {
         return true;
     }
 
+    /**
+     * Process diff model
+     *
+     * @param \renderer_base $renderer
+     * @param \renderable $renderable
+     * @param \MoodleQuickForm $form
+     * @return mixed|string
+     */
     protected function process_diffmodels($renderer, $renderable, $form) {
         $data = $this->get_step_data();
         $dm = new data_model_matcher($data->originimportid,
@@ -169,6 +279,14 @@ class data_migration_controller {
         return $result;
     }
 
+    /**
+     * Process diff model modifications
+     *
+     * @param \renderer_base $renderer
+     * @param \renderable $renderable
+     * @param \MoodleQuickForm $form
+     * @return string
+     */
     protected function process_diffmodelsmodifications($renderer, $renderable, $form) {
         global $OUTPUT;
         $result = $renderer->render($renderable);
@@ -183,6 +301,14 @@ class data_migration_controller {
         return $result;
     }
 
+    /**
+     * Process data migration
+     *
+     * @param \renderer_base $renderer
+     * @param \renderable $renderable
+     * @param \MoodleQuickForm $form
+     * @return string
+     */
     protected function process_userdatamigration($renderer, $renderable, $form) {
         // For each appraisal, appraisal criteria and final eval attached to the old model,create a copy.
         return $renderer->render($renderable);

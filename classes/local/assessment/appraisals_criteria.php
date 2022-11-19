@@ -43,6 +43,9 @@ use local_cveteval\output\grade_widget;
  */
 class appraisals_criteria extends dynamic_table_sql {
 
+    /**
+     * Field definition
+     */
     protected const FIELDS = [
             'critapp.id AS id',
             'critapp.appraisalid AS appraisalid',
@@ -55,6 +58,13 @@ class appraisals_criteria extends dynamic_table_sql {
             'COALESCE(critapp.timemodified,0) AS datetime'
     ];
 
+    /**
+     * Constructor
+     *
+     * @param int $uniqueid
+     * @param array $actionsdefs
+     * @param bool $editable
+     */
     public function __construct($uniqueid = null,
             $actionsdefs = null,
             $editable = false) {
@@ -67,6 +77,7 @@ class appraisals_criteria extends dynamic_table_sql {
     /**
      * Retrieve data from the database and return a row set
      *
+     * @param int $pagesize
      * @return array
      */
     public function get_rows($pagesize) {
@@ -103,7 +114,7 @@ class appraisals_criteria extends dynamic_table_sql {
     /**
      * Grade column
      *
-     * @param $row
+     * @param object $row
      * @return bool|string
      * @throws coding_exception
      */
@@ -135,6 +146,12 @@ class appraisals_criteria extends dynamic_table_sql {
         $this->setup_other_fields();
     }
 
+    /**
+     * Get sql from query parts
+     *
+     * @param string $tablealias
+     * @return string
+     */
     protected function internal_get_sql_from($tablealias = 'e') {
         return '{local_cveteval_criterion} criterion
         LEFT JOIN {local_cveteval_appr_crit} critapp ON  criterion.id = critapp.criterionid';
@@ -155,6 +172,7 @@ class appraisals_criteria extends dynamic_table_sql {
      * Get where
      *
      * @param bool $disablefilters
+     * @param string $tablealias
      * @return array
      */
     protected function internal_get_sql_where($disablefilters = false, $tablealias = 'e') {

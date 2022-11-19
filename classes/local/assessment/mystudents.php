@@ -118,6 +118,11 @@ class mystudents extends dynamic_table_sql {
         $this->setup_other_fields();
     }
 
+    /**
+     * Get SQL from
+     * @param string $tablealias
+     * @return string
+     */
     protected function internal_get_sql_from($tablealias = 'e') {
         global $DB;
         $planningsql = planning_entity::get_historical_sql_query("plan");

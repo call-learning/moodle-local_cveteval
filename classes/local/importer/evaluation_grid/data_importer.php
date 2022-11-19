@@ -40,8 +40,14 @@ use tool_importer\local\log_levels;
  */
 class data_importer extends \tool_importer\data_importer {
 
+    /**
+     * @var int
+     */
     public $criterioncount = 0;
-    private array $parentcriterionlistid;
+    /**
+     * @var array
+     */
+    private $parentcriterionlistid;
 
     /**
      * Called just before importation or validation.
@@ -87,6 +93,7 @@ class data_importer extends \tool_importer\data_importer {
      * the group.
      *
      * @param array $row associative array storing the record
+     * @param int $rowindex
      * @param mixed|null $options import options
      * @return stdClass
      */

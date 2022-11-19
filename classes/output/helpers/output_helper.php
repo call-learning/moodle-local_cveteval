@@ -74,9 +74,10 @@ class output_helper {
     }
 
     /**
-     * Return human readable version of this entity
+     * Return human-readable version of this entity
      *
      * @param int $entityid
+     * @param bool $shortlabel
      * @return string
      */
     protected static function output_entity_criterion($entityid, $shortlabel = false) {
@@ -88,7 +89,7 @@ class output_helper {
     }
 
     /**
-     * Return human readable version of this entity
+     * Return human-readable version of this entity
      *
      * @param int $entityid
      * @return string

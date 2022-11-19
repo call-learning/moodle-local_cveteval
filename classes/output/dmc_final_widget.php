@@ -31,12 +31,25 @@ use templatable;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class dmc_final_widget implements renderable, templatable {
+    /**
+     * @var dmc_step_navigation
+     */
     private $navigation = null;
 
+    /**
+     * Constructor
+     *
+     * @param data_migration_controller $dmc
+     */
     public function __construct(data_migration_controller $dmc) {
         $this->navigation = new dmc_step_navigation($dmc);
     }
-
+    /**
+     * Export for template
+     *
+     * @param renderer_base $output
+     * @return object
+     */
     public function export_for_template(renderer_base $output) {
         $context = $this->navigation->export_for_template($output);
         $sb = new single_button(new moodle_url('/local/cveteval/admin/datamigration/index.php'), get_string('continue'));

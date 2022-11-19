@@ -37,11 +37,22 @@ use templatable;
  */
 class data_migration_wizard implements renderable, templatable {
 
+    /**
+     * Constructor
+     *
+     * @param int $step
+     */
     public function __construct($step) {
         $this->step = $step;
     }
 
+    /**
+     * Export for template
+     *
+     * @param renderer_base $output
+     * @return object
+     */
     public function export_for_template(renderer_base $output) {
-
+        return (object) [];
     }
 }

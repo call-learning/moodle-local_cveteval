@@ -44,13 +44,25 @@ class data_migration_matching_test extends \advanced_testcase {
 
     use assessment_test_trait;
 
+    /**
+     * @var data_model_matcher
+     */
     protected $dm;
 
-    protected $oldentities, $newentities;
+    /**
+     * @var object $oldentities
+     */
+    protected $oldentities;
+    /**
+     * @var object $newentities
+     */
+    protected $newentities;
 
     /**
      * History 1
      *
+     * @param int $planstart
+     * @param int $planend
      * @return \stdClass
      */
     protected function get_sample_origin1($planstart, $planend) {
@@ -166,6 +178,8 @@ class data_migration_matching_test extends \advanced_testcase {
     /**
      * History 2
      *
+     * @param int $planstart
+     * @param int $planend
      * @return \stdClass
      */
     protected function get_sample_dest2($planstart, $planend) {
@@ -286,6 +300,11 @@ class data_migration_matching_test extends \advanced_testcase {
         return $sample;
     }
 
+    /**
+     * Setup
+     *
+     * @return void
+     */
     public function setUp() {
         parent::setUp();
         $this->resetAfterTest();
@@ -467,6 +486,7 @@ class data_migration_matching_test extends \advanced_testcase {
      * Get ID array
      *
      * @param array $entityarray
+     * @param string $fieldname
      * @return array
      */
     protected function get_field_from_entities($entityarray, $fieldname = 'idnumber') {

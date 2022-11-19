@@ -25,6 +25,12 @@ namespace local_cveteval\local\datamigration;
  */
 class data_migration_utils {
 
+    /**
+     * Get base class
+     *
+     * @param object $entityclass
+     * @return false|mixed|string
+     */
     public static function get_base_class($entityclass) {
         $baseclassname = explode('\\', $entityclass);
         end($baseclassname);

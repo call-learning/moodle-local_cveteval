@@ -30,14 +30,30 @@ use templatable;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class dmc_step_navigation implements renderable, templatable {
+    /**
+     * @var string
+     */
     private $nextstep;
+    /**
+     * @var string
+     */
     private $previousstep;
 
+    /**
+     * Constructor
+     *
+     * @param data_migration_controller $dmc
+     */
     public function __construct(data_migration_controller $dmc) {
         $this->nextstep = $dmc->get_next_step();
         $this->previousstep = $dmc->get_previous_step();
     }
-
+    /**
+     * Export for template
+     *
+     * @param renderer_base $output
+     * @return object
+     */
     public function export_for_template(renderer_base $output) {
         global $PAGE;
         $context = new stdClass();

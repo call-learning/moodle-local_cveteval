@@ -24,8 +24,17 @@ namespace local_cveteval\local\datamigration;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class data_model_matcher {
-    protected array $matchers;
+    /**
+     * @var array $matchers
+     */
+    protected $matchers;
+    /**
+     * @var int $originimportid
+     */
     private $originimportid;
+    /**
+     * @var int $destimportid
+     */
     private $destimportid;
 
     /**
@@ -82,7 +91,7 @@ class data_model_matcher {
     /**
      * Return an associative array of entities that have been matched from the dest to origin type of models
      *
-     * @returns array associative array of class/entity id vs the matched old entity id
+     * @return array associative array of class/entity id vs the matched old entity id
      */
     public function get_matched_entities_list() {
         return $this->iterate_over_matchers("get_matched_origin_entities");
@@ -91,7 +100,7 @@ class data_model_matcher {
     /**
      * Helper function that iterates through all matchers
      *
-     * @param $callbackname
+     * @param string $callbackname
      * @return array
      */
     protected function iterate_over_matchers($callbackname) {

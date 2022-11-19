@@ -53,7 +53,6 @@ class entity extends persistent implements enhanced_persistent, model_with_histo
      * Define fields
      *
      * @return array
-     * @throws \local_cltools\local\field\field_exception
      */
     public static function define_fields(): array {
         return [

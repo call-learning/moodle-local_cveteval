@@ -54,6 +54,9 @@ class dmc_diffmodelsmodifications_form extends moodleform implements dmc_form_in
      * Model modification cache
      */
     const MODEL_MODIFICATIONS_CACHE = 'dmcmodelsmodificationcache';
+    /**
+     * @var array
+     */
     protected $entities = [];
 
     /**
@@ -116,9 +119,9 @@ class dmc_diffmodelsmodifications_form extends moodleform implements dmc_form_in
     /**
      * Get field name for form
      *
-     * @param $context
-     * @param $entityclass
-     * @param $id
+     * @param array $context
+     * @param object $entityclass
+     * @param int $id
      * @return string
      */
     protected function get_field_name($context, $entityclass, $id) {
@@ -128,6 +131,8 @@ class dmc_diffmodelsmodifications_form extends moodleform implements dmc_form_in
     }
 
     /**
+     * Execute action
+     *
      * @param object $data
      * @return void
      * @throws moodle_exception
@@ -150,7 +155,9 @@ class dmc_diffmodelsmodifications_form extends moodleform implements dmc_form_in
     }
 
     /**
-     * @param $formdata
+     * Convert data
+     *
+     * @param object $formdata
      * @return object
      */
     protected function convert_form_data_into_stepdata($formdata) {
@@ -170,6 +177,11 @@ class dmc_diffmodelsmodifications_form extends moodleform implements dmc_form_in
         return $stepdata;
     }
 
+    /**
+     * Get next model
+     *
+     * @return int|string|null
+     */
     protected function get_next_model() {
         $currentmodel = $this->optional_param('model', null, PARAM_RAW);
         if ($currentmodel) {
@@ -181,6 +193,11 @@ class dmc_diffmodelsmodifications_form extends moodleform implements dmc_form_in
         }
     }
 
+    /**
+     * Execute cancel
+     *
+     * @return void
+     */
     public function execute_cancel() {
         global $PAGE;
         $dmc = $this->_customdata['dmc'] ?? null;
@@ -192,6 +209,11 @@ class dmc_diffmodelsmodifications_form extends moodleform implements dmc_form_in
         }
     }
 
+    /**
+     * Get previous model
+     *
+     * @return int|string|null
+     */
     protected function get_prev_model() {
         $currentmodel = $this->optional_param('model', null, PARAM_RAW);
         if ($currentmodel) {
@@ -261,6 +283,11 @@ class dmc_diffmodelsmodifications_form extends moodleform implements dmc_form_in
         $mform->closeHeaderBefore('buttonar');
     }
 
+    /**
+     * Get current model
+     *
+     * @return int|mixed|string|null
+     */
     protected function get_current_model() {
         $currentmodel = $this->optional_param('model', null, PARAM_RAW);
         return empty($currentmodel) ? array_key_first($this->entities) : $currentmodel;

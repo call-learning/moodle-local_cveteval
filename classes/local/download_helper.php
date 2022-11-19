@@ -96,6 +96,12 @@ class download_helper {
         dataformat::download_data($filename, $dataformat, $fields, $rs, $transformcsv);
     }
 
+    /**
+     * Get user info
+     *
+     * @param int $userid
+     * @return object
+     */
     protected static function get_user_info($userid) {
         if ($userid) {
             $user = core_user::get_user($userid);
@@ -184,6 +190,13 @@ class download_helper {
         dataformat::download_data($filename, $dataformat, $fields, $rs, $transformcsv);
     }
 
+    /**
+     * Download model situation
+     *
+     * @param int $importid
+     * @param string $dataformat
+     * @return void
+     */
     public static function download_model_situation($importid, $dataformat) {
         persistent\history\entity::set_current_id($importid);
         $records = situation_entity::get_records();
@@ -225,8 +238,8 @@ class download_helper {
     /**
      * Download planning
      *
-     * @param $importid
-     * @param $dataformat
+     * @param int $importid
+     * @param string $dataformat
      * @return void
      * @throws coding_exception
      * @throws moodle_exception
@@ -274,8 +287,8 @@ class download_helper {
     /**
      * Download group
      *
-     * @param $importid
-     * @param $dataformat
+     * @param int $importid
+     * @param string $dataformat
      * @return void
      * @throws coding_exception
      * @throws moodle_exception
@@ -330,8 +343,8 @@ class download_helper {
     /**
      * Download group
      *
-     * @param $importid
-     * @param $dataformat
+     * @param int $importid
+     * @param string $dataformat
      * @return void
      * @throws coding_exception
      * @throws moodle_exception

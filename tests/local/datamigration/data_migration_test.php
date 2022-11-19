@@ -39,15 +39,33 @@ class data_migration_test extends \advanced_testcase {
 
     use assessment_test_trait;
 
-    protected $dm;
+    /**
+     * @var data_model_matcher $dm
+     */
+    private $dm;
 
-    protected $oldentities, $newentities;
-
-    protected $planstart, $planend;
+    /**
+     * @var object $oldentities
+     */
+    private $oldentities;
+    /**
+     * @var object $newentities
+     */
+    private $newentities;
+    /**
+     * @var object $planstart
+     */
+    private $planstart;
+    /**
+     * @var object $planend
+     */
+    private $planend;
 
     /**
      * History 1
      *
+     * @param int $planstart
+     * @param int $planend
      * @return \stdClass
      */
     protected function get_sample_origin1($planstart, $planend) {
@@ -163,6 +181,8 @@ class data_migration_test extends \advanced_testcase {
     /**
      * History 2
      *
+     * @param int $planstart
+     * @param int $planend
      * @return \stdClass
      */
     protected function get_sample_dest2($planstart, $planend) {
@@ -283,6 +303,11 @@ class data_migration_test extends \advanced_testcase {
         return $sample;
     }
 
+    /**
+     * Setup
+     *
+     * @return void
+     */
     public function setUp() {
         parent::setUp();
         $this->resetAfterTest();

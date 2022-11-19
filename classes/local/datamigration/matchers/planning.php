@@ -31,15 +31,22 @@ use local_cveteval\local\persistent\situation\entity as situation_entity;
  */
 class planning extends base {
 
+    /**
+     * Get entity
+     *
+     * @return string
+     */
     public static function get_entity() {
         return entity::class;
     }
 
     /**
-     * Try to match a given model/entity type
+     * Internal: Try to match a given model/entity type
+     *
+     * The current active history is the origin
      *
      * @param persistent $newentity
-     * @return persistent[]
+     * @return persistent|persistent[]|false
      */
     public function do_match(persistent $newentity) {
         global $DB;

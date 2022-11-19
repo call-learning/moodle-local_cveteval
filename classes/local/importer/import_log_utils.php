@@ -31,6 +31,11 @@ use local_cveteval\local\persistent\import_log\table;
  */
 class import_log_utils {
 
+    /**
+     * Get log table
+     * @param int $importid
+     * @return entity_table_renderable
+     */
     public static function get_log_table($importid) {
         $entitylist = new table();
 

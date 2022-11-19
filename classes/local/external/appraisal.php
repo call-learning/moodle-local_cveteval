@@ -51,6 +51,11 @@ class appraisal extends base_get_entity {
         );
     }
 
+    /**
+     * Defintion of returned value
+     *
+     * @return external_single_structure
+     */
     protected static function single_appraisal_returns() {
         return new external_single_structure(
                 array(
@@ -79,7 +84,19 @@ class appraisal extends base_get_entity {
     }
 
     /**
-     * Return the elements
+     * Submit appraisal
+     * @param int $id
+     * @param int $studentid
+     * @param int $appraiserid
+     * @param int $evalplanid
+     * @param string $context
+     * @param int $contextformat
+     * @param string $comment
+     * @param int $commentformat
+     * @param int $timemodified
+     * @param int $timecreated
+     * @param int $usermodified
+     * @return mixed|null
      */
     public static function submit($id, $studentid, $appraiserid, $evalplanid, $context, $contextformat, $comment, $commentformat,
             $timemodified, $timecreated, $usermodified) {

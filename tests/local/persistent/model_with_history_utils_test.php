@@ -25,6 +25,11 @@ namespace local_cveteval\local\persistent;
  */
 class model_with_history_utils_test extends \advanced_testcase {
 
+    /**
+     * Test get all history models
+     *
+     * @return void
+     */
     public function test_get_all_history_model() {
         $classes = model_with_history_util::get_all_entity_class_with_history();
         $this->assertEquals(array (

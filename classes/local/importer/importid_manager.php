@@ -59,6 +59,10 @@ class importid_manager {
         history_entity::reset_current_id();
     }
 
+    /**
+     * Get import id
+     * @return mixed|null
+     */
     public function get_importid() {
         return $this->importid;
     }

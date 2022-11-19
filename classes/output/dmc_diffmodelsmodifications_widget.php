@@ -27,6 +27,12 @@ use renderer_base;
  */
 class dmc_diffmodelsmodifications_widget extends dmc_entity_renderer_base {
 
+    /**
+     * Export for template
+     *
+     * @param renderer_base $output
+     * @return array|\stdClass
+     */
     public function export_for_template(renderer_base $output) {
         $context = parent::export_for_template($output);
         $form = $this->dmc->get_form();

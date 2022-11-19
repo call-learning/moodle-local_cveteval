@@ -23,10 +23,15 @@
  */
 
 namespace local_cveteval\local\importer\evaluation_grid;
-
 use tool_importer\field_types;
-use tool_importer\local\exceptions\importer_exception;
 
+/**
+ * Class csv_data_source
+ *
+ * @package   local_cveteval
+ * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class csv_data_source extends \tool_importer\local\source\csv_data_source {
 
     /**

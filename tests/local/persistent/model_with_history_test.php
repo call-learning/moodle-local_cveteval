@@ -29,6 +29,10 @@ use local_cveteval\test\assessment_test_trait;
 class model_with_history_test extends \advanced_testcase {
     use assessment_test_trait;
 
+    /**
+     * Check when history is disabled
+     * @covers \local_cveteval\local\persistent\model_with_history
+     */
     public function test_with_history_disabled() {
         $this->resetAfterTest();
         history_entity::disable_history_globally();
@@ -63,6 +67,12 @@ class model_with_history_test extends \advanced_testcase {
         $this->assertEquals(1, planning\entity::count_records());
     }
 
+    /**
+     * Check when history is enabled
+     *
+     * @return void
+     * @covers \local_cveteval\local\persistent\model_with_history
+     */
     public function test_with_history_enabled() {
         $this->resetAfterTest();
         $cevetevalgenerator = $this->getDataGenerator()->get_plugin_generator('local_cveteval');

@@ -31,6 +31,12 @@ use stdClass;
  */
 class dmc_diffmodels_widget extends dmc_entity_renderer_base {
 
+    /**
+     * Export for template
+     *
+     * @param renderer_base $output
+     * @return array|\stdClass
+     */
     public function export_for_template(renderer_base $output) {
         $context = parent::export_for_template($output);
         $stepdata = $this->dmc->get_step_data();
@@ -40,6 +46,14 @@ class dmc_diffmodels_widget extends dmc_entity_renderer_base {
         return $context;
     }
 
+    /**
+     * Get entity step by context
+     *
+     * @param array $contexts
+     * @param object $stepdata
+     * @param renderer_base $output
+     * @return array
+     */
     protected function get_entity_step_by_context($contexts, $stepdata, $output) {
         $entitiescontext = [];
         foreach ($contexts as $context) {

@@ -56,7 +56,11 @@ class latest_modifications extends external_api {
     }
 
     /**
-     * Return the current role for the user
+     * Execute query
+     *
+     * @param string $entitytype
+     * @param object $query
+     * @return array
      */
     public static function execute($entitytype, $query = null) {
         static::validate_parameters(static::execute_parameters(), array(
@@ -104,7 +108,8 @@ class latest_modifications extends external_api {
     }
 
     /**
-     * @param $entitytype
+     * Get last modification
+     * @param string $entitytype
      * @param string $queryjson
      * @return int
      * @throws dml_exception

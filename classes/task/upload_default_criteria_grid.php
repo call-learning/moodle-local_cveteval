@@ -27,10 +27,19 @@ use local_cveteval\local\persistent\history\entity as history_entity;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class upload_default_criteria_grid extends adhoc_task {
+    /**
+     * Create the grid
+     *
+     * @return void
+     */
     public function execute() {
         static::create_default_grid();
     }
 
+    /**
+     * Create the default grid
+     * @return void
+     */
     public static function create_default_grid() {
         global $CFG;
         history_entity::reset_current_id();

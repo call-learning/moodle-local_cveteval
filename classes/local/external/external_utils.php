@@ -44,7 +44,7 @@ class external_utils {
     /**
      * Query entities
      *
-     * @param $entitytype
+     * @param string $entitytype
      * @param array $query associative array (a column => value)
      * @param null $select
      * @return array|false
@@ -109,7 +109,7 @@ class external_utils {
     /**
      * Additional query to retrieve values from a simple entity (planning, criteria, situation)
      *
-     * @param $entitytype
+     * @param string $entitytype
      * @return array
      */
     protected static function get_entity_additional_query($entitytype) {
@@ -176,7 +176,7 @@ class external_utils {
     /**
      * Launch URL
      *
-     * @param $params
+     * @param array $params
      * @return string
      * @throws moodle_exception
      */

@@ -32,6 +32,9 @@ class situation_importer_test extends \advanced_testcase {
         extract_record_information as extract_record_information_importer_test;
     }
 
+    /**
+     * Fake existing users
+     */
     const EXISTING_USERS = [
         'appraiser_0001@exemple.com',
         'appraiser_0003@exemple.com',
@@ -51,6 +54,15 @@ class situation_importer_test extends \advanced_testcase {
     ];
 
     /**
+     * Test basic import
+     *
+     * @param string $filename
+     * @param array $results
+     * @param array $validationerrors
+     *
+     * @covers \local_cveteval\local\importer\situation\import_helper
+     * @covers \local_cveteval\local\importer\situation\csv_data_source
+     * @covers \local_cveteval\local\importer\situation\data_importer
      * @dataProvider basic_csv_dataprovider
      */
     public function test_basic_import($filename, $results, $validationerrors) {
@@ -75,6 +87,12 @@ class situation_importer_test extends \advanced_testcase {
         }
     }
 
+    /**
+     * Extract record information for comparison
+     *
+     * @param object $record
+     * @return array
+     */
     protected static function extract_record_information($record) {
         $rec = self::extract_record_information_importer_test($record);
         if ($record instanceof situation_entity) {

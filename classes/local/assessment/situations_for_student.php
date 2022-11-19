@@ -50,12 +50,12 @@ class situations_for_student extends dynamic_table_sql {
      * @param string|null $uniqueid a random unique id
      * @param array|null $actionsdefs an array of action
      * @param bool $editable is the table editable ?
+     *
      * @see page_list::get_filter_definition() for filter definition
      */
     public function __construct(?string $uniqueid,
             ?array $actionsdefs,
-            bool $editable = false,
-            $studentid = null) {
+            bool $editable = false) {
         global $PAGE;
         $this->fieldaliases = [
                 'studentid' => 'groupa.studentid',
@@ -94,6 +94,12 @@ class situations_for_student extends dynamic_table_sql {
         $this->setup_other_fields();
     }
 
+    /**
+     * Comment column
+     *
+     * @param object $row
+     * @return string
+     */
     protected function col_comment($row) {
         return $this->format_text($row->comment, $row->commentformat);
     }
@@ -123,6 +129,12 @@ class situations_for_student extends dynamic_table_sql {
         return "DISTINCT " . join(',', $fields) . " ";
     }
 
+    /**
+     * Get SQL component parts
+     *
+     * @param string $tablealias
+     * @return string
+     */
     protected function internal_get_sql_from($tablealias = 'e') {
         global $DB;
         $groupasql = group_assignment_entity::get_historical_sql_query("groupa");

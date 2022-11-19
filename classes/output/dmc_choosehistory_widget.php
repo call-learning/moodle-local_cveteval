@@ -30,15 +30,32 @@ use templatable;
  */
 class dmc_choosehistory_widget implements renderable, templatable {
 
-    private data_migration_controller $dmc;
+    /**
+     * @var data_migration_controller
+     */
+    private $dmc;
 
+    /**
+     * @var dmc_step_navigation
+     */
     private $navigation = null;
 
+    /**
+     * Constructor
+     *
+     * @param data_migration_controller $dmc
+     */
     public function __construct(data_migration_controller $dmc) {
         $this->navigation = new dmc_step_navigation($dmc);
         $this->dmc = $dmc;
     }
 
+    /**
+     * Export for template
+     *
+     * @param renderer_base $output
+     * @return object
+     */
     public function export_for_template(renderer_base $output) {
         $context = $this->navigation->export_for_template($output);
         $historyform = $this->dmc->get_form();

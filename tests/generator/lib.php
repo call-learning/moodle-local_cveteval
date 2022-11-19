@@ -243,10 +243,9 @@ class local_cveteval_generator extends \component_generator_base {
     /**
      * Get from username
      *
-     * @param $data
-     * @param $originalfield
-     * @param null $destfield
-     * @return mixed|null
+     * @param array $data
+     * @param string $originalfield
+     * @param object $destfield
      * @throws dml_exception
      */
     protected function get_from_username(&$data, $originalfield, $destfield = null) {
@@ -261,7 +260,7 @@ class local_cveteval_generator extends \component_generator_base {
     /**
      * Get evalplan from date and situation
      *
-     * @param $data
+     * @param array $data
      * @param int $roundtime
      * @return int|bool
      * @throws coding_exception
@@ -297,6 +296,12 @@ class local_cveteval_generator extends \component_generator_base {
         return $evalplanid;
     }
 
+    /**
+     * Get the relevant appraisal id frome date and situation
+     *
+     * @param array $data
+     * @return int|mixed|null
+     */
     private function get_appraisalid_from_date_and_situation(&$data) {
         $evaliplanid = $this->get_evalplanid_from_date_and_situation($data);
         $appraisalid = 0;

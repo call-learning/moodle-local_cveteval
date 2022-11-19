@@ -63,6 +63,9 @@ class utils {
      */
     const CVETEVAL_MOBILE_SERVICE = 'cveteval_app_service';
 
+    /**
+     * Default scale items
+     */
     const DEFAULT_SCALE_ITEM = [
             0,
             1,
@@ -95,7 +98,7 @@ class utils {
     /**
      * To get usernames in a loop faster
      *
-     * @param $userid
+     * @param int $userid
      * @return lang_string|string
      * @throws dml_exception
      */
@@ -108,6 +111,8 @@ class utils {
     }
 
     /**
+     * Create scale if not present
+     *
      * @throws coding_exception
      */
     public static function create_scale_if_not_present() {
@@ -139,6 +144,7 @@ class utils {
     }
 
     /**
+     * Create update default
      */
     public static function create_update_default_criteria_grid() {
         if ((defined('PHPUNIT_TEST') && PHPUNIT_TEST) || defined('BEHAT_SITE_RUNNING')) {
@@ -152,7 +158,7 @@ class utils {
     /**
      * Enable or disable mobile service and associated capabilities
      *
-     * @param $enabled
+     * @param bool $enabled
      * @throws coding_exception
      * @throws dml_exception
      */
@@ -224,7 +230,7 @@ class utils {
     /**
      * Get or create mobile service
      *
-     * @param false $isenabled
+     * @param bool $isenabled
      * @return stdClass
      * @throws coding_exception
      */
@@ -283,6 +289,7 @@ class utils {
     }
 
     /**
+     * Get mobile services definition
      *
      * @param array $functions
      * @return array[]
@@ -593,6 +600,17 @@ class utils {
         local\persistent\history\entity::reset_current_id();
     }
 
+    /**
+     * Check user exists or there are multiple user matching
+     *
+     * @param string $email
+     * @param int $rowindex
+     * @param string $messagemultiple
+     * @param string $messagenotfound
+     * @param string $fieldname
+     * @return void
+     * @throws importer_exception
+     */
     public static function check_user_exists_or_multiple($email, $rowindex, $messagemultiple, $messagenotfound, $fieldname) {
         try {
             core_user::get_user_by_email(trim($email), '*', null, MUST_EXIST);

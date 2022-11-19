@@ -108,6 +108,8 @@ class appr_crit extends base_get_entity {
 
     /**
      * Return the elements
+     * @param array $appraisals
+     * @return object
      */
     public static function submit($appraisals) {
         // TODO: leverage the persistent entities features to get the right columns/fields to return.

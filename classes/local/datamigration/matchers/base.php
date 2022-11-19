@@ -32,16 +32,30 @@ use moodle_exception;
  */
 abstract class base {
 
+    /**
+     * @var array $matchedentities
+     */
     protected $matchedentities = [];
+    /**
+     * @var array $unmatchedentities
+     */
     protected $unmatchedentities = [];
+    /**
+     * @var array $orphanedentities
+     */
     protected $orphanedentities = [];
     /**
      * Data migration controller
      *
-     * @var data_model_matcher
+     * @var data_model_matcher $dm
      */
-    protected data_model_matcher $dm;
+    protected $dm;
 
+    /**
+     * Constructor
+     *
+     * @param data_model_matcher $dm
+     */
     public function __construct(data_model_matcher $dm) {
         $this->dm = $dm;
         $this->prepare_entities();
@@ -97,6 +111,7 @@ abstract class base {
     /**
      * Try to match a given model/entity type
      *
+     * @param persistent $newentity
      * @return persistent[]|false
      */
     protected function match(persistent $newentity) {
@@ -116,6 +131,7 @@ abstract class base {
      *
      * The current active history is the origin
      *
+     * @param persistent $newentity
      * @return persistent|persistent[]|false
      */
     abstract protected function do_match(persistent $newentity);
@@ -148,6 +164,15 @@ abstract class base {
         return $this->orphanedentities;
     }
 
+    /**
+     * Get entity field name
+     *
+     * @param int $entityid
+     * @param int $historyid
+     * @param string $field
+     * @param object $entityclass
+     * @return false|mixed
+     */
     protected function get_entity_field_name($entityid, $historyid, $field, $entityclass) {
         global $DB;
         $entitysql = $entityclass::get_historical_sql_query_for_id("e", $historyid);

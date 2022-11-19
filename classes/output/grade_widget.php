@@ -48,12 +48,17 @@ class grade_widget implements renderable, templatable {
      */
     protected $hassubgrades;
 
+    /**
+     * @var mixed|null
+     */
     protected $comment = null;
 
     /**
      * Constructor
      *
      * @param int $grade
+     * @param bool $hassubgrades
+     * @param string $comment
      */
     public function __construct($grade, $hassubgrades = false, $comment = null) {
         $this->grade = $grade;

@@ -43,11 +43,29 @@ use tool_importer\local\log_levels;
  */
 class data_importer extends \tool_importer\data_importer {
 
+    /**
+     * @var int
+     */
     public $planningeventscount = 0;
+    /**
+     * @var int
+     */
     public $planningcount = 0;
+    /**
+     * @var array
+     */
     protected $grouping = [];
+    /**
+     * @var array
+     */
     protected $existingdates = [];
+    /**
+     * @var array
+     */
     protected $groups = [];
+    /**
+     * @var array
+     */
     protected $situations = [];
 
     /**
@@ -76,7 +94,7 @@ class data_importer extends \tool_importer\data_importer {
      * @param array $row
      * @param int $rowindex
      * @param mixed|null $options import options
-     * @throws validation_exception
+     * @throws importer_exception
      */
     public function validate_before_transform($row, $rowindex, $options = null) {
         $this->validate_from_field_definition($this->get_fields_definition(), $row, $rowindex, $options);
@@ -101,7 +119,7 @@ class data_importer extends \tool_importer\data_importer {
      * @param array $row
      * @param int $rowindex
      * @param mixed|null $options import options
-     * @throws validation_exception
+     * @throws importer_exception
      */
     public function validate_after_transform($row, $rowindex, $options = null) {
         $checkotherentities = empty($options['fastcheck']) || !$options['fastcheck'];
@@ -128,22 +146,37 @@ class data_importer extends \tool_importer\data_importer {
             }
         }
         foreach ($this->existingdates as $prevrowindex => $existingdate) {
+            $existingstartdate = $existingdate[0];
+            $existingenddate = $existingdate[1];
             $issameintervalstart =
-                    $row['starttime'] >= $existingdate[0] && $row['starttime'] <= $existingdate[1]
-                    || $existingdate[0] >= $row['starttime'] && $existingdate[1] <= $row['starttime'];
-            $issameintervalend = $row['endtime'] >= $existingdate[0] && $row['endtime'] <= $existingdate[1];
+                $row['starttime'] > $existingstartdate && $row['starttime'] < $existingenddate
+                || $existingstartdate > $row['starttime'] && $existingenddate < $row['starttime'];
+            $issameintervalend = $row['endtime'] > $existingstartdate && $row['endtime'] < $existingenddate;
             if ($issameintervalstart) {
-                $this->throw_same_date_interval_exception($rowindex, 'Date début', $prevrowindex, $existingdate[0],
-                        $existingdate[1], $row['starttime'], $row['endtime']);
+                $this->throw_same_date_interval_exception($rowindex, 'Date début', $prevrowindex, $existingstartdate,
+                    $existingenddate, $row['starttime'], $row['endtime']);
             }
             if ($issameintervalend) {
-                $this->throw_same_date_interval_exception($rowindex, 'Date fin', $prevrowindex, $existingdate[0],
-                        $existingdate[1], $row['starttime'], $row['endtime']);
+                $this->throw_same_date_interval_exception($rowindex, 'Date fin', $prevrowindex, $existingstartdate,
+                    $existingenddate, $row['starttime'], $row['endtime']);
             }
         }
         $this->existingdates[$rowindex] = [$row['starttime'], $row['endtime']];
     }
 
+    /**
+     * Throw same interval exception if needed
+     *
+     * @param int $rowindex
+     * @param string $fieldname
+     * @param int $prevrowindex
+     * @param int $existingdatestart
+     * @param int $existingdateend
+     * @param int $currentdatestart
+     * @param int $currendateend
+     * @return mixed
+     * @throws importer_exception
+     */
     private function throw_same_date_interval_exception($rowindex, $fieldname, $prevrowindex, $existingdatestart, $existingdateend,
             $currentdatestart, $currendateend) {
         throw new importer_exception(

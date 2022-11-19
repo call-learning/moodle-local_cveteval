@@ -31,8 +31,15 @@ class model_with_history_advanced_test extends \advanced_testcase {
 
     use assessment_test_trait;
 
+    /**
+     * @var array|history_entity
+     */
     protected $histories = [];
 
+    /**
+     * Setup test
+     * @return void
+     */
     public function setUp() {
         parent::setUp();
         $this->resetAfterTest();
@@ -47,6 +54,11 @@ class model_with_history_advanced_test extends \advanced_testcase {
         $this->assessors = array_values($this->assessors);
     }
 
+    /**
+     * Test situation list
+     *
+     * @return void
+     */
     public function test_get_thissituation_list() {
         $filterfunction = function($keyname) {
             return strstr($keyname, 'appraisergrade');
@@ -77,6 +89,11 @@ class model_with_history_advanced_test extends \advanced_testcase {
         $this->assertCount(1, $data);
     }
 
+    /**
+     * Get my student list
+     *
+     * @return void
+     */
     public function test_get_mystudents_list() {
         $this->resetAfterTest();
         $this->setUser($this->assessors[0]);
@@ -126,6 +143,11 @@ class model_with_history_advanced_test extends \advanced_testcase {
         $this->assertCount(1, $data); // Still two as we just look at one situation.
     }
 
+    /**
+     * Get assessment criteria list
+     *
+     * @return void
+     */
     public function test_get_assessmentcriteria_list() {
         $this->resetAfterTest();
         $this->setUser($this->assessors[0]);
@@ -136,6 +158,11 @@ class model_with_history_advanced_test extends \advanced_testcase {
         $this->assertCount(2, $data[0]->_children);
     }
 
+    /**
+     * Get situation for student  list
+     *
+     * @return void
+     */
     public function test_get_situations_for_student() {
         $this->resetAfterTest();
         $this->setUser($this->assessors[0]);

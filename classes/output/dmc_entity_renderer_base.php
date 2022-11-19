@@ -28,16 +28,38 @@ use templatable;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 abstract class dmc_entity_renderer_base implements renderable, templatable {
+    /**
+     * @var array
+     */
     const ALL_CONTEXTS = ['orphanedentities', 'unmatchedentities', 'matchedentities'];
+    /**
+     * @var array
+     */
     const ACTIONABLE_CONTEXTS = ['orphanedentities', 'matchedentities'];
+    /**
+     * @var data_migration_controller
+     */
     protected $dmc;
+    /**
+     * @var dmc_step_navigation|null
+     */
     protected $navigation = null;
 
+    /**
+     * Constructor
+     *
+     * @param data_migration_controller $dmc
+     */
     public function __construct(data_migration_controller $dmc) {
         $this->navigation = new dmc_step_navigation($dmc);
         $this->dmc = $dmc;
     }
-
+    /**
+     * Export for template
+     *
+     * @param renderer_base $output
+     * @return array|\stdClass
+     */
     public function export_for_template(renderer_base $output) {
         return $this->navigation->export_for_template($output);
     }

@@ -27,6 +27,12 @@ use renderer_base;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class dmc_userdatamigration_widget extends dmc_entity_renderer_base {
+    /**
+     * Export for template
+     *
+     * @param renderer_base $output
+     * @return array|\stdClass
+     */
     public function export_for_template(renderer_base $output) {
         $context = parent::export_for_template($output);
         $stepdata = $this->dmc->get_step_data();

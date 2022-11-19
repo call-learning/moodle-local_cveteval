@@ -41,8 +41,9 @@ use stdClass;
  */
 class user_data_migration_helper {
     /**
-     * @param $contexts
-     * @param $stepdata
+     * Convert origin appraisal
+     * @param array $contexts
+     * @param object $stepdata
      * @return array
      * @throws coding_exception
      * @throws dml_exception
@@ -102,6 +103,8 @@ class user_data_migration_helper {
     }
 
     /**
+     * Get current eval for user and role
+     *
      * @param object $currentcontext
      * @param int $oldappraiserid
      * @param int $evalplanoriginid
@@ -161,8 +164,10 @@ class user_data_migration_helper {
     }
 
     /**
-     * @param $contexts
-     * @param $stepdata
+     * Convert origin final evaluation
+     *
+     * @param array $contexts
+     * @param object $stepdata
      * @return array
      * @throws dml_exception
      */

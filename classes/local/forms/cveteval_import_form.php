@@ -48,6 +48,9 @@ require_once($CFG->libdir . '/csvlib.class.php');
  */
 class cveteval_import_form extends moodleform {
 
+    /**
+     * Validation import id
+     */
     const VALIDATION_IMPORTID = -1;
 
     /**
@@ -125,7 +128,7 @@ class cveteval_import_form extends moodleform {
      * @param array $data
      * @param array $files
      * @return array
-     * @throws coding_exception
+     * @throws moodle_exception
      */
     public function validation($data, $files) {
         global $USER;
@@ -172,6 +175,11 @@ class cveteval_import_form extends moodleform {
         return $errors;
     }
 
+    /**
+     * Get files to upload
+     *
+     * @return int[]|string[]
+     */
     public static function get_files_to_upload_by_order() {
         $filesbyorder = array_map(function($ft) {
             return $ft['order'];
@@ -182,6 +190,11 @@ class cveteval_import_form extends moodleform {
         return $filesbyorder;
     }
 
+    /**
+     * Get draft file from original element name
+     * @param string $elementname
+     * @return false|mixed|null
+     */
     public function get_draft_file_from_elementname($elementname) {
         $draftfiles = $this->get_draft_files($elementname);
         return empty($draftfiles) ? null : reset($draftfiles);

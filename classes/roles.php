@@ -54,7 +54,7 @@ class roles {
      *
      * If both appraiser and assessor, assessor role will be returned
      *
-     * @param $userid
+     * @param int $userid
      * @return int
      * @throws dml_exception
      */
@@ -98,7 +98,7 @@ class roles {
     /**
      * Can see all situations
      *
-     * @param $userid
+     * @param int $userid
      * @return bool
      */
     public static function can_see_all_situations($userid) {

@@ -24,7 +24,6 @@
 
 namespace local_cveteval\local\assessment;
 
-use coding_exception;
 use core_table\local\filter\filter;
 use html_writer;
 use local_cltools\local\filter\enhanced_filterset;
@@ -95,7 +94,7 @@ class assessment_utils {
     /**
      * Get my student list
      *
-     * @param $situationid
+     * @param int $situationid
      * @return mystudents
      */
     public static function get_mystudents_list($situationid) {
@@ -126,8 +125,8 @@ class assessment_utils {
     /**
      * Get this criteria list for this evalplan / studentid
      *
-     * @param $studentid
-     * @param $evalplanid
+     * @param int $studentid
+     * @param int $evalplanid
      * @return appraisals_student
      */
     public static function get_thissituation_list($studentid, $evalplanid) {
@@ -172,7 +171,7 @@ class assessment_utils {
     /**
      * Get grade for this given assessment
      *
-     * @param $appraisalid
+     * @param int $appraisalid
      * @return appraisals_criteria
      */
     public static function get_assessmentcriteria_list($appraisalid) {
@@ -200,7 +199,7 @@ class assessment_utils {
     /**
      * Get situation for student
      *
-     * @param $studentid
+     * @param int $studentid
      * @return situations_for_student
      */
     public static function get_situations_for_student($studentid) {

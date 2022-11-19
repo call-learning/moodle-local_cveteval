@@ -49,8 +49,17 @@ class data_importer extends \tool_importer\data_importer {
      * Group cache name
      */
     const GROUP_CACHE_NAME = 'grouploadcache';
+    /**
+     * @var int
+     */
     public $groupassignmentcount = 0;
+    /**
+     * @var int
+     */
     public $groupcount = 0;
+    /**
+     * @var array
+     */
     private $grouping = [];
 
     /**
@@ -107,6 +116,7 @@ class data_importer extends \tool_importer\data_importer {
      * the group.
      *
      * @param array $row associative array storing the record
+     * @param int $rowindex
      * @param mixed|null $options import options
      * @return array
      * @throws importer_exception

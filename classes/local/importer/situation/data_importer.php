@@ -44,9 +44,21 @@ use tool_importer\local\log_levels;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class data_importer extends \tool_importer\data_importer {
+    /**
+     * @var int
+     */
     public $rolescount = 0;
+    /**
+     * @var int
+     */
     public $situationscount = 0;
+    /**
+     * @var array
+     */
     private $shortnameuniqueids = [];
+    /**
+     * @var mixed|null
+     */
     private $defaultgridid = 0;
 
     /**
@@ -84,7 +96,7 @@ class data_importer extends \tool_importer\data_importer {
      * @param array $row
      * @param int $rowindex
      * @param mixed|null $options import options
-     * @throws validation_exception
+     * @throws importer_exception
      */
     public function validate_before_transform($row, $rowindex, $options = null) {
         $checkotherentities = empty($options['fastcheck']) || !$options['fastcheck'];
@@ -110,7 +122,7 @@ class data_importer extends \tool_importer\data_importer {
      * @param array $row
      * @param int $rowindex
      * @param mixed|null $options import options
-     * @throws validation_exception
+     * @throws importer_exception
      */
     public function validate_after_transform($row, $rowindex, $options = null) {
         $assessorsemails = explode(',', $row['assessors']);
@@ -146,6 +158,7 @@ class data_importer extends \tool_importer\data_importer {
      * Update or create clinical situation entry
      *
      * @param array $row associative array storing the record
+     * @param int $rowindex
      * @param mixed|null $options import options
      * @return situation_entity
      */
@@ -173,9 +186,9 @@ class data_importer extends \tool_importer\data_importer {
     /**
      * Add roles for users
      *
-     * @param $emails
-     * @param $clinicalsituationid
-     * @param $roletype
+     * @param array $emails
+     * @param int $clinicalsituationid
+     * @param int $roletype
      * @throws dml_exception
      */
     public function add_roles($emails, $clinicalsituationid, $roletype) {

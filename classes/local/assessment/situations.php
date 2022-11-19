@@ -41,8 +41,17 @@ use restricted_context_exception;
  */
 class situations extends entity_table {
 
+    /**
+     * @var string
+     */
     protected static $persistentclass = situation_entity::class;
 
+    /**
+     * Constructor
+     * @param int $uniqueid
+     * @param array $actionsdefs
+     * @param bool $editable
+     */
     public function __construct($uniqueid = null,
             $actionsdefs = null,
             $editable = false
@@ -80,12 +89,24 @@ class situations extends entity_table {
         return true;
     }
 
+    /**
+     * Get sql component parts
+     *
+     * @param string $tablealias
+     * @return string
+     */
     protected function internal_get_sql_from($tablealias = 'e') {
         $from = situation_entity::get_historical_sql_query($tablealias);
         $rolesql = role_entity::get_historical_sql_query("role");
         return "{$from}  LEFT JOIN  $rolesql ON {$tablealias}.id = role.clsituationid";
     }
 
+    /**
+     * Description column
+     *
+     * @param object $row
+     * @return string
+     */
     protected function col_description($row) {
         return $this->format_text($row->description, $row->descriptionformat);
     }

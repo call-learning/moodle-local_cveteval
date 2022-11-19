@@ -56,11 +56,7 @@ $currentnode->make_active();
 echo $OUTPUT->header();
 
 $situation = new local_cveteval\local\persistent\situation\entity($situationid);
-$situationcontext = new class($situation) extends entity_exporter{
-    protected static function define_class() {
-        return  local_cveteval\local\persistent\situation\entity::class;
-    }
-};
+$situationcontext = \local_cltools\local\crud\generic\generic_entity_exporter_generator::generate($situation);
 
 echo $OUTPUT->render_from_template(
     "local_cveteval/situation_simple",
@@ -72,7 +68,6 @@ $entitylist = assessment_utils::get_mystudents_list($situationid);
 $renderable = new entity_table_renderable($entitylist);
 
 $renderer = $PAGE->get_renderer('local_cltools');
-/* @var entity_table_renderable $renderable entity table */
 echo $renderer->render($renderable);
 
 echo $OUTPUT->footer();

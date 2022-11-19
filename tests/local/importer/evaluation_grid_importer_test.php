@@ -31,6 +31,16 @@ class evaluation_grid_importer_test extends \advanced_testcase {
     use importer_test_trait;
 
     /**
+     * Test basic import
+     *
+     * @param string $filename
+     * @param string $gridname
+     * @param array $results
+     * @param array $validationerrors
+     *
+     * @covers \local_cveteval\local\importer\evaluation_grid\import_helper
+     * @covers \local_cveteval\local\importer\evaluation_grid\csv_data_source
+     * @covers \local_cveteval\local\importer\evaluation_grid\data_importer
      * @dataProvider basic_csv_dataprovider
      */
     public function test_basic_import($filename, $gridname, $results, $validationerrors) {
