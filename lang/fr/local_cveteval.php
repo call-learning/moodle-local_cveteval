@@ -241,3 +241,4 @@ $string['userdatamigration:grade'] = 'Note';
 $string['userdatamigration:planning'] = 'Plan';
 $string['userdatamigration:situation'] = 'Situation';
 $string['view'] = 'Voir';
+$string['userview'] = 'Vue utilisateur';

@@ -82,7 +82,7 @@ trait assessment_test_trait {
     /**
      * Create a simple model for testing
      *
-     * @param string $criteria
+     * @param array $criteria
      * @param array $situations
      * @param array $evalplans
      * @return array[]
@@ -104,12 +104,28 @@ trait assessment_test_trait {
                         'idnumber' => $cdata['evalgrididnumber']
                 ]);
             }
+            if (isset($cdata['evalgrididnumber'])) {
+                $cdata['evalgridid'] = is_int($cdata['evalgrididnumber']) ? intval($cdata['evalgrididnumber']) :
+                    local_cveteval\local\persistent\evaluation_grid\entity::get_record(['idnumber' => $cdata['evalgrididnumber']])
+                        ->get('id');
+                unset($cdata['evalgrididnumber']);
+            }
+            if (isset($cdata['parentidnumber'])) {
+                $cdata['parentid'] = local_cveteval\local\persistent\criterion\entity::get_record(
+                    array('idnumber' => $cdata['parentidnumber']))->get('id');
+                unset($cdata['parentidnumber']);
+            }
             $nentity = $cevetevalgenerator->create_criterion($cdata);
             $ccriteria[$nentity->get('id')] = $nentity;
 
         }
         // Create situation.
         foreach ($situations as $situation) {
+            if ($situation['evalgrididnumber']) {
+                $situation['evalgridid'] = local_cveteval\local\persistent\evaluation_grid\entity::get_record(
+                    array('idnumber' => $situation['evalgrididnumber']))->get('id');
+                unset($situation['evalgrididnumber']);
+            }
             $nentity = $cevetevalgenerator->create_situation(
                     $situation
             );
@@ -117,14 +133,24 @@ trait assessment_test_trait {
         }
         foreach ($evalplans as $evalplan) {
             if (!local_cveteval\local\persistent\group\entity::record_exists_select("name = :name",
-                    [
-                            'name' => $evalplan['groupname']
-                    ])) {
+                [
+                    'name' => $evalplan['groupname']
+                ])) {
                 $cevetevalgenerator->create_group([
-                        'name' => $evalplan['groupname']
+                    'name' => $evalplan['groupname']
                 ]);
             }
-            $nentity = $cevetevalgenerator->create_evalplan(
+            if (isset($evalplan['clsituationidnumber'])) {
+                $evalplan['clsituationid'] = local_cveteval\local\persistent\situation\entity::get_record(
+                    array('idnumber' => $evalplan['clsituationidnumber']))->get('id');
+                unset($evalplan['clsituationidnumber']);
+            }
+            if (isset($evalplan['groupname'])) {
+                $evalplan['groupid'] = local_cveteval\local\persistent\group\entity::get_record(
+                    array('name' => $evalplan['groupname']))->get('id');
+                unset($evalplan['groupname']);
+            }
+            $nentity = $cevetevalgenerator->create_planning(
                     $evalplan
             );
             $cevalplans[$nentity->get('id')] = $nentity;
@@ -157,16 +183,18 @@ trait assessment_test_trait {
             $cstudents[$currenstudent->id] = $currenstudent;
             foreach ($groupsname as $groupname) {
                 if (!local_cveteval\local\persistent\group\entity::record_exists_select("name = :name",
-                        [
-                                'name' => $groupname
-                        ])) {
+                    [
+                        'name' => $groupname
+                    ])) {
                     $cevetevalgenerator->create_group([
-                            'name' => $groupname
+                        'name' => $groupname
                     ]);
                 }
-                $cevetevalgenerator->create_group_assign([
-                        'studentname' => $studentname,
-                        'groupname' => $groupname
+                $studentid = test_utils::get_from_username($studentname);
+                $groupid = local_cveteval\local\persistent\group\entity::get_record(['name' => $groupname])->get('id');
+                $cevetevalgenerator->create_group_assignment([
+                    'studentid' => $studentid,
+                    'groupid' => $groupid
                 ]);
             }
         }
@@ -175,21 +203,23 @@ trait assessment_test_trait {
             $currentassessor = core_user::get_user_by_username($assessorname);
             if (!$currentassessor) {
                 $currentassessor = $genericgenerator->create_user(['username' => $assessorname,
-                        'firstname' => $assessorname,
-                        'lastname' => $assessorname
+                    'firstname' => $assessorname,
+                    'lastname' => $assessorname
                 ]);
             }
+            $situationid = local_cveteval\local\persistent\situation\entity::get_record(
+                array('idnumber' => $situationname))->get('id');
             $cassessors[$currentassessor->id] = $currentassessor;
             $cevetevalgenerator->create_role([
-                    'clsituationidnumber' => $situationname,
-                    'username' => $assessorname,
-                    'type' => entity::ROLE_ASSESSOR_ID
+                'clsituationid' => $situationid,
+                'userid' => test_utils::get_from_username($assessorname),
+                'type' => entity::ROLE_ASSESSOR_ID
             ]);
             foreach ($cstudents as $student) {
                 $cevetevalgenerator->create_role([
-                        'clsituationidnumber' => $situationname,
-                        'username' => $student->username,
-                        'type' => entity::ROLE_STUDENT_ID
+                    'clsituationid' => $situationid,
+                    'userid' => test_utils::get_from_username($student->username),
+                    'type' => entity::ROLE_STUDENT_ID
                 ]);
             }
         }
@@ -208,8 +238,41 @@ trait assessment_test_trait {
         $cevetevalgenerator = $this->getDataGenerator()->get_plugin_generator('local_cveteval');
         $cappraisals = [];
         foreach ($appraisalsdefs as $appraisal) {
-            $centity = $cevetevalgenerator->create_appraisal($appraisal);
-            $cappraisals[$centity->get('id')] = $centity;
+            $appraisal['studentid'] = test_utils::get_from_username($appraisal['studentname']);
+            $appraisal['appraiserid'] = test_utils::get_from_username($appraisal['appraisername']);
+            unset($appraisal['studentname']);
+            unset($appraisal['appraisername']);
+            $subcriteria = null;
+            if (!empty($appraisal['criteria'])) {
+                $subcriteria = $appraisal['criteria'];
+                unset($appraisal['criteria']);
+            }
+            $evaliplanid = test_utils::get_evalplanid_from_date_and_situation(
+                $appraisal['evalplandatestart'],
+                $appraisal['evalplandateend'],
+                $appraisal['evalplansituation'],
+                $appraisal['evalplangroup']
+            );
+            unset($appraisal['evalplandatestart']);
+            unset($appraisal['evalplandateend']);
+            unset($appraisal['evalplansituation']);
+            unset($appraisal['evalplangroup']);
+            if ($evaliplanid) {
+                $appraisal['evalplanid'] = $evaliplanid;
+            }
+            $appraisal = $cevetevalgenerator->create_appraisal($appraisal);
+            $appraisalid = $appraisal->get('id');
+            if (!empty($subcriteria)) {
+                foreach ($subcriteria as $criterion) {
+                    $criterion['appraisalid'] = $appraisalid;
+                    $criterion['criterionid'] = local_cveteval\local\persistent\criterion\entity::get_record(
+                        ['idnumber' => $criterion['criterionidnumber']]
+                    )->get('id');
+                    unset($criterion['criterionidnumber']);
+                    $cevetevalgenerator->create_appraisal_criterion($criterion);
+                }
+            }
+            $cappraisals[$appraisalid] = $appraisal;
         }
         return $cappraisals;
     }
@@ -222,8 +285,8 @@ trait assessment_test_trait {
      */
     protected function get_sample_with_assessments() {
         $sample = new stdClass();
-        $planstart = time();
-        $planend = time() + 3600 * 24;
+        $planstart = new \DateTimeImmutable();
+        $planend = $planstart->add(new \DateInterval("P1D"));
 
         $sample->criteria = [
                 [
@@ -295,20 +358,20 @@ trait assessment_test_trait {
                 [
                         'groupname' => 'Group 1',
                         'clsituationidnumber' => 'SIT1',
-                        'starttime' => $planstart,
-                        'endtime' => $planend
+                        'starttime' => $planstart->getTimestamp(),
+                        'endtime' => $planend->getTimestamp(),
                 ],
                 [
                         'groupname' => 'Group 2',
                         'clsituationidnumber' => 'SIT2',
-                        'starttime' => $planstart,
-                        'endtime' => $planend
+                        'starttime' => $planstart->getTimestamp(),
+                        'endtime' => $planend->getTimestamp(),
                 ],
                 [
                         'groupname' => 'Group 2',
                         'clsituationidnumber' => 'SIT3',
-                        'starttime' => $planstart,
-                        'endtime' => $planend
+                        'starttime' => $planstart->getTimestamp(),
+                        'endtime' => $planend->getTimestamp(),
                 ]
 
         ];
@@ -316,8 +379,10 @@ trait assessment_test_trait {
                 [
                         'studentname' => 'student1',
                         'appraisername' => 'assessor1',
-                        'evalplandatestart' => $planstart,
+                        'evalplandatestart' => $planstart->format("d M Y"),
+                        'evalplandateend' => $planend->format("d M Y"),
                         'evalplansituation' => 'SIT1',
+                        'evalplangroup' => 'Group 1',
                         'context' => 'Context',
                         'contextformat' => FORMAT_PLAIN,
                         'comment' => 'Context',
@@ -327,8 +392,10 @@ trait assessment_test_trait {
                 [
                         'studentname' => 'student1',
                         'appraisername' => 'assessor1',
-                        'evalplandatestart' => $planstart,
+                        'evalplandatestart' => $planstart->format("d M Y"),
+                        'evalplandateend' => $planend->format("d M Y"),
                         'evalplansituation' => 'SIT1',
+                        'evalplangroup' => 'Group 1',
                         'context' => 'Context',
                         'contextformat' => FORMAT_PLAIN,
                         'comment' => 'Context',
@@ -338,8 +405,10 @@ trait assessment_test_trait {
                 [
                         'studentname' => 'student1',
                         'appraisername' => 'assessor2',
-                        'evalplandatestart' => $planstart,
+                        'evalplandatestart' => $planstart->format("d M Y"),
+                        'evalplandateend' => $planend->format("d M Y"),
                         'evalplansituation' => 'SIT1',
+                        'evalplangroup' => 'Group 1',
                         'context' => 'Context',
                         'contextformat' => FORMAT_PLAIN,
                         'comment' => 'Context',

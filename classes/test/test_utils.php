@@ -44,14 +44,18 @@ class test_utils {
      * SHORT_SAMPLE_FILES
      */
     const SHORT_SAMPLE_FILES = [
-            'users' => '/local/cveteval/tests/fixtures/ShortSample_Users.csv',
-            'cveteval' => [
-                    'evaluation_grid' => "/Sample_Evalgrid.csv",
-                    'situation' => "/ShortSample_Situations.csv",
-                    'grouping' => "/ShortSample_Grouping.csv",
-                    'planning' => "/ShortSample_Planning.csv"
-            ]
+        'users' => '/local/cveteval/tests/fixtures/ShortSample_Users.csv',
+        'cveteval' => [
+            'evaluation_grid' => "/Sample_Evalgrid.csv",
+            'situation' => "/ShortSample_Situations.csv",
+            'grouping' => "/ShortSample_Grouping.csv",
+            'planning' => "/ShortSample_Planning.csv"
+        ]
     ];
+    /**
+     * Rounding up to the time difference when looking for a specific planning
+     */
+    const ROUND_TIME_DIFF = 60;
 
     /**
      * Creates a set of test data
@@ -83,8 +87,8 @@ class test_utils {
      * @throws moodle_exception
      */
     public static function create_appraisal_for_students(?int $studentid = 0, ?bool $skip = false, ?bool $verbose = true,
-            ?int $forcedappraiserid = 0,
-            ?int $evaluationgrid = 0) {
+        ?int $forcedappraiserid = 0,
+        ?int $evaluationgrid = 0) {
         global $DB;
         $studentidparam = [];
         if ($studentid) {
@@ -103,15 +107,15 @@ class test_utils {
             $allcriterias = $DB->get_records_sql("SELECT crit.id as id, crit.label, crit.evalgridid
             FROM {local_cveteval_criterion} crit
             WHERE crit.evalgridid = :evalgridid",
-                    ['evalgridid' => $evaluationgrid]
+                ['evalgridid' => $evaluationgrid]
             );
             if (empty($allcriterias)) {
                 throw new moodle_exception('No criteria');
             }
             foreach ($studentsga as $studentga) {
                 $evalplansid = $DB->get_fieldset_select('local_cveteval_evalplan', 'id',
-                        'groupid = :groupid AND clsituationid = :clsituationid',
-                        array('groupid' => $studentga->groupid, 'clsituationid' => $clsituation->get('id')));
+                    'groupid = :groupid AND clsituationid = :clsituationid',
+                    array('groupid' => $studentga->groupid, 'clsituationid' => $clsituation->get('id')));
                 foreach ($evalplansid as $evalplanid) {
                     if ($skip) {
                         $shouldcreate = rand(0, 100);
@@ -136,7 +140,7 @@ class test_utils {
                     $eap->create();
                     if ($verbose) {
                         $message = 'Creating appraisal plan for ' . utils::fast_user_fullname($appid) . ' in situation ' .
-                                $clsituation->get('title');
+                            $clsituation->get('title');
                         if (function_exists('cli_writeln')) {
                             cli_writeln($message);
                         } else {
@@ -153,12 +157,12 @@ class test_utils {
                         $appraisalcrit->appraisalid = $eap->get('id');
                         $appraisalcrit->grade = rand(0, 5);
                         $appraisalcrit->comment =
-                                rand(1, 10) > 5 ? '' : 'Comment made by ' . utils::fast_user_fullname($appid) . "{$appid}";
+                            rand(1, 10) > 5 ? '' : 'Comment made by ' . utils::fast_user_fullname($appid) . "{$appid}";
                         $appraisalcrit->commentformat = FORMAT_PLAIN;
                         $eappraisalcrit = new appraisal_criterion_entity(0, $appraisalcrit);
                         if ($verbose) {
                             $message = 'Creating criteria appraisal plan for ' . utils::fast_user_fullname($appid) . ' criteria ' .
-                                    $crit->label;
+                                $crit->label;
                             if (function_exists('cli_writeln')) {
                                 cli_writeln($message);
                             } else {
@@ -255,12 +259,12 @@ class test_utils {
             }
             if (!$importhelper->import()) {
                 $errors = array_map(
-                        function($record) {
-                            $rec = (array) $record->to_record();
-                            return array_intersect_key($rec,
-                                    array_flip(['messagecode', 'linenumber', 'fieldname', 'additionalinfo']));
-                        },
-                        $importhelper->get_processor()->get_logger()->get_logs()
+                    function($record) {
+                        $rec = (array) $record->to_record();
+                        return array_intersect_key($rec,
+                            array_flip(['messagecode', 'linenumber', 'fieldname', 'additionalinfo']));
+                    },
+                    $importhelper->get_processor()->get_logger()->get_logs()
                 );
                 throw new moodle_exception('importerror', 'local_cveteval', '', json_encode($errors));
             }
@@ -281,7 +285,7 @@ class test_utils {
         $importclass = "\\local_cveteval\\local\\importer\\{$type}\\import_helper";
         if (!class_exists($importclass)) {
             throw new moodle_exception('importclassnotfound', 'local_cveteval', null,
-                    ' class:' . $importclass);
+                ' class:' . $importclass);
         }
         return new $importclass($filename, $importid, 'semicolon');
     }
@@ -331,5 +335,88 @@ class test_utils {
                 delete_user($user);
             }
         }
+    }
+
+    /**
+     * Get the relevant appraisal id frome date and situation
+     *
+     * @param int $evalplanid
+     * @param int $studentid
+     * @param int $appraiserid
+     * @param string $context
+     * @return int|mixed|null
+     */
+    public static function get_appraisalid_from_users_and_context($evalplanid,
+        $studentid,
+        $appraiserid,
+        $context
+    ) {
+        global $DB;
+        $appraisalid = 0;
+        if ($evalplanid) {
+            if ($studentid && $appraiserid) {
+                $appraisals = local_cveteval\local\persistent\appraisal\entity::get_records_select(
+                    "studentid = :studentid AND appraiserid = :appraiserid AND "
+                    . $DB->sql_compare_text('context') . " = :context",
+                    [
+                        'studentid' => $studentid,
+                        'appraiserid' => $appraiserid,
+                        'evalplanid' => $evalplanid,
+                        'context' => $context
+                    ]);
+                if ($appraisals) {
+                    $appraisal = end($appraisals);
+                    $appraisalid = $appraisal->get('id');
+                }
+            }
+        }
+        return $appraisalid;
+    }
+
+    /**
+     * Get evalplan from date and situation
+     *
+     * @param string $evalplandatestart
+     * @param string $evalplandateend
+     * @param string $evalplansituationsn
+     * @param string $evalplangroupname
+     * @return int|null
+     */
+    public static function get_evalplanid_from_date_and_situation($evalplandatestart,
+        $evalplandateend,
+        $evalplansituationsn,
+        $evalplangroupname): ?int {
+        $utc = new \DateTimeZone("UTC");
+        $startdate = \DateTimeImmutable::createFromFormat("d M Y", $evalplandatestart, $utc);
+        $enddate = \DateTimeImmutable::createFromFormat("d M Y", $evalplandateend, $utc);
+        $evalplanid = false;
+
+        $situationid = local_cveteval\local\persistent\situation\entity::get_record(
+            ['idnumber' => $evalplansituationsn])->get('id');
+        $groupid = local_cveteval\local\persistent\group\entity::get_record(
+            ['name' => $evalplangroupname])->get('id');
+
+        $evalplans = local_cveteval\local\persistent\planning\entity::get_records(
+            ['clsituationid' => $situationid, 'groupid' => $groupid]);
+
+        foreach ($evalplans as $ep) {
+            $planstarttimediff = $ep->get('starttime') - $startdate->getTimestamp();
+            $planendtimediff = $ep->get('endtime') - $enddate->getTimestamp();
+            if (abs($planstarttimediff) < self::ROUND_TIME_DIFF && abs($planendtimediff) < self::ROUND_TIME_DIFF) {
+                $evalplanid = $ep->get('id');
+            }
+        }
+        return $evalplanid;
+    }
+
+    /**
+     * Get user from username
+     *
+     * @param string $username
+     * @return int
+     * @throws dml_exception
+     */
+    public static function get_from_username($username): int {
+        return core_user::get_user_by_username($username, '*', null, MUST_EXIST)->id;
     }
 }

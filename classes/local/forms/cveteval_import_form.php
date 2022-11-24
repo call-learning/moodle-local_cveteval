@@ -83,6 +83,7 @@ class cveteval_import_form extends moodleform {
                     null,
                     ['subdirs' => 0, 'maxfiles' => 1, 'accepted_types' => ['csv']]
             );
+            $mform->setType($fieldtype, PARAM_RAW);
             if (!empty($settings) && !empty($settings['required']) && $settings['required']) {
                 $mform->addRule($fieldtype, null, 'required');
                 $mform->addHelpButton($fieldtype, $fieldtype, 'local_cveteval');

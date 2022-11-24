@@ -45,13 +45,11 @@ foreach ($folders as $folder) {
     }
 }
 
-$innerlinkshtml = [];
-foreach ($innerlinks as $name => $linkurl) {
-    $linkhtml = html_writer::span(get_string("$name:entity", 'local_cveteval'));
-    $linkhtml .= html_writer::link(
-            new moodle_url($linkurl, ['importid' => $importid]), get_string('edit'), array('class' => 'm-1 btn btn-secondary'));
-    $innerlinkshtml[] = $linkhtml;
-}
+
 echo $OUTPUT->header();
-echo html_writer::alist($innerlinkshtml);
+foreach ($innerlinks as $name => $linkurl) {
+    $link = html_writer::link(new moodle_url($linkurl, ['importid' => $importid]), get_string('edit') . ' '
+        . get_string("$name:entity", 'local_cveteval'), array('class' => 'm-1 btn btn-secondary'));
+    echo $OUTPUT->box($link);
+}
 echo $OUTPUT->footer();

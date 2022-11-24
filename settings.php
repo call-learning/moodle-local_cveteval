@@ -98,6 +98,16 @@ if ($hassiteconfig) {
             !$enabled)
     );
 
+
+    $settings->add('cveteval',
+        new admin_externalpage(
+            'cvetevaluserview',
+            get_string('userview', 'local_cveteval'),
+            $CFG->wwwroot . '/local/cveteval/admin/userview.php?',
+            array('local/cveteval:viewallsituations'),
+            !$enabled)
+    );
+
     if ($enabled) {
         $ADMIN->add('localplugins', $settings); // Add it to the main admin menu.
         $ADMIN->add('root', new admin_externalpage('cvetevalmenu',
