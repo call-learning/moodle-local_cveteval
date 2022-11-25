@@ -62,6 +62,52 @@ class data_migration_test extends \advanced_testcase {
     private $planend;
 
     /**
+     * Setup
+     *
+     * @return void
+     */
+    public function setUp(): void {
+        parent::setUp();
+        $this->resetAfterTest();
+        $this->planstart = new \DateTimeImmutable("now", new \DateTimeZone("UTC"));
+        $this->planend = $this->planstart->add(new \DateInterval("P1D"));;
+
+        $historyold = new history_entity(0, (object) ['idnumber' => 'history1', 'comments' => '', 'isactive' => true]);
+        $historyold->create();
+        history_entity::set_current_id($historyold->get('id'));
+        $this->oldentities = (object) [
+            'criteria' => [],
+            'situations' => [],
+            'evalplans' => [],
+            'students' => [],
+            'assessors' => [],
+            'appraisals' => [],
+        ];
+        [$this->oldentities->criteria, $this->oldentities->situations, $this->oldentities->evalplans,
+            $this->oldentities->students, $this->oldentities->assessors, $this->oldentities->appraisals] =
+            $this->set_up($this->get_sample_origin1($this->planstart, $this->planend));
+
+        $historynew = new history_entity(0, (object) ['idnumber' => 'history2', 'comments' => '', 'isactive' => true]);
+        $historynew->create();
+        history_entity::set_current_id($historynew->get('id'));
+        $this->newentities = (object) [
+            'criteria' => [],
+            'situations' => [],
+            'evalplans' => [],
+            'students' => [],
+            'assessors' => [],
+            'appraisals' => [],
+        ];
+        [$this->newentities->criteria, $this->newentities->situations, $this->newentities->evalplans,
+            $this->newentities->students, $this->newentities->assessors, $this->newentities->appraisals] =
+            $this->set_up($this->get_sample_dest2($this->planstart, $this->planend));
+
+        history_entity::reset_current_id();
+        $this->dm = new data_model_matcher($historyold->get('id'), $historynew->get('id'));
+
+    }
+
+    /**
      * History 1
      *
      * @param \DateTimeImmutable $planstart
@@ -312,106 +358,6 @@ class data_migration_test extends \advanced_testcase {
     }
 
     /**
-     * Setup
-     *
-     * @return void
-     */
-    public function setUp(): void {
-        parent::setUp();
-        $this->resetAfterTest();
-        $this->planstart = new \DateTimeImmutable("now", new \DateTimeZone("UTC"));
-        $this->planend = $this->planstart->add(new \DateInterval("P1D"));;
-
-        $historyold = new history_entity(0, (object) ['idnumber' => 'history1', 'comments' => '', 'isactive' => true]);
-        $historyold->create();
-        history_entity::set_current_id($historyold->get('id'));
-        $this->oldentities = (object) [
-            'criteria' => [],
-            'situations' => [],
-            'evalplans' => [],
-            'students' => [],
-            'assessors' => [],
-            'appraisals' => [],
-        ];
-        [$this->oldentities->criteria, $this->oldentities->situations, $this->oldentities->evalplans,
-            $this->oldentities->students, $this->oldentities->assessors, $this->oldentities->appraisals] =
-            $this->set_up($this->get_sample_origin1($this->planstart, $this->planend));
-
-        $historynew = new history_entity(0, (object) ['idnumber' => 'history2', 'comments' => '', 'isactive' => true]);
-        $historynew->create();
-        history_entity::set_current_id($historynew->get('id'));
-        $this->newentities = (object) [
-            'criteria' => [],
-            'situations' => [],
-            'evalplans' => [],
-            'students' => [],
-            'assessors' => [],
-            'appraisals' => [],
-        ];
-        [$this->newentities->criteria, $this->newentities->situations, $this->newentities->evalplans,
-            $this->newentities->students, $this->newentities->assessors, $this->newentities->appraisals] =
-            $this->set_up($this->get_sample_dest2($this->planstart, $this->planend));
-
-        history_entity::reset_current_id();
-        $this->dm = new data_model_matcher($historyold->get('id'), $historynew->get('id'));
-
-    }
-
-    /**
-     * Get appraisals for student
-     *
-     * @param int $studentindex
-     * @param \DateTimeImmutable $planstart
-     * @param \DateTimeImmutable $planend
-     * @return object
-     */
-    private function get_appraisals_students($studentindex, $planstart, $planend) {
-        $daystart = userdate($planstart->getTimestamp(), get_string('strftimedate', 'core_langconfig'));
-        $dayend = userdate($planend->getTimestamp(), get_string('strftimedate', 'core_langconfig'));
-        $planningrootlabel = "{$daystart}/{$dayend}";
-        $appraisals = [
-            1 => [
-                'student' => 'student1 student1',
-                'appraiser' => 'assessor1 assessor1',
-                'planning' => "$planningrootlabel - Group 1 / SIT1",
-                'criteria' =>
-                    [
-                        (object) [
-                            'student' => 'student1 student1',
-                            'appraiser' => 'assessor1 assessor1',
-                            'planning' => "$planningrootlabel - Group 1 / SIT1",
-                            'criterion' => '(criterion1)',
-                            'grade' => '1',
-                        ],
-                        (object) [
-                            'student' => 'student1 student1',
-                            'appraiser' => 'assessor1 assessor1',
-                            'planning' => "$planningrootlabel - Group 1 / SIT1",
-                            'criterion' => '(criterion2)',
-                            'grade' => '3',
-                        ],
-                    ],
-            ],
-            2 => [
-                'student' => 'student2 student2',
-                'appraiser' => 'assessor3 assessor3',
-                'planning' => "$planningrootlabel - Group 2 / SIT2",
-                'criteria' =>
-                    [
-                        (object) [
-                            'student' => 'student2 student2',
-                            'appraiser' => 'assessor3 assessor3',
-                            'planning' => "$planningrootlabel - Group 2 / SIT2",
-                            'criterion' => '(criterion1bis)',
-                            'grade' => '2',
-                        ],
-                    ],
-            ]
-        ];
-        return (object) $appraisals[$studentindex];
-    }
-
-    /**
      * Test general migration of data
      *
      * Expected:
@@ -459,10 +405,6 @@ class data_migration_test extends \advanced_testcase {
         $this->assertNotEmpty($convertedfinalevalsinfo);
         $this->assertCount(2, $convertedappraisalsinfo);
         $this->assertCount(1, $convertedfinalevalsinfo);
-        //$this->assertEquals($this->get_appraisals_students(2, $this->planstart, $this->planend),
-        //    $convertedappraisalsinfo[0]);
-        //$this->assertEquals($this->get_appraisals_students(1, $this->planstart, $this->planend),
-        //    $convertedappraisalsinfo[1]);
     }
 
     /**
@@ -519,6 +461,60 @@ class data_migration_test extends \advanced_testcase {
         $data->orphanedentities[group::get_entity()][$groupfrom->get('id')] = $groupto->get('id');
         $data->orphanedentities[planning::get_entity()][$planningfrom->get('id')] = $planningto->get('id');
         $data->orphanedentities[role::get_entity()][$rolefrom->get('id')] = $roleto->get('id');
+    }
+
+    /**
+     * Get appraisals for student
+     *
+     * @param int $studentindex
+     * @param \DateTimeImmutable $planstart
+     * @param \DateTimeImmutable $planend
+     * @return object
+     */
+    private function get_appraisals_students($studentindex, $planstart, $planend) {
+        $daystart = userdate($planstart->getTimestamp(), get_string('strftimedate', 'core_langconfig'));
+        $dayend = userdate($planend->getTimestamp(), get_string('strftimedate', 'core_langconfig'));
+        $planningrootlabel = "{$daystart}/{$dayend}";
+        $appraisals = [
+            1 => [
+                'student' => 'student1 student1',
+                'appraiser' => 'assessor1 assessor1',
+                'planning' => "$planningrootlabel - Group 1 / SIT1",
+                'criteria' =>
+                    [
+                        (object) [
+                            'student' => 'student1 student1',
+                            'appraiser' => 'assessor1 assessor1',
+                            'planning' => "$planningrootlabel - Group 1 / SIT1",
+                            'criterion' => '(criterion1)',
+                            'grade' => '1',
+                        ],
+                        (object) [
+                            'student' => 'student1 student1',
+                            'appraiser' => 'assessor1 assessor1',
+                            'planning' => "$planningrootlabel - Group 1 / SIT1",
+                            'criterion' => '(criterion2)',
+                            'grade' => '3',
+                        ],
+                    ],
+            ],
+            2 => [
+                'student' => 'student2 student2',
+                'appraiser' => 'assessor3 assessor3',
+                'planning' => "$planningrootlabel - Group 2 / SIT2",
+                'criteria' =>
+                    [
+                        (object) [
+                            'student' => 'student2 student2',
+                            'appraiser' => 'assessor3 assessor3',
+                            'planning' => "$planningrootlabel - Group 2 / SIT2",
+                            'criterion' => '(criterion1bis)',
+                            'grade' => '2',
+                        ],
+                    ],
+            ]
+        ];
+        return (object) $appraisals[$studentindex];
     }
 }
 

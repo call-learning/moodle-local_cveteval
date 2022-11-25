@@ -66,7 +66,8 @@ class external_utils {
         if (is_object($query)) {
             $query = (array) $query;
         }
-        list($where, $params, $additionaljoin, $orderby, $additionalfields) = static::get_entity_additional_query($entitytype, $asuser);
+        list($where, $params, $additionaljoin, $orderby, $additionalfields)
+            = static::get_entity_additional_query($entitytype, $asuser);
         foreach ($query as $key => $value) {
             if (!isset($columns[$key])) {
                 $a = new stdClass();

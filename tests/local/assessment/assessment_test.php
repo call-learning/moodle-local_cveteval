@@ -82,16 +82,33 @@ class assessment_test extends advanced_testcase {
         $resp1 = core_user::get_user_by_username('resp1');
         $this->setUser($resp1);
         $tmgsituation = situation_entity::get_record(array('idnumber' => 'TMG'));
-        $entitylist = assessment_utils::get_mystudents_list( $tmgsituation->get('id'));
+        $entitylist = assessment_utils::get_mystudents_list($tmgsituation->get('id'));
         $rows = $entitylist->get_rows(100);
         $this->assertCount(10, $rows);
-        $this->assertEquals("Adéla Veselá", $rows[0]->studentfullname);
-        $this->assertEquals("Groupe A", $rows[0]->groupname);
-        $this->assertEquals("Anna Horáková", $rows[1]->studentfullname);
-        $this->assertEquals("Groupe A", $rows[1]->groupname);
+        $expected = [
+            [
+                'studentfullname' => "Adéla Veselá",
+                'groupname' => "Groupe A"
+            ],
+            [
+                'studentfullname' => "Anna Horáková",
+                'groupname' => "Groupe A"
+            ],
+            [
+                'studentfullname' => "Dan Martin",
+                'groupname' => "Groupe B"
+            ],
+        ];
+        $studentlist = array_map(
+            function($s) {
+                return ['studentfullname' => $s->studentfullname, 'groupname' => $s->groupname];
+            },
+            $rows
+        );
+        foreach ($expected as $e) {
+            $this->assertContains($e, $studentlist);
+        }
         $this->assertTrue($rows[2]->planid != $rows[1]->planid);
-        $this->assertEquals("Dan Martin", $rows[2]->studentfullname);
-        $this->assertEquals("Groupe B", $rows[2]->groupname);
     }
 
     /**

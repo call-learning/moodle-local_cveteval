@@ -310,7 +310,7 @@ class appraisals_student extends dynamic_table_sql {
                     . join(', ', $fields)
                     . ' FROM ' . $from
                     . ' WHERE plan.id IS NOT NULL AND (' . $additionalwhere . ') '
-                    . ' GROUP BY appraisal.id, appraisal.appraiserid, appraisal.studentid',
+                    . ' GROUP BY appraisal.id, appraisal.appraiserid, appraisal.studentid, appraiser.fullname',
                     $params);
             $this->appraiserlist = [];
             $appraiserinfo = [];
