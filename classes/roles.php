@@ -63,7 +63,8 @@ class roles {
         if (!isloggedin()) {
             return false;
         }
-        return (self::get_user_role_id($userid) == role_entity::ROLE_APPRAISER_ID)
+        $roleid = self::get_user_role_id($userid);
+        return ($roleid == role_entity::ROLE_APPRAISER_ID || $roleid == role_entity::ROLE_ASSESSOR_ID)
             || has_capability('moodle/site:config', \context_system::instance(), $userid);
     }
 
@@ -79,7 +80,7 @@ class roles {
     public static function get_user_role_id($userid) {
         $roleid = role_entity::ROLE_STUDENT_ID;
         // Check that user exists first, if not it will be a student role.
-        if ($user = core_user::get_user($userid)) {
+        if (core_user::get_user($userid)) {
             $roles = role_entity::get_records_select(
                     "userid = :userid AND type IN (:appraisertype, :assessortype)",
                     array(

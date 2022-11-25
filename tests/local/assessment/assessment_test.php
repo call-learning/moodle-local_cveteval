@@ -46,33 +46,17 @@ require_once($CFG->libdir . '/externallib.php');
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class assessment_test extends advanced_testcase {
-
-    /**
-     * setUp all and do not reset between the tests (as the model should not change)
-     * This speeds up the test greatly.
-     */
-    public static function setUpBeforeClass(): void {
-        test_utils::setup_from_shortsample();
-        $student = core_user::get_user_by_username('etu1');
-        $obs1 = core_user::get_user_by_username('obs1');
-        $currentgrid = entity::get_record(['idnumber' => 'GRID01']);
-        test_utils::create_appraisal_for_students($student->id, null, false, $obs1->id, $currentgrid->get('id'));
-    }
-
-    /**
-     * Reset all data
-     */
-    public static function tearDownAfterClass(): void {
-        parent::tearDownAfterClass();
-        self::resetAllData();
-    }
-
     /**
      * Setup before tests.
      */
     public function setUp(): void {
         parent::setUp();
-        $this->resetAfterTest(false);
+        $this->resetAfterTest(true);
+        test_utils::setup_from_shortsample();
+        $student = core_user::get_user_by_username('etu1');
+        $obs1 = core_user::get_user_by_username('obs1');
+        $currentgrid = entity::get_record(['idnumber' => 'GRID01']);
+        test_utils::create_appraisal_for_students($student->id, null, false, $obs1->id, $currentgrid->get('id'));
     }
 
     /**
