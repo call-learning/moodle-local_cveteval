@@ -51,7 +51,7 @@ class assessment_test extends advanced_testcase {
      * setUp all and do not reset between the tests (as the model should not change)
      * This speeds up the test greatly.
      */
-    public static function setUpBeforeClass() {
+    public static function setUpBeforeClass(): void {
         test_utils::setup_from_shortsample();
         $student = core_user::get_user_by_username('etu1');
         $obs1 = core_user::get_user_by_username('obs1');
@@ -62,7 +62,7 @@ class assessment_test extends advanced_testcase {
     /**
      * Reset all data
      */
-    public static function tearDownAfterClass() {
+    public static function tearDownAfterClass(): void {
         parent::tearDownAfterClass();
         self::resetAllData();
     }
@@ -70,7 +70,7 @@ class assessment_test extends advanced_testcase {
     /**
      * Setup before tests.
      */
-    public function setUp() {
+    public function setUp(): void {
         parent::setUp();
         $this->resetAfterTest(false);
     }

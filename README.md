@@ -1,6 +1,7 @@
 Moodle Local CompetVetEval
 ==
 
+[![CI Tests (Testing)](https://github.com/call-learning/moodle-local_cveteval/actions/workflows/ci.yml/badge.svg)](https://github.com/call-learning/moodle-local_cveteval/actions/workflows/ci.yml)
 
 ## License ##
 

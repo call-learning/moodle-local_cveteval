@@ -49,14 +49,14 @@ class api_evalplan_test extends advanced_testcase {
      * setUp all and do not reset between the tests (as the model should not change)
      * This speeds up the test greatly.
      */
-    public static function setUpBeforeClass() {
+    public static function setUpBeforeClass(): void {
         test_utils::setup_from_shortsample();
     }
 
     /**
      * Reset all data
      */
-    public static function tearDownAfterClass() {
+    public static function tearDownAfterClass(): void {
         parent::tearDownAfterClass();
         self::resetAllData();
     }
@@ -64,7 +64,7 @@ class api_evalplan_test extends advanced_testcase {
     /**
      * setUp
      */
-    public function setUp() {
+    public function setUp(): void {
         parent::setUp();
         $this->resetAfterTest(false);
     }

@@ -40,7 +40,7 @@ class model_with_history_advanced_test extends \advanced_testcase {
      * Setup test
      * @return void
      */
-    public function setUp() {
+    public function setUp(): void {
         parent::setUp();
         $this->resetAfterTest();
         $this->histories[] = $this->create_history();

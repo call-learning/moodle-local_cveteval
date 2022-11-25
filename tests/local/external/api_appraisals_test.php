@@ -48,7 +48,7 @@ class api_appraisals_test extends advanced_testcase {
     /**
      * As we have a test that does write into the DB, we need to setup and tear down each time
      */
-    public function setUp() {
+    public function setUp(): void {
         parent::setUp();
         $this->resetAfterTest();
         test_utils::setup_from_shortsample();

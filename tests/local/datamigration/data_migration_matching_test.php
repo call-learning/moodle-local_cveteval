@@ -63,7 +63,7 @@ class data_migration_matching_test extends \advanced_testcase {
      *
      * @return void
      */
-    public function setUp() {
+    public function setUp(): void {
         parent::setUp();
         $this->resetAfterTest();
         $planstart = new \DateTimeImmutable("now", new \DateTimeZone("UTC"));

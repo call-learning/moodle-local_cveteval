@@ -58,7 +58,7 @@ class api_user_test extends advanced_testcase {
      *
      * @return void
      */
-    public static function tearDownAfterClass() {
+    public static function tearDownAfterClass(): void {
         parent::tearDownAfterClass();
         self::resetAllData();
     }
@@ -66,7 +66,7 @@ class api_user_test extends advanced_testcase {
     /**
      * setUp
      */
-    public function setUp() {
+    public function setUp(): void {
         parent::setUp();
         $this->resetAfterTest(false);
     }

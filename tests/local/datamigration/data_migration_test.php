@@ -316,7 +316,7 @@ class data_migration_test extends \advanced_testcase {
      *
      * @return void
      */
-    public function setUp() {
+    public function setUp(): void {
         parent::setUp();
         $this->resetAfterTest();
         $this->planstart = new \DateTimeImmutable("now", new \DateTimeZone("UTC"));

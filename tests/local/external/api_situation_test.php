@@ -47,7 +47,7 @@ class api_situation_test extends advanced_testcase {
     /**
      * setUp
      */
-    public function setUp() {
+    public function setUp(): void {
         parent::setUp();
         $this->resetAfterTest();
         test_utils::setup_from_shortsample();

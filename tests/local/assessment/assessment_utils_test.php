@@ -31,7 +31,7 @@ class assessment_utils_test extends \advanced_testcase {
     /**
      * Setup before tests.
      */
-    public function setUp() {
+    public function setUp(): void {
         parent::setUp();
         \local_cveteval\local\persistent\history\entity::disable_history_globally();
         $this->resetAfterTest();
