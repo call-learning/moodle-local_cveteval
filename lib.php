@@ -99,7 +99,7 @@ function local_cveteval_extend_navigation(global_navigation $nav) {
     global $CFG, $USER;
     $enabled = !empty($CFG->enablecompetveteval) && $CFG->enablecompetveteval;
     if ($enabled) {
-        if (roles::can_assess($USER->id)) {
+        if (roles::can_appraise($USER->id)) {
             $node = navigation_node::create(
                 get_string('assessment', 'local_cveteval'),
                 new moodle_url('/local/cveteval/pages/assessment/mysituations.php'),

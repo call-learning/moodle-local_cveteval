@@ -25,6 +25,7 @@
 namespace local_cveteval\local\assessment;
 
 use coding_exception;
+use context;
 use core_user;
 use dml_exception;
 use local_cltools\local\field\hidden;
@@ -38,6 +39,7 @@ use local_cveteval\local\persistent\planning\entity as planning_entity;
 use local_cveteval\local\persistent\role\entity as role_entity;
 use local_cveteval\local\persistent\situation\entity as situation_entity;
 use local_cveteval\output\grade_widget;
+use local_cveteval\roles;
 use stdClass;
 
 /**
@@ -341,5 +343,19 @@ class appraisals_student extends dynamic_table_sql {
             [$this->evalgridwhere, $this->evalgridparams] = $DB->get_in_or_equal($evalgridids, SQL_PARAMS_NAMED);
         }
         $this->setup_other_fields();
+    }
+    /**
+     * Validate current user has access to the table instance
+     *
+     * Note: this can involve a more complicated check if needed and requires filters and all
+     * setup to be done in order to make sure we validated against the right information
+     * (such as for example a filter needs to be set in order not to return data a user should not see).
+     *
+     * @param context $context
+     * @param bool $writeaccess
+     */
+    public static function validate_access(context $context, bool $writeaccess = false): bool {
+        global $USER;
+        return !roles::can_appraise($USER->id);
     }
 }

@@ -38,4 +38,3 @@ Feature: As an admin I can import new set of planning and enable it
     And I should see "Import logs"
     And I click on "Continue" "button"
     And I should see "New behat import"
-

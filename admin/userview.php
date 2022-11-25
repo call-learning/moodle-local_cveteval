@@ -22,6 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use local_cltools\local\crud\generic\generic_entity_exporter_generator;
+use local_cveteval\local\external\external_utils;
 use local_cveteval\local\forms\cveteval_import_form;
 use local_cveteval\local\importer\importid_manager;
 
@@ -52,6 +54,7 @@ $users = [];
 foreach ($userids as $id) {
     $users[$id] = $usercache->get($id);
 }
+$renderer = $PAGE->get_renderer('local_cveteval');
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('userview', 'local_cveteval'));
 
@@ -63,12 +66,14 @@ echo $OUTPUT->render($select);
 if ($userid) {
         global $USER;
         $olduser = $USER;
-        $USER = \core_user::get_user($userid);
-        $plans  = \local_cveteval\local\external\evalplan::get();
+        $plans = external_utils::query_entities('planning', [], null, $userid);;
+
         foreach($plans as $p) {
-            var_dump($p);
+            $evalplan = new local_cveteval\local\persistent\planning\entity($p->id);
+            $exporter = generic_entity_exporter_generator::generate($evalplan);
+            echo \local_cltools\local\crud\helper\crud_view::display_entity($p, $exporter, $renderer);
         }
-        $USER = $olduser;
+
 
 }
 echo $OUTPUT->footer();

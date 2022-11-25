@@ -104,7 +104,9 @@ $userpicture = $OUTPUT->user_picture($studentuser);
 echo html_writer::div(
         html_writer::div($userpicture)
         . html_writer::div($fullname));
-$evaluationform->display();
+if (roles::can_assess($USER->id)) {
+    $evaluationform->display();
+}
 
 $tabs = array();
 $tabs[] = new tabobject('thissituation',

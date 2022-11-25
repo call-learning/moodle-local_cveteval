@@ -46,25 +46,4 @@ class table extends generic_entity_table {
     ) {
         parent::__construct($uniqueid, $actionsdefs, true, entity::class);
     }
-    /**
-     * Validate current user has access to the table instance
-     *
-     * Note: this can involve a more complicated check if needed and requires filters and all
-     * setup to be done in order to make sure we validated against the right information
-     * (such as for example a filter needs to be set in order not to return data a user should not see).
-     *
-     * @param context $context
-     * @param bool $writeaccess
-     * @return bool
-     * @throws restricted_context_exception
-     */
-    public static function validate_access(context $context, $writeaccess = false): bool {
-        if (!has_capability('local/cltools:dynamictableread', $context)) {
-            throw new restricted_context_exception();
-        }
-        if ($writeaccess && !has_capability('local/cltools:dynamictablewrite', $context)) {
-            throw new restricted_context_exception();
-        }
-        return true;
-    }
 }

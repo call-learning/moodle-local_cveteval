@@ -81,9 +81,21 @@ class assessment_utils_test extends \advanced_testcase {
         // Check that we have two rows.
         $this->assertCount(2, $data);
         // Check student info.
-        $this->assertEquals($this->students[0]->id, $data[0]->studentid);
-        $this->assertEquals(3, $data[0]->appraisalcount);
-
+        $expectedresults = [
+            'student1 student1' => [
+                'appraisalcount' => 3,
+                'studentid' => $this->students[0]->id,
+            ],
+            'student2 student2' => [
+                'appraisalcount' => 0,
+                'studentid' => $this->students[1]->id,
+            ],
+        ];
+        foreach ($data as $actualrow) {
+            foreach ($expectedresults[$actualrow->studentfullname] as $key => $value) {
+                $this->assertEquals($expectedresults[$actualrow->studentfullname][$key], $actualrow->$key);
+            }
+        }
         $newuser = $this->getDataGenerator()->create_user();
         $this->setUser($newuser);
         $studentlist = assessment_utils::get_mystudents_list($this->situations[0]->get('id'));

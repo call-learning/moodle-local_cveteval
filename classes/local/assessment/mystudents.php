@@ -24,6 +24,7 @@
 
 namespace local_cveteval\local\assessment;
 
+use context;
 use core_table\local\filter\filter;
 use local_cltools\local\field\boolean;
 use local_cltools\local\field\date;
@@ -36,6 +37,7 @@ use local_cveteval\local\persistent\group\entity as group_entity;
 use local_cveteval\local\persistent\group_assignment\entity as group_assignment_entity;
 use local_cveteval\local\persistent\planning\entity as planning_entity;
 use local_cveteval\local\persistent\situation\entity as situation_entity;
+use local_cveteval\roles;
 use moodle_url;
 
 /**
@@ -162,6 +164,21 @@ class mystudents extends dynamic_table_sql {
         $fields[] = 'situation.expectedevalsnb as appraisalrequired';
         $fields[] = '(eval.id IS NOT NULL) as hasgrade';
         return "DISTINCT " . join(', ', $fields);
+    }
+
+    /**
+     * Validate current user has access to the table instance
+     *
+     * Note: this can involve a more complicated check if needed and requires filters and all
+     * setup to be done in order to make sure we validated against the right information
+     * (such as for example a filter needs to be set in order not to return data a user should not see).
+     *
+     * @param context $context
+     * @param bool $writeaccess
+     */
+    public static function validate_access(context $context, bool $writeaccess = false): bool {
+        global $USER;
+        return !roles::can_appraise($USER->id);
     }
 }
 

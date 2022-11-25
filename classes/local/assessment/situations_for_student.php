@@ -24,7 +24,7 @@
 
 namespace local_cveteval\local\assessment;
 
-use coding_exception;
+use context;
 use local_cltools\local\field\date;
 use local_cltools\local\field\datetime;
 use local_cltools\local\field\editor;
@@ -33,6 +33,7 @@ use local_cltools\local\field\number;
 use local_cltools\local\field\text;
 use local_cltools\local\table\dynamic_table_sql;
 use local_cveteval\local\persistent\group_assignment\entity as group_assignment_entity;
+use local_cveteval\roles;
 use moodle_url;
 
 /**
@@ -147,5 +148,20 @@ class situations_for_student extends dynamic_table_sql {
          LEFT JOIN (SELECT ' . $DB->sql_concat('u.firstname', 'u.lastname') . ' AS fullname, u.id FROM {user} u ) student
             ON student.id = groupa.studentid
         ';
+    }
+
+    /**
+     * Validate current user has access to the table instance
+     *
+     * Note: this can involve a more complicated check if needed and requires filters and all
+     * setup to be done in order to make sure we validated against the right information
+     * (such as for example a filter needs to be set in order not to return data a user should not see).
+     *
+     * @param context $context
+     * @param bool $writeaccess
+     */
+    public static function validate_access(context $context, bool $writeaccess = false): bool {
+        global $USER;
+        return !roles::can_appraise($USER->id);
     }
 }

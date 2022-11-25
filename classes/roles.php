@@ -38,14 +38,32 @@ use local_cveteval\local\persistent\role\entity as role_entity;
  */
 class roles {
     /**
-     * Can assess ?
+     * Can assess ? (Final evaluator)
      *
      * @param int $userid
      * @return bool
      * @throws dml_exception
      */
     public static function can_assess($userid) {
+        if (!isloggedin()) {
+            return false;
+        }
         return (self::get_user_role_id($userid) == role_entity::ROLE_ASSESSOR_ID)
+            || has_capability('moodle/site:config', \context_system::instance(), $userid);
+    }
+
+    /**
+     * Can appraise ? (Observer)
+     *
+     * @param int $userid
+     * @return bool
+     * @throws dml_exception
+     */
+    public static function can_appraise($userid) {
+        if (!isloggedin()) {
+            return false;
+        }
+        return (self::get_user_role_id($userid) == role_entity::ROLE_APPRAISER_ID)
             || has_capability('moodle/site:config', \context_system::instance(), $userid);
     }
 

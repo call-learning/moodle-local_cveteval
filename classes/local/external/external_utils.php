@@ -24,6 +24,7 @@
 
 namespace local_cveteval\local\external;
 
+use core_user\output\myprofile\renderer;
 use dml_exception;
 use local_cveteval\local\persistent\model_with_history;
 use local_cveteval\local\persistent\planning\entity as planning_entity;
@@ -46,12 +47,13 @@ class external_utils {
      *
      * @param string $entitytype
      * @param array $query associative array (a column => value)
-     * @param null $select
+     * @param string|null $select
+     * @param int|null $asuser
      * @return array|false
      * @throws \coding_exception
      * @throws dml_exception
      */
-    public static function query_entities($entitytype, $query, $select = null) {
+    public static function query_entities($entitytype, $query, $select = null, $asuser = null) {
         global $DB;
         $classname = '\\local_cveteval\\local\\persistent\\' . $entitytype . '\\entity';
         if (!class_exists($classname)) {
@@ -64,7 +66,7 @@ class external_utils {
         if (is_object($query)) {
             $query = (array) $query;
         }
-        list($where, $params, $additionaljoin, $orderby, $additionalfields) = static::get_entity_additional_query($entitytype);
+        list($where, $params, $additionaljoin, $orderby, $additionalfields) = static::get_entity_additional_query($entitytype, $asuser);
         foreach ($query as $key => $value) {
             if (!isset($columns[$key])) {
                 $a = new stdClass();
@@ -110,15 +112,21 @@ class external_utils {
      * Additional query to retrieve values from a simple entity (planning, criteria, situation)
      *
      * @param string $entitytype
+     * @param int|null $asuser query as a given user
      * @return array
      */
-    protected static function get_entity_additional_query($entitytype) {
+    protected static function get_entity_additional_query($entitytype, $asuser = null) {
         global $USER;
-        $paramscheckrole = ['rolecheckstudentid' => $USER->id, 'rolecheckappraiserid' => $USER->id,
+        if ($asuser) {
+            $user = \core_user::get_user($asuser);
+        } else {
+            $user = $USER;
+        }
+        $paramscheckrole = ['rolecheckstudentid' => $user->id, 'rolecheckappraiserid' => $user->id,
                 'rolechecktypeappraiser' => role_entity::ROLE_APPRAISER_ID,
                 'rolechecktypeassessor' => role_entity::ROLE_ASSESSOR_ID];
         $paramscheckroleappraisal = $paramscheckrole;
-        $paramscheckroleappraisal['appraisalcheckstudentid'] = $USER->id;
+        $paramscheckroleappraisal['appraisalcheckstudentid'] = $user->id;
         switch ($entitytype) {
             // Here we make sure that current user can only see evalplan involving him/her.
             case 'planning':

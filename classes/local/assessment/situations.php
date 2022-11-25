@@ -30,7 +30,6 @@ use local_cveteval\local\persistent\role\entity as role_entity;
 use local_cveteval\local\persistent\situation\entity as situation_entity;
 use local_cveteval\roles;
 use moodle_url;
-use restricted_context_exception;
 
 /**
  * Persistent list base class
@@ -79,12 +78,11 @@ class situations extends entity_table {
      * @param context $context
      * @param bool $writeaccess
      * @return bool
-     * @throws restricted_context_exception
      */
     public static function validate_access(context $context, $writeaccess = false): bool {
         global $USER;
-        if (!roles::can_assess($USER->id)) {
-            throw new restricted_context_exception();
+        if (!roles::can_appraise($USER->id)) {
+            return false;
         }
         return true;
     }
