@@ -24,9 +24,12 @@ require_once(__DIR__ . '/../../../../lib/behat/behat_base.php');
  */
 class behat_local_cveteval extends behat_base {
     /**
+     * Set the default history for all subsequent navigation
+     *
      * @Given /^I set CompetVetEval default history to "([^"]*)"$/
+     * @param int $historyidnumber
      */
-    public function i_set_competveteval_default_history_to($historyidnumber) {
+    public function i_set_competveteval_default_history_to($historyidnumber): void {
         $history = local_cveteval\local\persistent\history\entity::get_record(['idnumber' => $historyidnumber]);
         $history::set_current_id($history->get('id'));
     }
@@ -68,7 +71,7 @@ class behat_local_cveteval extends behat_base {
      * Convert page names to URLs for steps like 'When I am on the "[page name]" page'.
      *
      * You should override this as appropriate for your plugin. The method
-     * {@link behat_navigation::resolve_core_page_url()} is a good example.
+     * {@see behat_navigation::resolve_core_page_url()} is a good example.
      *
      * Your overridden method should document the recognised page types with
      * a table like this:

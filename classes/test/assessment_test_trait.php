@@ -285,7 +285,8 @@ trait assessment_test_trait {
      */
     protected function get_sample_with_assessments() {
         $sample = new stdClass();
-        $planstart = new \DateTimeImmutable();
+        $utc = new \DateTimeZone("UTC");
+        $planstart = new \DateTimeImmutable("now", $utc);
         $planend = $planstart->add(new \DateInterval("P1D"));
 
         $sample->criteria = [
@@ -429,8 +430,9 @@ trait assessment_test_trait {
      */
     protected function get_simple_model_1() {
         $sample = new stdClass();
-        $planstart = time();
-        $planend = time() + 3600 * 24;
+        $utc = new \DateTimeZone("UTC");
+        $planstart = new \DateTimeImmutable("now", $utc);
+        $planend = $planstart->add(new \DateInterval("P1D"));
 
         $sample->criteria = [
                 [
@@ -482,8 +484,8 @@ trait assessment_test_trait {
                 [
                         'groupname' => 'Group 1',
                         'clsituationidnumber' => 'SIT1',
-                        'starttime' => $planstart,
-                        'endtime' => $planend
+                        'starttime' => $planstart->getTimestamp(),
+                        'endtime' => $planend->getTimestamp()
                 ]
         ];
         $sample->appraisals = [];
@@ -500,8 +502,6 @@ trait assessment_test_trait {
      */
     protected function get_simple_model_2() {
         $sample = new stdClass();
-        $planstart = time();
-        $planend = time() + 3600 * 24;
 
         $sample->criteria = [
                 [

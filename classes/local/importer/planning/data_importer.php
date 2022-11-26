@@ -126,6 +126,7 @@ class data_importer extends \tool_importer\data_importer {
         // Check situations.
         foreach ($this->grouping as $groupname) {
             $situationsn = $row[$groupname] ?? '';
+            $situationsn = strtoupper(trim($situationsn));
             $group = group_entity::get_record(['name' => $groupname]);
             if ($checkotherentities && empty($group)) {
                 throw new importer_exception('planning:groupdoesnotexist',
@@ -202,6 +203,7 @@ class data_importer extends \tool_importer\data_importer {
      * the group.
      *
      * @param array $row associative array storing the record
+     * @param int $rowindex import options
      * @param mixed|null $options import options
      * @return array
      */

@@ -42,7 +42,7 @@ $usercache = cache::make_from_params(cache_store::MODE_APPLICATION, 'local_cvete
 if (!$usercache->has('alluserids')) {
     global $DB;
     $userids = [];
-    foreach ($DB->get_recordset('user',null, 'lastname ASC, firstname ASC' ) as $user) {
+    foreach ($DB->get_recordset('user', null, 'lastname ASC, firstname ASC') as $user) {
         $userdisplay = ucwords(fullname($user)) . " ($user->email)";
         $usercache->set($user->id, $userdisplay);
         $userids[] = $user->id;
@@ -64,16 +64,15 @@ $select->class = 'langmenu';
 echo $OUTPUT->render($select);
 
 if ($userid) {
-        global $USER;
-        $olduser = $USER;
-        $plans = external_utils::query_entities('planning', [], null, $userid);;
+    global $USER;
+    $olduser = $USER;
+    $plans = external_utils::query_entities('planning', [], null, $userid);;
 
-        foreach($plans as $p) {
-            $evalplan = new local_cveteval\local\persistent\planning\entity($p->id);
-            $exporter = generic_entity_exporter_generator::generate($evalplan);
-            echo \local_cltools\local\crud\helper\crud_view::display_entity($p, $exporter, $renderer);
-        }
-
+    foreach ($plans as $p) {
+        $evalplan = new local_cveteval\local\persistent\planning\entity($p->id);
+        $exporter = generic_entity_exporter_generator::generate($evalplan);
+        echo \local_cltools\local\crud\helper\crud_view::display_entity($p, $exporter, $renderer);
+    }
 
 }
 echo $OUTPUT->footer();

@@ -81,10 +81,7 @@ class situations extends entity_table {
      */
     public static function validate_access(context $context, $writeaccess = false): bool {
         global $USER;
-        if (!roles::can_appraise($USER->id)) {
-            return false;
-        }
-        return true;
+        return roles::can_appraise($USER->id);
     }
 
     /**

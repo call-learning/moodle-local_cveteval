@@ -165,6 +165,12 @@ class assessment_utils {
         }
         $filterset->set_join_type(filter::JOINTYPE_ALL);
         $entitylist->set_filterset($filterset);
+        $entitylist->set_sortdata([
+            [
+                'sortby' => 'criterion.sort',
+                'sortorder' => 'ASC'
+            ]
+        ]);
         return $entitylist;
     }
 

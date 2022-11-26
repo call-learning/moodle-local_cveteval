@@ -356,6 +356,6 @@ class appraisals_student extends dynamic_table_sql {
      */
     public static function validate_access(context $context, bool $writeaccess = false): bool {
         global $USER;
-        return !roles::can_appraise($USER->id);
+        return roles::can_appraise($USER->id);
     }
 }

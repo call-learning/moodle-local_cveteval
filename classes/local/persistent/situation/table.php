@@ -41,21 +41,6 @@ class table extends table_manager_with_access {
     use table_with_history_impl;
 
     /**
-     * Sets up the page_table parameters.
-     *
-     * @param null $uniqueid
-     * @param null $actionsdefs
-     * @param bool $editable
-     * @see page_list::get_filter_definition() for filter definition
-     */
-    public function __construct($uniqueid = null,
-            $actionsdefs = null,
-            $editable = false
-    ) {
-        parent::__construct($uniqueid, $actionsdefs, true, entity::class);
-    }
-
-    /**
      * Check if we can do the following action
      *
      * If there is an appraisal or final evaluation we cannot edit or delete

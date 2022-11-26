@@ -33,18 +33,95 @@ class planning_importer_test extends \advanced_testcase {
      * Fake existing users
      */
     const EXISTING_USERS = [
-            'appraiser_0001@exemple.com',
-            'appraiser_0002@exemple.com',
-            'resp1@exemple.com',
-            'resp2@exemple.com',
-            'resp3@exemple.com',
-            'obs1@exemple.com',
-            'obs2@exemple.com',
-            'obs3@exemple.com',
-            'etu1@exemple.com',
-            'etu2@exemple.com',
-            'etu3@exemple.com',
-            'etu4@exemple.com',
+        'appraiser_0001@exemple.com',
+        'appraiser_0002@exemple.com',
+        'resp1@exemple.com',
+        'resp2@exemple.com',
+        'resp3@exemple.com',
+        'obs1@exemple.com',
+        'obs2@exemple.com',
+        'obs3@exemple.com',
+        'etu1@exemple.com',
+        'etu2@exemple.com',
+        'etu3@exemple.com',
+        'etu4@exemple.com',
+    ];
+    /**
+     * Planning sample
+     */
+    const OKSAMPLE = [
+        [
+            'name' => 'Groupe A',
+            'title' => 'Consultations de médecine générale',
+            'starttime' => '24 May 2021',
+            'endtime' => '30 May 2021',
+        ],
+        [
+            'name' => 'Groupe B',
+            'title' => 'Urgences-Soins intensifs',
+            'starttime' => '24 May 2021',
+            'endtime' => '30 May 2021',
+        ],
+        [
+            'name' => 'Groupe A',
+            'title' => 'Médecine interne',
+            'starttime' => '31 May 2021',
+            'endtime' => '6 June 2021',
+        ],
+        [
+            'name' => 'Groupe B',
+            'title' => 'Consultations de médecine générale',
+            'starttime' => '31 May 2021',
+            'endtime' => '6 June 2021',
+        ],
+        [
+            'name' => 'Groupe A',
+            'title' => 'Urgences-Soins intensifs',
+            'starttime' => '7 June 2021',
+            'endtime' => '13 June 2021',
+        ],
+        [
+            'name' => 'Groupe B',
+            'title' => 'Médecine interne',
+            'starttime' => '7 June 2021',
+            'endtime' => '13 June 2021',
+        ],
+        [
+            'name' => 'Groupe A',
+            'title' => 'Consultations de médecine générale',
+            'starttime' => '14 June 2021',
+            'endtime' => '20 June 2021',
+        ],
+        [
+            'name' => 'Groupe B',
+            'title' => 'Urgences-Soins intensifs',
+            'starttime' => '14 June 2021',
+            'endtime' => '20 June 2021',
+        ],
+        [
+            'name' => 'Groupe A',
+            'title' => 'Médecine interne',
+            'starttime' => '21 June 2021',
+            'endtime' => '27 June 2021',
+        ],
+        [
+            'name' => 'Groupe B',
+            'title' => 'Consultations de médecine générale',
+            'starttime' => '21 June 2021',
+            'endtime' => '27 June 2021',
+        ],
+        [
+            'name' => 'Groupe A',
+            'title' => 'Urgences-Soins intensifs',
+            'starttime' => '28 June 2021',
+            'endtime' => '4 July 2021',
+        ],
+        [
+            'name' => 'Groupe B',
+            'title' => 'Médecine interne',
+            'starttime' => '28 June 2021',
+            'endtime' => '4 July 2021',
+        ],
     ];
 
     /**
@@ -54,9 +131,9 @@ class planning_importer_test extends \advanced_testcase {
      * @param array $results
      * @param array $validationerrors
      *
-     * @covers \local_cveteval\local\importer\planning\import_helper
-     * @covers \local_cveteval\local\importer\planning\csv_data_source
-     * @covers \local_cveteval\local\importer\planning\data_importer
+     * @covers       \local_cveteval\local\importer\planning\import_helper
+     * @covers       \local_cveteval\local\importer\planning\csv_data_source
+     * @covers       \local_cveteval\local\importer\planning\data_importer
      * @dataProvider basic_csv_dataprovider
      */
     public function test_basic_import($inputfiles, $results, $validationerrors) {
@@ -67,8 +144,8 @@ class planning_importer_test extends \advanced_testcase {
             $this->getDataGenerator()->create_user(['email' => $useremail]);
         }
         $dependencies = [
-                'situation' => $inputfiles['situation'] ?? 'basic_planning_situations.csv',
-                'grouping' => $inputfiles['grouping'] ?? 'basic_planning_grouping.csv',
+            'situation' => $inputfiles['situation'] ?? 'basic_planning_situations.csv',
+            'grouping' => $inputfiles['grouping'] ?? 'basic_planning_grouping.csv',
         ];
         // First import groups and situations.
         foreach ($dependencies as $helpername => $helperfilename) {
@@ -100,185 +177,106 @@ class planning_importer_test extends \advanced_testcase {
     }
 
     /**
-     * Planning sample
-     */
-    const OKSAMPLE = [
-            [
-                    'name' => 'Groupe A',
-                    'title' => 'Consultations de médecine générale',
-                    'starttime' => '24 May 2021',
-                    'endtime' => '30 May 2021',
-            ],
-            [
-                    'name' => 'Groupe B',
-                    'title' => 'Urgences-Soins intensifs',
-                    'starttime' => '24 May 2021',
-                    'endtime' => '30 May 2021',
-            ],
-            [
-                    'name' => 'Groupe A',
-                    'title' => 'Médecine interne',
-                    'starttime' => '31 May 2021',
-                    'endtime' => '6 June 2021',
-            ],
-            [
-                    'name' => 'Groupe B',
-                    'title' => 'Consultations de médecine générale',
-                    'starttime' => '31 May 2021',
-                    'endtime' => '6 June 2021',
-            ],
-            [
-                    'name' => 'Groupe A',
-                    'title' => 'Urgences-Soins intensifs',
-                    'starttime' => '7 June 2021',
-                    'endtime' => '13 June 2021',
-            ],
-            [
-                    'name' => 'Groupe B',
-                    'title' => 'Médecine interne',
-                    'starttime' => '7 June 2021',
-                    'endtime' => '13 June 2021',
-            ],
-            [
-                    'name' => 'Groupe A',
-                    'title' => 'Consultations de médecine générale',
-                    'starttime' => '14 June 2021',
-                    'endtime' => '20 June 2021',
-            ],
-            [
-                    'name' => 'Groupe B',
-                    'title' => 'Urgences-Soins intensifs',
-                    'starttime' => '14 June 2021',
-                    'endtime' => '20 June 2021',
-            ],
-            [
-                    'name' => 'Groupe A',
-                    'title' => 'Médecine interne',
-                    'starttime' => '21 June 2021',
-                    'endtime' => '27 June 2021',
-            ],
-            [
-                    'name' => 'Groupe B',
-                    'title' => 'Consultations de médecine générale',
-                    'starttime' => '21 June 2021',
-                    'endtime' => '27 June 2021',
-            ],
-            [
-                    'name' => 'Groupe A',
-                    'title' => 'Urgences-Soins intensifs',
-                    'starttime' => '28 June 2021',
-                    'endtime' => '4 July 2021',
-            ],
-            [
-                    'name' => 'Groupe B',
-                    'title' => 'Médecine interne',
-                    'starttime' => '28 June 2021',
-                    'endtime' => '4 July 2021',
-            ],
-    ];
-    /**
      * Data provider for basic import
      *
      * @return array[]
      */
     public function basic_csv_dataprovider() {
         return [
-                'oksample' => [
-                        'inputfiles' => ['planning' => 'basic_planning.csv'],
-                        'results' => [
-                                'haserror' => false,
-                                'imported' => self::OKSAMPLE,
-                                'errors' => []
-                        ],
-                        'validationerrors' => []
+            'oksample' => [
+                'inputfiles' => ['planning' => 'basic_planning.csv'],
+                'results' => [
+                    'haserror' => false,
+                    'imported' => self::OKSAMPLE,
+                    'errors' => []
                 ],
-                'issue with overlapping dates' => [
-                        'inputfiles' => ['planning' => 'basic_planning_overlap_date.csv'],
-                        'results' => [
-                                'haserror' => true,
-                                'imported' => [
-                                ]
-                        ],
-                        'validationerrors' => [
-                                [
-                                        'linenumber' => '3',
-                                        'messagecode' => 'planning:dateoverlaps',
-                                        'additionalinfo' => (object) [
-                                                "prevrowindex" => 2,
-                                                "previousstartdate" => "24/05/21",
-                                                "previousenddate" => "30/05/21",
-                                                "currentstartdate" => "25/05/21",
-                                                "currentenddate" => "6/06/21"
-                                        ],
-                                        'fieldname' => 'Date début',
-                                ],
-                                [
-                                        'linenumber' => '5',
-                                        'messagecode' => 'planning:dateoverlaps',
-                                        'additionalinfo' =>
-                                                (object) [
-                                                        "prevrowindex" => 4,
-                                                        "previousstartdate" => "7/06/21",
-                                                        "previousenddate" => "13/06/21",
-                                                        "currentstartdate" => "6/06/21",
-                                                        "currentenddate" => "12/06/21"
-                                                ],
-                                        'fieldname' => 'Date fin',
-                                ],
-                        ]
+                'validationerrors' => []
+            ],
+            'issue with overlapping dates' => [
+                'inputfiles' => ['planning' => 'basic_planning_overlap_date.csv'],
+                'results' => [
+                    'haserror' => true,
+                    'imported' => [
+                    ]
                 ],
-                'missing group' => [
-                        'inputfiles' => ['planning' => 'basic_planning_missing_group.csv'],
-                        'results' => [
-                                'haserror' => true,
-                                'errors' => [],
-                                'imported' => []
+                'validationerrors' => [
+                    [
+                        'linenumber' => '3',
+                        'messagecode' => 'planning:dateoverlaps',
+                        'additionalinfo' => (object) [
+                            "prevrowindex" => 2,
+                            "previousstartdate" => "24/05/21",
+                            "previousenddate" => "30/05/21",
+                            "currentstartdate" => "25/05/21",
+                            "currentenddate" => "6/06/21"
                         ],
-                        'validationerrors' => [
-                                [
-                                        'linenumber' => '1',
-                                        'messagecode' => 'planning:groupdoesnotexist',
-                                        'additionalinfo' => 'Groupe C',
-                                        'fieldname' => 'Groupe C',
-                                ],
-                        ]
+                        'fieldname' => 'Date début',
+                    ],
+                    [
+                        'linenumber' => '5',
+                        'messagecode' => 'planning:dateoverlaps',
+                        'additionalinfo' =>
+                            (object) [
+                                "prevrowindex" => 4,
+                                "previousstartdate" => "7/06/21",
+                                "previousenddate" => "13/06/21",
+                                "currentstartdate" => "6/06/21",
+                                "currentenddate" => "12/06/21"
+                            ],
+                        'fieldname' => 'Date fin',
+                    ],
+                ]
+            ],
+            'missing group' => [
+                'inputfiles' => ['planning' => 'basic_planning_missing_group.csv'],
+                'results' => [
+                    'haserror' => true,
+                    'errors' => [],
+                    'imported' => []
                 ],
-                'situation in lowercase' => [
-                        'inputfiles' => [
-                                'planning' => 'basic_planning_lowercase_situation.csv',
-                                'situation' => 'basic_planning_situations_lowercase.csv'
-                        ],
-                        'results' => [
-                                'haserror' => false,
-                                'imported' => self::OKSAMPLE,
-                                'errors' => []
-                        ],
-                        'validationerrors' => []
+                'validationerrors' => [
+                    [
+                        'linenumber' => '1',
+                        'messagecode' => 'planning:groupdoesnotexist',
+                        'additionalinfo' => 'Groupe C',
+                        'fieldname' => 'Groupe C',
+                    ],
+                ]
+            ],
+            'situation in lowercase' => [
+                'inputfiles' => [
+                    'planning' => 'basic_planning_lowercase_situation.csv',
+                    'situation' => 'basic_planning_situations_lowercase.csv'
                 ],
-                'missing situation' => [
-                        'inputfiles' => ['planning' => 'basic_planning_missing_situation.csv'],
-                        'results' => [
-                                'haserror' => true,
-                                'exception' => importer_exception::class
-                        ],
-                        'validationerrors' => [
+                'results' => [
+                    'haserror' => false,
+                    'imported' => self::OKSAMPLE,
+                    'errors' => []
+                ],
+                'validationerrors' => []
+            ],
+            'missing situation' => [
+                'inputfiles' => ['planning' => 'basic_planning_missing_situation.csv'],
+                'results' => [
+                    'haserror' => true,
+                    'exception' => importer_exception::class
+                ],
+                'validationerrors' => [
 
-                                [
-                                        'linenumber' => '2',
-                                        'messagecode' => 'planning:situationnotfound',
-                                        'additionalinfo' => 'TAG',
-                                        'fieldname' => 'Groupe B',
-                                ],
-                                [
-                                        'linenumber' => '3',
-                                        'messagecode' => 'planning:situationnotfound',
-                                        'additionalinfo' => 'TEG',
-                                        'fieldname' => 'Groupe B',
-                                ],
-
-                        ]
-                ],
-
+                    [
+                        'linenumber' => '2',
+                        'messagecode' => 'planning:situationnotfound',
+                        'additionalinfo' => 'TAG',
+                        'fieldname' => 'Groupe B',
+                    ],
+                    [
+                        'linenumber' => '3',
+                        'messagecode' => 'planning:situationnotfound',
+                        'additionalinfo' => 'TEG',
+                        'fieldname' => 'Groupe B',
+                    ],
+                ]
+            ],
         ];
     }
 }

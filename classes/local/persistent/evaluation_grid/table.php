@@ -44,6 +44,6 @@ class table extends generic_entity_table {
     public function __construct($uniqueid = null,
             $actionsdefs = null
     ) {
-        parent::__construct($uniqueid, $actionsdefs, true, entity::class);
+        parent::__construct($uniqueid, $actionsdefs, false, entity::class);
     }
 }

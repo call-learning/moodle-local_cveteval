@@ -49,7 +49,7 @@ class api_user_test extends advanced_testcase {
      * setUp all and do not reset between the tests (as the model should not change)
      * This speeds up the test greatly.
      */
-    public static function setUpBeforeClass() {
+    public static function setUpBeforeClass(): void {
         test_utils::setup_from_shortsample();
     }
 
