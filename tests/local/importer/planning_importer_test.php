@@ -277,6 +277,40 @@ class planning_importer_test extends \advanced_testcase {
                     ],
                 ]
             ],
+            'duplicate lines' => [
+                'inputfiles' => ['planning' => 'basic_planning_duplicate_lines.csv'],
+                'results' => [
+                    'haserror' => false,
+                    'imported' =>
+                        array_merge(
+                            array_slice(self::OKSAMPLE, 0, 4, true),
+                            [
+                                [
+                                    'name' => 'Groupe B',
+                                    'title' => 'Urgences-Soins intensifs',
+                                    'starttime' => '31 May 2021',
+                                    'endtime' => '6 June 2021',
+                                ]
+                            ],
+                            array_slice(self::OKSAMPLE, 4, null, true)
+                        ),
+                    'errors' => []
+                ],
+                'validationerrors' => [
+                    [
+                        'linenumber' => '2',
+                        'messagecode' => 'planning:exits',
+                        'additionalinfo' => 'TAG',
+                        'fieldname' => 'Groupe B',
+                    ],
+                    [
+                        'linenumber' => '3',
+                        'messagecode' => 'planning:situationnotfound',
+                        'additionalinfo' => 'TEG',
+                        'fieldname' => 'Groupe B',
+                    ],
+                ]
+            ],
         ];
     }
 }

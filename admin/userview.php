@@ -26,6 +26,7 @@ use local_cltools\local\crud\generic\generic_entity_exporter_generator;
 use local_cveteval\local\external\external_utils;
 use local_cveteval\local\forms\cveteval_import_form;
 use local_cveteval\local\importer\importid_manager;
+use local_cveteval\roles;
 
 require_once(__DIR__ . '../../../../config.php');
 global $CFG, $OUTPUT, $PAGE;
@@ -66,13 +67,32 @@ echo $OUTPUT->render($select);
 if ($userid) {
     global $USER;
     $olduser = $USER;
-    $plans = external_utils::query_entities('planning', [], null, $userid);;
 
-    foreach ($plans as $p) {
-        $evalplan = new local_cveteval\local\persistent\planning\entity($p->id);
-        $exporter = generic_entity_exporter_generator::generate($evalplan);
-        echo \local_cltools\local\crud\helper\crud_view::display_entity($p, $exporter, $renderer);
+    echo $OUTPUT->heading(get_string('role:type', 'local_cveteval') . ': '
+        . local_cveteval\local\persistent\role\entity::get_type_fullname(roles::get_user_role_id($userid)));
+    if (roles::can_appraise($userid)) {
+
+        $situations = external_utils::query_entities('situation', [], null, $userid);
+        foreach ($situations as $s) {
+            if (local_cveteval\local\persistent\role\entity::count_records(['userid' => $userid,
+                    'clsituationid' => $s->id]) > 0) {
+                $situation = new local_cveteval\local\persistent\situation\entity($s->id);
+                $exporter = generic_entity_exporter_generator::generate($situation);
+                echo $OUTPUT->box_start();
+                echo \local_cltools\local\crud\helper\crud_view::display_entity($situation, $exporter, $renderer);
+                echo $OUTPUT->box_end();
+            }
+        }
+    } else {
+        $plans = external_utils::query_entities('planning', [], null, $userid);
+
+        foreach ($plans as $p) {
+            $evalplan = new local_cveteval\local\persistent\planning\entity($p->id);
+            $exporter = generic_entity_exporter_generator::generate($evalplan);
+            echo $OUTPUT->box_start();
+            echo \local_cltools\local\crud\helper\crud_view::display_entity($evalplan, $exporter, $renderer);
+            echo $OUTPUT->box_end();
+        }
     }
-
 }
 echo $OUTPUT->footer();

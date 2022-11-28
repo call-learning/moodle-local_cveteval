@@ -185,7 +185,9 @@ class import_helper extends base_helper {
                 $transformer,
                 $dataimporter,
                 $progressbar,
-                $importid
+                $importid,
+                null,
+                'local_cveteval'
         ) extends processor {
             /**
              * Get statistics in a displayable (HTML) format

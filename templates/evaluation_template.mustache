@@ -24,10 +24,12 @@
         "version": "version"
     }
 }}
-<div>
-    <h3><span class="name">{{#str}}name, local_cveteval{{/str}}: </span>{{name}}</h3>
-    <div><span class="idnumber">{{#str}}idnumber, local_cveteval{{/str}}:</span>{{idnumber}}</div>
-    <div><span class="scale">{{#str}}evaluation_template:scaleid, local_cveteval{{/str}}:</span>{{scalename}}</div>
-    <div><span class="version">{{#str}}evaluation_template:version, local_cveteval{{/str}}:</span>{{version}}</div>
-    {{>local_cltools/persistent_info}}
+<div class="cveteval-persistent-card card">
+    <h4> class="card-header">{{#str}}name, local_cveteval{{/str}}: {{name}}</h4>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item"><span class="idnumber">{{#str}}idnumber, local_cveteval{{/str}}:</span>{{idnumber}}</li>
+        <li class="list-group-item"><span class="scale">{{#str}}evaluation_template:scaleid, local_cveteval{{/str}}:</span>{{scalename}}</li>
+        <li class="list-group-item"><span class="version">{{#str}}evaluation_template:version, local_cveteval{{/str}}:</span>{{version}}</li>
+    </ul>
+    <div class="card-footer text-muted">{{>local_cltools/persistent_info}}</div>
 </div>

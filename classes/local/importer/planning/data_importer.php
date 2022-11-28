@@ -31,7 +31,6 @@ use local_cveteval\local\persistent\situation\entity as situation_entity;
 use moodle_exception;
 use stdClass;
 use tool_importer\local\exceptions\importer_exception;
-use tool_importer\local\exceptions\validation_exception;
 use tool_importer\local\log_levels;
 
 /**
@@ -234,10 +233,24 @@ class data_importer extends \tool_importer\data_importer {
                 if ($snshortname && !empty($this->situations[$snshortname])) {
                     $record->groupid = $group->get('id');
                     $record->clsituationid = $this->situations[$snshortname]->get('id');
-                    $planning = new planning_entity(0, $record);
-                    $planning->create();
-                    $this->planningeventscount++;
-                    $plannings[] = $planning;
+                    if (planning_entity::count_records([
+                        'clsituationid' => $record->clsituationid,
+                        'groupid' => $record->groupid,
+                        'starttime' => $record->starttime,
+                        'endtime' => $record->endtime,
+                    ]) == 0) {
+                        $planning = new planning_entity(0, $record);
+                        $planning->create();
+                        $this->planningeventscount++;
+                        $plannings[] = $planning;
+                    } else {
+                        $this->get_logger()->create_log($rowindex,
+                            'planning:exist',
+                            'clsituationid,groupid,starttime,endtime',
+                            $this->get_processor(),
+                            "[G:$groupname, S:$snshortname]"
+                        );
+                    }
                 }
             } catch (moodle_exception $e) {
                 $this->get_logger()->log_from_exception($e, [

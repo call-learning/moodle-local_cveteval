@@ -31,7 +31,7 @@ class model_with_history_test extends \advanced_testcase {
 
     /**
      * Check when history is disabled
-     * @covers \local_cveteval\local\persistent\model_with_history
+     * @covers \local_cveteval\local\persistent\model_with_history_impl
      */
     public function test_with_history_disabled() {
         $this->resetAfterTest();
@@ -71,7 +71,7 @@ class model_with_history_test extends \advanced_testcase {
      * Check when history is enabled
      *
      * @return void
-     * @covers \local_cveteval\local\persistent\model_with_history
+     * @covers \local_cveteval\local\persistent\model_with_history_impl
      */
     public function test_with_history_enabled() {
         $this->resetAfterTest();

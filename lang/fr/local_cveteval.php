@@ -107,8 +107,8 @@ $string['evaluation_grid:entity'] = 'Grille d\'évaluation';
 $string['evaluation_gridfile'] = 'Critères de la grille d\'évaluation';
 $string['evaluation_gridfile_help'] =
         '(Optional)Une liste de critères d\'évaluation en format CSV. Le fichier doit contenir les entêtes suivants: <pre>"Evaluation Grid Id";"Criterion Id";"Criterion Parent Id";"Criterion Label"</pre>';
-$string['evaluation_grid:idnumber'] = 'Identifiant de l\'évaluation';
-$string['evaluation_grid:name'] = 'Nom de l\'évaluation';
+$string['evaluation_grid:idnumber'] = 'Identifiant de la grille d\'évaluation';
+$string['evaluation_grid:name'] = 'Nom de la grille d\'évaluation';
 $string['evaluation_grid:plural'] = 'Grilles d\'évaluation';
 $string['evaluationgrid:stats'] = 'Critères importés: {$a->criterions}';
 $string['evaluation:waiting'] = "En attente...";
@@ -122,6 +122,8 @@ $string['grade:defaultscale'] = 'Echelle de note par défault (CompetvetEval)';
 $string['grades:export'] = 'Exporter les notes';
 $string['grade:value'] = 'Note: {$a}';
 $string['group_assignment:entity'] = 'Affectation au groupe';
+$string['group_assignment:group'] = 'Groupe';
+$string['group_assignment:student'] = 'Etudiant';
 $string['group:entity'] = 'Groupe';
 $string['groupingfile_help'] =
         'Une liste de groupes en format CSV. Le fichier doit contenir les entêtes suivants: <pre>"Nom de l\'étudiant";"Prénom";"Identifiant";"Groupement 1"</pre>';
@@ -190,6 +192,7 @@ $string['planning:entity'] = 'Planning des évaluations';
 $string['planningfile_help'] =
         'Une liste de planning en format CSV. Le fichier doit contenir les entêtes suivants:<pre>"Date début";"Date fin";"Groupe XX";"Groupe YY"</pre>';
 $string['planningfile'] = 'Liste des plannings';
+$string['planning:exist'] = 'Planning exits {$a}';
 $string['planning:groupdoesnotexist'] = 'Le groupe {$a} n\'existe pas.';
 $string['planning:groupid'] = 'Identifiant de groupe';
 $string['planning:groupname'] = 'Nom de groupe';
@@ -206,6 +209,9 @@ $string['planning:title'] = 'Titre';
 $string['pluginname'] = 'Plugin CompetVetEval';
 $string['reset:confirm'] = 'Confirmez que vous souhaitez que toutes les données soit réinitialisées ?';
 $string['role:entity'] = 'Roles';
+$string['role:userid'] = 'Utilisateur';
+$string['role:clsituationid'] = 'Situation';
+$string['role:type'] = 'Type de role';
 $string['role:type:appraiser'] = 'Appraiser';
 $string['role:type:assessor'] = 'Assessor';
 $string['role:type:student'] = 'Student';

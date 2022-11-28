@@ -19,6 +19,7 @@ namespace local_cveteval\local;
 use coding_exception;
 use core\dataformat;
 use core_user;
+use gradereport_singleview\local\ui\empty_element;
 use local_cveteval\local\persistent\appraisal\entity as appraisal_entity;
 use local_cveteval\local\persistent\appraisal_criterion\entity as appraisal_criterion_entity;
 use local_cveteval\local\persistent\criterion\entity as criterion_entity;
@@ -201,7 +202,7 @@ class download_helper {
         persistent\history\entity::set_current_id($importid);
         $records = situation_entity::get_records();
         $fields =
-                ['Description', 'Nom', 'Nom court', 'ResponsableUE', 'Responsable', 'Evaluateurs',
+                ['Description', 'Nom', 'Nom court', 'Responsable', 'Evaluateurs',
                         'Observateurs', 'Appreciations', 'GrilleEval'];
         $transformcsv = function($situation) {
             $roles = persistent\role\entity::get_records(['clsituationid' => $situation->get('id')]);
@@ -223,7 +224,6 @@ class download_helper {
                     'Description' => $situation->get('description'),
                     'Nom' => $situation->get('title'),
                     'Nom court' => $situation->get('idnumber'),
-                    'ResponsableUE' => '',
                     'Responsable' => '',
                     'Evaluateurs' => implode(',', $eval),
                     'Observateurs' => implode(',', $obs),
@@ -251,29 +251,46 @@ class download_helper {
         foreach ($grecords as $gr) {
             $groupidtoname[$gr->get('id')] = $gr->get('name');
         }
+        // Then sort.
+        uasort($groupidtoname, function($g1, $g2) {
+            if ($g1 == $g2) {
+                return 0;
+            }
+            return ($g1 < $g2) ? -1 : 1;
+        });
 
         $fields = array_merge(['Date début', 'Date fin'], array_values($groupidtoname));
         $precords = planning_entity::get_records();
         $flatplanning = [];
 
         foreach ($precords as $p) {
-            $shakey = sha1($p->get('starttime') . $p->get('endtime'));
-            if (empty($flatplanning[$shakey])) {
-                $flatplanning[$shakey] = (object) [
-                        'starttime' => userdate($p->get('starttime'), get_string('export:dateformat', 'local_cveteval')),
-                        'endtime' => userdate($p->get('endtime'), get_string('export:dateformat', 'local_cveteval')),
-                        'groups' => array_fill_keys($groupidtoname, '')
-                ];
-            }
+            $shakey = $p->get('starttime') . $p->get('endtime');
             $sit = situation_entity::get_record(['id' => $p->get('clsituationid')]);
             $group = group_entity::get_record(['id' => $p->get('groupid')]);
+            while (!empty($flatplanning[$shakey]->groups[$group->get('name')])) {
+                $shakey .= '1';
+            }
+            if (empty($flatplanning[$shakey])) {
+                $flatplanning[$shakey] = (object) [
+                    'starttime' => $p->get('starttime'),
+                    'endtime' => $p->get('endtime'),
+                    'groups' => array_fill_keys($groupidtoname, '')
+                ];
+            }
             $flatplanning[$shakey]->groups[$group->get('name')] = $sit->get('idnumber');
         }
+        // Then sort.
+        uasort($flatplanning, function($p1, $p2) {
+            if ($p1->starttime == $p2->starttime) {
+                return 0;
+            }
+            return ($p1->starttime < $p2->starttime) ? -1 : 1;
+        });
 
         $transformcsv = function($planning) {
             $planningdata = [
-                    'Date début' => $planning->starttime,
-                    'Date fin' => $planning->endtime
+                'Date début' => userdate($planning->starttime, get_string('export:dateformat', 'local_cveteval')),
+                'Date fin' => userdate($planning->endtime, get_string('export:dateformat', 'local_cveteval')),
             ];
             foreach ($planning->groups as $groupname => $situationname) {
                 $planningdata[$groupname] = $situationname;

@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template local_cveteval/evaluation_grid
+    @template local_cveteval/group_assignment
 
 
     Example context (json):
@@ -25,9 +25,10 @@
     }
 }}
 <div class="cveteval-persistent-card card">
-    <h4 class="card-header">{{#str}}evaluation_grid:name, local_cveteval{{/str}}: {{name}}</h4>
+    <h4 class="card-header">{{#str}}group_assignment:entity, local_cveteval{{/str}}</h4>
     <ul class="list-group list-group-flush">
-        <li class="list-group-item">{{#str}}evaluation_grid:idnumber, local_cveteval{{/str}}: {{idnumber}}</li>
+        <li class="list-group-item">{{#str}}group_assignment:group, local_cveteval{{/str}}: {{groupidformatted}}</li>
+        <li class="list-group-item">{{#str}}group_assignment:student, local_cveteval{{/str}}: {{studentidformatted}}</li>
     </ul>
     <div class="card-footer text-muted">{{>local_cltools/persistent_info}}</div>
 </div>

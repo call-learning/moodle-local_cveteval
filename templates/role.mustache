@@ -15,19 +15,25 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template local_cveteval/evaluation_grid
+    @template local_cveteval/role
 
 
     Example context (json):
     {
-        "name": "FULL NAME",
-        "idnumber": "IDNUMBER"
+        "useridformatted": "FULL NAME",
+        "userid": 2,
+        "clsituationidformatted": "IDNUMBER"
+        "clsituationid": 5
+        "type": 1
+        "typeformatted": "IDNUMBER"
     }
 }}
 <div class="cveteval-persistent-card card">
-    <h4 class="card-header">{{#str}}evaluation_grid:name, local_cveteval{{/str}}: {{name}}</h4>
+    <h4 class="card-header">{{#str}}role:entity, local_cveteval{{/str}}</h4>
     <ul class="list-group list-group-flush">
-        <li class="list-group-item">{{#str}}evaluation_grid:idnumber, local_cveteval{{/str}}: {{idnumber}}</li>
+        <li class="list-group-item">{{#str}}role:userid, local_cveteval{{/str}}: {{useridformatted}}</li>
+        <li class="list-group-item">{{#str}}role:clsituationid, local_cveteval{{/str}}: {{clsituationidformatted}}</li>
+        <li class="list-group-item">{{#str}}role:type, local_cveteval{{/str}}: {{typeformatted}}</li>
     </ul>
     <div class="card-footer text-muted">{{>local_cltools/persistent_info}}</div>
 </div>
