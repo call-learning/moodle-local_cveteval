@@ -129,14 +129,16 @@ class data_importer extends \tool_importer\data_importer {
         $appraisersemails = explode(',', $row['appraisers']);
 
         foreach ($assessorsemails as $email) {
-            if (empty(trim($email))) {
+            $email = strtolower(trim($email));
+            if (empty($email)) {
                 continue;
             }
             utils::check_user_exists_or_multiple($email, $rowindex, 'situation:multipleuserfound', 'situation:usernotfound',
                     'Evaluateur');
         }
         foreach ($appraisersemails as $email) {
-            if (empty(trim($email))) {
+            $email = strtolower(trim($email));
+            if (empty($email)) {
                 continue;
             }
             utils::check_user_exists_or_multiple($email, $rowindex, 'situation:multipleuserfound', 'situation:usernotfound',
@@ -197,8 +199,12 @@ class data_importer extends \tool_importer\data_importer {
                 continue;
             }
             $email = trim($email);
+            // First try as it is.
             $user = core_user::get_user_by_email($email);
-
+            if (empty($user)) {
+                $email = strtolower(trim($email));
+                $user = core_user::get_user_by_email($email);
+            }
             $roledef = [
                     'userid' => $user->id,
                     'clsituationid' => $clinicalsituationid,
