@@ -33,7 +33,7 @@ $evalplanid = required_param('evalplanid', PARAM_INT);
 $studentid = required_param('studentid', PARAM_INT);
 $currenttab = optional_param('tabname', 'thissituation', PARAM_ALPHA);
 require_login();
-if (!roles::can_assess($USER->id)) {
+if (!roles::can_appraise($USER->id)) {
     throw new moodle_exception('cannotaccess', 'local_cveteval');
 }
 $student = core_user::get_user($studentid);

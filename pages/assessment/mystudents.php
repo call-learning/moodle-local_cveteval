@@ -31,7 +31,7 @@ require_once(__DIR__ . '/../../../../config.php');
 global $CFG, $OUTPUT, $PAGE, $USER;
 $situationid = required_param('situationid', PARAM_INT);
 require_login();
-if (!roles::can_assess($USER->id)) {
+if (!roles::can_appraise($USER->id)) {
     throw new moodle_exception('cannotaccess', 'local_cveteval');
 }
 $PAGE->set_context(context_system::instance());
