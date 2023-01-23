@@ -25,12 +25,14 @@
  */
 require_once(__DIR__ . '/../../../config.php');
 global $CFG, $OUTPUT, $PAGE;
+use local_cveteval\local\persistent\history\entity as history_entity;
 require_login();
 require_capability('local/cveteval:manageentities', context_system::instance());
 $importid = required_param('importid', PARAM_INT);
 $PAGE->set_url('/local/cveteval/manage/index.php', ['importid' => $importid]);
 $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('standard');
+history_entity::set_current_id($importid);
 \local_cveteval\utils::setup_entity_management_page_navigation($importid);
 
 $files = scandir(__DIR__);

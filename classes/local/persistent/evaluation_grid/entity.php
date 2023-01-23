@@ -106,7 +106,7 @@ class entity extends persistent implements enhanced_persistent, model_with_histo
      */
     public static function validate_access(context $context, $writeaccess = false): bool {
         global $USER;
-        return roles::can_appraise($USER->id);
+        return roles::can_appraise($USER->id) || has_capability('local/cveteval:manageentities', $context);
     }
 }
 

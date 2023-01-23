@@ -24,13 +24,13 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+global $CFG;
+
+$enabled = !empty($CFG->enablecompetveteval) && $CFG->enablecompetveteval;
+
+$settings = new admin_category('cveteval', get_string('pluginname', 'local_cveteval'));
+
 if ($hassiteconfig) {
-    global $CFG;
-
-    $enabled = !empty($CFG->enablecompetveteval) && $CFG->enablecompetveteval;
-
-    $settings = new admin_category('cveteval', get_string('pluginname', 'local_cveteval'));
-
     $generalsettings = new admin_settingpage(
         'competveteval_general', get_string('settings:general', 'local_cveteval'),
         'local/cveteval:manageevaluationtemplate',
@@ -60,67 +60,70 @@ if ($hassiteconfig) {
             )
         );
     }
+}
+$settings->add('cveteval',
+    new admin_externalpage(
+        'cvetevalimport',
+        get_string('import:new', 'local_cveteval'),
+        $CFG->wwwroot . '/local/cveteval/admin/import.php',
+        array('local/cveteval:manageimport'),
+        !$enabled)
+);
 
-    $settings->add('cveteval',
-        new admin_externalpage(
-            'cvetevalimport',
-            get_string('import:new', 'local_cveteval'),
-            $CFG->wwwroot . '/local/cveteval/admin/import.php',
-            array('local/cveteval:manageimport'),
-            !$enabled)
-    );
+$settings->add('cveteval',
+    new admin_externalpage(
+        'cvetevalimportindex',
+        get_string('import:listall', 'local_cveteval'),
+        $CFG->wwwroot . '/local/cveteval/admin/importindex.php',
+        array('local/cveteval:manageimport'),
+        !$enabled)
+);
 
-    $settings->add('cveteval',
-        new admin_externalpage(
-            'cvetevalimportindex',
-            get_string('import:listall', 'local_cveteval'),
-            $CFG->wwwroot . '/local/cveteval/admin/importindex.php',
-            array('local/cveteval:manageimport'),
-            !$enabled)
-    );
+$settings->add('cveteval',
+    new admin_externalpage(
+        'cvetevalcleanupmodel',
+        get_string('cleanup:model', 'local_cveteval'),
+        $CFG->wwwroot . '/local/cveteval/admin/cleanup.php?type=model',
+        array('local/cveteval:cleanupdata'),
+        !$enabled)
+);
 
+$settings->add('cveteval',
+    new admin_externalpage(
+        'cvetevalcleanupuserdata',
+        get_string('cleanup:userdata', 'local_cveteval'),
+        $CFG->wwwroot . '/local/cveteval/admin/cleanup.php?type=userdata',
+        array('local/cveteval:cleanupdata'),
+        !$enabled)
+);
 
-    $settings->add('cveteval',
-        new admin_externalpage(
-            'cvetevalcleanupmodel',
-            get_string('cleanup:model', 'local_cveteval'),
-            $CFG->wwwroot . '/local/cveteval/admin/cleanup.php?type=model',
-            array('local/cveteval:cleanupdata'),
-            !$enabled)
-    );
+$settings->add('cveteval',
+    new admin_externalpage(
+        'cvetevaluserview',
+        get_string('userview', 'local_cveteval'),
+        $CFG->wwwroot . '/local/cveteval/admin/userview.php?',
+        array('local/cveteval:viewallsituations'),
+        !$enabled)
+);
 
-    $settings->add('cveteval',
-        new admin_externalpage(
-            'cvetevalcleanupuserdata',
-            get_string('cleanup:userdata', 'local_cveteval'),
-            $CFG->wwwroot . '/local/cveteval/admin/cleanup.php?type=userdata',
-            array('local/cveteval:cleanupdata'),
-            !$enabled)
-    );
-
-
-    $settings->add('cveteval',
-        new admin_externalpage(
-            'cvetevaluserview',
-            get_string('userview', 'local_cveteval'),
-            $CFG->wwwroot . '/local/cveteval/admin/userview.php?',
-            array('local/cveteval:viewallsituations'),
-            !$enabled)
-    );
-
-    if ($enabled) {
+if ($enabled) {
+    if ($hassiteconfig) {
         $ADMIN->add('localplugins', $settings); // Add it to the main admin menu.
-        $ADMIN->add('root', new admin_externalpage('cvetevalmenu',
-                get_string('pluginname', 'local_cveteval'),
-                new moodle_url('/admin/category.php', ['category' => 'cveteval'])
-        )); // Add a link in the root menu.
+    } else {
+        $ADMIN->add('root', $settings);
     }
-    // Create a global Advanced Feature Toggle.
-    $enableoption = new admin_setting_configcheckbox('enablecompetveteval',
-        new lang_string('enablecompetveteval', 'local_cveteval'),
-        new lang_string('enablecompetveteval', 'local_cveteval'),
-        1);
-    $enableoption->set_updatedcallback('local_cveteval_enable_disable_plugin_callback');
-    $optionalsubsystems = $ADMIN->locate('optionalsubsystems');
+    $ADMIN->add('root', new admin_externalpage('cvetevalmenu',
+        get_string('pluginname', 'local_cveteval'),
+        new moodle_url('/admin/category.php', ['category' => 'cveteval'])
+    )); // Add a link in the root menu.
+}
+// Create a global Advanced Feature Toggle.
+$enableoption = new admin_setting_configcheckbox('enablecompetveteval',
+    new lang_string('enablecompetveteval', 'local_cveteval'),
+    new lang_string('enablecompetveteval', 'local_cveteval'),
+    1);
+$enableoption->set_updatedcallback('local_cveteval_enable_disable_plugin_callback');
+$optionalsubsystems = $ADMIN->locate('optionalsubsystems');
+if ($optionalsubsystems) {
     $optionalsubsystems->add($enableoption);
 }
