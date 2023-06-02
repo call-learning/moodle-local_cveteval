@@ -71,6 +71,7 @@ $string['cveteval:mobileaccess'] = 'A accès au API mobiles';
 $string['cveteval:viewallcriteria'] = 'Peut voir tous les criteria';
 $string['cveteval:viewallsituations'] = 'Peut voir toutes les situations';
 $string['cveteval:viewfiles'] = 'Peut voir les fichiers';
+$string['cannotdeleteappraisal'] = 'Ne peut effacer l\'observation';
 $string['datamigration'] = 'Migration des données';
 $string['datamigration_help'] = 'Migration des données entre différents importations';
 $string['datamigrationstep'] = 'Migration / {$a}';

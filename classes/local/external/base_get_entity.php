@@ -112,7 +112,7 @@ abstract class base_get_entity extends external_api {
      * TODO: check for user right at submission
      *
      * @param array $entityarray
-     * @param object $entityclass
+     * @param string $entityclass
      * @return array
      */
     protected static function entities_submit($entityarray, $entityclass) {

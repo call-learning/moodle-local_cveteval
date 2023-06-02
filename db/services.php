@@ -126,6 +126,15 @@ $functions = array(
         'capabilities' => 'local/cveteval:mobileaccess',
         'services' => array(utils::CVETEVAL_MOBILE_SERVICE),
     ),
+    'local_cveteval_delete_appraisal' => array(
+        'classname' => 'local_cveteval\\local\\external\\appraisal',
+        'methodname' => 'delete',
+        'description' => 'Delete appraisal and all linked appraisal criteria',
+        'type' => 'write',
+        'ajax' => true,
+        'capabilities' => 'local/cveteval:mobileaccess',
+        'services' => array(utils::CVETEVAL_MOBILE_SERVICE),
+    ),
     'local_cveteval_submit_appraisal_criteria' => array(
         'classname' => 'local_cveteval\\local\\external\\appr_crit',
         'methodname' => 'submit',

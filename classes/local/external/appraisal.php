@@ -29,7 +29,8 @@ use external_function_parameters;
 use external_multiple_structure;
 use external_single_structure;
 use external_value;
-use local_cveteval\local\persistent\appraisal\entity;
+use local_cveteval\local\persistent\appraisal\entity as appraisal_entity;
+use local_cveteval\local\persistent\appraisal_criterion\entity as appraisal_criterion_entity;
 
 /**
  * Class appraisal
@@ -47,7 +48,7 @@ class appraisal extends base_get_entity {
      */
     public static function get_returns() {
         return new external_multiple_structure(
-                static::single_appraisal_returns()
+            static::single_appraisal_returns()
         );
     }
 
@@ -58,19 +59,19 @@ class appraisal extends base_get_entity {
      */
     protected static function single_appraisal_returns() {
         return new external_single_structure(
-                array(
-                        'id' => new external_value(PARAM_INT, 'id of the appraisal criterion'),
-                        'studentid' => new external_value(PARAM_INT, 'id of the student'),
-                        'appraiserid' => new external_value(PARAM_INT, 'id of the appraiser'),
-                        'evalplanid' => new external_value(PARAM_INT, 'id of the evalplan'),
-                        'context' => new external_value(PARAM_TEXT, 'context'),
-                        'contextformat' => new external_value(PARAM_INT, 'context format', VALUE_DEFAULT, FORMAT_PLAIN),
-                        'comment' => new external_value(PARAM_TEXT, 'comment'),
-                        'commentformat' => new external_value(PARAM_INT, 'comment format', VALUE_DEFAULT, FORMAT_PLAIN),
-                        'timemodified' => new external_value(PARAM_INT, 'last modification time'),
-                        'timecreated' => new external_value(PARAM_INT, 'last modification time'),
-                        'usermodified' => new external_value(PARAM_INT, 'user modified'),
-                )
+            array(
+                'id' => new external_value(PARAM_INT, 'id of the appraisal criterion'),
+                'studentid' => new external_value(PARAM_INT, 'id of the student'),
+                'appraiserid' => new external_value(PARAM_INT, 'id of the appraiser'),
+                'evalplanid' => new external_value(PARAM_INT, 'id of the evalplan'),
+                'context' => new external_value(PARAM_TEXT, 'context'),
+                'contextformat' => new external_value(PARAM_INT, 'context format', VALUE_DEFAULT, FORMAT_PLAIN),
+                'comment' => new external_value(PARAM_TEXT, 'comment'),
+                'commentformat' => new external_value(PARAM_INT, 'comment format', VALUE_DEFAULT, FORMAT_PLAIN),
+                'timemodified' => new external_value(PARAM_INT, 'last modification time'),
+                'timecreated' => new external_value(PARAM_INT, 'last modification time'),
+                'usermodified' => new external_value(PARAM_INT, 'user modified'),
+            )
         );
     }
 
@@ -85,6 +86,7 @@ class appraisal extends base_get_entity {
 
     /**
      * Submit appraisal
+     *
      * @param int $id
      * @param int $studentid
      * @param int $appraiserid
@@ -99,11 +101,11 @@ class appraisal extends base_get_entity {
      * @return mixed|null
      */
     public static function submit($id, $studentid, $appraiserid, $evalplanid, $context, $contextformat, $comment, $commentformat,
-            $timemodified, $timecreated, $usermodified) {
+        $timemodified, $timecreated, $usermodified) {
         // TODO: leverage the persistent entities features to get the right columns/fields to return.
         $params = self::validate_parameters(self::submit_parameters(),
-                compact('id', 'studentid', 'appraiserid', 'evalplanid', 'context', 'contextformat', 'comment',
-                        'commentformat', 'timemodified', 'timecreated', 'usermodified'));
+            compact('id', 'studentid', 'appraiserid', 'evalplanid', 'context', 'contextformat', 'comment',
+                'commentformat', 'timemodified', 'timecreated', 'usermodified'));
         $context = context_system::instance();
         self::validate_context($context);
 
@@ -111,7 +113,7 @@ class appraisal extends base_get_entity {
         // Temporary fix for the app: should not set "null" into comment and context".
         $params['context'] = $params['context'] == "null" ? "" : $params['context'];
         $params['comment'] = $params['comment'] == "null" ? "" : $params['comment'];
-        $entities = self::entities_submit([$params], entity::class);
+        $entities = self::entities_submit([$params], appraisal_entity::class);
         if (!empty($entities)) {
             $appraisal = array_pop($entities);
         }
@@ -125,19 +127,77 @@ class appraisal extends base_get_entity {
      */
     public static function submit_parameters() {
         return new external_function_parameters(
-                array(
-                        'id' => new external_value(PARAM_INT, 'id of the appraisal criterion', VALUE_DEFAULT),
-                        'studentid' => new external_value(PARAM_INT, 'id of the student'),
-                        'appraiserid' => new external_value(PARAM_INT, 'id of the appraiser'),
-                        'evalplanid' => new external_value(PARAM_INT, 'id of the evalplan'),
-                        'context' => new external_value(PARAM_TEXT, 'context', VALUE_DEFAULT, ""),
-                        'contextformat' => new external_value(PARAM_INT, 'context format', VALUE_DEFAULT, FORMAT_PLAIN),
-                        'comment' => new external_value(PARAM_TEXT, 'comment', VALUE_DEFAULT, ""),
-                        'commentformat' => new external_value(PARAM_INT, 'comment format', VALUE_DEFAULT, FORMAT_PLAIN),
-                        'timemodified' => new external_value(PARAM_INT, 'last modification time', VALUE_DEFAULT, 0),
-                        'timecreated' => new external_value(PARAM_INT, 'last modification time', VALUE_DEFAULT, 0),
-                        'usermodified' => new external_value(PARAM_INT, 'user modified', VALUE_DEFAULT, 0),
-                )
+            array(
+                'id' => new external_value(PARAM_INT, 'id of the appraisal criterion', VALUE_DEFAULT),
+                'studentid' => new external_value(PARAM_INT, 'id of the student'),
+                'appraiserid' => new external_value(PARAM_INT, 'id of the appraiser'),
+                'evalplanid' => new external_value(PARAM_INT, 'id of the evalplan'),
+                'context' => new external_value(PARAM_TEXT, 'context', VALUE_DEFAULT, ""),
+                'contextformat' => new external_value(PARAM_INT, 'context format', VALUE_DEFAULT, FORMAT_PLAIN),
+                'comment' => new external_value(PARAM_TEXT, 'comment', VALUE_DEFAULT, ""),
+                'commentformat' => new external_value(PARAM_INT, 'comment format', VALUE_DEFAULT, FORMAT_PLAIN),
+                'timemodified' => new external_value(PARAM_INT, 'last modification time', VALUE_DEFAULT, 0),
+                'timecreated' => new external_value(PARAM_INT, 'last modification time', VALUE_DEFAULT, 0),
+                'usermodified' => new external_value(PARAM_INT, 'user modified', VALUE_DEFAULT, 0),
+            )
+        );
+    }
+
+    /**
+     * Delete an appraisal
+     *
+     * @return \external_warnings
+     */
+    public static function delete_returns(): \external_warnings {
+        return new \external_warnings();
+    }
+
+    /**
+     * Delete an appraisal
+     *
+     * @param int $id
+     */
+    public static function delete($id) {
+        global $USER;
+        // TODO: leverage the persistent entities features to get the right columns/fields to return.
+        $params = self::validate_parameters(self::delete_parameters(),
+            compact('id'));
+        $context = context_system::instance();
+        self::validate_context($context);
+        $appraisal = appraisal_entity::get_record(['id' => $params['id']]);
+        $warnings = [];
+        if ($appraisal) {
+            $candelete = $USER->id == $appraisal->get('appraiserid') || (
+                    $USER->id == $appraisal->get('studentid') && empty($appraisal->get('appraiserid')));
+            $candelete = $candelete || has_capability('moodle/site:config', \context_system::instance());
+            if (!$candelete) {
+                $warnings[] = [
+                    'item' => 'appraisal',
+                    'itemid' => $id,
+                    'warningcode' => 'cannotdeleteappraisal',
+                    'message' => get_string('cannotdeleteappraisal', 'local_cveteval')
+                ];
+            } else {
+                foreach (appraisal_criterion_entity::get_records(['appraisalid' => $id]) as $appraisalcrit) {
+                    $appraisalcrit->delete();
+                }
+                $appraisal->delete();
+            }
+        }
+
+        return $warnings;
+    }
+
+    /**
+     * Returns description of method parameters
+     *
+     * @return external_function_parameters
+     */
+    public static function delete_parameters() {
+        return new external_function_parameters(
+            array(
+                'id' => new external_value(PARAM_INT, 'id of the appraisal', VALUE_DEFAULT),
+            )
         );
     }
 

@@ -70,6 +70,7 @@ $string['cveteval:mobileaccess'] = 'Has mobile Access';
 $string['cveteval:viewallcriteria'] = 'Can view all criteria';
 $string['cveteval:viewallsituations'] = 'Can view all situations';
 $string['cveteval:viewfiles'] = 'Can view files';
+$string['cannotdeleteappraisal'] = 'Cannot delete appraisal';
 $string['datamigration'] = 'Data migration';
 $string['datamigration_help'] = 'Data migration between different importations';
 $string['datamigrationstep'] = 'Data Migration / {$a}';
