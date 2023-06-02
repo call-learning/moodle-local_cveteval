@@ -147,12 +147,8 @@ class utils {
      * Create update default
      */
     public static function create_update_default_criteria_grid() {
-        if ((defined('PHPUNIT_TEST') && PHPUNIT_TEST) || defined('BEHAT_SITE_RUNNING')) {
-            upload_default_criteria_grid::create_default_grid();
-        } else {
-            $task = new upload_default_criteria_grid();
-            \core\task\manager::queue_adhoc_task($task, true);
-        }
+        $task = new upload_default_criteria_grid();
+        \core\task\manager::queue_adhoc_task($task, true);
     }
 
     /**

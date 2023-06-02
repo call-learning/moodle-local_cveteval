@@ -217,15 +217,17 @@ trait model_with_history_impl {
      * Take into account only active records or current history.
      *
      * @param array $filters Filters to apply.
+     * @param int $strictness Similar to the internal DB get_record call, indicate whether a missing record should be
+     *      ignored/return false ({@see IGNORE_MISSING}) or should cause an exception to be thrown ({@see MUST_EXIST})
      * @return false|static
      */
-    public static function get_record($filters = array()) {
+    public static function get_record($filters = array(), int $strictness = IGNORE_MISSING) {
         global $DB;
         [$sql, $where, $params] = self::prepare_sql_get_records($filters);
         if ($where) {
             $where = "WHERE $where";
         }
-        $record = $DB->get_record_sql("SELECT e.* FROM $sql $where", $params);
+        $record = $DB->get_record_sql("SELECT e.* FROM $sql $where", $params, $strictness);
         return $record ? new static(0, $record) : false;
     }
 
