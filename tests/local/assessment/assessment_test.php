@@ -56,7 +56,7 @@ class assessment_test extends advanced_testcase {
         $student = core_user::get_user_by_username('etu1');
         $obs1 = core_user::get_user_by_username('obs1');
         $currentgrid = entity::get_record(['idnumber' => 'GRID01']);
-        test_utils::create_appraisal_for_students($student->id, null, false, $obs1->id, $currentgrid->get('id'));
+        test_utils::create_appraisals_for_students($student->id, null, false, $obs1->id, $currentgrid->get('id'));
     }
 
     /**
