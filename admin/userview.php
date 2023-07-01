@@ -23,6 +23,7 @@
  */
 
 use local_cltools\local\crud\generic\generic_entity_exporter_generator;
+use local_cltools\local\crud\helper\crud_view;
 use local_cveteval\local\external\external_utils;
 use local_cveteval\local\forms\cveteval_import_form;
 use local_cveteval\local\importer\importid_manager;
@@ -39,30 +40,43 @@ $PAGE->set_title(get_string('userview', 'local_cveteval'));
 $PAGE->set_heading(get_string('userview', 'local_cveteval'));
 $currenturl = new moodle_url('/local/cveteval/admin/userview.php');
 $PAGE->set_url($currenturl);
-$usercache = cache::make_from_params(cache_store::MODE_APPLICATION, 'local_cveteval', 'userlist');
-if (!$usercache->has('alluserids')) {
-    global $DB;
-    $userids = [];
-    foreach ($DB->get_recordset('user', null, 'lastname ASC, firstname ASC') as $user) {
-        $userdisplay = ucwords(fullname($user)) . " ($user->email)";
-        $usercache->set($user->id, $userdisplay);
-        $userids[] = $user->id;
-    }
-    $usercache->set('alluserids', $userids);
-}
-$userids = $usercache->get('alluserids');
-$users = [];
-foreach ($userids as $id) {
-    $users[$id] = $usercache->get($id);
-}
 $renderer = $PAGE->get_renderer('local_cveteval');
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('userview', 'local_cveteval'));
 
-$select = new single_select($currenturl, 'userid', $users, $userid);
-$select->label = get_accesshide(get_string('language'));
-$select->class = 'langmenu';
-echo $OUTPUT->render($select);
+/**
+ * User selector class.
+ */
+class user_select extends moodleform {
+
+    /**
+     * Define form
+     *
+     * @return void
+     * @throws coding_exception
+     */
+    protected function definition() {
+        $mform = $this->_form;
+        $preloadeduser = [];
+        if (!empty($this->_customdata['user'])) {
+            $preloadeduser = $this->_customdata['user'];
+        }
+        // Add an autocomplete field.
+        $mform->addElement('autocomplete', 'userid', get_string('user'), $preloadeduser,
+            ['class' => 'userautocomplete', 'ajax' => 'local_cveteval/user_selector']);
+        $mform->setType('userid', PARAM_INT);
+        $mform->addElement('submit', 'submit', get_string('view'));
+    }
+}
+
+if ($userid) {
+    $currentuser = core_user::get_user($userid);
+    $customdata = ['user' => [
+        $userid => fullname($currentuser) . ' (' . $currentuser->email . ')'
+    ]];
+}
+$select = new user_select($currenturl, $customdata);
+echo $select->render();
 
 if ($userid) {
     global $USER;
@@ -71,7 +85,6 @@ if ($userid) {
     echo $OUTPUT->heading(get_string('role:type', 'local_cveteval') . ': '
         . local_cveteval\local\persistent\role\entity::get_type_fullname(roles::get_user_role_id($userid)));
     if (roles::can_appraise($userid)) {
-
         $situations = external_utils::query_entities('situation', [], null, $userid);
         foreach ($situations as $s) {
             if (local_cveteval\local\persistent\role\entity::count_records(['userid' => $userid,
@@ -79,18 +92,17 @@ if ($userid) {
                 $situation = new local_cveteval\local\persistent\situation\entity($s->id);
                 $exporter = generic_entity_exporter_generator::generate($situation);
                 echo $OUTPUT->box_start();
-                echo \local_cltools\local\crud\helper\crud_view::display_entity($situation, $exporter, $renderer);
+                echo crud_view::display_entity($situation, $exporter, $renderer);
                 echo $OUTPUT->box_end();
             }
         }
     } else {
         $plans = external_utils::query_entities('planning', [], null, $userid);
-
         foreach ($plans as $p) {
             $evalplan = new local_cveteval\local\persistent\planning\entity($p->id);
             $exporter = generic_entity_exporter_generator::generate($evalplan);
             echo $OUTPUT->box_start();
-            echo \local_cltools\local\crud\helper\crud_view::display_entity($evalplan, $exporter, $renderer);
+            echo crud_view::display_entity($evalplan, $exporter, $renderer);
             echo $OUTPUT->box_end();
         }
     }

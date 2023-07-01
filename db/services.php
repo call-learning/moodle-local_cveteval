@@ -153,7 +153,15 @@ $functions = array(
         'capabilities' => '',
         'loginrequired' => false,
         'services' => array(utils::CVETEVAL_MOBILE_SERVICE)
-    )
+    ),
+    'local_cveteval_get_users' => array(
+        'classname' => 'local_cveteval\\local\\external\\user_search',
+        'methodname' => 'execute',
+        'description' => 'search for users matching the parameters',
+        'type' => 'read',
+        'capabilities' => 'moodle/user:viewdetails, moodle/user:viewhiddendetails, moodle/course:useremail, moodle/user:update',
+        'ajax' => true,
+    ),
 );
 
 $services = utils::get_mobile_services_definition($functions);
