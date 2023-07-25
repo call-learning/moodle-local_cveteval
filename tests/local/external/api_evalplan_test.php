@@ -106,8 +106,9 @@ class api_evalplan_test extends advanced_testcase {
                 return (object) [
                     'groupid' => $allgroupidmatch[$s->groupid],
                     'clsituationid' => $allclsituation[$s->clsituationid],
-                    'starttime' => strftime('%d/%m/%Y', $s->starttime),
-                    'endtime' => strftime('%d/%m/%Y', $s->endtime),
+                    // Replace strftime with equivalent gmdate to avoid timezone issues.
+                    'starttime' => date('d/m/Y', $s->starttime),
+                    'endtime' => date('d/m/Y', $s->endtime),
                 ];
             }, $evalplan)));
 
@@ -219,8 +220,8 @@ class api_evalplan_test extends advanced_testcase {
                 return (object) [
                     'groupid' => $allgroupidmatch[$s->groupid],
                     'clsituationid' => $allclsituation[$s->clsituationid],
-                    'starttime' => strftime('%d/%m/%Y', $s->starttime),
-                    'endtime' => strftime('%d/%m/%Y', $s->endtime),
+                    'starttime' => date('d/m/Y', $s->starttime),
+                    'endtime' => date('d/m/Y', $s->endtime),
                 ];
             }, $evalplan)));
 
