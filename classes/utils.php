@@ -43,6 +43,8 @@ use local_cveteval\local\persistent\model_with_history_util;
 use local_cveteval\task\upload_default_criteria_grid;
 use moodle_exception;
 use moodle_url;
+use navigation_node;
+use pix_icon;
 use progress_bar;
 use stdClass;
 use tool_importer\local\exceptions\importer_exception;
@@ -640,5 +642,30 @@ class utils {
                 $import->get('idnumber'),
                 new moodle_url('/local/cveteval/manage/index.php', ['importid' => $importid]));
 
+    }
+
+    /**
+     * Setup page navigation for entity managaement
+     * *
+     * @return navigation_node
+     * @throws coding_exception
+     */
+    public static function get_assessment_node(): ?navigation_node {
+        global $CFG, $USER;
+        $enabled = !empty($CFG->enablecompetveteval) && $CFG->enablecompetveteval;
+        if ($enabled) {
+            if (roles::can_appraise($USER->id)) {
+                $node = navigation_node::create(
+                    get_string('assessment', 'local_cveteval'),
+                    new moodle_url('/local/cveteval/pages/assessment/mysituations.php'),
+                    navigation_node::TYPE_CUSTOM,
+                    null,
+                    null,
+                    new pix_icon('t/edit', get_string('edit'))
+                );
+                return $node;
+            }
+        }
+        return null;
     }
 }

@@ -89,28 +89,62 @@ function local_cveteval_enable_disable_plugin_callback() {
 }
 
 /**
- * Extends navigation
+ * Extends user navigation
  *
- * @param global_navigation $nav
- * @throws coding_exception
- * @throws dml_exception
+ * @param navigation_node $parentnode
+ * @param stdClass $user
+ * @param context_user $context
+ * @param stdClass $course
+ * @param context_course $coursecontext
  */
-function local_cveteval_extend_navigation(global_navigation $nav) {
-    global $CFG, $USER;
-    $enabled = !empty($CFG->enablecompetveteval) && $CFG->enablecompetveteval;
-    if ($enabled) {
-        if (roles::can_appraise($USER->id)) {
-            $node = navigation_node::create(
-                get_string('assessment', 'local_cveteval'),
-                new moodle_url('/local/cveteval/pages/assessment/mysituations.php'),
-                navigation_node::TYPE_CUSTOM,
-                'assessment',
-                'key',
-                new pix_icon('t/edit', get_string('edit'))
-            );
-            $node->showinflatnavigation = true;
-            $nav->add_node($node);
+function local_cveteval_extend_navigation_user_settings(
+    navigation_node $parentnode,
+    stdClass $user,
+    context_user $context,
+    stdClass $course,
+    context_course $coursecontext
+) {
+    $node = utils::get_assessment_node();
+    if ($node) {
+        $parentnode->add_node($node);
+    }
+}
 
-        }
+/**
+ * Add nodes to myprofile page.
+ *
+ * @param \core_user\output\myprofile\tree $tree Tree object
+ * @param stdClass $user user object
+ * @param bool $iscurrentuser
+ * @param stdClass $course Course object
+ *
+ * @return bool
+ */
+function local_cveteval_myprofile_navigation(core_user\output\myprofile\tree $tree, $user, $iscurrentuser, $course) {
+    $node = utils::get_assessment_node();
+    if ($node) {
+        $treenode = new core_user\output\myprofile\node('miscellaneous', 'cvetevaleval',
+            $node->text, null, $node->action);
+        $tree->add_node($treenode);
+        return true;
+    }
+    return false;
+}
+
+/**
+ * Extends frontpage navigation node
+ *
+ * @param navigation_node $parentnode
+ * @param stdClass $course
+ * @param context_course $context
+ */
+function local_cveteval_extend_navigation_frontpage(
+    navigation_node $parentnode,
+    stdClass $course,
+    context_course $context
+) {
+    $node = utils::get_assessment_node();
+    if ($node) {
+        $parentnode->add_node($node);
     }
 }
