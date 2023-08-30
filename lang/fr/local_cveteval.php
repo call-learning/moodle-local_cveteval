@@ -38,6 +38,7 @@ $string['appraisal:student'] = 'Nom de l\'étudiant';
 $string['appraiser'] = 'Appraiser';
 $string['assess'] = 'Evaluation de "{$a}"';
 $string['assessment'] = 'Evaluation';
+$string['assessmentlink'] = 'Evaluation CompetVetEval';
 $string['cachedef_appraisals'] = 'Cache pour la récupération d\'observations';
 $string['cleanup:confirm:model'] =
         'Cette opération va vider toutes les tables de CompetVetEval, les situations mais aussi les observations faites jusqu\'à présent. Les données ne sont pas récupérables. Etes vous sûr ?';
@@ -72,6 +73,7 @@ $string['cveteval:viewallcriteria'] = 'Peut voir tous les criteria';
 $string['cveteval:viewallsituations'] = 'Peut voir toutes les situations';
 $string['cveteval:viewfiles'] = 'Peut voir les fichiers';
 $string['cannotdeleteappraisal'] = 'Ne peut effacer l\'observation';
+$string['columnmissing'] = 'Column manquante {$a}';
 $string['datamigration'] = 'Migration des données';
 $string['datamigration_help'] = 'Migration des données entre différents importations';
 $string['datamigrationstep'] = 'Migration / {$a}';

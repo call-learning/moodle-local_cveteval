@@ -38,6 +38,7 @@ $string['appraisal:student'] = 'Student name';
 $string['appraiser'] = 'Appraiser';
 $string['assess'] = 'Assess "{$a}"';
 $string['assessment'] = 'Assessment';
+$string['assessmentlink'] = 'Evaluation CompetVetEval';
 $string['cachedef_appraisals'] = 'Cache for appraisal retrieval';
 $string['cleanup:confirm:model'] =
         'This will cleanup all table for CompetVetEval, like situations list but also all apppraisal done so far and data will not be recoverable. Are you sure ?';
@@ -71,6 +72,7 @@ $string['cveteval:viewallcriteria'] = 'Can view all criteria';
 $string['cveteval:viewallsituations'] = 'Can view all situations';
 $string['cveteval:viewfiles'] = 'Can view files';
 $string['cannotdeleteappraisal'] = 'Cannot delete appraisal';
+$string['columnmissing'] = 'Column missing {$a}';
 $string['datamigration'] = 'Data migration';
 $string['datamigration_help'] = 'Data migration between different importations';
 $string['datamigrationstep'] = 'Data Migration / {$a}';

@@ -22,9 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use local_cveteval\local\persistent\role\entity as role_entity;
-use local_cveteval\utils;
 use local_cveteval\roles;
+use local_cveteval\utils;
 
 /**
  * Get plugin file
@@ -89,24 +88,18 @@ function local_cveteval_enable_disable_plugin_callback() {
 }
 
 /**
- * Extends user navigation
+ * This function extends the user navigation.
  *
- * @param navigation_node $parentnode
- * @param stdClass $user
- * @param context_user $context
- * @param stdClass $course
- * @param context_course $coursecontext
+ * @param navigation_node $navigation The navigation node to extend
+ * @param stdClass $user The user object
+ * @param context_user $usercontext The user context
+ * @param stdClass $course The course object
+ * @param context_course $coursecontext The context of the course
  */
-function local_cveteval_extend_navigation_user_settings(
-    navigation_node $parentnode,
-    stdClass $user,
-    context_user $context,
-    stdClass $course,
-    context_course $coursecontext
-) {
+function local_cveteval_extend_navigation_user($navigation, $user, $usercontext, $course, $coursecontext) {
     $node = utils::get_assessment_node();
     if ($node) {
-        $parentnode->add_node($node);
+        $navigation->add_node($node);
     }
 }
 
@@ -143,6 +136,20 @@ function local_cveteval_extend_navigation_frontpage(
     stdClass $course,
     context_course $context
 ) {
+    $node = utils::get_assessment_node();
+    if ($node) {
+        $parentnode->add_node($node);
+    }
+}
+
+/**
+ * Extends navigation for course
+ *
+ * @param global_navigation $nav
+ * @throws coding_exception
+ * @throws dml_exception
+ */
+function local_cveteval_extend_navigation_course(navigation_node $parentnode, stdClass $course, context_course $context) {
     $node = utils::get_assessment_node();
     if ($node) {
         $parentnode->add_node($node);
