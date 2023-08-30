@@ -158,6 +158,7 @@ class appraisals_student extends dynamic_table_sql {
             foreach ($this->appraiserlist as $appraisalid => $appraiserid) {
                 $grade = $DB->get_record_sql(
                         "SELECT c.criterionid AS criterionid, c.grade AS grade,
+                        criterion.parentid as hasparent,
                         c.comment AS comment, c.commentformat,
                         appraisal.comment AS appraisalcomment, appraisal.commentformat AS appraisalcommentformat,
                         appraisal.context AS appraisalcontext, appraisal.contextformat AS appraisalcontextformat
@@ -193,14 +194,17 @@ class appraisals_student extends dynamic_table_sql {
                 $commentstext = "";
                 if (!empty($grade)) {
                     $comments = new stdClass();
-                    $comments->criteriacomment = $this->format_text($grade->comment, $grade->commentformat);
                     $comments->appraisalcontext = $this->format_text($grade->appraisalcontext, $grade->appraisalcontextformat);
                     $comments->appraisalcomment = $this->format_text($grade->appraisalcomment, $grade->appraisalcommentformat);
                     $comments->appraisalid = $appraisalid;
                     $comments->appraiserid = $appraiserid;
                     $comments->criteriaid = $row->id;
-                    $commentstext =
+                    if ($grade->hasparent) {
+                        $commentstext = $this->format_text($grade->comment, $grade->commentformat);
+                    } else {
+                        $commentstext =
                             $renderer->render(new grade_widget($grade->grade, $subgradescount > 0, $comments));
+                    }
                 }
                 $row->{$this->get_appraiser_appraisal_columnname($appraiserid, $appraisalid)} = $commentstext;
             }
