@@ -56,10 +56,11 @@ Feature: As an admin I can import new set of planning and enable it
     And I click on "Save" "button"
     Then I should see "Entity added"
     And I should see "SIT4"
-    Then I follow "List Clinical situation"
+    Then I follow "HIST1"
+    And I follow "Edit Clinical situation"
     Then I should see "Situation 4" in the "SIT4" "local_cltools > Table Row"
     Then I follow "HIST1"
-    And I follow "Edit Roles"
+    And I follow "Edit Role"
     And I click on "Add" "button"
     And I expand the "userid" autocomplete
     And I click on "Resp1 Resp1 (resp1@example.com)" item in the autocomplete list

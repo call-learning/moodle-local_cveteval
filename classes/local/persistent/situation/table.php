@@ -16,15 +16,8 @@
 
 namespace local_cveteval\local\persistent\situation;
 
-use coding_exception;
-use context;
-use local_cltools\local\crud\entity_table;
-use local_cltools\local\crud\entity_utils;
-use local_cltools\local\crud\generic\generic_entity_table;
-use local_cltools\local\field\blank_field;
 use local_cveteval\local\manager\table_manager_with_access;
 use local_cveteval\local\persistent\table_with_history_impl;
-use restricted_context_exception;
 
 /**
  * Situation table

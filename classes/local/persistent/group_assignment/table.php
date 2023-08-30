@@ -16,14 +16,8 @@
 
 namespace local_cveteval\local\persistent\group_assignment;
 
-
-use coding_exception;
-use context;
-use local_cltools\local\crud\generic\generic_entity_table;
-use local_cltools\local\field\blank_field;
 use local_cveteval\local\manager\table_manager_with_access;
 use local_cveteval\local\persistent\table_with_history_impl;
-use restricted_context_exception;
 
 /**
  * Evaluation group_assignment table

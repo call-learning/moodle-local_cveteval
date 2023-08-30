@@ -55,7 +55,7 @@ $crudmgmt = crud_helper::create(
 \local_cveteval\utils::setup_entity_management_page_navigation($importid);
 $crudmgmt->setup_page($PAGE);
 
-$out = $crudmgmt->action_process();
+$out = $crudmgmt->action_process(null, (object) ['historyid' => $importid]);
 
 echo $OUTPUT->header();
 echo $out;

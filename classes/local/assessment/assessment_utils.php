@@ -50,20 +50,20 @@ class assessment_utils {
         $entitylist = new situations();
         if (!roles::can_see_all_situations($USER->id)) {
             $filterset = new enhanced_filterset(
+                [
+                    'appraiserid' => (object)
                     [
-                            'appraiserid' => (object)
-                            [
-                                    'filterclass' => numeric_comparison_filter::class,
-                                    'required' => true
-                            ],
-                    ]
+                        'filterclass' => numeric_comparison_filter::class,
+                        'required' => true
+                    ],
+                ]
             );
             $filterset->set_join_type(filter::JOINTYPE_ALL);
             self::add_roles_evaluation_filterset($filterset);
             $filterset->add_filter_from_params(
-                    'appraiserid', // Field name.
-                    filter::JOINTYPE_ALL,
-                    [['direction' => '=', 'value' => $USER->id]]
+                'appraiserid', // Field name.
+                filter::JOINTYPE_ALL,
+                [['direction' => '=', 'value' => $USER->id]]
             );
             $entitylist->set_filterset($filterset);
         }
@@ -79,15 +79,15 @@ class assessment_utils {
     public static function add_roles_evaluation_filterset($filterset) {
         $filterset->add_filter_definition('roletype', (object)
         [
-                'filterclass' => numeric_comparison_filter::class,
-                'required' => true
+            'filterclass' => numeric_comparison_filter::class,
+            'required' => true
         ]);
         $filterset->add_filter_from_params(
-                'roletype', // Field name.
-                filter::JOINTYPE_ANY,
-                [
-                        ['direction' => '=', 'value' => role_entity::ROLE_ASSESSOR_ID],
-                        ['direction' => '=', 'value' => role_entity::ROLE_APPRAISER_ID]]
+            'roletype', // Field name.
+            filter::JOINTYPE_ANY,
+            [
+                ['direction' => '=', 'value' => role_entity::ROLE_ASSESSOR_ID],
+                ['direction' => '=', 'value' => role_entity::ROLE_APPRAISER_ID]]
         );
     }
 
@@ -99,23 +99,23 @@ class assessment_utils {
      */
     public static function get_mystudents_list($situationid) {
         global $USER;
-        $entitylist = new mystudents(null, null, false, $situationid);
+        $entitylist = new mystudents(null, null, false, (object) ['situationid' => $situationid]);
         if (!roles::can_see_all_situations($USER->id)) {
             $filterset = new enhanced_filterset(
+                [
+                    'appraiserid' => (object)
                     [
-                            'appraiserid' => (object)
-                            [
-                                    'filterclass' => numeric_comparison_filter::class,
-                                    'required' => true
-                            ],
-                    ]
+                        'filterclass' => numeric_comparison_filter::class,
+                        'required' => true
+                    ],
+                ]
             );
             $filterset->set_join_type(filter::JOINTYPE_ALL);
             self::add_roles_evaluation_filterset($filterset);
             $filterset->add_filter_from_params(
-                    'appraiserid', // Field name.
-                    filter::JOINTYPE_ALL,
-                    [['direction' => '=', 'value' => $USER->id]]
+                'appraiserid', // Field name.
+                filter::JOINTYPE_ALL,
+                [['direction' => '=', 'value' => $USER->id]]
             );
             $entitylist->set_filterset($filterset);
         }
@@ -135,32 +135,32 @@ class assessment_utils {
 
         $entitylist = new appraisals_student();
         $filterset = new enhanced_filterset(
+            [
+                'planid' => (object)
                 [
-                        'planid' => (object)
-                        [
-                                'filterclass' => numeric_comparison_filter::class,
-                                'required' => true,
-                        ],
-                        'studentid' => (object)
-                        [
-                                'filterclass' => numeric_comparison_filter::class,
-                                'required' => true,
-                        ]
+                    'filterclass' => numeric_comparison_filter::class,
+                    'required' => true,
+                ],
+                'studentid' => (object)
+                [
+                    'filterclass' => numeric_comparison_filter::class,
+                    'required' => true,
                 ]
+            ]
         );
         self::add_roles_evaluation_filterset($filterset);
         if ($evalplanid) {
             $filterset->add_filter_from_params(
-                    'planid', // Field name.
-                    filter::JOINTYPE_ALL,
-                    [['direction' => '=', 'value' => $evalplanid]]
+                'planid', // Field name.
+                filter::JOINTYPE_ALL,
+                [['direction' => '=', 'value' => $evalplanid]]
             );
         }
         if ($studentid) {
             $filterset->add_filter_from_params(
-                    'studentid', // Field name.
-                    filter::JOINTYPE_ALL,
-                    [['direction' => '=', 'value' => $studentid]]
+                'studentid', // Field name.
+                filter::JOINTYPE_ALL,
+                [['direction' => '=', 'value' => $studentid]]
             );
         }
         $filterset->set_join_type(filter::JOINTYPE_ALL);
@@ -184,19 +184,19 @@ class assessment_utils {
         $uniqueid = html_writer::random_id('apprasailcriteriatable');
         $entitylist = new appraisals_criteria($uniqueid);
         $filterset = new enhanced_filterset(
+            [
+                'appraisalid' => (object)
                 [
-                        'appraisalid' => (object)
-                        [
-                                'filterclass' => 'local_cltools\\local\filter\\numeric_comparison_filter',
-                                'required' => true
-                        ]
+                    'filterclass' => 'local_cltools\\local\filter\\numeric_comparison_filter',
+                    'required' => true
                 ]
+            ]
         );
         $filterset->set_join_type(filter::JOINTYPE_ALL);
         $filterset->add_filter_from_params(
-                'appraisalid', // Field name.
-                filter::JOINTYPE_ALL,
-                [['direction' => '=', 'value' => $appraisalid]]
+            'appraisalid', // Field name.
+            filter::JOINTYPE_ALL,
+            [['direction' => '=', 'value' => $appraisalid]]
         );
         $entitylist->set_filterset($filterset);
         return $entitylist;
@@ -211,20 +211,20 @@ class assessment_utils {
     public static function get_situations_for_student($studentid) {
         $entitylist = new situations_for_student(null, null, false);
         $filterset = new enhanced_filterset(
+            [
+                'studentid' => (object)
                 [
-                        'studentid' => (object)
-                        [
-                                'filterclass' => 'local_cltools\\local\filter\\numeric_comparison_filter',
-                                'required' => true,
-                        ]
+                    'filterclass' => 'local_cltools\\local\filter\\numeric_comparison_filter',
+                    'required' => true,
                 ]
+            ]
         );
         $filterset->set_join_type(filter::JOINTYPE_ALL);
         if ($studentid) {
             $filterset->add_filter_from_params(
-                    'studentid', // Field name.
-                    filter::JOINTYPE_ALL,
-                    [['direction' => '=', 'value' => $studentid]]
+                'studentid', // Field name.
+                filter::JOINTYPE_ALL,
+                [['direction' => '=', 'value' => $studentid]]
             );
         }
         $entitylist->set_filterset($filterset);
@@ -240,15 +240,15 @@ class assessment_utils {
     public static function add_roles_assessor_filterset($filterset) {
         $filterset->add_filter_definition('roletype', (object)
         [
-                'filterclass' => numeric_comparison_filter::class,
-                'required' => true
+            'filterclass' => numeric_comparison_filter::class,
+            'required' => true
         ]);
         $filterset->add_filter_from_params(
-                'roletype', // Field name.
-                filter::JOINTYPE_ALL,
-                [
-                        ['direction' => '=', 'value' => role_entity::ROLE_ASSESSOR_ID]
-                ]
+            'roletype', // Field name.
+            filter::JOINTYPE_ALL,
+            [
+                ['direction' => '=', 'value' => role_entity::ROLE_ASSESSOR_ID]
+            ]
         );
     }
 }

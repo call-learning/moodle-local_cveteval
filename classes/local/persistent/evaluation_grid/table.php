@@ -19,7 +19,6 @@ namespace local_cveteval\local\persistent\evaluation_grid;
 use coding_exception;
 use context;
 use local_cltools\local\crud\generic\generic_entity_table;
-use restricted_context_exception;
 
 /**
  * Evaluation grid table
@@ -44,6 +43,11 @@ class table extends generic_entity_table {
     public function __construct($uniqueid = null,
             $actionsdefs = null
     ) {
-        parent::__construct($uniqueid, $actionsdefs, false, entity::class);
+        parent::__construct(
+            $uniqueid,
+            $actionsdefs,
+            false,
+            (object) ['genericpersistentclass' => entity::class]
+        );
     }
 }

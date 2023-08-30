@@ -656,7 +656,7 @@ class utils {
         if ($enabled) {
             if (roles::can_appraise($USER->id)) {
                 $node = navigation_node::create(
-                    get_string('assessment', 'local_cveteval'),
+                    get_string('assessmentlink', 'local_cveteval'),
                     new moodle_url('/local/cveteval/pages/assessment/mysituations.php'),
                     navigation_node::TYPE_CUSTOM,
                     null,

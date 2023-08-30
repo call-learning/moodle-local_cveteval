@@ -16,6 +16,9 @@
 
 namespace local_cveteval\local\persistent;
 
+
+use local_cveteval\local\persistent\history\entity as history_entity;
+
 /**
  * Table model with history implementation
  *
@@ -32,6 +35,9 @@ trait table_with_history_impl {
      */
     protected function internal_get_sql_from($tablealias = 'entity') {
         $persistentclass = $this->define_class();
+        if (!empty($this->get_additional_params()) && $this->get_additional_params()->historyid) {
+            history_entity::set_current_id($this->get_additional_params()->historyid);
+        }
         $from = $persistentclass::get_historical_sql_query($tablealias);
         // Add joins.
         foreach ($this->fields as $field) {

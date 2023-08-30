@@ -55,12 +55,12 @@ class mystudents extends dynamic_table_sql {
      * @param string|null $uniqueid a random unique id
      * @param array|null $actionsdefs an array of action
      * @param bool $editable is the table editable ?
-     * @param int|null $situationid situation identifier
+     * @param object|null $additionalparams = null
      */
     public function __construct(?string $uniqueid,
             ?array $actionsdefs,
             bool $editable = false,
-            ?int $situationid = null) {
+            ?object $additionalparams = null) {
         global $PAGE;
         $filterset = new enhanced_filterset([
                 'situationid' => (object)
@@ -69,12 +69,12 @@ class mystudents extends dynamic_table_sql {
                         'required' => true
                 ],
         ]);
-        if ($situationid) {
+        if (!empty($additionalparams->situationid)) {
             // Either given by value in the constructor or passed by parameter later in the dynamic table.
             $filterset->add_filter_from_params(
                     'situationid', // Field name.
                     filter::JOINTYPE_ALL,
-                    [['direction' => '=', 'value' => $situationid]]
+                    [['direction' => '=', 'value' => $additionalparams->situationid]]
             );
         }
         $filterset->set_join_type(filter::JOINTYPE_ALL);
