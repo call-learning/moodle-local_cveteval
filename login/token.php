@@ -120,6 +120,24 @@ if (!empty($user)) {
         $returnedvalue->privatetoken = null;
     }
 } else {
-    throw new moodle_exception('invalidlogin');
+    switch($reason) {
+        case AUTH_LOGIN_FAILED:
+            $returnedvalue->errorcode = 'invalidlogin';
+            break;
+        case AUTH_LOGIN_NOUSER:
+            $returnedvalue->errorcode = 'usernotexist';
+            break;
+        case AUTH_LOGIN_SUSPENDED:
+            $returnedvalue->errorcode = 'usersuspended';
+            break;
+        case AUTH_LOGIN_LOCKOUT:
+            $returnedvalue->errorcode = 'userlockedout';
+            break;
+        case AUTH_LOGIN_UNAUTHORISED:
+            $returnedvalue->errorcode = 'userunauthorised';
+            break;
+        default:
+            $returnedvalue->errorcode = 'unknownerror';
+    }
 }
 echo json_encode($returnedvalue);
