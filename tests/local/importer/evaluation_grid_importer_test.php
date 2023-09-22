@@ -17,7 +17,8 @@
 namespace local_cveteval\local\importer;
 
 use local_cveteval\local\persistent\criterion\entity as criterion_entity;
-use local_cveteval\local\persistent\evaluation_grid\entity;
+use local_cveteval\local\persistent\evaluation_grid\entity as evaluation_grid_entity;
+use local_cveteval\task\upload_default_criteria_grid;
 use local_cveteval\test\importer_test_trait;
 
 /**
@@ -56,7 +57,7 @@ class evaluation_grid_importer_test extends \advanced_testcase {
             $this->assert_validation_errors($validationerrors, $importhelper);
         } else {
             $importhelper->import();
-            $grid = entity::get_record(['idnumber' => $gridname]);
+            $grid = evaluation_grid_entity::get_record(['idnumber' => $gridname]);
 
             $allrecordsfiltered = array_map(self::class . '::extract_record_information',
                     criterion_entity::get_records(['evalgridid' => $grid->get('id')]));
@@ -78,6 +79,22 @@ class evaluation_grid_importer_test extends \advanced_testcase {
                     $results['imported']);
             $this->assertEquals($expectedresults, array_values($allrecordsfiltered));
         }
+    }
+
+    /**
+     * Test import twice basic grid
+     *
+     * @covers \local_cveteval\local\importer\evaluation_grid\import_helper
+     * @covers \local_cveteval\local\importer\evaluation_grid\csv_data_source
+     * @covers \local_cveteval\local\importer\evaluation_grid\data_importer
+     */
+    public function test_import_twice() {
+        $this->resetAfterTest();
+        // Attempt to create the default grid twice.
+        upload_default_criteria_grid::create_default_grid();
+        upload_default_criteria_grid::create_default_grid();
+        $grid = evaluation_grid_entity::get_record(['idnumber' => evaluation_grid_entity::DEFAULT_GRID_SHORTNAME]);
+        $this->assertEquals(40, criterion_entity::count_records(['evalgridid' => $grid->get('id')]));
     }
 
     /**
