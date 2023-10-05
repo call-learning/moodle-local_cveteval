@@ -22,8 +22,6 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use local_cveteval\utils;
-
 define('CLI_SCRIPT', true);
 require(__DIR__ . '/../../../config.php');
 debugging() || defined('BEHAT_SITE_RUNNING') || die();
@@ -61,10 +59,13 @@ global $DB;
 // Check if there are duplicated criteria from the default grid (and sometimes even the default grid is duplicated !).
 $duplicatecriteria = $DB->get_records('local_cveteval_history_mdl', ['tablename' => 'local_cveteval_criterion'], 'tableid ASC');
 $originalcriteria = [];
-foreach($duplicatecriteria as $duplicatedcriterion) {
+foreach ($duplicatecriteria as $duplicatedcriterion) {
     $criterion = $DB->get_record('local_cveteval_criterion', ['id' => $duplicatedcriterion->tableid]);
-    if(empty($originalcriteria[$criterion->idnumber]) && empty($duplicatedcriterion->historyid)) {
+    if (empty($originalcriteria[$criterion->idnumber]) && empty($duplicatedcriterion->historyid)) {
         $originalcriteria[$criterion->idnumber] = $criterion->id;
+    } else {
+        cli_writeln('Found duplicated criterion ' . $criterion->idnumber . ' with id ' . $criterion->id . ' and historyid ' .
+            $duplicatedcriterion->historyid);
     }
 }
 $reversedoriginalcriteria = array_flip($originalcriteria);
@@ -81,10 +82,15 @@ foreach ($duplicatecriteria as $duplicatecriterion) {
                 throw new Exception('No original criterion found for ' . $criteriatoremove->idnumber);
             }
             $appraisal->criterionid = $originalcriteria[$criteriatoremove->idnumber];
+            cli_writeln('Changing criterionid from ' . $duplicatecriterion->tableid . ' to ' .
+                $originalcriteria[$criteriatoremove->idnumber] . ' for appraisal ' . $appraisal->id);
             $DB->update_record('local_cveteval_appr_crit', $appraisal);
         }
     }
+    cli_writeln('Deleting criterion ' . $criteriatoremove->id . ' with idnumber ' . $criteriatoremove->idnumber);
     $DB->delete_records('local_cveteval_criterion', ['id' => $criteriatoremove->id]);
+    cli_writeln('Deleting history ' . $duplicatecriterion->id . ' with historyid ' . $duplicatecriterion->historyid .
+        ' and tableid ' . $duplicatecriterion->tableid);
     $DB->delete_records('local_cveteval_history_mdl', ['id' => $duplicatecriterion->id]);
 }
 
