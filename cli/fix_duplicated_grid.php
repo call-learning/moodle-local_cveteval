@@ -24,7 +24,6 @@
 
 define('CLI_SCRIPT', true);
 require(__DIR__ . '/../../../config.php');
-debugging() || defined('BEHAT_SITE_RUNNING') || die();
 
 global $CFG;
 require_once($CFG->libdir . '/clilib.php');
@@ -41,8 +40,8 @@ list($options, $unrecognised) = cli_get_params([
 $usage = "Fix duplicated grids
 
 Usage:
-    # php fix_duplicated_grids.php --yes
-    # php fix_duplicated_grids.php  [--help|-h]
+    # php fix_duplicated_grid.php --yes
+    # php fix_duplicated_grid.php  [--help|-h]
 
 Options:
     -h --help                   Print this help.
